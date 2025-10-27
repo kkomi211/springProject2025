@@ -22,7 +22,7 @@
             <header>
             <div class="top-header">
                 <div class="brand-name">
-                    <div>RUNNERS' HOUSE</div>
+                    <div><a href="/home.do">RUNNERS' HOUSE</a></div>
                 </div>
                 <div id="right-items">
                     <div>
@@ -37,7 +37,9 @@
                 </div>
             </div>
             <div class="bottom-header">
-                <div>제품</div>
+                <div>
+                    <a href="/home/product.do">제품</a>
+                </div>
                 <div>
                     <a href="/home/product.do">세일</a>
                 </div>
