@@ -67,7 +67,19 @@
                 <table>
                     <tr>
                         <th>관리자 답변</th>
-                        <td>{{info.answer}}</td>
+                        <td>
+                            <!-- info.status가 'N'일 때만 답변 입력 필드와 버튼 표시 -->
+                            <div v-if="info.status === 'N'">
+                                <textarea v-model="newAnswer" rows="5" cols="50" placeholder="답변을 입력하세요"></textarea>
+                                <div class="text-center" style="margin-top: 10px;">
+                                    <button @click="fnRegisterAnswer">답변 등록</button>
+                                </div>
+                            </div>
+                            <!-- info.status가 'Y'일 때는 기존 답변 내용만 표시 -->
+                            <div v-else>
+                                {{info.answer}}
+                            </div>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -83,7 +95,8 @@
                 // 변수 - (key : value)
                 sessionId : "",
                 inquiryNo : "${inquiryNo}",
-                info : {}
+                info : {},
+                newAnswer: "" // 새 답변을 저장할 변수 추가
             };
         },
         methods: {
@@ -104,6 +117,39 @@
                     success: function (data) {
                         console.log(data);
                         self.info = data.info;
+                    }
+                });
+            },
+            fnRegisterAnswer: function() {
+                let self = this;
+                // 답변 내용이 비어있는지 확인
+                if(!self.newAnswer.trim()) {
+                    alert("답변 내용을 입력해주세요.");
+                    return;
+                }
+                
+                let param = {
+                    inquiryNo: self.inquiryNo,
+                    answer: self.newAnswer,
+                    status: 'Y' // 답변 등록 시 상태를 'Y'로 변경
+                };
+                
+                $.ajax({
+                    url: "/admin/inquiry/registerAnswer.dox", // 새로운 URL 사용
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function(data) {
+                        if(data.result === "success") {
+                            alert("답변이 성공적으로 등록되었습니다.");
+                            self.fnInquiryInfo(); // 답변 등록 후 최신 정보로 갱신 (상태 'Y', 답변 내용 반영)
+                        } else {
+                            alert("답변 등록에 실패했습니다.");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("답변 등록 실패:", status, error);
+                        alert("답변 등록 중 오류가 발생했습니다.");
                     }
                 });
             }

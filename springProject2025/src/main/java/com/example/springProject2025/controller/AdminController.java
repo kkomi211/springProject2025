@@ -71,6 +71,7 @@ public class AdminController {
 		return "admin/user-list"; // .jsp빠진형태
 	}
 	
+	// 상품 문의내역 리스트 불러오기 메소드
 	@RequestMapping(value = "admin/inquiry.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String inquiryList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
@@ -79,11 +80,23 @@ public class AdminController {
 	    return new Gson().toJson(resultMap);
 	}
 	
+	// 상품 문의내역 상세보기 메소드
 	@RequestMapping(value = "admin/inquiry/view.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String inquiryView(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap = adminService.getInquiry(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	// 상품 문의내역 관리자 답변 등록 메소드
+	@RequestMapping(value = "admin/inquiry/registerAnswer.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String registerAnswer(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+	    
+	    resultMap = adminService.registerInquiryAnswer(map);
 		
 		return new Gson().toJson(resultMap);
 	}

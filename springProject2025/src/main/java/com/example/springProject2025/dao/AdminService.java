@@ -47,5 +47,24 @@ public class AdminService {
 		
 		return resultMap;
 	}
+	
+	// 관리자 답변 등록 메소드 추가
+	public HashMap<String, Object> registerInquiryAnswer(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			int result = adminMapper.updateInquiryAnswer(map);
+			
+			if(result > 0) {
+				resultMap.put("result", "success");
+			} else {
+				resultMap.put("result", "fail");
+			}
+		} catch (Exception e) {
+			resultMap.put("result", "fail");
+			System.out.println(e.getMessage());
+		}
+		
+		return resultMap;
+	}
 
 }

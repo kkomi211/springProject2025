@@ -17,4 +17,15 @@
 			INNER JOIN USERS U ON I.USER_ID = U.USER_ID
 			WHERE INQUIRY_NO = #{inquiryNo}
 		</select>
+		
+		<!-- 상품 문의내역 관리자 답변 등록/수정 -->
+		<update id="updateInquiryAnswer" parameterType="hashmap">
+			UPDATE PRODUCT_INQUIRY
+			SET 
+				ANSWER = #{answer},
+				ANSWER_DATE = SYSDATE,
+				STATUS = 'Y'
+			WHERE 
+				INQUIRY_NO = #{inquiryNo}
+		</update>
 	</mapper>
