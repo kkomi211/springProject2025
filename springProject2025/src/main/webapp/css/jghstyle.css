@@ -36,6 +36,7 @@ ul {
     font-size: 24px;
     font-weight: bold;
     margin-top: 5px;
+    margin-left: 40px;
 }
 
 /* 메인 레이아웃 */
@@ -246,8 +247,8 @@ ul {
     line-height: 30px;
     text-align: center;
     margin: 0 4px;
-    border: 1px solid #ddd;
-    border-radius: 50%;
+    /*border: 1px solid #ddd;*/
+    /*border-radius: 50%;*/
     font-size: 14px;
     transition: background-color 0.2s;
 }
@@ -270,6 +271,11 @@ ul {
 
 .pagination a:not(.active):hover {
     background-color: #f0f0f0;
+}
+
+.pagination span.active {
+    color: black;
+    font-weight: bold;
 }
 
 .bottom-header {

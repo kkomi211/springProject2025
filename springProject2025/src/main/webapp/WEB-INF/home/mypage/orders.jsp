@@ -59,7 +59,7 @@
                             Welcome,
                         </div>
                         <div class="header-user">
-                            Harry Potter
+                            {{ userName }}
                         </div>
                     </div>
 
@@ -95,14 +95,14 @@
                         <main class="main-content">
                             <h1 class="main-title">주문•배송 내역</h1>
 
-                            <template v-for="(order, index) in orderList.slice(0, 4)" :key="order.orderNo">
+                            <template v-for="(order, index) in orderList" :key="order.orderNo">
                                 <section class="order-item">
                                     <div class="order-status-header" :class="getStatusClass(order.status)">
                                         ORDER STATUS :
                                         <span class="status-text">{{ order.status }}</span>
                                     </div>
                                     <div class="order-details">
-                                        <img v-if="order.imgPath" :src="order.imgPath + '/' + order.imgName" :alt="order.productName" class="product-image" style="width: 150px; height: 150px; object-fit: cover;">
+                                        <img v-if="order.imgPath && order.imgName" :src="order.imgPath + '/' + order.imgName" :alt="order.productName" class="product-image" style="width: 150px; height: 150px; object-fit: cover;">
                                         <div v-else class="product-image" style="background: #f0f0f0; min-width: 150px; height: 150px; display: flex; align-items: center; justify-content: center;">
                                             이미지 없음
                                         </div>
@@ -141,13 +141,14 @@
                             </div>
 
 
-                            <div class="pagination">
-                                <a href="#" class="arrow">&lt;</a>
-                                <a href="#" class="page-num active">1</a>
-                                <a href="#" class="page-num">2</a>
-                                <a href="#" class="page-num">3</a>
-                                <a href="#" class="page-num">4</a>
-                                <a href="#" class="arrow">&gt;</a>
+                            <div v-if="index > 0" class="pagination">
+                                <!-- <a v-if="page != 1" @click="fnMove(1)" href="javascript:void(0)">←</a> -->
+                                <a v-if="page >= 2" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
+                                <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index" :key="num">
+                                    <span :class="{ active: page == num }">{{ num }}</span>
+                                </a>
+                                <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
+                                <!-- <a v-if="page != index" @click="fnMove(index)" href="javascript:void(0)">→</a> -->
                             </div>
                         </main>
                     </div>
@@ -207,18 +208,14 @@
         const app = Vue.createApp({
             data() {
                 return {
-                    // Mybatis 연결 전, ORDERS 테이블 데이터를 기반으로 더미 목록 설정
-                    orderList: [
-                        { ORDER_NO: 101, USER_ID: 'user123', C_DATE: '25/10/26', PRODUCT_NO: 1002, QUANTITY: 2, PAYMENT_AMOUNT: 378000, ADDR: '서울시 강남구...', STATUS: '신규주문', PRODUCT_NAME: '울트라부스트 22', PRODUCT_IMAGE: 'running-shoes-men.jpg' }, // 취소 가능 (규칙 19, 20)
-                        { ORDER_NO: 102, USER_ID: 'testuser1', C_DATE: '25/10/27', PRODUCT_NO: 1004, QUANTITY: 1, PAYMENT_AMOUNT: 229000, ADDR: '경기도 성남시...', STATUS: '배송중', PRODUCT_NAME: '엔드로핀 스피드 3', PRODUCT_IMAGE: 'energy-gel.jpg' }, // 교환/반품 가능 (규칙 21)
-                        { ORDER_NO: 103, USER_ID: 'user123', C_DATE: '25/10/20', PRODUCT_NO: 1001, QUANTITY: 1, PAYMENT_AMOUNT: 139000, ADDR: '인천광역시 부평구...', STATUS: '배송완료', PRODUCT_NAME: '에어 줌 페가수스 40', PRODUCT_IMAGE: 'running-shoes-women.jpg' }, // 교환/반품 및 후기 작성 가능 (규칙 21)
-                        { ORDER_NO: 104, USER_ID: 'testuser2', C_DATE: '25/10/17', PRODUCT_NO: 1007, QUANTITY: 3, PAYMENT_AMOUNT: 117000, ADDR: '부산광역시 해운대구...', STATUS: '교환요청', PRODUCT_NAME: '드라이핏 러닝 티셔츠', PRODUCT_IMAGE: 'running-top-women.jpg' }, // 버튼 없음
-                        { ORDER_NO: 107, USER_ID: 'testuser1', C_DATE: '25/09/07', PRODUCT_NO: 1008, QUANTITY: 1, PAYMENT_AMOUNT: 49000, ADDR: '대전광역시 유성구...', STATUS: '취소완료', PRODUCT_NAME: '러닝 5인치 팬츠', PRODUCT_IMAGE: 'running-top-women.jpg' }, // 버튼 없음
-                        { ORDER_NO: 115, USER_ID: 'testuser2', C_DATE: '25/10/24', PRODUCT_NO: 1006, QUANTITY: 1, PAYMENT_AMOUNT: 259000, ADDR: '경기도 성남시...', STATUS: '취소요청', PRODUCT_NAME: 'NEW BALANCE 990v6', PRODUCT_IMAGE: 'running-shoes-men.jpg' }, // 버튼 없음
-                    ],
-                    currentCancelOrderNo: null, // 취소할 주문 번호를 저장
-                    //sessionId: "${sessionId}",
+                    orderList: [],
+                    cnt: 0,
+                    page: 1,
+                    pageSize: 4,
+                    index: 0,
+                    currentCancelOrderNo: null,
                     sessionId: "user_john",
+                    userName: "로딩중...",
                 };
             },
             methods: {
@@ -230,14 +227,10 @@
                 fnList: function () {
                     let self = this;
                     let param = {
-                        sessionId : self.sessionId,
-                        // kind: self.kind,
-                        // order: self.order,
-                        // keyword: self.keyword,
-                        // searchOption: self.searchOption,
-
-                        // pageSize: self.pageSize,
-                        // page: (self.page - 1) * self.pageSize,
+                        sessionId: self.sessionId,
+                        page: self.page,
+                        pageSize: self.pageSize,
+                        offset: (self.page - 1) * self.pageSize
                     };
                     $.ajax({
                         url: "/home/mypage/orders.dox",
@@ -245,14 +238,17 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log("리스트 뭐 어쩃든 성공~~~~~");
-                            console.log(data);
-                            if (data.list && data.list.length > 0) {
+                            console.log("리스트 응답 데이터:", data);
+                            if (data.result == "success") {
                                 self.orderList = data.list;
-                                console.log("주문 리스트 업데이트 완료:", self.orderList);
+                                self.cnt = data.cnt;
+                                self.index = Math.ceil(self.cnt / self.pageSize);
+                                console.log("주문 리스트 업데이트 완료 - 전체 개수:", self.cnt, "현재 페이지:", self.page);
                             } else {
-                                console.log("주문 내역이 없습니다.");
+                                console.log("주문 내역 조회 실패");
                                 self.orderList = [];
+                                self.cnt = 0;
+                                self.index = 0;
                             }
                         },
                         error: function(xhr, status, error) {
@@ -260,6 +256,12 @@
                             console.error("상태:", status);
                         }
                     });
+                },
+                
+                fnMove: function(num) {
+                    let self = this;
+                    self.page = num;
+                    self.fnList();
                 },
 
 
@@ -313,7 +315,8 @@
 
                 /** 주문 취소 처리 (팝업 내 '주문 취소' 버튼 클릭 시) */
                 processCancel: function () {
-                    const orderNo = this.currentCancelOrderNo;
+                    let self = this;
+                    const orderNo = self.currentCancelOrderNo;
                     const reason = $('#cancelReasonInput').val();
 
                     if (!reason.trim()) {
@@ -323,19 +326,57 @@
 
                     console.log(`ORDER_NO ${orderNo} 주문 취소 요청. 사유: ${reason}`);
 
-                    // TODO: 여기에 실제 주문 취소 AJAX (Mybatis) 호출 로직 작성
+                    let param = {
+                        orderNo: orderNo,
+                        because: reason,
+                        sessionId: self.sessionId
+                    };
 
-                    alert(`[${orderNo}] 주문이 취소 요청되었습니다. (사유: ${reason})\n*DB 업데이트 로직 필요*`);
-
-                    // 팝업 닫기 및 필드 초기화
-                    // Vue 내부에서 전역 함수 호출
-                    window.closeCancelModal();
-                    // 성공 시: 목록 새로고침 로직 호출 (fnList() 등)
+                    $.ajax({
+                        url: "/home/mypage/cancel.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log("주문 취소 응답:", data);
+                            if (data.result == "success") {
+                                alert(`[${orderNo}] 주문이 취소 요청되었습니다.`);
+                                // 팝업 닫기 및 필드 초기화
+                                window.closeCancelModal();
+                                // 목록 새로고침
+                                self.fnList();
+                            } else {
+                                alert('주문 취소 요청에 실패했습니다. 다시 시도해주세요.');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("주문 취소 AJAX 실패:", error);
+                            alert('주문 취소 요청 중 오류가 발생했습니다.');
+                        }
+                    });
+                },
+                fnGetUserInfo: function() {
+                    let self = this;
+                    $.ajax({
+                        url: "/home/mypage/userInfo.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: { userId: self.sessionId },
+                        success: function(data) {
+                            console.log("사용자 이름:", data);
+                            self.userName = data;
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("사용자 정보 조회 실패:", error);
+                            self.userName = "Guest";
+                        }
+                    });
                 }
             }, // methods
             mounted() {
                 let self = this;
                 self.fnList(); // 실제 데이터 조회 시작
+                self.fnGetUserInfo(); // 사용자 정보 조회
             }
         });
 

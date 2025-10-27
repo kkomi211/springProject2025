@@ -40,4 +40,23 @@ public class OrderController {
 		return new Gson().toJson(resultMap); // [{},{}]
 	}
 	
+	@RequestMapping(value = "home/mypage/userInfo.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String getUserInfo(Model model, @RequestParam String userId) throws Exception {
+		System.out.println("home/mypage/userInfo.dox 진입: " + userId);
+		String userName = orderService.getUserName(userId);
+		if (userName == null) {
+			userName = "Guest";
+		}
+		return new Gson().toJson(userName);
+	}
+	
+	@RequestMapping(value = "home/mypage/cancel.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String cancelOrder(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		System.out.println("home/mypage/cancel.dox 진입: " + map);
+		HashMap<String, Object> resultMap = orderService.cancelOrder(map);
+		return new Gson().toJson(resultMap);
+	}
+	
 }
