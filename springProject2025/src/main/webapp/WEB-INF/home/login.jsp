@@ -12,7 +12,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <style>
-        
+       
     </style>
 </head>
 <body>
@@ -50,7 +50,7 @@
             </header>
 
             <main>
-                <div>Main content</div>
+               
             </main>
 
             <footer>
@@ -94,7 +94,7 @@
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnList: function () {
+            fnIdCheck: function () {
                 let self = this;
                 let param = {};
                 $.ajax({
