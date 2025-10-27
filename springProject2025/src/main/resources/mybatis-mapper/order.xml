@@ -2,9 +2,35 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 	
 	<mapper namespace="com.example.springProject2025.mapper.OrderMapper">
-		<select id="selectOrderList" parameterType="hashmap" resultType="com.example.springProject2025.model.Order">
-			SELECT *
-			FROM ORDERS
-			WHERE USER_ID = #{userId}
-		</select>
+	<select id="selectOrderList" parameterType="hashmap" resultType="com.example.springProject2025.model.Order">	
+		SELECT 
+		    O.ORDER_NO as orderNo,
+		    O.USER_ID as userId,
+		    O.CDATE as cdate,
+		    O.PRODUCT_NO as productNo,
+		    P.PRODUCT_NAME as productName,
+		    PI.IMG_PATH as imgPath,
+		    PI.IMG_NAME as imgName,
+		    O.QUANTITY as quantity,
+		    O.PAYMENT_AMOUNT as paymentAmount,
+		    O.ADDR as addr,
+		    O.PAYMENT_METHOD as paymentMethod,
+		    O.STATUS as status,
+		    O.UDATE as udate,
+		    O.BECAUSE as because,
+		    O.ORDER_REQUEST as orderRequest
+		FROM ORDERS O
+		LEFT JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
+		LEFT JOIN (
+		    SELECT PRODUCT_NO, IMG_PATH, IMG_NAME
+		    FROM (
+		        SELECT PRODUCT_NO, IMG_PATH, IMG_NAME,
+		               ROW_NUMBER() OVER (PARTITION BY PRODUCT_NO ORDER BY PRODUCT_IMG_NO) as rn
+		        FROM PRODUCT_IMG
+		    )
+		    WHERE rn = 1
+		) PI ON P.PRODUCT_NO = PI.PRODUCT_NO
+		WHERE O.USER_ID = #{sessionId}
+		ORDER BY O.CDATE DESC
+	</select>
 	</mapper>

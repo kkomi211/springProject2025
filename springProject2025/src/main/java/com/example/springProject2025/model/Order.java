@@ -9,6 +9,9 @@ public class Order {
 	private String userId;
 	private String cdate;
 	private String productNo;
+	private String productName;  // PRODUCT 테이블
+	private String imgPath;      // PRODUCT_IMG 테이블
+	private String imgName;      // PRODUCT_IMG 테이블
 	private String quantity;
 	private String paymentAmount;
 	private String addr;

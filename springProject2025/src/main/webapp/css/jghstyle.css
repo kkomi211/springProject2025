@@ -42,7 +42,7 @@ ul {
 .page-container {
     display: flex;
     max-width: 1200px;
-    margin: 30px auto;
+    margin: 2px auto;
     padding: 0 40px;
     background-color: #fff;
     border-radius: 8px;
@@ -82,9 +82,8 @@ ul {
 .mypage-menu li .icon {
     margin-right: 15px;
     font-size: 18px;
-    line-height: 1; /* 아이콘 수직 정렬을 위해 */
+    line-height: 1;
 }
-
 
 /* 메인 콘텐츠 스타일 */
 .main-content {
@@ -98,12 +97,12 @@ ul {
     margin-top: 0;
     margin-bottom: 30px;
     padding-bottom: 15px;
-    border-bottom: 2px solid #333; /* 이미지의 진한 선을 표현 */
+    border-bottom: 2px solid #333;
 }
 
 /* 주문 항목 스타일 */
 .order-item {
-    margin-bottom: 40px;
+    margin-bottom: 4px;
     border: 1px solid #eee;
     padding: 20px;
     border-radius: 5px;
@@ -161,11 +160,11 @@ ul {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    gap: 8px; /* 버튼 사이 간격 */
+    gap: 8px;
     flex-shrink: 0;
 }
 
-/* 버튼 스타일 */
+/* 버튼 스타일 - 공통 */
 .btn {
     padding: 10px 15px;
     border: 1px solid #ccc;
@@ -174,7 +173,7 @@ ul {
     font-size: 14px;
     color: #333;
     transition: all 0.2s;
-    min-width: 100px; /* 버튼 최소 너비 */
+    min-width: 100px;
     text-align: center;
 }
 
@@ -182,24 +181,56 @@ ul {
     background-color: #f0f0f0;
 }
 
-.btn-cancel {
-    border-color: #333;
-    background-color: #333;
-    color: #fff;
+/* 주문 내역 버튼 (주문 취소, 교환•반품, 상품 후기) */
+.btn-cancel,
+.btn-return,
+.btn-review {
+    border-color: #bbb;
+    background-color: #e0e0e0;
+    color: #333;
 }
 
-.btn-cancel:hover {
-    background-color: #555;
-    border-color: #555;
+.btn-cancel:hover,
+.btn-return:hover,
+.btn-review:hover {
+    background-color: #c0c0c0;
+    border-color: #999;
 }
 
-.section-divider {
+/* 모달 팝업 버튼 */
+.btn-secondary {
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    background-color: #e0e0e0;
+    color: #333;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    min-width: 120px;
+    transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: #d0d0d0;
+}
+
+.btn-primary {
+    padding: 10px 20px;
     border: none;
-    border-top: 1px solid #eee;
-    margin: 20px 0;
+    background-color: #ff8c00;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    min-width: 120px;
+    transition: background-color 0.2s;
 }
 
-/* 페이지네이션 스타일 */
+.btn-primary:hover {
+    background-color: #e67e00;
+}
+
+/* 페이지네이션 */
 .pagination {
     display: flex;
     justify-content: center;
@@ -241,48 +272,31 @@ ul {
     background-color: #f0f0f0;
 }
 
-.bottom-header{
-	background-color: white;
+.bottom-header {
+    background-color: white;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* 모달 팝업 오버레이 (배경 어둡게 처리)----------------------S */
+/* 모달 팝업 스타일 */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* 반투명 검은색 배경 */
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* 다른 요소 위에 표시 */
+    z-index: 1000;
 }
 
-/* 팝업 본문 */
 .modal-content {
     background-color: #fff;
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     width: 90%;
-    max-width: 450px; /* 적절한 크기 설정 */
+    max-width: 450px;
     text-align: center;
 }
 
@@ -297,7 +311,6 @@ ul {
     font-size: 1rem;
 }
 
-/* 취소 사유 입력 영역 스타일 */
 .cancel-reason {
     text-align: left;
     margin-bottom: 25px;
@@ -307,7 +320,7 @@ ul {
     display: block;
     font-weight: bold;
     margin-bottom: 5px;
-    visibility: hidden; /* 이미지에는 "취소 사유 입력"만 보이지만, 접근성을 위해 label은 숨김 */
+    visibility: hidden;
 }
 
 .cancel-reason textarea {
@@ -315,56 +328,34 @@ ul {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    resize: none; /* 크기 조절 방지 */
+    resize: none;
     box-sizing: border-box;
     font-size: 1rem;
 }
 
-/* 버튼 스타일 */
 .modal-actions {
     display: flex;
     justify-content: center;
-    gap: 15px; /* 버튼 사이 간격 */
+    gap: 15px;
 }
 
-/* 버튼 공통 스타일 */
-.btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+/* 주문 상태별 색상 */
+.status-confirming {
+    color: #f39c12;
     font-weight: bold;
-    min-width: 120px;
-    transition: background-color 0.2s;
 }
 
-/* '돌아가기' (보조) 버튼 */
-.btn-secondary {
-    background-color: #e0e0e0;
-    color: #333;
-    border: 1px solid #ccc;
-}
-.btn-secondary:hover {
-    background-color: #d0d0d0;
+.status-shipping {
+    color: #3498db;
+    font-weight: bold;
 }
 
-/* '주문 취소' (주요) 버튼 - 이미지와 유사하게 주황색 계열로 설정 */
-.btn-primary {
-    background-color: #ff8c00; /* 이미지의 주황색과 유사 */
-    color: white;
+.status-delivered {
+    color: #2ecc71;
+    font-weight: bold;
 }
-.btn-primary:hover {
-    background-color: #e67e00;
+
+.status-processed {
+    color: #95a5a6;
+    font-weight: bold;
 }
-/* 모달 팝업 오버레이 (배경 어둡게 처리)----------------------E */
-
-
-
-
-
-
-/* CSS: 주문 상태별 색상 및 버튼 스타일 - (이전 답변에서 누락된 부분을 다시 추가합니다) */
-        .status-confirming { color: #f39c12; font-weight: bold; } /* 신규주문/주문 확인 중 */
-        .status-shipping { color: #3498db; font-weight: bold; } /* 배송중 */
-        .status-delivered { color: #2ecc71; font-weight: bold; } /* 배송완료 */
-        .status-processed { color: #95a5a6; font-weight: bold; } /* 처리 완료 (취소, 반품, 교환) */
