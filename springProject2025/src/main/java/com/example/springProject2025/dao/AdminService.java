@@ -1,11 +1,13 @@
 package com.example.springProject2025.dao;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.springProject2025.mapper.AdminMapper;
+import com.example.springProject2025.model.Admin;
 
 @Service
 public class AdminService {
@@ -13,20 +15,37 @@ public class AdminService {
 	@Autowired
 	AdminMapper adminMapper;
 	
-	public HashMap<String, Object> getList(HashMap<String, Object> map) {
+	public HashMap<String, Object> getInquiryList(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-//		List<Admin> list = adminMapper.selectList(map);
-//		int cnt = boardMapper.selectBoardCnt(map);
+		try {
+			List<Admin> list = adminMapper.selectInquiryList(map);
+			
+			resultMap.put("list", list);
+			resultMap.put("result", "success");
+		} catch (Exception e) {
+			resultMap.put("result", "fail");
+			System.out.println(e.getMessage());
+		}
+		
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> getInquiry(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			Admin admin = adminMapper.selectInquiry(map);
+			
+			resultMap.put("info", admin);
+			resultMap.put("result", "success");
+		} catch (Exception e) {
+			resultMap.put("result", "fail");
+			System.out.println(e.getMessage());
+		}
 		
 		
-//		resultMap.put("list", list);
-//		resultMap.put("cnt", cnt);
-//		resultMap.put("result", "success");
-		
-//		System.out.println("프론트에 돌려주기전 resultMap에 머가 들었나~?" + resultMap);
-		
-		return null;
+		return resultMap;
 	}
 
 }

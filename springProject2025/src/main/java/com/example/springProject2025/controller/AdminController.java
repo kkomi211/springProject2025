@@ -1,12 +1,20 @@
 package com.example.springProject2025.controller;
 
+import java.util.HashMap;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.springProject2025.dao.AdminService;
+import com.google.gson.Gson;
 
 import ch.qos.logback.core.model.Model;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class AdminController {
@@ -26,11 +34,18 @@ public class AdminController {
 		return "admin/banner"; // .jsp빠진형태
 	}
 	
-	@RequestMapping("admin/inquery.do")
+	@RequestMapping("admin/inquiry.do")
 	public String inquery(Model model) throws Exception {
 		System.out.println("컨트롤러 admin.do진입");
-		return "admin/inquery"; // .jsp빠진형태
+		return "admin/inquiry"; // .jsp빠진형태
 	}
+	
+	@RequestMapping("admin/inquiry/view.do") 
+	public String view(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception{
+		System.out.println(map.get("inquiryNo"));
+		request.setAttribute("inquiryNo", map.get("inquiryNo"));
+        return "admin/inquiry-view";
+    }
 	
 	@RequestMapping("admin/refund-return.do")
 	public String refundReturn(Model model) throws Exception {
@@ -56,7 +71,22 @@ public class AdminController {
 		return "admin/user-list"; // .jsp빠진형태
 	}
 	
+	@RequestMapping(value = "admin/inquiry.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String inquiryList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+	    resultMap = adminService.getInquiryList(map);
+	    return new Gson().toJson(resultMap);
+	}
 	
+	@RequestMapping(value = "admin/inquiry/view.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String inquiryView(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = adminService.getInquiry(map);
+		
+		return new Gson().toJson(resultMap);
+	}
 	
 	
 	
