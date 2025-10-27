@@ -13,7 +13,7 @@
             border : 1px solid black;
             border-collapse: collapse;
             padding : 5px 10px;
-            text-align: center;
+            text-align: center;     
         }
         th{
             background-color: beige;
