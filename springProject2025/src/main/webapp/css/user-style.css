@@ -1,0 +1,83 @@
+.container{
+            width: 100%;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        .top-header{
+            width: 100%;
+            background-color: black;
+            height: 150px;
+            color: white;
+            display: flex;
+            justify-content:right;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .top-header div{
+            display: inline-block;
+            text-align: left;
+            margin-right: 30px;
+            font-size: 15px;
+        }
+        .top-header input{
+            height: 25px;
+            border-radius: 8px;
+            width:200px;
+        }
+        .bottom-header {
+            display: flex;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .bottom-header div {
+            display: inline-block;
+            margin-right: 100px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .bottom-header a{
+            color: black;
+        }
+        main {
+            flex: 1;
+        }
+        
+        .brand-name div{
+            font-family: 'Fugaz One', sans-serif;
+            font-size: 60px;
+            letter-spacing: 5px;
+            margin-left: 40px;
+            display: block;
+        }
+        footer{
+            width: 100%;
+            height:200px;
+            background-color: black;
+            
+            bottom: 0;
+            color: white;
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+        .footer-left{
+            margin-left: 20px;
+        }
+        .copyright {
+            margin-top: 8px;
+        }
+        a{
+            text-decoration: none;
+            color: white;
+        }
+        .other span{
+            margin-right: 20px;
+        }
+        .socials {
+            margin-top: 15px;
+        }
+        .socials span{
+            margin-right: 20px;
+        }
