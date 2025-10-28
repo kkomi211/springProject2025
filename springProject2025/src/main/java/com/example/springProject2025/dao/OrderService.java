@@ -82,7 +82,7 @@ public class OrderService {
 			System.out.println("OrderService 에러: " + e.getMessage());
 		}
 
->>>>>>> branch 'feature/order' of https://github.com/kkomi211/springProject2025.git
+
 		return resultMap;
 	}
 
