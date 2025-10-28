@@ -21,4 +21,13 @@ public interface AdminMapper {
 	
 	// 상품 문의 총 개수 조회
 	int selectInquiryListCount(HashMap<String, Object> map);
+	
+	// 주문 목록 조회
+	List<Admin> selectOrdersList(HashMap<String, Object> map);
+
+	// 주문 총 개수 조회
+	int selectOrdersListCount(HashMap<String, Object> map);
+
+	// 주문 상태 업데이트
+	int updateOrderStatus(HashMap<String, Object> map);
 }

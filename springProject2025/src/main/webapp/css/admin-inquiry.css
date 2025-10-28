@@ -176,6 +176,17 @@
 	    /* 기타 textarea 스타일은 위에 정의된 .content textarea 사용 */
 	}
 	
+	
+	/* ================================================= */
+	/* 주문 리스트 테이블 (#orders-list-table) 전용 스타일 */
+	#orders-list-table th,
+	#orders-list-table td {
+	    text-align: center; /* 모든 th와 td 내용을 가운데 정렬 */
+	}
+	#orders-list-table td:nth-child(5) { 
+	    text-align: right;
+	}
+	
 	/* 페이징 스타일 */
 	.pagination {
 	    display: flex;
@@ -308,3 +319,57 @@
 	.btn-back:hover {
 	    background-color: #5a6268;
 	}
+	
+	/* ================================================= */
+	/* 주문 내역 관리 페이지 스타일 */
+	/* 주문 상태 표시 스타일 */
+	.status-new, .status-shipping, .status-delivered {
+	    display: inline-flex;
+	    align-items: center;
+	    justify-content: center;
+	    padding: 6px 12px;
+	    border-radius: 20px;
+	    font-size: 0.85rem;
+	    font-weight: bold;
+	    color: white;
+	    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+	    transition: transform 0.2s ease;
+	}
+
+	.status-new:hover, .status-shipping:hover, .status-delivered:hover {
+	    transform: translateY(-1px);
+	}
+
+	.status-new {
+	    background: linear-gradient(145deg, #ff8c00, #e67e00); /* 주황색 그라데이션 */
+	    color: white;
+	}
+
+	.status-shipping {
+	    background: linear-gradient(145deg, #007bff, #0056b3); /* 파란색 그라데이션 */
+	    color: white;
+	}
+
+	.status-delivered {
+	    background: linear-gradient(145deg, #28a745, #218838); /* 초록색 그라데이션 */
+	    color: white;
+	}
+
+	/* 상태 변경 버튼 스타일 */
+	.btn-update-status {
+	    padding: 6px 10px;
+	    background-color: #6c757d;
+	    color: white;
+	    border: none;
+	    border-radius: 4px;
+	    cursor: pointer;
+	    font-size: 0.8rem;
+	    transition: background-color 0.2s ease;
+	}
+
+	.btn-update-status:hover {
+	    background-color: #5a6268;
+	}
+	
+	
+	

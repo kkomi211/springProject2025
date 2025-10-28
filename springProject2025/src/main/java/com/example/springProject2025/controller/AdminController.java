@@ -102,6 +102,23 @@ public class AdminController {
 	}
 	
 	
+	// 주문내역 리스트 불러오기 메소드
+	@RequestMapping(value = "admin/orders.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String ordersList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+	    resultMap = adminService.getOrdersList(map);
+	    return new Gson().toJson(resultMap);
+	}
+	
+	// 주문내역 상태 변경(신규주문->배송중, 배송중->배송완료) 메소드
+	@RequestMapping(value = "admin/orders/updateStatus.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String updateOrderStatus(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+	    resultMap = adminService.updateOrderStatus(map);
+	    return new Gson().toJson(resultMap);
+	}
 	
 
 

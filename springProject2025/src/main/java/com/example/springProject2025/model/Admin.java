@@ -20,4 +20,13 @@ public class Admin {
 	private String answer;
 	private String answerDate;
 	
+	// ORDERS 테이블 컬럼
+	private int orderNo;
+	private int quantity;
+	private int paymentAmount;
+	private String addr;
+	private String paymentMethod;
+	private String because;
+	private String orderRequest;
+	
 }
