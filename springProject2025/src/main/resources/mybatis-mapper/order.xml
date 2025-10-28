@@ -58,4 +58,54 @@
 		WHERE ORDER_NO = #{orderNo}
 		  AND USER_ID = #{sessionId}
 	</update>
+
+	
+	
+	
+	<!-- 전체 개수 조회(페이징) -->
+	<select id="selectRefundListCount" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM ORDERS O
+		WHERE O.USER_ID = #{sessionId}
+		AND O.STATUS != '신규주문'
+	</select>
+	
+	<!-- 목록 조회 (페이징) 제품 이미지도 1개 가져오게 함 -->
+	<select id="selectRefundList" parameterType="hashmap" resultType="com.example.springProject2025.model.Order">	
+		SELECT 
+		    O.ORDER_NO ,
+		    O.USER_ID ,
+		    O.CDATE ,
+		    O.PRODUCT_NO ,
+		    P.PRODUCT_NAME ,
+		    PI.IMG_PATH ,
+		    PI.IMG_NAME ,
+		    O.QUANTITY ,
+		    O.PAYMENT_AMOUNT ,
+		    O.ADDR ,
+		    O.PAYMENT_METHOD ,
+		    O.STATUS ,
+		    O.UDATE ,
+		    O.BECAUSE ,
+		    O.ORDER_REQUEST 
+		FROM ORDERS O
+		LEFT JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
+		LEFT JOIN (
+				    SELECT PRODUCT_NO, IMG_PATH, IMG_NAME
+				    FROM (
+				        SELECT PRODUCT_NO, IMG_PATH, IMG_NAME,
+				               ROW_NUMBER() OVER (PARTITION BY PRODUCT_NO ORDER BY PRODUCT_IMG_NO) as rn
+				        FROM PRODUCT_IMG
+		   				 )
+		    			WHERE rn = 1
+					) PI ON P.PRODUCT_NO = PI.PRODUCT_NO
+		WHERE O.USER_ID = #{sessionId}
+		AND O.STATUS != '신규주문'
+		ORDER BY O.CDATE DESC
+		OFFSET #{offset} ROW FETCH NEXT #{pageSize} ROWS ONLY
+	</select>
+	
+	
+	
+	
 	</mapper>
