@@ -19,6 +19,16 @@ public class MemberController {
 	@Autowired
 	MemberService memberService;
 	
+	@RequestMapping(value = "/home/login.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String login(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
+		resultMap = memberService.memberLogin(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
 	@RequestMapping(value = "/home/signup.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String memberJoin(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
@@ -29,12 +39,28 @@ public class MemberController {
 		return new Gson().toJson(resultMap);
 	}
 	
+	@RequestMapping("/addr.do") 
+    public String addr(Model model) throws Exception{
+
+        return "home/jusoPopup";
+    }
+	
 	@RequestMapping(value = "/home/idCheck.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String idCheck(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		System.out.println(map);
 		resultMap = memberService.checkId(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/home/pwdCheck.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String pwdCheck(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
+		resultMap = memberService.pwdSearch(map);
 		
 		return new Gson().toJson(resultMap);
 	}
@@ -48,4 +74,30 @@ public class MemberController {
 		
 		return new Gson().toJson(resultMap);
 	}
+	
+	@RequestMapping("home/login/search.do")
+	public String userList(Model model) throws Exception {
+		return "home/idPwdSearch"; // .jsp빠진형태
+	}
+	
+	@RequestMapping(value = "/home/login/search.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String idSearch(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
+		resultMap = memberService.idSearch(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/home/changePwd.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String changePwd(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
+		resultMap = memberService.pwdChange(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
 }

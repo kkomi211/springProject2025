@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/user-style.css">
+    <link rel="stylesheet" href="/css/login-style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -50,7 +51,34 @@
             </header>
 
             <main>
-               
+                <div>
+                    <div class="login-container">
+                        <h2>로그인</h2>
+                        <div class="signup-form">
+                            <div class="form-row">
+                                <input type="text" placeholder="아이디" v-model="userId" @keyup.enter="fnLogin">
+                            </div>
+                            <div class="form-row">
+                                <input type="password" placeholder="비밀번호" v-model="pwd" @keyup.enter="fnLogin">
+                            </div>
+                            
+                            <div class="form-submit">
+                                <button @click="fnLogin" class="submit-btn">로그인</button>
+                            </div>
+                            <div class="form-submit">
+                                <button class="submit-btn" style="background-color: yellow; color: black;">카카오 로그인</button>
+                            </div>
+                        </div>
+                        <div id="other">
+                            <div>
+                                <a href="/home/signup.do">회원가입</a>
+                            </div>
+                            <div>
+                                <a href="/home/login/search.do">아이디 비밀번호 찾기</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </main>
 
             <footer>
@@ -90,20 +118,38 @@
         data() {
             return {
                 // 변수 - (key : value)
+                userId : "",
+                pwd : ""
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnIdCheck: function () {
+            fnLogin: function () {
                 let self = this;
-                let param = {};
+                // 유효성 검사
+                if (!self.userId || !self.pwd) {
+                    alert("아이디와 비밀번호를 입력하세요.");
+                    return;
+                }
+                let param = {
+                    userId : self.userId,
+                    pwd : self.pwd
+                };
                 $.ajax({
-                    url: "",
+                    url: "/home/login.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-
+                        console.log(data);
+                        if (data.result === "success") {
+                            // 로그인 성공 시 페이지 전환
+                            alert(data.message);
+                            location.href = "/home.do";
+                        } else {
+                            // 로그인 실패 시 경고 메시지 출력
+                            alert(data.message);
+                        }
                     }
                 });
             }

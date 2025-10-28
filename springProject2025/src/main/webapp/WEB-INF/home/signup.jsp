@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/user-style.css">
+    <link rel="stylesheet" href="/css/signup-style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -12,12 +13,6 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <style>
-        .signup{
-        width: 500px;
-        height: 600px;
-        border: solid 1px black;
-        margin: 50px 0;
-      } 
     </style>
 </head>
 <body>
@@ -55,64 +50,76 @@
             </header>
 
             <main>
-                <div>
-                    <div class="signup">
-                        <div>
-                            <label for="">
-                                아이디 <input v-if="!checkFlg" type="text" v-model="userId" placeholder="아이디">
+                 <div>
+                    <div class="signup-container">
+                        <h2>회원가입</h2>
+                        <div class="signup-form">
+                            <div class="form-row">
+                                <label>아이디</label>
+                                <input v-if="!checkFlg" type="text" placeholder="아이디" v-model="userId">
                                 <input v-else type="text" disabled :placeholder="userId">
-                            </label>
-                            <button @click="fnIdCheck">중복확인</button>
-                        </div>
-                        <div>
-                            <label for="">
-                                이름 <input type="text" v-model="name" placeholder="이름">
-                            </label>
-                        </div>
-                        <div>
-                            <label for="">
-                                비밀번호 <input type="password" v-model="pwd1" placeholder="비밀번호">
-                            </label>
-                        </div>
-                        <div>
-                            <label for="">
-                                비밀번호 확인 <input type="password" v-model="pwd2" placeholder="비밀번호 확인">
-                            </label>
-                        </div>
-                        <div>
-                            <label for="">
-                                닉네임 <input type="text" v-model="nickname">
-                            </label>
-                            <button @click="fnNicknameCheck">중복확인</button>
-                        </div>
-                        <div>
-                            성별
-                            <label for=""><input type="radio" v-model="gender" value="M">M</label>
-                            <label for=""><input type="radio" v-model="gender" value="F">F</label>
-                        </div>
-                        <div>
-                            <label for="">
-                                이메일
-                                <input type="text" v-model="email">
-                            </label>
-                        </div>
-                        <div>
-                            <label for="">
-                                주소 : <input v-model="addr" id="addr" > <button @click="fnAddr">주소검색</button>
-                            </label></div>
-                        <div>
-                            <label for="">
-                                생년월일 <input type="text" placeholder="YYYY-MM-DD" v-model="birthday">
-                            </label>
-                        </div>
-                        <div>
-                            <label for="">
-                                전화번호 <input type="text" v-model="phone">
-                            </label>
-                            <button @click="fnIdCheck">본인인증</button>
-                        </div>
-                        <div>
-                            <button @click="fnSignup">회원 가입 완료</button>
+                                <button @click="fnIdCheck">중복확인</button>
+                            </div>
+                            <div class="form-row">
+                                <label>이름</label>
+                                <input type="text" placeholder="이름" v-model="name">
+                            </div>
+                            <div class="form-row">
+                                <label>비밀번호</label>
+                                <input type="password" placeholder="6자 이상, 영문/숫자/특수문자" v-model="pwd1">
+                            </div>
+                            <div class="form-row">
+                                <label>비밀번호 확인</label>
+                                <input type="password" placeholder="비밀번호 확인" v-model="pwd2">
+                            </div>
+                            <div class="form-row">
+                                <label>닉네임</label>
+                                <input type="text" placeholder="닉네임" v-model="nickname">
+                                <button @click="fnNicknameCheck">중복확인</button>
+                            </div>
+                            <div class="form-row">
+                                <label>성별</label>
+                                <label>
+                                    <input type="radio" v-model="gender" value="M"> F
+                                    <input type="radio" v-model="gender" value="F"> M
+                                </label>
+                            </div>
+                            <div class="form-row">
+                                <label>이메일</label>
+                                <input type="text" placeholder="이메일" v-model="email">
+                            </div>
+                            <div class="form-row">
+                                <label>주소</label>
+                                <input disabled type="text" v-model="addr" id="addr">
+                                <button @click="fnAddr">주소검색</button>
+                            </div>
+                            <div class="form-row">
+                                <label>생년월일</label>
+                                <input type="date" v-model="birthday">
+                            </div>
+                            <div class="form-row">
+                                <label>전화번호</label>
+                                <input type="text" placeholder="- 없이 전화번호를 입력하세요" v-model="phone" @keyup.enter="fnSignup">
+                                
+                            </div>
+                            <!-- 문자인증 일단 뺀다 -->
+                             
+                            <!-- <div v-if="!joinFlg" class="form-row">
+                                <label>문자인증</label>
+                                <input type="text" v-model="inputNum" :placeholder="timer" id="auth">
+                                <template v-if="!smsFlg">
+                                    <button @click="fnSms">인증번호 전송</button>
+                                </template> 
+                                <template v-else>
+                                    <button @click="fnSmsAuth">인증</button>
+                                </template>
+                            </div>
+                            <div v-else style="color : red">
+                                문자인증이 완료되었습니다.
+                            </div> -->
+                            <div class="form-submit">
+                                <button @click="fnSignup" class="submit-btn">회원 가입 완료</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -172,13 +179,24 @@
                 birthday : "",
                 phone : "",
                 checkFlg : false,
-                gender: "M"
+                gender: "M",
+
+                smsFlg : false,
+                joinFlg : false, // 문자 인증 유무
+                ranStr : "", // 문자 인증 번호 
+                inputNum : "",
+                timer : "",
+                count : 180
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
             fnIdCheck: function () {
                 let self = this;
+                if(self.userId == ""){
+                    alert("아이디를 입력해주세요.");
+                    return;
+                }
                 let param = {
                     userId : self.userId
                 };
@@ -189,8 +207,7 @@
                     data: param,
                     success: function (data) {
                         if(data.result == "true"){
-                            alert("사용된 아이디 입니다.");
-                            document.querySelector("#id").focus();
+                            alert("이미 사용 중인 아이디 입니다.");
                         } else {
                             alert("사용가능한 아이다 입니다.");
                             self.checkFlg = true;
@@ -200,6 +217,10 @@
             },
             fnNicknameCheck: function (){
                 let self = this;
+                if(self.nickname == ""){
+                    alert("닉네임을 입력해주세요.");
+                    return;
+                }
                 let param = {
                     nickname : self.nickname
                 };
@@ -210,7 +231,7 @@
                     data: param,
                     success: function (data) {
                         if(data.result == "true"){
-                            alert("사용된 닉네임 입니다.");
+                            alert("이미 사용 중인 닉네임 입니다.");
                             // document.querySelector("#id").focus();
                         } else {
                             alert("사용가능한 닉네임 입니다.");
@@ -230,14 +251,17 @@
             fnSignup: function(){
                 let self = this;
                 let speChar = /[!@#$%^&*(),.?":{}|<>]/;
+                if(self.userId == ""){
+                    alert("아이디를 입력해주세요.");
+                    return;
+                }
                 if(self.name == ""){
                     alert("이름을 입력해주세요.");
                     document.querySelector("#name").focus();
                     return;
                 }
-                if(self.pwd1.length < 6){
-                    alert("비밀먼호는 6글자로 입력해주세요.");
-                    // document.querySelector("#pwd1").focus();
+                if (self.pwd1.length < 6) {
+                    alert("비밀번호는 6~10자 사이여야 합니다.");
                     return;
                 }
                 if(!speChar.test(self.pwd1)){
@@ -250,29 +274,30 @@
                     return;
                 }
                 if(self.nickname == ""){
-                    alert("Please enter nickname.");
+                    alert("닉네임을 입력해주세요.");
                     return;
                 }
                 if(self.email == ""){
-                    alert("Please enter email.");
+                    alert("이메일 입력해주세요.");
+                    return;
                 }
                 if(self.addr.length == 0){
                     alert("주소를 입력해주세요.");
                     return;
                 }
                 if(self.phone == ""){
-                    alert("Please enter phone number.");
+                    alert("전화번호를 입력해주세요.");
                 }
                 let param = {
-                    userId : self.userId,
+                    userId : self.userId.trim(),
                     pwd : self.pwd1,
-                    nickname : self.nickname,
+                    nickname : self.nickname.trim(),
                     gender : self.gender,
-                    email : self.email,
+                    email : self.email.trim(),
                     addr : self.addr,
                     birthday : self.birthday,
-                    phone : self.phone,
-                    name : self.name
+                    phone : self.phone.trim(),
+                    name : self.name.trim()
                 };
                 $.ajax({
                     url: "/home/signup.dox",
@@ -282,19 +307,69 @@
                     success: function (data) {
                         if(data.result = "success"){
                             alert("가입되었습니다.");
+                            location.href="/home/login.do";
                         } else {
                             alert("오류가 발생했습니다.");
-                            location.href="/home/login.do";
                         } 
                         
                     }
                         
                 }); 
+            },
+            fnSms: function(){
+                let self= this;
+                let param = {
+                };
+                $.ajax({
+                    url: "/send-one",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        console.log(data);
+                        if(data.res.statusCode == "2000"){
+                            alert("문자 전송 완료");
+                            self.ranStr = data.ranStr;
+                            self.smsFlg = true;
+                            self.fnTimer();
+                        } else {
+                            alert("잠시 후 다시 시도해주세요.");
+                        }
+                    }
+                });
+            },
+            fnSmsAuth: function(){
+                let self = this;
+                if(self.ranStr == self.inputNum){
+                    alert("문자 인증 완료되았습니다");
+                    self.joinFlg = true;
+                } else {
+                    alert("문자인증 실패했습니다.");
+                }
+            },
+            fnTimer: function(){
+                let self = this;
+                let interval = setInterval(function(){
+                    if(self.count == 0){
+                        clearInterval(interval);
+                        alert("시간이  만료되었습니다!");
+                    } else {
+                        let min = parseInt(self.count / 60);
+                        let sec = self.count % 60;
+                    
+                        min = min < 10 ? "0" + min : min;
+                        sec = sec < 10 ? "0" + sec : sec;
+                        self.timer = min + " : " + sec;
+
+                        self.count--;
+                    }
+                }, 1000);
             }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+            window.vueObj = this;
         }
     });
 

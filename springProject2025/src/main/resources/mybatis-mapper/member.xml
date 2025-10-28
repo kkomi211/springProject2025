@@ -4,6 +4,12 @@
 
 <mapper namespace="com.example.springProject2025.mapper.MemberMapper">
 
+	<select id="userLogin" parameterType="hashmap" resultType="com.example.springProject2025.model.User">
+		SELECT *
+		FROM USERS
+		WHERE USER_ID = #{userId}
+	</select>
+	
 	<insert id="userSignup" parameterType="hashmap">
 		INSERT INTO USERS (USER_ID, PWD, NAME, NICKNAME, GENDER, EMAIL, ADDR, PHONE, CDATE, UDATE, USERTYPE, BIRTH)
 		VALUES(#{userId}, #{pwd}, #{name}, #{nickname}, #{gender}, #{email}, #{addr}, #{phone}, SYSDATE, SYSDATE, 'U', #{birthday})
@@ -20,5 +26,36 @@
 		FROM USERS
 		WHERE NICKNAME = #{nickname}
 	</select>
+	
+	<select id="idSearch" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM USERS
+		WHERE NAME = #{name}
+		AND PHONE = #{phone}
+		AND BIRTH = #{birth}
+	</select>
+	
+	<select id="pwdSearch" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM USERS
+		WHERE NAME = #{name}
+		AND USER_ID = #{userId}
+		AND PHONE = #{phone}
+		AND BIRTH = #{birth}
+	</select>
+	
+	<select id="idRetrieve" parameterType="hashmap" resultType="com.example.springProject2025.model.User">
+		SELECT *
+		FROM USERS
+		WHERE PHONE = #{phone}
+		AND BIRTH = #{birth}
+	</select>
+	
+	<update id="pwdChange" parameterType="hashmap">
+		UPDATE USERS
+		SET 
+			PWD = #{newPwd1}
+		WHERE USER_ID = #{userId}
+	</update>
 	
 </mapper>
