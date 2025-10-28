@@ -29,4 +29,12 @@ public class Admin {
 	private String because;
 	private String orderRequest;
 	
+	// USERS 테이블 컬럼
+	private String nickName;
+	private String gender;
+	private String email;
+	private String phone;
+	private String userType;
+	private String birth;
+	
 }
