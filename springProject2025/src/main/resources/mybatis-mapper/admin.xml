@@ -2,5 +2,48 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 	
 	<mapper namespace="com.example.springProject2025.mapper.AdminMapper">
+		
+		<!-- banner.xml list-->
+		<select id="selectbannerList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
+			SELECT *
+			FROM MAIN_SLIDE_IMAGE
+		</select>
 	
-	</mapper>
+	<!-- banner 수정/저장-->
+	<update id="updateBannerModify" parameterType="hashmap">
+	    UPDATE MAIN_SLIDE_IMAGE
+	    SET 
+	        TITLE           = #{title, jdbcType=VARCHAR},
+	        IMAGE_DIR       = #{imageDir, jdbcType=VARCHAR},
+	        LINK_URL        = #{linkUrl, jdbcType=VARCHAR},
+	        DISPLAY_ORDER   = #{displayOrder, jdbcType=NUMERIC},
+	        USER_ID         = #{userId, jdbcType=VARCHAR},
+	        CDATE           = SYSDATE
+	        WHERE 
+	        BANNER_ID       = #{bannerId, jdbcType=NUMERIC}
+	</update>
+
+	<!-- banner 삭제 -->
+	<delete id="deleteBanner" parameterType="hashmap">
+		DELETE FROM MAIN_SLIDE_IMAGE
+		WHERE BANNER_ID = #{bannerId}
+	</delete>
+	
+	<!-- banner 추가 -->
+    <insert id="insertBanner" parameterType="hashmap">
+	    INSERT INTO MAIN_SLIDE_IMAGE
+	    (BANNER_ID, TITLE, IMAGE_DIR, LINK_URL, DISPLAY_ORDER, USER_ID, CDATE)
+	    VALUES (
+	        BANNER_SEQ.NEXTVAL,
+	        #{title, jdbcType=VARCHAR},
+	        #{imageDir, jdbcType=VARCHAR},
+	        #{linkUrl, jdbcType=VARCHAR},
+	        NVL(#{displayOrder, jdbcType=NUMERIC}, 0),
+	        #{userId, jdbcType=VARCHAR},
+	        SYSDATE
+	    )
+</insert>
+
+
+</mapper>
+
