@@ -155,13 +155,13 @@
 
                                 <section class="order-item">
 
-                                    <div class="order-status-header" :class="getStatusClass(order.status)">
+                                    <div class="order-status-header" :class="getStatusClass(order.status)" :style="isRefundOrExchangeRequested(order.status) ? 'color: red;' : ''">
                                         ORDER STATUS :
-                                        <span class="status-text">{{ order.status }}</span>
+                                        <span class="status-text" :style="isRefundOrExchangeRequested(order.status) ? 'color: red; font-weight: bold;' : ''">{{ order.status }}</span>
                                     </div>
 
                                     <div class="order-details" style="display: flex; align-items: center;">
-                                        <div>
+                                        <div v-if="!isRefundOrExchangeRequested(order.status)">
                                             <!-- {{index}} -->
                                             <input type="checkbox" v-model="order.isChecked"
                                                 style="transform: scale(1.5); margin-right: 10px; transform-origin: left center;">
@@ -180,10 +180,10 @@
                                             <p>수량 : {{ order.quantity }}</p>
                                             <p>주문번호 : {{ order.orderNo }}</p>
                                             <p>상품가격 : {{ formatCurrency(order.paymentAmount) }}원</p>
-                                            <p>주문일자 : {{ order.cdate }}</p>
+                                            <p>주문일자 : {{ order.udate }}</p> <!--분명뭔가 요청을했고 그순간의 마지막 날짜를 기준잡았음-->
                                         </div>
 
-                                        <div>
+                                        <div v-if="!isRefundOrExchangeRequested(order.status)">
                                             <div>
                                                 <label style="margin-right: 10px;">
                                                     <input type="radio" v-model="order.actionType" value="R">반품
@@ -325,11 +325,14 @@
                 },
                 fnList: function () {
                     let self = this;
+                    let startRow = (self.page - 1) * self.pageSize + 1;
+                    let endRow = self.page * self.pageSize;
                     let param = {
                         sessionId: self.sessionId,
                         page: self.page,
                         pageSize: self.pageSize,
-                        offset: (self.page - 1) * self.pageSize
+                        startRow: startRow,
+                        endRow: endRow
                     };
                     // alert("넘어온 orderNo는" + self.orderNo);
                     $.ajax({
@@ -415,6 +418,11 @@
                     return '';
                 },
 
+                /** 반품요청 또는 교환요청 상태인지 확인 */
+                isRefundOrExchangeRequested: function (status) {
+                    return status === '반품요청' || status === '교환요청' ||  status === '취소요청';
+                },
+
                 /** 교환/반품 또는 리뷰 버튼 클릭 시 처리 */
                 // handleAction: function (actionType, orderNo) {
                 //     if (actionType === 'RETURN') {
@@ -492,7 +500,7 @@
                         return;
                     }
 
-                    // 1. JSON 전송을 위한 데이터 구조 생성
+                    // 1. 데이터 구조 생성
                     const ordersData = selected.map(o => ({
                         orderNo: o.orderNo,
                         actionType: o.actionType || "",
@@ -501,21 +509,23 @@
 
                     const requestData = {
                         sessionId: self.sessionId,
-                        orders: ordersData // 서버로 List<OrderDto>로 전달될 배열
+                        orders: ordersData
                     };
                     
-                    console.log("--- 서버로 전송할 JSON 데이터 (추천 방식) ---");
+                    console.log("--- 서버로 전송할 데이터 ---");
                     console.log(requestData); 
                     console.log("-----------------------------------------");
 
                     $.ajax({
                         url: "/home/mypage/refund-return-appli.dox",
                         type: "POST",
-                        // 2. HTTP 헤더를 JSON 타입으로 설정
-                        contentType: "application/json", 
-                        dataType: "json", // 서버 응답이 JSON임을 기대
-                        // 3. 자바스크립트 객체를 JSON 문자열로 변환하여 전송
-                        data: JSON.stringify(requestData), 
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        dataType: "json",
+                        // JSON 문자열을 하나의 파라미터로 전송
+                        data: {
+                            sessionId: self.sessionId,
+                            ordersJson: JSON.stringify(ordersData)
+                        }, 
                         success: function (res) {
                             if (res && (res.result === "success" || res.success === true)) {
                                 alert("정상적으로 신청이 접수되었습니다.");

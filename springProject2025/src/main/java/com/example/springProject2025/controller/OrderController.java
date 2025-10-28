@@ -1,12 +1,12 @@
 package com.example.springProject2025.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.springProject2025.dao.OrderService;
 import com.example.springProject2025.model.Order;
-import com.example.springProject2025.model.RefundList;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -93,40 +95,40 @@ public class OrderController {
 	
 	@RequestMapping(value = "home/mypage/refund-return-appli.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	// @RequestBody RequestContainer를 사용해 JSON을 받고, 내부에서 HashMap으로 변환
-	public String refundReturnListAppli(Model model, @RequestBody RefundList refundList) throws Exception {
+	public String refundReturnListAppli(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 	    
-	    System.out.println("home/mypage/efund-return-appli.dox 진입");
+	    System.out.println("home/mypage/refund-return-appli.dox 진입");
 	    
-	    // ----------------------------------------------------
-	    // DTO(RequestContainer)를 HashMap으로 변환하여 기존 map 변수를 대체
-	    // ----------------------------------------------------
+	    // ordersJson 파라미터에서 JSON 문자열을 받아서 파싱
+	    String ordersJson = (String) map.get("ordersJson");
 	    
-	    // 기존 @RequestParam map을 대체할 새로운 HashMap 생성
-	    HashMap<String, Object> map = new HashMap<>(); 
+	    List<Order> orderList = new ArrayList<>();
 	    
-	    // sessionId와 orders 리스트를 HashMap에 담습니다.
-	    map.put("sessionId", refundList.getSessionId());
-	    map.put("orders", refundList.getOrders()); // List<Order> 타입이 담김
+	    if (ordersJson != null && !ordersJson.isEmpty()) {
+	        // JSON 문자열을 List<Order>로 변환
+	        Gson gson = new Gson();
+	        Type listType = new TypeToken<List<Order>>(){}.getType();
+	        orderList = gson.fromJson(ordersJson, listType);
+	    }
 	    
-	    // ----------------------------------------------------
+	    // HashMap에 담기
+	    HashMap<String, Object> paramMap = new HashMap<>();
+	    paramMap.put("sessionId", map.get("sessionId"));
+	    paramMap.put("orders", orderList);
 	    
-	    // sysout 테스트 (기존 방식 유지)
+	    // sysout 테스트
 	    System.out.println("들어온 HashMap 형식 데이터-----S");
-	    System.out.println(map); 
-	    System.out.println("들어온 HashMap 형식 데이터-----E");
-	    // 데이터가 잘 왔는지 확인
-	    List<Order> orderList = (List<Order>) map.get("orders");
-	    if (orderList != null) {
-	        System.out.println("Orders List Size: " + orderList.size());
+	    System.out.println("sessionId: " + paramMap.get("sessionId"));
+	    System.out.println("Orders List Size: " + orderList.size());
+	    if (orderList != null && !orderList.isEmpty()) {
 	        for (Order order : orderList) {
 	            System.out.println("  > OrderNo: " + order.getOrderNo() + ", ActionType: " + order.getActionType());
 	        }
 	    }
+	    System.out.println("들어온 HashMap 형식 데이터-----E");
 	    
-	    // ... 나머지 기존 로직 유지
 	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
-//	    resultMap = orderService.getRefundListAppli(map); // <--- map 변수를 사용하여 서비스 호출
+	    resultMap = orderService.processRefundExchange(paramMap);
 
 	    return new Gson().toJson(resultMap);
 	}

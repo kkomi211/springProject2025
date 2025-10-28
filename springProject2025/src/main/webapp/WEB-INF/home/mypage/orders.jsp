@@ -230,11 +230,14 @@
                 },
                 fnList: function () {
                     let self = this;
+                    let startRow = (self.page - 1) * self.pageSize + 1;
+                    let endRow = self.page * self.pageSize;
                     let param = {
                         sessionId: self.sessionId,
                         page: self.page,
                         pageSize: self.pageSize,
-                        offset: (self.page - 1) * self.pageSize
+                        startRow: startRow,
+                        endRow: endRow
                     };
                     $.ajax({
                         url: "/home/mypage/orders.dox",
@@ -348,7 +351,8 @@
                         success: function (data) {
                             console.log("주문 취소 응답:", data);
                             if (data.result == "success") {
-                                alert(`[${orderNo}] 주문이 취소 요청되었습니다.`);
+                                const cancelOrderNo = self.currentCancelOrderNo || orderNo || "주문";
+                                alert("[" + cancelOrderNo + "] 주문이 취소 요청되었습니다.");
                                 // 팝업 닫기 및 필드 초기화
                                 window.closeCancelModal();
                                 // 목록 새로고침

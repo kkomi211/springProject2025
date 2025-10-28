@@ -28,6 +28,8 @@ public interface OrderMapper {
 	// 교환환불목록
 	List<Order> selectRefundList(HashMap<String, Object> map);
 	
+	// 반품/교환 신청 처리
+	int updateRefundExchange(HashMap<String, Object> map);
 	
 
 }
