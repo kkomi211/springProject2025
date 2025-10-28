@@ -1,0 +1,84 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.example.springProject2025.mapper.ProductMapper">
+	
+	<select id="selectProductList" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT *
+		FROM PRODUCT
+		WHERE 1=1
+		<if test="keyword != null and keyword != ''">
+			<if test="keytype == 'name'">
+				AND PRODUCT_NAME LIKE '%' || #{keyword} || '%'
+			</if>
+			<if test="keytype == 'no'">
+				AND PRODUCT_NO LIKE '%' || #{keyword} || '%'
+			</if>
+		</if>
+		
+		<if test="orderBy == 'down'">
+			ORDER BY QUANTITY ASC
+		</if>
+		<if test="orderBy == 'up'">
+			ORDER BY QUANTITY DESC
+		</if>
+		
+		<if test="pageSize != null and pageSize != ''">
+			OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+		</if>
+	</select>
+	
+	<select id="selectProductPage" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM PRODUCT
+		WHERE 1=1
+		<if test="keyword != null and keyword != ''">
+			<if test="keytype == 'name'">
+				AND PRODUCT_NAME LIKE '%' || #{keyword} || '%'
+			</if>
+			<if test="keytype == 'no'">
+				AND PRODUCT_NO LIKE '%' || #{keyword} || '%'
+			</if>
+		</if>
+	</select>
+	
+	<select id="selectProductInfo" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT *
+		FROM PRODUCT
+		WHERE PRODUCT_NO = #{productNo}
+	</select>
+	
+	<select id="selectProductImg" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT *
+		FROM PRODUCT_IMG
+		WHERE PRODUCT_NO = #{productNo}
+	</select>
+	
+	<update id="editProduct" parameterType="hashmap">
+		UPDATE PRODUCT
+		SET PRODUCT_NAME = #{productName}, PRICE = #{price}, PRODUCT_DETAIL = #{productDetail}, QUANTITY = #{quantity},
+		GENDER = #{gender}, TYPE_NO = #{typeNo}, UDATE = SYSDATE
+		WHERE PRODUCT_NO = #{productNo}
+	</update>
+	
+	<delete id="deleteProduct" parameterType="hashmap">
+		DELETE FROM PRODUCT
+		WHERE PRODUCT_NO = #{productNo}
+	</delete>
+	
+	<insert id="insertProduct" parameterType="hashmap" useGeneratedKeys="true" keyColumn="PRODUCT_NO" keyProperty="productNo">
+		INSERT INTO PRODUCT
+		VALUES (PRODUCT_SEQ.NEXTVAL, #{userId}, #{brand}, #{productName}, #{price}, #{productSize}, #{productDetail}, 0, #{quantity},
+		#{gender}, #{typeNo}, SYSDATE, SYSDATE)
+	</insert>
+	
+	<insert id="insertProductImg" parameterType="hashmap">
+		INSERT INTO PRODUCT_IMG
+		VALUES (PRODUCT_IMG_SEQ.NEXTVAL, #{productNo}, #{path}, #{fileName}, #{orgName}, #{size}, #{ext})
+	</insert>
+	
+	<delete id="deleteProductImg" parameterType="hashmap">
+		DELETE FROM PRODUCT_IMG
+		WHERE PRODUCT_NO = #{productNo}
+	</delete>
+</mapper>
