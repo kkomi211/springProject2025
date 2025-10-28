@@ -8,6 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin-inquiry.css">
     <script src="/js/page-change.js"></script>
 
 </head>
@@ -35,10 +36,10 @@
 		<!-- 본문 -->
 		<div class="content">
             <div>
-		        <h2>관리자 메인 콘텐츠 영역</h2>
+		        <h2>상품 문의내역 상세</h2>
             </div>
             <div>
-                <table>
+                <table class="detail-table">
                     <tr>
                         <th>문의번호</th>
                         <td>{{info.inquiryNo}}</td>
@@ -49,7 +50,10 @@
                     </tr>
                     <tr>
                         <th>상태</th>
-                        <td>{{info.status}}</td>
+                        <td>
+                            <span v-if="info.status === 'N'" class="status-waiting">답변 대기</span>
+                            <span v-else-if="info.status === 'Y'" class="status-completed">답변 완료</span>
+                        </td>
                     </tr>
                     <tr>
                         <th>작성자</th>
@@ -64,16 +68,13 @@
                         <td>{{info.content}}</td>
                     </tr>
                 </table>
-                <table>
+                <table class="detail-table">
                     <tr>
                         <th>관리자 답변</th>
                         <td>
                             <!-- info.status가 'N'일 때만 답변 입력 필드와 버튼 표시 -->
                             <div v-if="info.status === 'N'">
                                 <textarea v-model="newAnswer" rows="5" cols="50" placeholder="답변을 입력하세요"></textarea>
-                                <div class="text-center" style="margin-top: 10px;">
-                                    <button @click="fnRegisterAnswer">답변 등록</button>
-                                </div>
                             </div>
                             <!-- info.status가 'Y'일 때는 기존 답변 내용만 표시 -->
                             <div v-else>
@@ -82,6 +83,12 @@
                         </td>
                     </tr>
                 </table>
+            </div>
+            <div class="button-group">
+                <!-- 상태가 'N'일 때만 답변 등록 버튼 표시 -->
+                <button v-if="info.status === 'N'" @click="fnRegisterAnswer" class="btn-register-answer">답변 등록</button>
+                <!-- 목록으로 돌아가기 버튼 (항상 표시) -->
+                <button @click="fnGoToList" class="btn-back">목록으로 돌아가기</button>
             </div>
 		</div>
     </div>
@@ -152,6 +159,9 @@
                         alert("답변 등록 중 오류가 발생했습니다.");
                     }
                 });
+            },
+            fnGoToList : function () {
+                location.href = "/admin/inquiry.do";
             }
         }, // methods
         mounted() {

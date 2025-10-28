@@ -19,4 +19,5 @@ public class Admin {
 	private String status;
 	private String answer;
 	private String answerDate;
+	
 }

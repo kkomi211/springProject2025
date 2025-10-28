@@ -2,12 +2,59 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 	
 	<mapper namespace="com.example.springProject2025.mapper.AdminMapper">
-	
-		<!-- 상품 문의내역 리스트 불러오기 -->
+		
+		<!-- 상품 문의내역 전체 개수 조회 -->
+		<select id="selectInquiryListCount" parameterType="hashmap" resultType="int">
+		    SELECT COUNT(*)
+		    FROM PRODUCT_INQUIRY I
+		    INNER JOIN USERS U ON I.USER_ID = U.USER_ID
+		    <where>
+		        <if test="keyword != null and keyword != ''">
+		            AND (I.TITLE LIKE '%' || #{keyword} || '%' 
+		            OR U.NAME LIKE '%' || #{keyword} || '%'
+		            OR I.USER_ID LIKE '%' || #{keyword} || '%')
+		        </if>
+		        <if test="statusOption != null and statusOption != ''">
+		            AND I.STATUS = #{statusOption}
+		        </if>
+		        <if test="startDate != null and startDate != ''">
+		            AND I.CDATE >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+		        </if>
+		        <if test="endDate != null and endDate != ''">
+		            AND I.CDATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD') + 0.99999
+		        </if>
+		    </where>
+		</select>
+		
+		<!-- 상품 문의내역 리스트 불러오기 (페이징 적용) -->
 		<select id="selectInquiryList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
-			SELECT I.*, U.NAME
-			FROM PRODUCT_INQUIRY I
-			INNER JOIN USERS U ON I.USER_ID = U.USER_ID
+		    SELECT *
+		    FROM (
+		        SELECT SUB.*, ROWNUM AS RN
+		        FROM (
+		            SELECT I.*, U.NAME
+		            FROM PRODUCT_INQUIRY I
+		            INNER JOIN USERS U ON I.USER_ID = U.USER_ID
+		            <where>
+		                <if test="keyword != null and keyword != ''">
+		                    AND (I.TITLE LIKE '%' || #{keyword} || '%' 
+		                    OR U.NAME LIKE '%' || #{keyword} || '%'
+		                    OR I.USER_ID LIKE '%' || #{keyword} || '%')
+		                </if>
+		                <if test="statusOption != null and statusOption != ''">
+		                    AND I.STATUS = #{statusOption}
+		                </if>
+		                <if test="startDate != null and startDate != ''">
+		                    AND I.CDATE >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+		                </if>
+		                <if test="endDate != null and endDate != ''">
+		                    AND I.CDATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD') + 0.99999
+		                </if>
+		            </where>
+		            ORDER BY I.INQUIRY_NO DESC
+		        ) SUB
+		    ) 
+		    WHERE RN > #{startIndex} AND RN &lt;= #{startIndex} + #{pageSize}
 		</select>
 		
 		<!-- 상품 문의내역 상세보기 -->

@@ -18,4 +18,7 @@ public interface AdminMapper {
 	
 	// 관리자 답변 등록/수정
 	int updateInquiryAnswer(HashMap<String, Object> map);
+	
+	// 상품 문의 총 개수 조회
+	int selectInquiryListCount(HashMap<String, Object> map);
 }
