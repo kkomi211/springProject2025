@@ -34,7 +34,8 @@ public class HomeController {
 	
 	@RequestMapping("home/mypage/orders.do")
 	public String orders(Model model) throws Exception {
-		return "home/orders"; // .jsp빠진형태
+		System.out.println("home/mypage/orders.do진입");
+		return "home/mypage/orders"; // .jsp빠진형태
 	}
 	
 	@RequestMapping("home/mypage/refund-return.do")
@@ -76,4 +77,6 @@ public class HomeController {
 	public String sales(Model model) throws Exception {
 		return "home/sales"; // .jsp빠진형태
 	}
+	
+
 }
