@@ -32,12 +32,14 @@
                         <a href="/home/login.do">로그인</a></div>
                     <div>
                         <a href="/home/signup.do">가입하기</a></div>
-                    <div><a href="/home/mypage/inquery.do">문의</a></div>
+                    <div><a href="/home/mypage/inquiry.do">문의</a></div>
                     <div><a href="/home/cart.do">장바구니</a></div>
                 </div>
             </div>
             <div class="bottom-header">
-                <div>제품</div>
+                <div>
+                    <a href="/home/product.do">제품</a>
+                </div>
                 <div>
                     <a href="/home/product.do">세일</a>
                 </div>

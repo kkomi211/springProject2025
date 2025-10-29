@@ -11,6 +11,7 @@
     <title>Homepage</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="/css/jes.css">
     <style>
         
     </style>
@@ -32,7 +33,7 @@
                         <a href="/home/login.do">로그인</a></div>
                     <div>
                         <a href="/home/signup.do">가입하기</a></div>
-                    <div><a href="/home/mypage/inquery.do">문의</a></div>
+                    <div><a href="/home/mypage/inquiry.do">문의</a></div>
                     <div><a href="/home/cart.do">장바구니</a></div>
                 </div>
             </div>
@@ -50,7 +51,26 @@
             </header>
 
             <main>
-                <div>Main content</div>
+                <div class="content">
+                    <h1 class="margintop">제품</h1>
+                    <input class="search" placeholder="검색">
+                    <button class="height40 bluebutton">검색</button>
+                    <hr>
+                </div>
+                <div class="side-bar">
+                    <div class="category-box">
+                        <div class="category">카테고리</div>
+                        <div class="subcategory">전체</div>
+                        <div class="subcategory">러닝화</div>
+                        <div class="subcategory">보호대</div>
+                        <div class="subcategory">모자</div>
+                        <div class="subcategory">건강보조식품</div>
+                        <div class="subcategory">러닝복</div>
+                    </div>
+                </div>
+                <div class="main-container">
+                    
+                </div>
             </main>
 
             <footer>
@@ -90,6 +110,7 @@
         data() {
             return {
                 // 변수 - (key : value)
+                list : []
             };
         },
         methods: {
@@ -98,12 +119,13 @@
                 let self = this;
                 let param = {};
                 $.ajax({
-                    url: "",
+                    url: "/product/list.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-
+                        console.log(data);
+                        self.list = data.list;
                     }
                 });
             }
@@ -111,6 +133,7 @@
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+            self.fnList();
         }
     });
 

@@ -1,0 +1,163 @@
+.content {
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 100px;
+}
+
+.search {
+    height: 40px;
+    width: 400px;
+    margin: 30px;
+    border-color: #757575;
+}
+
+.margin30 {
+    margin: 10px;
+}
+
+.height40 {
+    height: 40px;
+}
+
+.bluebutton {
+    width: 80px;
+    background-color: #3DADFF;
+    color: white;
+    border-color: #007AD2;
+    cursor: pointer;
+}
+
+table,
+th,
+td,
+tr {
+    border-collapse: collapse;
+    padding: 10px 10px;
+}
+
+td,
+tr {
+    border: 1px solid #1E1E1E;
+}
+
+th {
+    border: 1px solid black;
+    background-color: #1E1E1E;
+    color: white;
+}
+
+table {
+    width: 90%;
+    margin: 10px auto;
+}
+
+.red {
+    color: red;
+}
+
+.page a {
+    cursor: pointer;
+}
+
+.button .rightbutton {
+    position: absolute;
+    right: 80px;
+}
+
+.button .leftbutton {
+    position: absolute;
+    left: 80px;
+}
+
+.button {
+    text-align: center;
+}
+
+td input {
+    width: 80%;
+    height: 40px;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.table th {
+    width: 10%;
+}
+
+.smallInput {
+    width: 7%;
+}
+
+.redbutton {
+    width: 80px;
+    background-color: #F24822;
+    color: white;
+    border-color: #BD2915;
+    cursor: pointer;
+}
+
+.bottom200 {
+    margin-bottom: 200px;
+}
+
+.none {
+    text-decoration: none;
+}
+
+
+.stock-btns {
+    display: inline-flex;
+    flex-direction: column;
+    /* 위/아래로 쌓기 */
+    line-height: 1;
+}
+
+.stock-btns button {
+    padding: 2px 6px;
+    font-size: 12px;
+    height: 20px;
+    /* 작게 정리 */
+}
+
+.bluebutton:hover {
+    background: #F24822;
+}
+
+.margintop{
+    margin-top: 100px;
+}
+
+.side-bar{
+    width:20%;
+    border: 1px solid black;
+    margin: 30px;
+    float: left;
+}
+
+.category-box .category{
+    width:60%;
+    border: 1px solid black;
+    text-align: center;
+    padding: 20px 20px;
+    box-sizing: border-box;
+}   
+
+.category-box .subcategory{
+    width:60%;
+    border: 1px solid black;
+    text-align: center;
+    padding: 10px 20px;
+    box-sizing: border-box;
+}
+
+.main-container{
+    width:60%;
+    padding: 30px;
+    border: 1px solid black;
+    margin: 30px;
+    float: left;
+}

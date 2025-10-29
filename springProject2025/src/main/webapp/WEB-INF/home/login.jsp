@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/user-style.css">
+    <link rel="stylesheet" href="/css/login-style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -12,7 +13,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <style>
-        
+       
     </style>
 </head>
 <body>
@@ -32,7 +33,7 @@
                         <a href="/home/login.do">로그인</a></div>
                     <div>
                         <a href="/home/signup.do">가입하기</a></div>
-                    <div><a href="/home/mypage/inquery.do">문의</a></div>
+                    <div><a href="/home/mypage/inquiry.do">문의</a></div>
                     <div><a href="/home/cart.do">장바구니</a></div>
                 </div>
             </div>
@@ -50,7 +51,49 @@
             </header>
 
             <main>
-                <div>Main content</div>
+                <div>
+                    <div class="login-container">
+                        <h2>로그인</h2>
+                        <div class="signup-form">
+                            <div class="form-row">
+                                <input type="text" placeholder="아이디" v-model="userId" @keyup.enter="fnLogin">
+                            </div>
+                            <div class="form-row">
+                                <input type="password" placeholder="비밀번호" v-model="pwd" @keyup.enter="fnLogin">
+                            </div>
+                            
+                            <div class="form-submit">
+                                <button @click="fnLogin" class="submit-btn">로그인</button>
+                            </div>
+                            <div class="form-submit">
+                                <button class="submit-btn" style="background-color: yellow; color: black;">카카오 로그인</button>
+                            </div>
+                        </div>
+                        <div id="other">
+                            <div>
+                                <a href="/home/signup.do">회원가입</a>
+                            </div>
+                            <div>
+                                <a href="/home/login/search.do">아이디 비밀번호 찾기</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- v-if="loginModal"  -->
+                    <div v-if="isLoginModal" class="modal-overlay">
+                        <div class="modal-content">
+                            <h2>로그인 성공했습니다</h2>
+                            <a href="/home.do"><button>메인 화면 가기</button></a>
+                            <a href="javascript:;"><button>마이페이지 가기</button></a>
+                        </div>
+                    </div>
+                    <div v-if="noLoginModal" class="modal-overlay">
+                        <div class="modal-content">
+                            <h2>로그인 실패했습니다</h2>
+                            <p>로그인 다시 시도해보세요</p>
+                            <button @click="closeModal">돌아가기</button>
+                        </div>
+                    </div>
+                </div>
             </main>
 
             <footer>
@@ -90,22 +133,45 @@
         data() {
             return {
                 // 변수 - (key : value)
+                userId : "",
+                pwd : "",
+                isLoginModal : false,
+                noLoginModal : false
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnList: function () {
+            fnLogin: function () {
                 let self = this;
-                let param = {};
+                // 유효성 검사
+                if (!self.userId || !self.pwd) {
+                    alert("아이디와 비밀번호를 입력하세요.");
+                    return;
+                }
+                let param = {
+                    userId : self.userId,
+                    pwd : self.pwd
+                };
                 $.ajax({
-                    url: "",
+                    url: "/home/login.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-
+                        console.log(data);
+                        if (data.result === "success") {
+                            // 로그인 성공 시 페이지 전환
+                            self.isLoginModal = true;
+                        } else {
+                            // 로그인 실패 시 경고 메시지 출력
+                            self.noLoginModal = true;
+                        }
                     }
                 });
+            },
+            closeModal() {
+                let self = this;
+                self.noLoginModal = false;
             }
         }, // methods
         mounted() {
