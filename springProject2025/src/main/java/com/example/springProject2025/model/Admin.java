@@ -37,4 +37,17 @@ public class Admin {
 	private String userType;
 	private String birth;
 	
+	// PRODUCT 테이블 컬럼
+	private String brand;
+	private String productName;
+	private int price;
+	private String productSize;
+	private int productStock; // 제품 테이블의 재고 (헷갈리지 않게 필드명 변경)
+
+	// AdminProduct
+	private String typeNo; // FK
+	private String productDetail;
+	private int sellCount;
+	private String productGender;
+	
 }

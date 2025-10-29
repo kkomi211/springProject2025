@@ -413,4 +413,168 @@
 	}
 	
 	
+	/* ================================================= */
+	/* 모달 스타일 */
+    .modal {
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4); /* 배경을 어둡게 */
+    }
+    .modal-content {
+        background-color: #fefefe;
+        margin: 8% auto; /* 상단에서 조금 내려오게 */
+        padding: 30px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 700px; /* 최대 너비 설정 */
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        position: relative;
+    }
+    .close-button {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    .close-button:hover,
+    .close-button:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .modal-body label {
+        display: block;
+        margin-top: 15px;
+        font-weight: bold;
+    }
+    .modal-body select, .modal-body input[type="number"], .modal-body textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box; /* 패딩, 보더 포함 너비 계산 */
+    }
+    .modal-body .btn-group {
+        margin-top: 20px;
+        text-align: right;
+    }
+    .modal-body .btn-group button {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        margin-left: 10px;
+    }
+    .modal-body .btn-group .btn-process {
+        background-color: #007bff;
+        color: white;
+    }
+    .modal-body .btn-group .btn-process:hover {
+        background-color: #0056b3;
+    }
+    .modal-body .btn-group .btn-cancel {
+        background-color: #6c757d;
+        color: white;
+    }
+    .modal-body .btn-group .btn-cancel:hover {
+        background-color: #5a6268;
+    }
+    .modal-title {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+    .product-option-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        font-size: 0.9rem;
+    }
+    .product-option-table th, .product-option-table td {
+        border: 1px solid #eee;
+        padding: 8px;
+        text-align: center;
+    }
+    .product-option-table th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+    .product-option-table tr.selected-option {
+        background-color: #e6f7ff;
+    }
+    .modal-section-title {
+        font-weight: bold;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+        color: #333;
+    }
+    .modal-info-item {
+        margin-bottom: 8px;
+    }
+    .modal-info-item strong {
+        display: inline-block;
+        width: 80px; /* 레이블 너비 고정 */
+    }
+	
+	
+	/* ================================================= */
+	/* 취소/교환/환불 페이지 스타일 */
+	/* 주문 관리 페이지와 유사하게 테이블 가운데 정렬 */
+	#refund-return-list-table th,
+	#refund-return-list-table td {
+	    text-align: center;
+	}
+
+	/* 상품명은 왼쪽 정렬 */
+	#refund-return-list-table td:nth-child(2) {
+	    text-align: left;
+	}
+
+	/* 상태 버튼 스타일 */
+	.status-exchange-req, .status-exchange-comp, 
+	.status-cancel-req, .status-cancel-comp,
+	.status-return-req, .status-return-comp {
+	    display: inline-flex;
+	    align-items: center;
+	    justify-content: center;
+	    padding: 6px 12px;
+	    border-radius: 20px;
+	    font-size: 0.85rem;
+	    font-weight: bold;
+	    color: white;
+	    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+	    transition: transform 0.2s ease;
+	    border: none;
+	    cursor: pointer;
+	}
+
+	/* 요청 상태 (클릭 가능) */
+	.status-exchange-req { background: linear-gradient(145deg, #ffc107, #e0a800); } /* 교환요청: 주황 */
+	.status-cancel-req { background: linear-gradient(145deg, #dc3545, #c82333); } /* 취소요청: 빨강 */
+	.status-return-req { background: linear-gradient(145deg, #6f42c1, #512b90); } /* 반품요청: 보라 */
+
+	/* 완료 상태 (클릭 불가, 비활성화 느낌) */
+	.status-exchange-comp { background: linear-gradient(145deg, #17a2b8, #138496); cursor: default; opacity: 0.8; } /* 교환완료: 청록 */
+	.status-cancel-comp { background: linear-gradient(145deg, #343a40, #23272b); cursor: default; opacity: 0.8; } /* 취소완료: 어두운 회색 */
+	.status-return-comp { background: linear-gradient(145deg, #28a745, #218838); cursor: default; opacity: 0.8; } /* 반품완료: 초록 */
+
+	.status-default { background-color: #6c757d; cursor: default; opacity: 0.8; } /* 기타/기본 */
+
+	/* 비활성화된 버튼 스타일 */
+	button:disabled {
+	    cursor: not-allowed;
+	    opacity: 0.6;
+	}
+	
+	
 	

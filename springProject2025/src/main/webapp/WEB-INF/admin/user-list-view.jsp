@@ -34,7 +34,7 @@
 		<!-- 본문 -->
 		<div class="content">
             <div>
-		        <h2>관리자 메인 콘텐츠 영역</h2>
+		        <h2>ghldnjs </h2>
             </div>
             <div>
                 <table class="detail-table">

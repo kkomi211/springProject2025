@@ -154,6 +154,39 @@ public class AdminController {
 	    resultMap = adminService.deleteUser(map);
 	    return new Gson().toJson(resultMap);
 	}
+	
+	
+	// 취소, 교환, 환불 리스트 불러오기
+	@RequestMapping(value = "admin/refund-return.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String getRefundReturnList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = adminService.getRefundReturnList(map);
+	    return new Gson().toJson(resultMap);
+	}
+
+	// 주문 상태를 취소/반품/교환 완료로 업데이트 (일반적인 경우)
+	@RequestMapping(value = "admin/refund-return/updateStatus.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String updateRefundReturnStatus(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = adminService.updateRefundReturnStatus(map);
+	    return new Gson().toJson(resultMap);
+	}
+
+	// 교환 완료 처리 (옵션 변경 및 새 주문 생성 로직 포함)
+	@RequestMapping(value = "admin/refund-return/completeExchange.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String completeExchange(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = adminService.completeExchange(map);
+	    return new Gson().toJson(resultMap);
+	}
+
+	// 교환/반품 모달에서 제품 옵션을 가져올 때 (동일 제품의 다른 옵션 리스트)
+	@RequestMapping(value = "admin/refund-return/getProductOptions.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String getProductOptions(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = adminService.getProductOptions(map);
+	    return new Gson().toJson(resultMap);
+	}
 
 
 }
