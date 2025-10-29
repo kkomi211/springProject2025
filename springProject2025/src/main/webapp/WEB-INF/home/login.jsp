@@ -78,6 +78,21 @@
                             </div>
                         </div>
                     </div>
+                    <!-- v-if="loginModal"  -->
+                    <div v-if="isLoginModal" class="modal-overlay">
+                        <div class="modal-content">
+                            <h2>로그인 성공했습니다</h2>
+                            <a href="/home.do"><button>메인 화면 가기</button></a>
+                            <a href="javascript:;"><button>마이페이지 가기</button></a>
+                        </div>
+                    </div>
+                    <div v-if="noLoginModal" class="modal-overlay">
+                        <div class="modal-content">
+                            <h2>로그인 실패했습니다</h2>
+                            <p>로그인 다시 시도해보세요</p>
+                            <button @click="closeModal">돌아가기</button>
+                        </div>
+                    </div>
                 </div>
             </main>
 
@@ -119,7 +134,9 @@
             return {
                 // 변수 - (key : value)
                 userId : "",
-                pwd : ""
+                pwd : "",
+                isLoginModal : false,
+                noLoginModal : false
             };
         },
         methods: {
@@ -144,14 +161,17 @@
                         console.log(data);
                         if (data.result === "success") {
                             // 로그인 성공 시 페이지 전환
-                            alert(data.message);
-                            location.href = "/home.do";
+                            self.isLoginModal = true;
                         } else {
                             // 로그인 실패 시 경고 메시지 출력
-                            alert(data.message);
+                            self.noLoginModal = true;
                         }
                     }
                 });
+            },
+            closeModal() {
+                let self = this;
+                self.noLoginModal = false;
             }
         }, // methods
         mounted() {

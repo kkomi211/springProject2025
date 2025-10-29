@@ -93,12 +93,12 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div v-else-if="idFound" class="search-container">
                     <!-- 🔹 아이디 찾기 완료 -->
                     <div class="id-search-container">
                         <h2>아이디 찾기 완료</h2>
-                        <span class="material-symbols-outlined">check_circle</span>
+                        <span class="material-symbols-outlined" style="font-size: 60px;">check_circle</span>
                         <div class="id-msg">
                             <div>고객 님의 아이디는 <span style="font-weight: bold;">{{ info.userId }}</span> 입니다.</div>
                             <div>{{ info.cdate }}에 가입함</div>
@@ -109,25 +109,25 @@
                         </div>
                     </div>
                 </div>
-
-                <div v-else-if="pwdFound" class="search-container">
+                
+                <div v-else-if="pwdFound"  class="search-container"> 
                     <!-- 🔹 비밀번호 변경 -->
                         <div class="id-search-container">
                             <h2>비밀번호 변경하기</h2>
                             <ul>
                                 <li>기존 비밀번호는 이미 암호화되어 있으므로 새 비밀번호로 변경해야 합니다.</li>
-                                <li>비밀번호는 공백 없이 6~10자 이내의 영문자, 숫자, 특수문자 조합으로 지정해주세요.</li>
+                                <li>비밀번호는 공백 없이 6자 이상의 영문자, 숫자, 특수문자 조합으로 지정해주세요.</li>
                             </ul>
-                            <div class="form-row">
+                            <div class="pwd-form-row">
                                 <label>새 비밀번호 입력:</label>
                                 <input type="password" v-model="newPwd1">
                             </div>
-                            <div class="form-row">
+                            <div class="pwd-form-row">
                                 <label>새 비밀번호 확인:</label>
                                 <input type="password" v-model="newPwd2">
                             </div>
                             <div class="form-submit">
-                                <button @click="fnChangePwd" class="submit-btn">비밀번호 변경완료</button>
+                                <button @click="fnChangePwd" class="pwd-submit-btn">비밀번호 변경완료</button>
                             </div>
                         </div>
                 </div>
@@ -279,7 +279,7 @@
             },
             fnChangePwd:function(){
                 let self = this;
-                let speChar = /(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])/;
+                let speChar = /^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])/;
                 if (self.newPwd1.length < 6) {
                     self.pwdFailedModal = true;
                     return; // stop function if invalid
@@ -306,10 +306,9 @@
                         console.log(data);
                         if (data.result === "success") {
                             // 로그인 성공 시 페이지 전환
-                            alert("Password changed successfully !");
-                            location.href="/home/login.do";
+                            self.pwdChangedModal = true;
                         } else {
-                            alert("there was an error, try again.");
+                            self.pwdFailedModal = true;
                         }
                     }
                 });

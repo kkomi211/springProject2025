@@ -7,22 +7,23 @@ main {
        }
        .signup-container{
        width: 500px;
-       height: 750px;
+       height: 780px;
        border: solid 1px black;
-       margin: 50px 0;
+       margin: 40px 0;
        display: flex;
        flex-direction: column;
        justify-content: center;
        align-items: center;
      }
-     .signup h2 {
+     .signup-container h2 {
        text-align: center;
-       margin-bottom: 40px;
+       margin-top: 0; 
+       margin-bottom: 20px;
        font-size: 24px;
        font-weight: bold;
      }
-     .signup div {
-       margin-top: 25px;
+     .signup-container div {
+       margin-top: 8px;
      }
      .signup-form {
        display: flex;
@@ -62,6 +63,7 @@ main {
        margin-top: 20px;
    }
    .submit-btn {
+    margin-top: 10px;
        background-color: #409eff;
        color: white;
        border: none;

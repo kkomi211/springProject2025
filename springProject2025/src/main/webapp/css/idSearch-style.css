@@ -19,6 +19,7 @@ main {
            flex-direction: column;
            justify-content: center;
            align-items: center;
+           margin: 10px;
      }
      .id-search-container h2, .pwd-search-container h2 {
        text-align: center;
@@ -26,7 +27,10 @@ main {
        font-size: 24px;
        font-weight: bold;
      }
-     .id-search-container, .pwd-search-container div {
+     .id-search-container h2 {
+        margin-top: 0px;
+     }
+     .id-search-container div, .pwd-search-container div {
        margin-top: 10px;
      }
      .signup-form {
@@ -34,11 +38,15 @@ main {
        flex-direction: column;
        gap: 15px;
    }
-   .form-row {
+   .form-row, .pwd-form-row {
        display: flex;
        align-items: center;
-       gap: 10px;
+       gap: 15px;
        }
+    .pwd-form-row label {
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
    .form-row label {
        width: 100px;
        text-align: left;
@@ -65,7 +73,7 @@ main {
        text-align: center;
        margin-top: 20px;
    }
-   .submit-btn {
+   .submit-btn, .pwd-submit-btn{
        background-color: #409eff;
        width: 140px;
        color: white;
@@ -86,12 +94,15 @@ main {
        align-items: center;
        gap: 20px;
    }
+   .pwd-submit-btn {
+    width: 200px;
+    margin-top: 40px;
+   }
    #other a{
        color: black;
    }
     .material-symbols-outlined {
         font-family: 'Material Symbols Outlined';
-        font-size: 100px;
         font-variation-settings:
         'FILL' 0,
         'wght' 400,
@@ -113,8 +124,13 @@ main {
     .id-msg > div:nth-child(2) {
         font-size: 10px;
     }
+    ul {
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
     li {
-        font-size: 15px;
+        font-size: 13px;
+        margin: 10px;
     }
 
     /* 모달 팝업 스타일 */

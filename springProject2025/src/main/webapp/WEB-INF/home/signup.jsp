@@ -56,25 +56,25 @@
                         <div class="signup-form">
                             <div class="form-row">
                                 <label>아이디</label>
-                                <input v-if="!checkFlg" type="text" placeholder="아이디" v-model="userId">
+                                <input v-if="!checkFlg" type="text" placeholder="아이디" v-model="userId" id="userId">
                                 <input v-else type="text" disabled :placeholder="userId">
                                 <button @click="fnIdCheck">중복확인</button>
                             </div>
                             <div class="form-row">
                                 <label>이름</label>
-                                <input type="text" placeholder="이름" v-model="name">
+                                <input type="text" placeholder="이름" v-model="name" id="name">
                             </div>
                             <div class="form-row">
                                 <label>비밀번호</label>
-                                <input type="password" placeholder="6자 이상, 영문/숫자/특수문자" v-model="pwd1">
+                                <input type="password" placeholder="6자 이상, 영문/숫자/특수문자" v-model="pwd1" id="pwd1">
                             </div>
                             <div class="form-row">
                                 <label>비밀번호 확인</label>
-                                <input type="password" placeholder="비밀번호 확인" v-model="pwd2">
+                                <input type="password" placeholder="비밀번호 확인" v-model="pwd2" id="pwd2">
                             </div>
                             <div class="form-row">
                                 <label>닉네임</label>
-                                <input type="text" placeholder="닉네임" v-model="nickname">
+                                <input type="text" placeholder="닉네임" v-model="nickname" id="nickname">
                                 <button @click="fnNicknameCheck">중복확인</button>
                             </div>
                             <div class="form-row">
@@ -86,20 +86,20 @@
                             </div>
                             <div class="form-row">
                                 <label>이메일</label>
-                                <input type="text" placeholder="이메일" v-model="email">
+                                <input type="text" placeholder="이메일" v-model="email" id="email">
                             </div>
                             <div class="form-row">
                                 <label>주소</label>
-                                <input disabled type="text" v-model="addr" id="addr">
+                                <input disabled type="text" v-model="addr" id="addr" id="addr">
                                 <button @click="fnAddr">주소검색</button>
                             </div>
                             <div class="form-row">
                                 <label>생년월일</label>
-                                <input type="date" v-model="birthday">
+                                <input type="date" v-model="birthday" id="birth">
                             </div>
                             <div class="form-row">
                                 <label>전화번호</label>
-                                <input type="text" placeholder="- 없이 전화번호를 입력하세요" v-model="phone" @keyup.enter="fnSignup">
+                                <input type="text" placeholder="- 없이 전화번호를 입력하세요" v-model="phone" @keyup.enter="fnSignup" id="phone">
                                 
                             </div>
                             <!-- 문자인증 일단 뺀다 -->
@@ -195,6 +195,7 @@
                 let self = this;
                 if(self.userId == ""){
                     alert("아이디를 입력해주세요.");
+                    document.querySelector("#userId").focus();
                     return;
                 }
                 let param = {
@@ -211,6 +212,7 @@
                         } else {
                             alert("사용가능한 아이다 입니다.");
                             self.checkFlg = true;
+                            document.querySelector("#name").focus();
                         }
                     }
                 });
@@ -232,10 +234,11 @@
                     success: function (data) {
                         if(data.result == "true"){
                             alert("이미 사용 중인 닉네임 입니다.");
-                            // document.querySelector("#id").focus();
+                            document.querySelector("#nickname").focus();
                         } else {
                             alert("사용가능한 닉네임 입니다.");
                             self.checkFlg = true;
+                            document.querySelector("#email").focus();
                         }
                     }
                 });
@@ -253,6 +256,7 @@
                 let speChar = /[!@#$%^&*(),.?":{}|<>]/;
                 if(self.userId == ""){
                     alert("아이디를 입력해주세요.");
+                    document.querySelector("#userId").focus();
                     return;
                 }
                 if(self.name == ""){
@@ -261,32 +265,49 @@
                     return;
                 }
                 if (self.pwd1.length < 6) {
-                    alert("비밀번호는 6~10자 사이여야 합니다.");
+                    alert("비밀번호를 입력해주세요.");
+                    document.querySelector("#pwd1").focus();
                     return;
                 }
                 if(!speChar.test(self.pwd1)){
-                    alert("비밀번호에는 최소한 하나의 특수 문자가 포함되어야 합니다.");
+                    alert("비밀번호에는 최소한 하나의 영문, 숫자, 특수문자가 포함되어야 합니다.");
+                    document.querySelector("#pwd1").focus();
                     return;
                 }
                 if(self.pwd1 != self.pwd2){
                     alert("비밀번호를 다시 확인해주세요.");
-                    // document.querySelector("#pwd2").focus();
+                    document.querySelector("#pwd2").focus();
                     return;
                 }
                 if(self.nickname == ""){
                     alert("닉네임을 입력해주세요.");
+                    document.querySelector("#nickname").focus();
                     return;
                 }
                 if(self.email == ""){
                     alert("이메일 입력해주세요.");
+                    document.querySelector("#email").focus();
                     return;
                 }
                 if(self.addr.length == 0){
                     alert("주소를 입력해주세요.");
+                    document.querySelector("#addr").focus();
+                    return;
+                }
+                if(self.birthday == ""){
+                    alert("생년월일를 입력해주세요.");
+                    document.querySelector("#birth").focus();
                     return;
                 }
                 if(self.phone == ""){
                     alert("전화번호를 입력해주세요.");
+                    document.querySelector("#phone").focus();
+                    return;
+                }
+                if (self.phone.length < 11 || !/^[0-9]+$/.test(self.phone)) {
+                    alert("전화번호를 다시 확인해주세요.");
+                    document.querySelector("#phone").focus();
+                    return;
                 }
                 let param = {
                     userId : self.userId.trim(),
