@@ -31,17 +31,20 @@ public class AdminService {
 		return null;
 	}
 	
-	// banner List 
-	public HashMap<String, Object> getbannerList(HashMap<String, Object> map) {
+	// banner(메인 슬라이드 광고) List 
+	public HashMap<String, Object> getbanner1List(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		List<Admin> list = adminMapper.selectbannerList(map);
+		List<Admin> list = adminMapper.selectSldeeBannerList(map);
+		List<Admin> list1 = adminMapper.selectProductBannerList(map);
 		
 		resultMap.put("list", list);
+		resultMap.put("list1", list1);
 		resultMap.put("result", "success");
 		return resultMap;
 	}
 	
+
 	// banner update 수정/저장 
 	public HashMap<String, Object> bannerModify(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub

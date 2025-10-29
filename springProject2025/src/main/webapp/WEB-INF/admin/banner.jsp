@@ -17,6 +17,8 @@
                 font-family: "Noto Sans KR", sans-serif;
                 background-color: #fbeff3;
                 text-align: center;
+                margin: 0;
+                padding: 0;
             }
 
             h2 {
@@ -25,19 +27,21 @@
             }
 
             table {
-                margin: 40px auto;
                 border-collapse: collapse;
                 width: 80%;
-                max-width: 1200px;
+                max-width: 1100px;
                 background-color: white;
+                margin: 0 auto;
                 table-layout: fixed;
+                text-align: center;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             }
 
             th,
             td {
                 border: 1px solid #ddd;
                 padding: 10px;
-                text-align: center;
                 word-break: break-all;
             }
 
@@ -51,6 +55,7 @@
                 background-color: #f9f9f9;
             }
 
+            /* 버튼 스타일 유지 */
             button {
                 background-color: #555;
                 color: white;
@@ -62,6 +67,28 @@
 
             button:hover {
                 background-color: #8e44ad;
+            }
+
+            /* 반응형 (화면이 좁을 때) */
+            @media (max-width: 1200px) {
+                .left-ad-area {
+                    position: static;
+                    /* 모바일에서는 고정 해제 */
+                    width: 100%;
+                    flex-direction: row;
+                    justify-content: center;
+                    margin-bottom: 20px;
+                }
+
+                .ad-box {
+                    flex: 1;
+                    height: auto;
+                    font-size: 1.1em;
+                }
+
+                table {
+                    width: 85%;
+                }
             }
 
             /* 이미지 미리보기 스타일 */
@@ -126,54 +153,55 @@
             }
 
             /* 1. 테이블과 좌측 영역을 감싸는 컨테이너 추가 */
+            /* 전체 영역 기본 구조 */
             .content-wrapper {
+                position: relative;
+                width: 100%;
                 display: flex;
-                /* 좌우 배치를 위해 Flex 사용 */
-                width: 80%;
-                max-width: 2500px;
-                margin: 0 auto 40px auto;
-                /* 중앙 정렬 및 하단 여백 */
-                gap: 30px;
-                /* 좌측 영역과 테이블 사이 간격 */
-                text-align: left;
-                /* 내부 텍스트 정렬 */
+                justify-content: center;
+                /* 테이블을 화면 정중앙에 위치시킴 */
+                align-items: flex-start;
+                padding-top: 40px;
             }
 
             /* 2. 좌측 광고 영역 스타일 */
             .left-ad-area {
-                flex: 0 0 250px;
-                /* 너비 고정 */
+                position: fixed;
+                /* 스크롤 시 화면에 고정 */
+                top: 300px;
+                /* 화면 상단으로부터 거리 */
+                left: 60px;
+                /* 화면 왼쪽으로부터 거리 */
+                width: 200px;
                 display: flex;
                 flex-direction: column;
-                gap: 20px;
+                gap: 10px;
+                z-index: 1000;
+                /* 다른 요소보다 위에 표시 */
             }
 
             /* 3. 각 광고 박스 스타일 */
+
             .ad-box {
-                background-color: #f7f7f7;
-                border: 1px solid #ddd;
-                padding: 20px;
-                height: 150px;
-                /* 높이 지정 */
-                border-radius: 8px;
-                font-size: 1.5em;
+                background-color: #f3f3f3;
+                border: 3px solid #000000;
+                padding: 40px;
+                height: 80px;
+                border-radius: 12px;
+                font-size: 1.2em;
                 font-weight: bold;
-                color: #555;
+                color: #3b3b3b;
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 text-align: center;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            }
-
-            /* 4. 테이블 스타일 수정: Flex 항목으로 설정 */
-            table {
-                margin: 0;
-                /* 기존 중앙 마진 제거 */
-                flex: 1;
-                /* 남은 공간을 테이블이 모두 차지하도록 설정 */
-                width: auto;
-                /* flex에 맞춰 너비 조정 */
+                box-shadow: 0 5px 8px rgba(0, 0, 0, 0.05);
+                background: rgba(231, 231, 231, 0.25);
+                /* 반투명 흰색 */
+                backdrop-filter: blur(1px);
+                /* 유리 효과 */
+                -webkit-backdrop-filter: blur(1px);
+                /* 사파리 호환 */
             }
         </style>
     </head>
@@ -198,6 +226,7 @@
                 <a href="/admin/user-list.do">회원 관리 화면</a>
             </div>
 
+            <!-- 메인 슬라이드 광고 -->
             <h2>메인 슬라이드 배너 관리</h2>
 
             <button @click="openAddModal" style="background-color:rgb(60,173,255);" style="text-align: right;">
@@ -209,7 +238,6 @@
                     <div class="ad-box">메인 슬라이드 배너</div>
                     <div class="ad-box">제품 배너</div>
                     <div class="ad-box">서브 슬라이드 배너</div>
-                    <div class="ad-box">크루 배너</div>
                 </div>
 
                 <table>
@@ -302,11 +330,97 @@
                 <img :src="selectedImage" alt="배너 이미지">
             </div>
 
+            <!-- 제품 광고 -->
             <h2>제품 배너 관리</h2>
 
-            <h2>서브 슬라이드 배너 관리</h2>
+            <button @click="openAddModal" style="background-color:rgb(60,173,255);" style="text-align: right;">
+                제품 배너 추가
+            </button>
 
-            <h2>크루 배너 관리</h2>
+            <table>
+                <tr>
+                    <th>이미지 번호</th>
+                    <th>배너 제목</th>
+                    <th>상품 번호</th>
+                    <th>이미지 경로</th>
+                    <th>등록 날짜</th>
+                    <th>수정 하기</th>
+                </tr>
+
+                <template v-for="(item, index) in list" :key="item.bannerId">
+                    <!-- 기본 row -->
+                    <tr>
+                        <template v-if="!item.isEditing">
+                            <td>{{item.pBannerImgNo}}</td>
+                            <td @click="toggleImage(index)"
+                                style="cursor:pointer; color:rgb(60,173,255); text-decoration:underline;">
+                                {{item.title}}
+                            </td>
+                            <td>{{item.productNo}}</td>
+                            <td>{{item.productImgNo}}</td>
+                            <td>{{item.cDate}}</td>
+                            <td>
+                                <button @click="item.isEditing = true"
+                                    style="background-color: rgb(60,173,255);">수정하기</button>
+                            </td>
+                        </template>
+
+                        <!-- 삭제 모달 -->
+                        <div v-if="showDeleteModal" class="modal-overlay">
+                            <div class="modal-content">
+                                <h3>삭제 확인</h3>
+                                <p>"{{ deleteItem.title }}" 배너를 정말 삭제하시겠습니까?</p>
+                                <div class="modal-buttons">
+                                    <button @click="confirmDelete" style="background-color:#F24822;">삭제</button>
+                                    <button @click="closeDeleteModal" style="background-color:#7e7e7e;">취소</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 추가 모달-->
+                        <div v-if="showAddModal" class="modal-overlay">
+                            <div class="modal-content">
+                                <h3>배너 추가</h3>
+                                <div class="modal-input">
+                                    <input v-model="newBanner.title" placeholder="배너 제목 입력">
+                                    <input v-model="newBanner.imageDir" placeholder="이미지 경로 입력">
+                                    <input v-model="newBanner.linkUrl" placeholder="링크 URL 입력">
+                                </div>
+                                <div class="modal-buttons">
+                                    <button @click="confirmAdd" style="background-color:rgb(60,173,255);;">등록</button>
+                                    <button @click="closeAddModal" style="background-color:#7e7e7e;">취소</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <template v-else>
+                            <td>{{item.pBannerImgNo}}</td>
+                            <td><input style="height: 78px;" v-model="item.title"></td>
+                            <td><input style="height: 78px;" v-model="item.imageDir"></td>
+                            <td><input style="height: 78px;" v-model="item.linkUrl"></td>
+                            <td>{{item.cDate}}</td>
+                            <td>
+                                <button @click="saveItem(index)"
+                                    style="background-color: rgb(60,173,255);">저장하기</button>
+                                <button @click="item.isEditing = false" style="background-color: #7e7e7e;">취소하기</button>
+                                <button @click="openDeleteModal(item)" style="background-color: #F24822;">삭제</button>
+                            </td>
+                        </template>
+                    </tr>
+
+                    <!-- 이미지 row -->
+                    <tr v-if="item.showImage">
+                        <td colspan="6" style="text-align:center; background-color:#f9f9f9;">
+                            <img :src="item.imageDir" alt="배너 이미지" style="max-width:600px; border-radius:6px;">
+                        </td>
+                    </tr>
+                </template>
+
+            </table>
+        </div>
+
+
+        <h2>대회 배너 관리</h2>
 
         </div>
 
@@ -335,18 +449,25 @@
                     fnList: function () {
                         let self = this;
                         $.ajax({
-                            url: "/admin/banner.dox",
+                            url: "/admin/banner1.dox",
                             dataType: "json",
                             type: "POST",
                             success: function (data) {
                                 // 각 항목에 isEditing 속성 추가
+                                console.log(data);
+
                                 self.list = data.list.map(item => ({
                                     ...item,
                                     isEditing: false
+
                                 }));
                             }
+
                         });
+
                     },
+
+
                     // 제목 클릭 시 이미지 표시
                     showImage(imageUrl) {
                         this.selectedImage = imageUrl;

@@ -13,8 +13,11 @@ public interface AdminMapper {
 	// 목록
 //	List<Admin> selectList(HashMap<String, Object> map);
 	
-	// banner 목록
-	List<Admin>selectbannerList(HashMap<String, Object> map);
+	// banner(메인 슬라이드) 목록
+	List<Admin>selectSldeeBannerList(HashMap<String, Object> map);
+	
+	// banner(메인 슬라이드) 목록
+	List<Admin>selectProductBannerList(HashMap<String, Object> map);
 	
 	// banner 수정/저장/삭제/추가 (update)
 	int updateBannerModify(HashMap<String, Object> map);
@@ -24,4 +27,7 @@ public interface AdminMapper {
 	
 	// banner 추가
 	int insertBanner(HashMap<String, Object> map);
+	
+	
+	
 }

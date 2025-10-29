@@ -3,10 +3,16 @@
 	
 	<mapper namespace="com.example.springProject2025.mapper.AdminMapper">
 		
-		<!-- banner.xml list-->
-		<select id="selectbannerList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
+		<!-- banner.xml(메인슬라이드) list-->
+		<select id="selectSldeeBannerList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
 			SELECT *
 			FROM MAIN_SLIDE_IMAGE
+		</select>
+		
+		<!-- banner.xml(제품) list-->
+		<select id="selectProductBannerList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
+			SELECT *
+			FROM PRODUCT_BANNER_IMG
 		</select>
 	
 	<!-- banner 수정/저장-->
@@ -42,7 +48,9 @@
 	        #{userId, jdbcType=VARCHAR},
 	        SYSDATE
 	    )
-</insert>
+	</insert>
+	
+	
 
 
 </mapper>

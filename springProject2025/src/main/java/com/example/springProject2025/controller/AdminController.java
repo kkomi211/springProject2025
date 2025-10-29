@@ -62,15 +62,17 @@ public class AdminController {
 		return "admin/user-list"; // .jsp빠진형태
 	}
 	
-	// banner list
-	@RequestMapping(value = "/admin/banner.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	// banner(메인 슬라이드 광고) list
+	@RequestMapping(value = "/admin/banner1.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String bannerList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	public String banner1List(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap = adminService.getbannerList(map);
+		resultMap = adminService.getbanner1List(map);
 
 		return new Gson().toJson(resultMap);
 	}
+	
+	
 	
 	// banner update 수정
 	@RequestMapping(value = "/admin/bannerUpdate.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
