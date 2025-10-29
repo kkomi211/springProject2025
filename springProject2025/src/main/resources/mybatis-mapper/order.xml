@@ -1,0 +1,123 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+	<mapper namespace="com.example.springProject2025.mapper.OrderMapper">
+	
+	<!-- 주문 목록 개수 (페이징용) -->
+	<select id="selectOrderListCount" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM ORDERS O
+		WHERE O.USER_ID = #{sessionId}
+	</select>
+	
+	<!-- 주문 목록 (페이징 포함) -->
+	<select id="selectOrderList" parameterType="hashmap" resultType="com.example.springProject2025.model.Order">
+		SELECT * FROM (
+			SELECT a.*, ROWNUM AS rnum FROM (
+				SELECT 
+					O.ORDER_NO as orderNo,
+					O.USER_ID as userId,
+					O.CDATE as cdate,
+					O.PRODUCT_NO as productNo,
+					P.PRODUCT_NAME as productName,
+					PI.IMG_PATH as imgPath,
+					PI.IMG_NAME as imgName,
+					O.QUANTITY as quantity,
+					O.PAYMENT_AMOUNT as paymentAmount,
+					O.ADDR as addr,
+					O.PAYMENT_METHOD as paymentMethod,
+					O.STATUS as status,
+					O.UDATE as udate,
+					O.BECAUSE as because,
+					O.ORDER_REQUEST as orderRequest
+				FROM ORDERS O
+				LEFT JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
+				LEFT JOIN (
+					SELECT PRODUCT_NO, IMG_PATH, IMG_NAME
+					FROM (
+						SELECT PRODUCT_NO, IMG_PATH, IMG_NAME,
+							ROW_NUMBER() OVER (PARTITION BY PRODUCT_NO ORDER BY PRODUCT_IMG_NO) as rn
+						FROM PRODUCT_IMG
+					)
+					WHERE rn = 1
+				) PI ON P.PRODUCT_NO = PI.PRODUCT_NO
+				WHERE O.USER_ID = #{sessionId}
+				ORDER BY O.CDATE DESC, O.ORDER_NO DESC
+			) a
+		) WHERE rnum BETWEEN #{startRow} AND #{endRow}
+	</select>
+	
+	<!-- 사용자 이름 조회 -->
+	<select id="selectUserName" parameterType="string" resultType="string">
+		SELECT NAME 
+		FROM USERS 
+		WHERE USER_ID = #{userId}
+	</select>
+	
+	<!-- 주문 취소 요청 -->
+	<update id="updateOrderCancel" parameterType="hashmap">
+		UPDATE ORDERS
+		SET STATUS = '취소요청',
+		    UDATE = SYSDATE,
+		    BECAUSE = #{because}
+		WHERE ORDER_NO = #{orderNo}
+		AND USER_ID = #{sessionId}
+	</update>
+	
+	<!-- 반품/교환 가능한 주문 목록 개수 -->
+	<select id="selectRefundListCount" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM ORDERS O
+		LEFT JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
+		WHERE O.USER_ID = #{sessionId}
+		AND O.STATUS != '신규주문'
+	</select>
+	
+	<!-- 반품/교환 가능한 주문 목록 -->
+	<select id="selectRefundList" parameterType="hashmap" resultType="com.example.springProject2025.model.Order">
+		SELECT * FROM (
+			SELECT a.*, ROWNUM AS rnum FROM (
+				SELECT 
+					O.ORDER_NO as orderNo,
+					O.USER_ID as userId,
+					O.CDATE as cdate,
+					O.PRODUCT_NO as productNo,
+					P.PRODUCT_NAME as productName,
+					PI.IMG_PATH as imgPath,
+					PI.IMG_NAME as imgName,
+					O.QUANTITY as quantity,
+					O.PAYMENT_AMOUNT as paymentAmount,
+					O.ADDR as addr,
+					O.PAYMENT_METHOD as paymentMethod,
+					O.STATUS as status,
+					O.UDATE as udate,
+					O.BECAUSE as because,
+					O.ORDER_REQUEST as orderRequest
+				FROM ORDERS O
+				LEFT JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
+				LEFT JOIN (
+					SELECT PRODUCT_NO, IMG_PATH, IMG_NAME
+					FROM (
+						SELECT PRODUCT_NO, IMG_PATH, IMG_NAME,
+							ROW_NUMBER() OVER (PARTITION BY PRODUCT_NO ORDER BY PRODUCT_IMG_NO) as rn
+						FROM PRODUCT_IMG
+					)
+					WHERE rn = 1
+				) PI ON P.PRODUCT_NO = PI.PRODUCT_NO
+				WHERE O.USER_ID = #{sessionId}
+				AND O.STATUS != '신규주문'
+				ORDER BY O.UDATE DESC , O.ORDER_NO DESC
+			) a
+		) WHERE rnum BETWEEN #{startRow} AND #{endRow}
+	</select>
+	
+	<!-- 반품/교환 신청 처리: STATUS 업데이트 및 UDATE 현재 시간으로 업데이트 -->
+	<update id="updateRefundExchange" parameterType="hashmap">
+		UPDATE ORDERS
+		SET STATUS = #{status},
+		    UDATE = SYSDATE,
+		    BECAUSE = #{reason}
+		WHERE ORDER_NO = #{orderNo}
+	</update>
+	
+	</mapper>
