@@ -1,0 +1,27 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+	<mapper namespace="com.example.springProject2025.mapper.ReviewMapper">
+	
+		<insert id = "insertReview" 
+			parameterType="hashmap" 
+			useGeneratedKeys="true" 
+			keyColumn="REVIEW_NO" 
+			keyProperty="reviewNo">
+			INSERT INTO REVIEW 
+			VALUES (
+			        REVIEW_SEQ.NEXTVAL, 
+			        #{productNo}, 
+			        #{orderNo}, 
+			        #{sessionId}, 
+			        #{rating},
+			        #{reviewTitle},
+			        #{reviewContent},
+			        SYSDATE, 
+			        0,
+			        0
+			        )
+		</insert>
+	
+	
+	</mapper>

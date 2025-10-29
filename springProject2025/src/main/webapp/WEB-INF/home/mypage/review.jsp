@@ -7,6 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/css/user-style.css">
         <link rel="stylesheet" href="/css/jghstyle.css">
+       
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -38,15 +39,25 @@
             margin-right: 5px;
             /* 오른쪽 여백 (조절 가능) */
             padding: 10px 20px;
-            background-color: rgb(194, 194, 194);
-            color: black;
+            /* background-color: rgb(194, 194, 194); */
+            /* color: black; */
+            /* border: none; */
+            /* border-radius: 5px; */
+
+            /* cursor: pointer; */
+            /* 마우스 올렸을 때 손가락 커서 */
+            /* transition: background-color 0.3s ease, transform 0.2s ease; */
+            /* 부드러운 변화 */
+
+            padding: 8px 18px;
+            background-color: #007bff;
+            color: white;
             border: none;
             border-radius: 5px;
-
             cursor: pointer;
-            /* 마우스 올렸을 때 손가락 커서 */
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            /* 부드러운 변화 */
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease, transform 0.1s ease;
         }
 
         /*  hover 효과 */
@@ -128,7 +139,7 @@
                                         <span class="icon">📝</span>
                                         <a href="javascript:;">주문•배송 내역</a>
                                     </li>
-                                    <li class="active">
+                                    <li @click="moveToRefund">
                                         <span class="icon">📦</span>
                                         <a href="#">반품•교환 내역</a>
                                     </li>
@@ -140,7 +151,7 @@
                                         <span class="icon">👤</span>
                                         <a href="#">나의 정보</a>
                                     </li>
-                                    <li @click="moveToReview">
+                                    <li class="active">
                                         <span class="icon">⭐️</span>
                                         <a href="#">상품 리뷰</a>
                                     </li>
@@ -149,23 +160,26 @@
                         </aside>
 
                         <main class="main-content">
-                            <h1 class="main-title">반품•교환 내역</h1>
+                            <h1 class="main-title">상품 리뷰</h1>
 
                             <template v-for="(order, index) in orderList" :key="order.orderNo">
 
                                 <section class="order-item">
 
-                                    <div class="order-status-header" :class="getStatusClass(order.status)" :style="isRefundOrExchangeRequested(order.status) ? 'color: red;' : ''">
+                                    <div class="order-status-header" :class="getStatusClass(order.status)"
+                                        :style="isRefundOrExchangeRequested(order.status) ? 'color: red;' : ''">
                                         ORDER STATUS :
-                                        <span class="status-text" :style="isRefundOrExchangeRequested(order.status) ? 'color: red; font-weight: bold;' : ''">{{ order.status }}</span>
+                                        <span class="status-text"
+                                            :style="isRefundOrExchangeRequested(order.status) ? 'color: red; font-weight: bold;' : ''">{{
+                                            order.status }}</span>
                                     </div>
 
                                     <div class="order-details" style="display: flex; align-items: center;">
-                                        <div v-if="!isRefundOrExchangeRequested(order.status)">
-                                            <!-- {{index}} -->
+                                        <!-- <div v-if="!isRefundOrExchangeRequested(order.status)">
+                                
                                             <input type="checkbox" v-model="order.isChecked"
                                                 style="transform: scale(1.5); margin-right: 10px; transform-origin: left center;">
-                                        </div>
+                                        </div> -->
                                         <img v-if="order.imgPath && order.imgName"
                                             :src="order.imgPath + '/' + order.imgName" :alt="order.productName"
                                             class="product-image"
@@ -186,21 +200,37 @@
 
                                         <div v-if="!isRefundOrExchangeRequested(order.status)">
                                             <div>
-                                                <label style="margin-right: 10px;">
+                                                <!-- <label style="margin-right: 10px;">
                                                     <input type="radio" v-model="order.actionType" value="R">반품
                                                 </label>
                                                 <label>
                                                     <input type="radio" v-model="order.actionType" value="C">교환
-                                                </label>
+                                                </label> -->
                                                 <br>
                                                 <div>
-                                                    반품교환사유
+                                                    <button @click = "moveToReviewWrite(order)">
+                                                          리뷰작성하기
+                                                    </button>
                                                 </div>
-                                                <div>
+                                                <div class="star-rating">
+                                                    &#9734;&#9734;&#9734;&#9734;&#9734;
+                                                </div>
+                                                <div class="star-rating">
+                                                    <i class="far fa-star"></i>
+                                                    <i class="far fa-star"></i>
+                                                    <i class="far fa-star"></i>
+                                                    <i class="far fa-star"></i>
+                                                    <i class="far fa-star"></i>
+                                                </div>
+                                                <div class="star-rating">
+                                                    <i v-for="n in 5" :key="n" class="far fa-star"></i>
+                                                </div>
+                                                <!-- <div>
                                                     <textarea type="text" style="height: 80px; width: 250px;"
                                                         placeholder="상세사유입력" v-model="order.reason"></textarea>
-                                                </div>
+                                                </div> -->
                                             </div>
+
 
                                         </div>
                                 </section>
@@ -225,10 +255,6 @@
                                 <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
                                 <!-- <a v-if="page != index" @click="fnMove(index)" href="javascript:void(0)">→</a> -->
                             </div>
-
-                            <button @click="submitReturnExchange">
-                                반품/교환 신청
-                            </button>
 
                         </main>
 
@@ -270,23 +296,7 @@
                 </footer>
             </div>
 
-            <!-- 안내용 모달: 상세사유 비어있을 때 표시 (닫기만 가능) -->
-            <div v-if="reasonModalVisible" class="modal-overlay" @click.self="closeReasonModal">
-                <div class="modal" role="dialog" aria-modal="true" aria-labelledby="reasonModalTitle">
-                    <h3 id="reasonModalTitle">상세사유를 입력해 주세요</h3>
-                    <p>선택하신 주문 중 상세사유가 입력되지 않은 항목이 있습니다. 상세사유를 입력한 후 다시 신청해 주세요.</p>
 
-                    <div class="missing-list">
-                        <div v-for="m in missingReasons" :key="m.orderNo">
-                            주문번호: <strong>{{ m.orderNo }}</strong> — (아직 사유 미입력)
-                        </div>
-                    </div>
-
-                    <div class="btns">
-                        <button class="btn secondary" @click="closeReasonModal">닫기</button>
-                    </div>
-                </div>
-            </div>
 
         </div><!--app끝-->
 
@@ -309,13 +319,10 @@
                     userName: "로딩중...", //초기값 잠시 뜸
 
                     orderNo: '${orderNo}',
-
+                    productNo : '${productNo}',
                     // sau : 'R',
                     // because: '',
 
-                    // 모달 관련
-                    reasonModalVisible: false,
-                    missingReasons: [] // [{ orderNo: 'xxx' }, ...]
                 };
             },
             methods: {
@@ -337,41 +344,38 @@
                     };
                     // alert("넘어온 orderNo는" + self.orderNo);
                     $.ajax({
-                        url: "/home/mypage/refund-return.dox",
+                        url: "/home/mypage/reviewlist.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
                             console.log("리스트 응답 데이터:", data);
                             if (data.result == "success") {
-                                // self.orderList = data.list;
-                                self.orderList = data.list.map(order => {
+                                self.orderList = data.list;
+                                // self.orderList = data.list.map(order => {
                                     // URL로 넘어온 orderNo와 현재 목록의 orderNo가 일치하는지 확인
-                                    let isTargetOrder = order.orderNo === self.orderNo;
+                                    // let isTargetOrder = order.orderNo === self.orderNo;
                                     // 목록 항목에 체크 상태를 추가합니다.
-                                    return {
-                                        ...order,
-                                        isChecked: isTargetOrder,
+                                    // return {
+                                        // ...order,
+                                        // isChecked: isTargetOrder,
 
                                         //  추가: 라디오 버튼의 개별 상태
-                                        actionType: 'R', // 'R'(반품)을 기본값으로 설정
+                                        // actionType: 'R', // 'R'(반품)을 기본값으로 설정
                                         //  추가: 텍스트 에어리어의 개별 상태
-                                        reason: ''
-                                    };
-                                });
+                                        // reason: ''
+                                    // };
+                                // });
                                 self.cnt = data.cnt;
                                 self.index = Math.ceil(self.cnt / self.pageSize);
-                                console.log("교환환불 리스트 업데이트 완료 - 전체 개수:", self.cnt, "현재 페이지:", self.page);
-                            } else {
-                                console.log(" 내역 조회 실패");
+                                console.log("리뷰리스트 업데이트 완료 - 전체 개수:", self.cnt, "현재 페이지:", self.page);
+                            } 
+                            else {
+                                alert(" 내역 조회 실패");
                                 self.orderList = [];
                                 self.cnt = 0;
                                 self.index = 0;
                             }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("AJAX 요청 실패:", error);
-                            console.error("상태:", status);
                         }
                     });
                 },
@@ -384,13 +388,7 @@
 
 
 
-                /** 주문 취소 팝업을 여는 Vue 메서드 (버튼 클릭 시 호출) */
-                // 문제 해결: HTML 템플릿의 @click 이벤트에서 이 Vue 메서드를 호출합니다.
-                openCancelModal: function (orderNo) {
-                    this.currentCancelOrderNo = orderNo; // Vue 데이터에 주문 번호 저장
-                    $('#cancelModal').fadeIn(200); // jQuery로 모달 표시
-                    $('body').css('overflow', 'hidden');
-                },
+
 
                 /** 주문 상태에 따른 버튼 표시 결정 (핵심 로직) */
                 getButtonState: function (status) {
@@ -421,20 +419,10 @@
 
                 /** 반품요청 또는 교환요청 상태인지 확인 */
                 isRefundOrExchangeRequested: function (status) {
-                    return status === '반품요청' || status === '교환요청' ||  status === '취소요청';
+                    return status === '반품요청' || status === '교환요청' || status === '취소요청';
                 },
 
-                /** 교환/반품 또는 리뷰 버튼 클릭 시 처리 */
-                // handleAction: function (actionType, orderNo) {
-                //     if (actionType === 'RETURN') {
-                //         console.log(`ORDER_NO ${orderNo}: 교환/반품 페이지로 이동 요청`);
-                //         alert(`ORDER_NO ${orderNo}에 대해 교환/반품 페이지로 이동합니다. (규칙 21)`);
 
-                //     } else if (actionType === 'REVIEW') {
-                //         console.log(`ORDER_NO ${orderNo}: 상품 후기 작성 페이지로 이동 요청`);
-                //         alert(`ORDER_NO ${orderNo}에 대해 상품 후기 작성 페이지로 이동합니다.`);
-                //     }
-                // },
 
 
                 fnGetUserInfo: function () {
@@ -466,96 +454,50 @@
                     pageChange("orders.do", { sessionId: sessionId });
                 },
 
-                moveToReview: function () {
+                moveToRefund: function () {
                     let self = this;
-                   
+                    console.log("반품•교환 내역 메뉴 클릭. pageChange 호출");
+
+                    // 1. Vue의 sessionId 데이터에 접근
                     let sessionId = self.sessionId;
 
-                    pageChange("review.do", { sessionId: sessionId });
-                },
-
-                // 모달 열기/닫기
-                showReasonModal: function (missingOrders) {
-                    this.missingReasons = missingOrders.map(o => ({ orderNo: o.orderNo }));
-                    this.reasonModalVisible = true;
-                    // 스크롤 방지
-                    document.body.style.overflow = 'hidden';
-                },
-                closeReasonModal: function () {
-                    this.reasonModalVisible = false;
-                    this.missingReasons = [];
-                    document.body.style.overflow = 'auto';
+                    // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장)
+                    window.pageChange("refund-return.do", { sessionId: sessionId });
                 },
 
 
-                /**
-                 * 💡 [최종] JSON 전송 방식으로 변경
-                 * 서버 오류를 회피하고 안정적인 List/Array 전송을 보장합니다.
-                 * (서버 개발자는 @RequestBody로 JSON을 받아 처리해야 합니다.)
-                 */
-                submitReturnExchange: function () {
-                    const self = this;
-                    const selected = (self.orderList || []).filter(o => o.isChecked);
+
+
+                moveToReviewWrite: function (order) {
+                    let self = this;
+                    console.log("반품•교환 내역 메뉴 클릭. pageChange 호출");
+
+                    // 1. Vue의 sessionId 데이터에 접근
+                    let sessionId = self.sessionId;
                     
-                    if (!selected || selected.length === 0) {
-                        alert("반품/교환 신청할 주문을 하나 이상 선택해주세요.");
-                        return;
-                    }
-                    
-                    // 상세사유 체크 로직 (기존 유지)
-                    const missingReasonItems = selected.filter(o => !o.reason || o.reason.trim() === "");
-                    if (missingReasonItems.length > 0) {
-                        self.showReasonModal(missingReasonItems);
-                        return;
-                    }
+                    // 2. 전달받은 order 객체에서 orderNo와 productNo를 가져옵니다.
+                    let orderNo = order.orderNo;   // 수정
+                    let productNo = order.productNo; // 
+                    let quantity = order.quantity;
+                    let paymentAmount = order.paymentAmount;
+                    let udate = order.udate;
+                    let imgPath = order.imgPath;
+                    let imgName = order.imgName;
+                    let status = order.status;
+                    let productName = order.productName;
 
-                    // 1. 데이터 구조 생성
-                    const ordersData = selected.map(o => ({
-                        orderNo: o.orderNo,
-                        actionType: o.actionType || "",
-                        reason: o.reason || ""
-                    }));
-
-                    const requestData = {
-                        sessionId: self.sessionId,
-                        orders: ordersData
-                    };
-                    
-
-                    let param = {
-                            sessionId: self.sessionId,
-                            ordersJson: JSON.stringify(ordersData)
-                        }
-
-                    console.log("--- 서버로 전송할 데이터 ---");
-                    console.log(param); 
-                    console.log("-----------------------------------------");
-                    $.ajax({
-                        url: "/home/mypage/refund-return-appli.dox",
-                        type: "POST",
-                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-                        dataType: "json",
-                        // JSON 문자열을 하나의 파라미터로 전송
-                        // data: {
-                        //     sessionId: self.sessionId,
-                        //     ordersJson: JSON.stringify(ordersData)
-                        // }, 
-                        data : param,
-                        success: function (res) {
-                            if (res && (res.result === "success" || res.success === true)) {
-                                alert("정상적으로 신청이 접수되었습니다.");
-                                self.fnList();
-                            } else {
-                                const msg = (res && res.message) ? res.message : "서버에서 처리 중 문제가 발생했습니다.";
-                                alert("처리 실패: " + msg);
-                            }
-                        },
-                        error: function (xhr, status, err) {
-                            console.error("서버 요청 실패:", status, err, xhr.responseText);
-                            alert("서버에 요청을 보내는 중 오류가 발생했습니다. 서버 개발자와 상의하세요.");
-                        }
+                    // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장)
+                    // alert('다른 페이지로 값 보냄' 
+                    // + JSON.stringify( { sessionId: sessionId, orderNo:orderNo, productNo:productNo,  
+                    //         quantity: quantity, paymentAmount:paymentAmount, udate:udate,
+                    //         imgPath : imgPath , imgName : imgName, status: status
+                    // })  );
+                    pageChange("review-write.do", 
+                    { sessionId: sessionId, orderNo:orderNo, productNo:productNo,  
+                        quantity: quantity, paymentAmount:paymentAmount, udate:udate,
+                        imgPath : imgPath , imgName : imgName, status: status, productName : productName
                     });
-                }, // submitReturnExchange
+                },
 
             }, // methods
             mounted() {
@@ -568,20 +510,7 @@
         app.mount('#app');
 
 
-        /* 팝업 제어 JavaScript 함수 (Vue 인스턴스 밖, window 스코프) */
 
-        // 주문 취소 팝업 닫기: '돌아가기' 버튼이나 오버레이 클릭 시 호출됩니다.
-        // Vue 인스턴스 외부에서 `app` 객체를 사용하여 Vue 데이터를 조작합니다.
-        window.closeCancelModal = function () {
-            $('#cancelModal').fadeOut(200);
-            $('body').css('overflow', 'auto');
-
-            // Vue 데이터 초기화 (app이 전역 변수로 선언되어 있어야 합니다)
-            if (app && app.currentCancelOrderNo !== null) {
-                app.currentCancelOrderNo = null;
-            }
-            $('#cancelReasonInput').val('');
-        }
 
 
     </script>

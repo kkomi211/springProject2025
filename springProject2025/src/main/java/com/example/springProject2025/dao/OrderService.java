@@ -137,4 +137,26 @@ public class OrderService {
 		return resultMap;
 	}
 
+	public HashMap<String, Object> getReviewList(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+
+		try {
+			int cnt = orderMapper.selectReviewListCount(map);
+			List<Order> list = orderMapper.selectReviewList(map);
+
+			resultMap.put("list", list);
+			resultMap.put("cnt", cnt);
+			resultMap.put("result", "success");
+
+			System.out.println("OrderService - resultMap: " + resultMap);
+
+		} catch (Exception e) {
+			resultMap.put("result", "fail");
+			System.out.println("OrderService 에러: " + e.getMessage());
+		}
+
+		return resultMap;
+	}
+
 }

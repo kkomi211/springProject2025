@@ -21,6 +21,7 @@
     <style>
 
     </style>
+
     <body>
         <div id="app">
             <div class="container">
@@ -78,7 +79,7 @@
                                     </li>
                                     <li @click="moveToRefund">
                                         <span class="icon">📦</span>
-                                        <a href="javascript:;" >반품•교환 내역</a>
+                                        <a href="javascript:;">반품•교환 내역</a>
                                     </li>
                                     <li>
                                         <span class="icon">💬</span>
@@ -88,7 +89,7 @@
                                         <span class="icon">👤</span>
                                         <a href="#">나의 정보</a>
                                     </li>
-                                    <li>
+                                    <li @click="moveToReview">
                                         <span class="icon">⭐️</span>
                                         <a href="#">상품 리뷰</a>
                                     </li>
@@ -106,14 +107,20 @@
                                         <span class="status-text">{{ order.status }}</span>
                                     </div>
                                     <div class="order-details">
-                                        <img v-if="order.imgPath && order.imgName" :src="order.imgPath + '/' + order.imgName" :alt="order.productName" class="product-image" style="width: 150px; height: 150px; object-fit: cover;">
-                                        <div v-else class="product-image" style="background: #f0f0f0; min-width: 150px; height: 150px; display: flex; align-items: center; justify-content: center;">
+                                        <img v-if="order.imgPath && order.imgName"
+                                            :src="order.imgPath + '/' + order.imgName" :alt="order.productName"
+                                            class="product-image"
+                                            style="width: 150px; height: 150px; object-fit: cover;">
+                                        <div v-else class="product-image"
+                                            style="background: #f0f0f0; min-width: 150px; height: 150px; display: flex; align-items: center; justify-content: center;">
                                             이미지 없음
                                         </div>
                                         <div class="product-info" style="flex: 1; margin-left: 20px;">
-                                            <p class="product-name" style="font-size: 18px; font-weight: bold;">상품명 : {{ order.productName || order.productNo }}</p>
+                                            <p class="product-name" style="font-size: 18px; font-weight: bold;">상품명 : {{
+                                                order.productName || order.productNo }}</p>
                                             <p>수량 : {{ order.quantity }}</p>
                                             <p>주문번호 : {{ order.orderNo }}</p>
+                                            <p>브랜드 : {{ order.brand }}</p>
                                             <p>상품가격 : {{ formatCurrency(order.paymentAmount) }}원</p>
                                             <p>주문일자 : {{ order.cdate }}</p>
                                         </div>
@@ -148,7 +155,8 @@
                             <div v-if="index > 0" class="pagination">
                                 <!-- <a v-if="page != 1" @click="fnMove(1)" href="javascript:void(0)">←</a> -->
                                 <a v-if="page >= 2" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
-                                <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index" :key="num">
+                                <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index"
+                                    :key="num">
                                     <span :class="{ active: page == num }">{{ num }}</span>
                                 </a>
                                 <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
@@ -223,7 +231,7 @@
                 };
             },
             methods: {
-                formatCurrency: function(value) {
+                formatCurrency: function (value) {
                     if (!value) return '0';
                     const numValue = typeof value === 'string' ? parseInt(value) : value;
                     return numValue.toLocaleString();
@@ -258,14 +266,14 @@
                                 self.index = 0;
                             }
                         },
-                        error: function(xhr, status, error) {
+                        error: function (xhr, status, error) {
                             console.error("AJAX 요청 실패:", error);
                             console.error("상태:", status);
                         }
                     });
                 },
-                
-                fnMove: function(num) {
+
+                fnMove: function (num) {
                     let self = this;
                     self.page = num;
                     self.fnList();
@@ -314,14 +322,15 @@
                     if (actionType === 'RETURN') {
                         console.log(`ORDER_NO ${orderNo}: 교환/반품 페이지로 이동 요청`);
                         // alert(`ORDER_NO ${orderNo}에 대해 교환/반품 페이지로 이동합니다. (규칙 21)`);
-                        
-                        pageChange("refund-return.do", { orderNo: orderNo , sessionId: self.sessionId});
-                    } 
-                    /*
+
+                        pageChange("refund-return.do", { orderNo: orderNo, sessionId: self.sessionId });
+                    }
+
                     else if (actionType === 'REVIEW') {
                         console.log(`ORDER_NO ${orderNo}: 상품 후기 작성 페이지로 이동 요청`);
-                        alert(`ORDER_NO ${orderNo}에 대해 상품 후기 작성 페이지로 이동합니다.`);
-                    }*/
+                        // alert(`ORDER_NO ${orderNo}에 대해 상품 후기 작성 페이지로 이동합니다.`);
+                        pageChange("review.do", { orderNo: orderNo, sessionId: self.sessionId });
+                    }
                 },
 
                 /** 주문 취소 처리 (팝업 내 '주문 취소' 버튼 클릭 시) */
@@ -361,39 +370,46 @@
                                 alert('주문 취소 요청에 실패했습니다. 다시 시도해주세요.');
                             }
                         },
-                        error: function(xhr, status, error) {
+                        error: function (xhr, status, error) {
                             console.error("주문 취소 AJAX 실패:", error);
                             alert('주문 취소 요청 중 오류가 발생했습니다.');
                         }
                     });
                 },
-                fnGetUserInfo: function() {
+                fnGetUserInfo: function () {
                     let self = this;
                     $.ajax({
                         url: "/home/mypage/userInfo.dox",
                         dataType: "json",
                         type: "POST",
                         data: { userId: self.sessionId },
-                        success: function(data) {
+                        success: function (data) {
                             console.log("사용자 이름:", data);
                             self.userName = data;
                         },
-                        error: function(xhr, status, error) {
+                        error: function (xhr, status, error) {
                             console.error("사용자 정보 조회 실패:", error);
                             self.userName = "Guest";
                         }
                     });
                 },
-                moveToRefund: function() {
+                moveToRefund: function () {
                     let self = this;
                     console.log("반품•교환 내역 메뉴 클릭. pageChange 호출");
-                    
+
                     // 1. Vue의 sessionId 데이터에 접근
-                    const sessionIdParam = self.sessionId;
+                    let sessionId = self.sessionId;
 
                     // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장)
-                    window.pageChange("refund-return.do", { sessionId: sessionIdParam });
-                    },
+                    window.pageChange("refund-return.do", { sessionId: sessionId });
+                },
+                moveToReview: function () {
+                    let self = this;
+                   
+                    let sessionId = self.sessionId;
+
+                    pageChange("review.do", { sessionId: sessionId });
+                },
             }, // methods
             mounted() {
                 let self = this;

@@ -38,10 +38,6 @@ public class HomeController {
 		return "home/information"; // .jsp빠진형태
 	}
 	
-	@RequestMapping("home/mypage/review.do")
-	public String review(Model model) throws Exception {
-		return "home/review"; // .jsp빠진형태
-	}
 	
 	@RequestMapping("home/login.do")
 	public String iogin(Model model) throws Exception {
