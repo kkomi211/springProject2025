@@ -32,16 +32,6 @@ public class HomeController {
 		return "home/inquiry"; // .jsp빠진형태
 	}
 	
-	@RequestMapping("home/mypage/orders.do")
-	public String orders(Model model) throws Exception {
-		System.out.println("home/mypage/orders.do진입");
-		return "home/mypage/orders"; // .jsp빠진형태
-	}
-	
-	@RequestMapping("home/mypage/refund-return.do")
-	public String refundReturn(Model model) throws Exception {
-		return "home/refund-return"; // .jsp빠진형태
-	}
 	
 	@RequestMapping("home/mypage/information.do")
 	public String information(Model model) throws Exception {
