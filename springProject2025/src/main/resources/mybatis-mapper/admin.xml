@@ -3,19 +3,19 @@
 	
 	<mapper namespace="com.example.springProject2025.mapper.AdminMapper">
 		
-		<!-- banner.xml(메인슬라이드) list-->
-		<select id="selectSldeeBannerList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
+		<!-- slide banner.xml(메인슬라이드) list-->
+		<select id="selectSlideBannerList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
 			SELECT *
 			FROM MAIN_SLIDE_IMAGE
 		</select>
 		
-		<!-- banner.xml(제품) list-->
+		<!-- product banner.xml(제품) list-->
 		<select id="selectProductBannerList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
 			SELECT *
 			FROM PRODUCT_BANNER_IMG
 		</select>
 	
-	<!-- banner 수정/저장-->
+	<!-- slide banner 수정/저장-->
 	<update id="updateBannerModify" parameterType="hashmap">
 	    UPDATE MAIN_SLIDE_IMAGE
 	    SET 
@@ -29,14 +29,20 @@
 	        BANNER_ID       = #{bannerId, jdbcType=NUMERIC}
 	</update>
 
-	<!-- banner 삭제 -->
-	<delete id="deleteBanner" parameterType="hashmap">
+	<!-- slide banner 삭제 -->
+	<delete id="deleteSlideBanner" parameterType="hashmap">
 		DELETE FROM MAIN_SLIDE_IMAGE
 		WHERE BANNER_ID = #{bannerId}
 	</delete>
 	
-	<!-- banner 추가 -->
-    <insert id="insertBanner" parameterType="hashmap">
+	<!-- product banner 삭제 -->
+	<delete id="deleteProductBanner" parameterType="hashmap">
+		DELETE FROM PRODUCT_BANNER_IMG
+		WHERE PBANNER_IMG_NO = #{pBannerImgNo}
+	</delete>
+	
+	<!-- slide banner 추가 -->
+    <insert id="insertSlideBanner" parameterType="hashmap">
 	    INSERT INTO MAIN_SLIDE_IMAGE
 	    (BANNER_ID, TITLE, IMAGE_DIR, LINK_URL, DISPLAY_ORDER, USER_ID, CDATE)
 	    VALUES (
@@ -50,7 +56,27 @@
 	    )
 	</insert>
 	
-	
+	<!-- product banner 추가 -->
+	<insert id="insertProductBanner" parameterType="hashmap">
+	    INSERT INTO PRODUCT_BANNER_IMG (
+	        PBANNER_IMG_NO,
+	        TITLE,
+	        PRODUCT_NO,
+	        PRODUCT_IMG_NO,  IMAGE_DIR,       CDATE
+	    ) VALUES (
+	        PRODUCT_BANNER_SEQ.NEXTVAL,
+	        
+	        #{title, jdbcType=VARCHAR},
+	        
+	        #{productNo, jdbcType=NUMERIC}, 
+	        
+	        #{productImgNo, jdbcType=VARCHAR},
+	        
+	        NULL,
+	        
+	        SYSDATE
+	    )
+	</insert>
 
 
 

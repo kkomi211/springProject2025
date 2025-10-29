@@ -15,19 +15,14 @@ public class Admin {
 	private String imageDir;
 	private String linkUrl;
 	private int displayOrder;
-	private String cDate;
 	
 	// banner model(제품) 테이블 컬럼명
 	private int pBannerImgNo;
-	private int productNo;
-	private String productImgNo;
-	
-	
+	private String productImgNo;	
 	
 	// PRODUCT_INQUIRY 테이블 컬럼
 	private int inquiryNo;
 	private String productNo;
-	private String title;
 	private String content;
 	private String cDate;
 	private String uDate;
