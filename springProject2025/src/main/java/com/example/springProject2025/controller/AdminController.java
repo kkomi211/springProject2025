@@ -71,13 +71,6 @@ public class AdminController {
 		return "admin/user-list"; // .jsp빠진형태
 	}
 	
-	@RequestMapping("admin/user-list/view.do")
-	public String userDetailView(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception { // HttpServletRequest 추가
-	    request.setAttribute("userId", map.get("userId")); // model.addAttribute 대신 request.setAttribute 사용
-	    // model.addAttribute("userId", map.get("userId")); // 이 줄은 제거하거나 주석 처리
-	    return "admin/user-list-view"; // admin/user-list/view.jsp 로 이동
-	}
-	
 	// 상품 문의내역 리스트 불러오기 메소드
 	@RequestMapping(value = "admin/inquiry.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
@@ -127,33 +120,6 @@ public class AdminController {
 	    return new Gson().toJson(resultMap);
 	}
 	
-	
-	// 회원 리스트 불러오기
-	@RequestMapping(value = "admin/user-list.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-	@ResponseBody
-	public String userListAjax(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
-	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
-	    resultMap = adminService.getUserList(map);
-	    return new Gson().toJson(resultMap);
-	}
-	
-	// 회원 정보 상세보기
-	@RequestMapping(value = "admin/user-list/detail.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-	@ResponseBody
-	public String userDetailAjax(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
-	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
-	    resultMap = adminService.getUserDetail(map);
-	    return new Gson().toJson(resultMap);
-	}
-	
-	// 회원 삭제
-	@RequestMapping(value = "admin/user-list/delete.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-	@ResponseBody
-	public String deleteUser(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
-	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
-	    resultMap = adminService.deleteUser(map);
-	    return new Gson().toJson(resultMap);
-	}
 
 
 }
