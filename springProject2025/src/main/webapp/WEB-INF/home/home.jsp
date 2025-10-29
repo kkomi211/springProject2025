@@ -37,7 +37,9 @@
                 </div>
             </div>
             <div class="bottom-header">
-                <div>제품</div>
+                <div>
+                    <a href="/home/product.do">제품</a>
+                </div>
                 <div>
                     <a href="/home/product.do">세일</a>
                 </div>

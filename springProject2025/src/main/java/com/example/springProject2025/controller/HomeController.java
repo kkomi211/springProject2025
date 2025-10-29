@@ -27,27 +27,18 @@ public class HomeController {
 		return "home/crew"; // .jsp빠진형태
 	}
 	
-	@RequestMapping("home/mypage/inquery.do")
+	@RequestMapping("home/mypage/inquiry.do")
 	public String inquery(Model model) throws Exception {
-		return "home/inquery"; // .jsp빠진형태
+		return "home/inquiry"; // .jsp빠진형태
 	}
 	
-	@RequestMapping("home/community/orders.do")
-	public String orders(Model model) throws Exception {
-		return "home/orders"; // .jsp빠진형태
-	}
 	
-	@RequestMapping("home/community/refund-return.do")
-	public String refundReturn(Model model) throws Exception {
-		return "home/refund-return"; // .jsp빠진형태
-	}
-	
-	@RequestMapping("home/community/information.do")
+	@RequestMapping("home/mypage/information.do")
 	public String information(Model model) throws Exception {
 		return "home/information"; // .jsp빠진형태
 	}
 	
-	@RequestMapping("home/community/review.do")
+	@RequestMapping("home/mypage/review.do")
 	public String review(Model model) throws Exception {
 		return "home/review"; // .jsp빠진형태
 	}
@@ -76,4 +67,6 @@ public class HomeController {
 	public String sales(Model model) throws Exception {
 		return "home/sales"; // .jsp빠진형태
 	}
+	
+
 }
