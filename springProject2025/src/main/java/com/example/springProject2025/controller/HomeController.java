@@ -27,9 +27,9 @@ public class HomeController {
 		return "home/crew"; // .jsp빠진형태
 	}
 	
-	@RequestMapping("home/mypage/inquery.do")
+	@RequestMapping("home/mypage/inquiry.do")
 	public String inquery(Model model) throws Exception {
-		return "home/inquery"; // .jsp빠진형태
+		return "home/inquiry"; // .jsp빠진형태
 	}
 	
 	@RequestMapping("home/mypage/orders.do")
