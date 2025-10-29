@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.springProject2025.mapper.MypageMapper">
+
+	<select id="userInfo" parameterType="hashmap" resultType="com.example.springProject2025.model.User">
+		SELECT *
+		FROM USERS
+		WHERE USER_ID = #{userId}
+	</select>
+	
+	<select id="checkPwd" parameterType="hashmap" resultType="com.example.springProject2025.model.User">
+		SELECT *
+		FROM USERS
+		WHERE USER_ID = #{userId}
+	</select>
+	
+	<select id="checkEmail" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM USERS
+		WHERE EMAIL = #{email}
+	</select>
+	
+	<update id="insertNewEmail" parameterType="hashmap">
+		UPDATE USERS
+		SET 
+			EMAIL = #{email}
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<update id="insertNewName" parameterType="hashmap">
+		UPDATE USERS
+		SET 
+			NAME = #{name}
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<update id="insertNewPhone" parameterType="hashmap">
+		UPDATE USERS
+		SET 
+			PHONE = #{phone}
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<update id="insertNewAddr" parameterType="hashmap">
+		UPDATE USERS
+		SET 
+			ADDR = #{addr}
+		WHERE USER_ID = #{userId}
+	</update>
+	
+</mapper>
