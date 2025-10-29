@@ -32,23 +32,23 @@ public class HomeController {
 		return "home/inquery"; // .jsp빠진형태
 	}
 	
-//	@RequestMapping("home/mypage/orders.do")
-//	public String orders(Model model) throws Exception {
-//		System.out.println("home/mypage/orders.do진입");
-//		return "home/mypage/orders"; // .jsp빠진형태
-//	}
+	@RequestMapping("home/mypage/orders.do")
+	public String orders(Model model) throws Exception {
+		System.out.println("home/mypage/orders.do진입");
+		return "home/mypage/orders"; // .jsp빠진형태
+	}
 	
-	@RequestMapping("home/community/refund-return.do")
+	@RequestMapping("home/mypage/refund-return.do")
 	public String refundReturn(Model model) throws Exception {
 		return "home/refund-return"; // .jsp빠진형태
 	}
 	
-	@RequestMapping("home/community/information.do")
+	@RequestMapping("home/mypage/information.do")
 	public String information(Model model) throws Exception {
 		return "home/information"; // .jsp빠진형태
 	}
 	
-	@RequestMapping("home/community/review.do")
+	@RequestMapping("home/mypage/review.do")
 	public String review(Model model) throws Exception {
 		return "home/review"; // .jsp빠진형태
 	}

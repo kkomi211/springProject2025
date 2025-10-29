@@ -1,10 +1,16 @@
 package com.example.springProject2025.controller;
 
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.springProject2025.dao.AdminService;
+import com.google.gson.Gson;
 
 import ch.qos.logback.core.model.Model;
 
@@ -26,10 +32,10 @@ public class AdminController {
 		return "admin/banner"; // .jsp빠진형태
 	}
 	
-	@RequestMapping("admin/inquery.do")
+	@RequestMapping("admin/inquiry.do")
 	public String inquery(Model model) throws Exception {
 		System.out.println("컨트롤러 admin.do진입");
-		return "admin/inquery"; // .jsp빠진형태
+		return "admin/inquiry"; // .jsp빠진형태
 	}
 	
 	@RequestMapping("admin/refund-return.do")
@@ -55,6 +61,7 @@ public class AdminController {
 	public String userList(Model model) throws Exception {
 		return "admin/user-list"; // .jsp빠진형태
 	}
+	
 	
 	
 	
