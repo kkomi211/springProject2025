@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/css/user-style.css">
         <link rel="stylesheet" href="/css/jghstyle.css">
-       
+
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -196,6 +196,7 @@
                                             <p>브랜드 : {{ order.brand }}</p>
                                             <p>상품가격 : {{ formatCurrency(order.paymentAmount) }}원</p>
                                             <p>주문일자 : {{ order.udate }}</p> <!--분명뭔가 요청을했고 그순간의 마지막 날짜를 기준잡았음-->
+                                            <!-- <p>별점: {{ order.rating || '평점 없음' }}</p> -->
                                         </div>
 
                                         <div v-if="!isRefundOrExchangeRequested(order.status)">
@@ -207,15 +208,26 @@
                                                     <input type="radio" v-model="order.actionType" value="C">교환
                                                 </label> -->
                                                 <br>
-                                                <div>
-                                                    <button @click = "moveToReviewWrite(order)">
-                                                          리뷰작성하기
+                                                <div v-if="order.rating">
+                                                    <button @click="moveToReviewView(order)" style="background-color: gray;">
+                                                        리뷰 보기
                                                     </button>
                                                 </div>
-                                                <div class="star-rating">
-                                                    &#9734;&#9734;&#9734;&#9734;&#9734;
+                                                <div v-else>
+                                                    <button @click="moveToReviewWrite(order)">
+                                                        리뷰 작성하기
+                                                    </button>
                                                 </div>
-                                                <div class="star-rating">
+                                                <div class="star-rating" v-if="order.rating">
+                                                    {{ displayStars(order.rating) }}
+                                                </div>
+                                                <div class="star-rating" v-else>
+                                                    &#9734; &#9734; &#9734; &#9734; &#9734;
+                                                </div>
+                                                <!-- <div class="star-rating">
+                                                    &#9734;&#9734;&#9734;&#9734;&#9734;
+                                                </div> -->
+                                                <!-- <div class="star-rating">
                                                     <i class="far fa-star"></i>
                                                     <i class="far fa-star"></i>
                                                     <i class="far fa-star"></i>
@@ -224,7 +236,7 @@
                                                 </div>
                                                 <div class="star-rating">
                                                     <i v-for="n in 5" :key="n" class="far fa-star"></i>
-                                                </div>
+                                                </div> -->
                                                 <!-- <div>
                                                     <textarea type="text" style="height: 80px; width: 250px;"
                                                         placeholder="상세사유입력" v-model="order.reason"></textarea>
@@ -319,9 +331,10 @@
                     userName: "로딩중...", //초기값 잠시 뜸
 
                     orderNo: '${orderNo}',
-                    productNo : '${productNo}',
+                    productNo: '${productNo}',
                     // sau : 'R',
                     // because: '',
+                    rating: "${rating}"
 
                 };
             },
@@ -330,6 +343,12 @@
                     if (!value) return '0';
                     const numValue = typeof value === 'string' ? parseInt(value) : value;
                     return numValue.toLocaleString();
+                },
+                displayStars: function (rating) {
+                    // if (!rating) return '별점 없음';
+                    const numRating = typeof rating === 'string' ? parseInt(rating) : rating;
+                    // if (isNaN(numRating)) return '별점 없음';
+                    return '⭐'.repeat(numRating) + '☆'.repeat(5 - numRating); // + ' (' + numRating + '/5)';
                 },
                 fnList: function () {
                     let self = this;
@@ -343,6 +362,7 @@
                         endRow: endRow
                     };
                     // alert("넘어온 orderNo는" + self.orderNo);
+                    // alert("넘어온 rating" + self.rating);
                     $.ajax({
                         url: "/home/mypage/reviewlist.dox",
                         dataType: "json",
@@ -353,23 +373,23 @@
                             if (data.result == "success") {
                                 self.orderList = data.list;
                                 // self.orderList = data.list.map(order => {
-                                    // URL로 넘어온 orderNo와 현재 목록의 orderNo가 일치하는지 확인
-                                    // let isTargetOrder = order.orderNo === self.orderNo;
-                                    // 목록 항목에 체크 상태를 추가합니다.
-                                    // return {
-                                        // ...order,
-                                        // isChecked: isTargetOrder,
+                                // URL로 넘어온 orderNo와 현재 목록의 orderNo가 일치하는지 확인
+                                // let isTargetOrder = order.orderNo === self.orderNo;
+                                // 목록 항목에 체크 상태를 추가합니다.
+                                // return {
+                                // ...order,
+                                // isChecked: isTargetOrder,
 
-                                        //  추가: 라디오 버튼의 개별 상태
-                                        // actionType: 'R', // 'R'(반품)을 기본값으로 설정
-                                        //  추가: 텍스트 에어리어의 개별 상태
-                                        // reason: ''
-                                    // };
+                                //  추가: 라디오 버튼의 개별 상태
+                                // actionType: 'R', // 'R'(반품)을 기본값으로 설정
+                                //  추가: 텍스트 에어리어의 개별 상태
+                                // reason: ''
+                                // };
                                 // });
                                 self.cnt = data.cnt;
                                 self.index = Math.ceil(self.cnt / self.pageSize);
                                 console.log("리뷰리스트 업데이트 완료 - 전체 개수:", self.cnt, "현재 페이지:", self.page);
-                            } 
+                            }
                             else {
                                 alert(" 내역 조회 실패");
                                 self.orderList = [];
@@ -474,7 +494,7 @@
 
                     // 1. Vue의 sessionId 데이터에 접근
                     let sessionId = self.sessionId;
-                    
+
                     // 2. 전달받은 order 객체에서 orderNo와 productNo를 가져옵니다.
                     let orderNo = order.orderNo;   // 수정
                     let productNo = order.productNo; // 
@@ -492,11 +512,32 @@
                     //         quantity: quantity, paymentAmount:paymentAmount, udate:udate,
                     //         imgPath : imgPath , imgName : imgName, status: status
                     // })  );
-                    pageChange("review-write.do", 
-                    { sessionId: sessionId, orderNo:orderNo, productNo:productNo,  
-                        quantity: quantity, paymentAmount:paymentAmount, udate:udate,
-                        imgPath : imgPath , imgName : imgName, status: status, productName : productName
-                    });
+                    pageChange("review-write.do",
+                        {
+                            sessionId: sessionId, orderNo: orderNo, productNo: productNo,
+                            quantity: quantity, paymentAmount: paymentAmount, udate: udate,
+                            imgPath: imgPath, imgName: imgName, status: status, productName: productName
+                        });
+                },
+
+                moveToReviewView: function (order) {
+                    let self = this;
+                    console.log("리뷰 보기 페이지 이동. pageChange 호출");
+
+                    // 1. Vue의 sessionId 데이터에 접근
+                    let sessionId = self.sessionId;
+
+                    // 2. 전달받은 order 객체에서 orderNo와 productNo를 가져옵니다.
+                    let orderNo = order.orderNo;
+                    let productNo = order.productNo;
+
+                    // 3. pageChange 함수 호출
+                    pageChange("review-view.do",
+                        {
+                            sessionId: sessionId,
+                            orderNo: orderNo,
+                            productNo: productNo
+                        });
                 },
 
             }, // methods

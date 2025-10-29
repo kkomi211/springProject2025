@@ -23,5 +23,38 @@
 			        )
 		</insert>
 	
+		<select id="selectReview" parameterType="hashmap" resultType="com.example.springProject2025.model.Review">
+			SELECT 
+				R.REVIEW_NO,
+				R.PRODUCT_NO,
+				R.ORDER_NO,
+				R.USER_ID,
+				R.RATING,
+				R.TITLE,
+				R.CONTENT,
+				R.CDATE,
+				P.PRODUCT_NAME,
+				PI.IMG_PATH,
+				PI.IMG_NAME,
+				O.PAYMENT_AMOUNT,
+				O.QUANTITY,
+				P.BRAND
+			FROM REVIEW R
+			INNER JOIN ORDERS O ON R.ORDER_NO = O.ORDER_NO
+			LEFT JOIN PRODUCT P ON R.PRODUCT_NO = P.PRODUCT_NO
+			LEFT JOIN (
+				SELECT PRODUCT_NO, IMG_PATH, IMG_NAME
+				FROM (
+					SELECT PRODUCT_NO, IMG_PATH, IMG_NAME,
+						ROW_NUMBER() OVER (PARTITION BY PRODUCT_NO ORDER BY PRODUCT_IMG_NO) as rn
+					FROM PRODUCT_IMG
+				)
+				WHERE rn = 1
+			) PI ON P.PRODUCT_NO = PI.PRODUCT_NO
+			WHERE R.ORDER_NO = #{orderNo}
+			  AND R.PRODUCT_NO = #{productNo}
+			  AND R.USER_ID = #{sessionId}
+		</select>
+	
 	
 	</mapper>

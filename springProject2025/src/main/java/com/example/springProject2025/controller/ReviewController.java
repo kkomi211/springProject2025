@@ -66,9 +66,9 @@ public class ReviewController {
 		System.out.println("home/mypage/reviewList.dox 진입");
 		System.out.println("들어온 map값 "  + map);
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		System.out.println(map);
-		resultMap = orderService.getReviewList(map);
 		
+		resultMap = orderService.getReviewList(map);
+		System.out.println("reviewlist.dox에서 화면으로 돌려줄 값" + resultMap);
 		return new Gson().toJson(resultMap); // [{},{}]
 	}
 	
@@ -85,6 +85,34 @@ public class ReviewController {
 		return new Gson().toJson(resultMap);
 	}
 	
+	@RequestMapping("home/mypage/review-view.do")  //리뷰 보기
+	public String mypageReviewView(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
+		System.out.println("home/mypage/review-view.do 진입");
+		System.out.println("들어온 map값" + map);
+		request.setAttribute("orderNo", map.get("orderNo"));
+		request.setAttribute("productNo", map.get("productNo"));
+		request.setAttribute("sessionId", map.get("sessionId"));
+		return "home/mypage/review-view"; // .jsp빠진형태
+	}
+	
+	@RequestMapping(value = "home/mypage/review-view.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String reviewView(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		System.out.println("home/mypage/review-view.dox 진입");
+		System.out.println("들어온 map값 " + map);
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		HashMap<String, Object> reviewData = reviewService.getReview(map);
+		if (reviewData != null && "success".equals(reviewData.get("result"))) {
+			resultMap.put("result", "success");
+			resultMap.put("review", reviewData.get("review"));
+		} else {
+			resultMap.put("result", "fail");
+		}
+		
+		System.out.println("review-view.dox에서 화면으로 돌려줄 값" + resultMap);
+		return new Gson().toJson(resultMap);
+	}
 	
 	
 

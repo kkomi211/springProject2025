@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.springProject2025.mapper.OrderMapper;
 import com.example.springProject2025.mapper.ReviewMapper;
-import com.example.springProject2025.model.Order;
+import com.example.springProject2025.model.Review;
 
 @Service
 public class ReviewService {
@@ -28,6 +28,24 @@ public class ReviewService {
 			resultMap.put("result", "success");
 		} catch (Exception e) {
 			// TODO: handle exception
+			resultMap.put("result", "fail");
+			System.out.println(e.getMessage());
+		}
+		return resultMap;
+	}
+
+	public HashMap<String, Object> getReview(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			System.out.println("서버로 들어온 데이터 확인 getReview " + map);
+			Review review = reviewMapper.selectReview(map);
+			if (review != null) {
+				resultMap.put("result", "success");
+				resultMap.put("review", review);
+			} else {
+				resultMap.put("result", "fail");
+			}
+		} catch (Exception e) {
 			resultMap.put("result", "fail");
 			System.out.println(e.getMessage());
 		}
