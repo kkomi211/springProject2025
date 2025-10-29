@@ -84,12 +84,24 @@ td input {
     text-align: left;
 }
 
+.text-center {
+    text-align: center;
+}
+
 .table th {
     width: 10%;
 }
 
 .smallInput {
     width: 7%;
+}
+
+.bold{
+    font-weight: bold;
+}
+
+.font30{
+    font-size: 30px;
 }
 
 .redbutton {
@@ -139,7 +151,7 @@ td input {
 }
 
 .category-box .category{
-    width:60%;
+    width:100%;
     border: 1px solid black;
     text-align: center;
     padding: 20px 20px;
@@ -147,7 +159,7 @@ td input {
 }   
 
 .category-box .subcategory{
-    width:60%;
+    width:100%;
     border: 1px solid black;
     text-align: center;
     padding: 10px 20px;
@@ -183,3 +195,55 @@ td input {
    height: 200px;
     margin: 20px 0px;
 }
+
+.star { color:#ddd; font-size:14px; }
+.star.filled { color:#f5a623; }
+.stars .avg { margin-left:6px; font-weight:600; }
+.stars .cnt { margin-left:2px; color:#666; font-size:12px; }
+.no-review { color:#999; font-size:12px; }
+
+.clear{
+    clear: both;
+}
+
+
+
+
+.active{
+    background-color: rgb(37, 37, 37);
+    color: white;
+}
+
+
+.category-box .subcategory:hover{
+    background-color: rgb(37, 37, 37);
+    color: white;
+}
+
+.subcategory-wrapper { position: relative; }
+
+
+.subcategory { 
+  padding: 6px 10px; 
+  cursor: pointer; 
+  border: 1px solid #ddd;
+  border-right: none;          /* 오른쪽 보더 제거 → 붙어 보이게 */
+}
+
+.subcategory-children{
+  position: absolute;
+  top: 0;
+  left: 100%;                  /* 바로 오른쪽에 붙이기 */
+  margin-left: 0;              /* 여백 제거 */
+  background: #fff;
+  border: 1px solid #ddd;
+  min-width: 160px;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+
+.subcategory.child { white-space: nowrap; padding: 6px 10px; }
+.subcategory.child:hover { 
+    background-color: rgb(37, 37, 37);
+    color: white;
+ }

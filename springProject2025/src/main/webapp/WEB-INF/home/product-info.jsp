@@ -76,7 +76,7 @@
 
                 <main>
                     <div class="content">
-                        <h1 class="margintop">제품</h1>
+                        <h1 class="margintop">제품 상세 </h1>
                         <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword">
                         <button class="height40 bluebutton" @click="fnList">검색</button>
                         <hr>
@@ -107,24 +107,9 @@
                         </div>
                     </div>
                     <div class="main-container">
-                        <span v-for="item in list" class="product-box" @click="fnProductView(item.productNo)">
-                            <div><img :src="imgByProduct[String(item.productNo)] || '/img/no-image.png'"
-                                    class="small-img" :alt="item.productName"></div>
-                            <div>{{item.productName}}</div>
-                            <div>{{item.price}} 원</div>
-                            <div v-if="ratingByName[item.productName]" class="stars">
-                                <span v-for="n in 5" :key="n" class="star"
-                                    :class="{ filled: n <= ratingByName[item.productName].rounded }">★</span>
-                                <span class="avg"> {{ ratingByName[item.productName].avg.toFixed(1) }}</span>
-                                <span class="cnt"> ({{ ratingByName[item.productName].cnt }})</span>
-                            </div>
-                            <div v-else class="no-review">리뷰 없음</div>
-                        </span>
+                        
                     </div>
-                    <div class="clear text-center">
-                        <span class="margin30 font30" :class="{bold: page == num}" v-for="num in totalPage"
-                            @click="fnPage(num)">{{num}}</span>
-                    </div>
+                    
                 </main>
 
                 <footer>
@@ -169,12 +154,8 @@
                     imgList: [],
                     reviewList: [],
                     typeList: [],
-                    page: 1,
-                    pageSize: 9,
-                    totalPage: "",
-                    keyword: "",
-                    category: "",
-                    hoverParent: null
+                    hoverParent: null,
+                    productNo : "${productNo}"
                 };
             },
             computed: {
@@ -219,14 +200,10 @@
             },
             methods: {
                 // 함수(메소드) - (key : function())
-                fnList: function () {
+                fnInfo: function () {
                     let self = this;
                     let param = {
-                        page: (self.page - 1) * self.pageSize,
-                        pageSize: 9,
-                        keyword: self.keyword,
-                        keytype: "name",
-                        category: self.category
+                        productName : self.productName
                     };
                     $.ajax({
                         url: "/product/user/list.dox",

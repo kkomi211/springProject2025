@@ -99,5 +99,37 @@ public class ProductService {
 		return resultMap;
 	}
 
+	public HashMap<String, Object> getReviewList(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			List<Product> reviewList = productmapper.selectReviewList(map);
+			List<Product> avgRating = productmapper.selectReviewAvg(map);
+			resultMap.put("reviewList", reviewList);
+			resultMap.put("avgRating", avgRating);
+			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> getUserProductList(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			List<Product> list = productmapper.selectProductListUser(map);
+			int total = productmapper.selectProductPageUser(map);
+			List<Product> typeList = productmapper.selectProductTypeList(map);
+			System.out.println(map);
+			resultMap.put("list", list);
+			resultMap.put("typeList", typeList);
+			resultMap.put("total", total);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+
 	
 }

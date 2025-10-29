@@ -36,6 +36,8 @@ public class ProductController {
         request.setAttribute("productNo", map.get("productNo"));
         return "admin/product-info"; // .jsp 빠진 형태
     }
+    
+    
 
     @RequestMapping(value = "/product/list.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
@@ -76,6 +78,20 @@ public class ProductController {
     @ResponseBody
     public String productImgList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
         HashMap<String, Object> resultMap = productService.getProductImgList(map);
+        return new Gson().toJson(resultMap);
+    }
+    
+    @RequestMapping(value = "/product/user/list.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String userProductList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+        HashMap<String, Object> resultMap = productService.getUserProductList(map);
+        return new Gson().toJson(resultMap);
+    }
+    
+    @RequestMapping(value = "/review/list.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String ReviewList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+        HashMap<String, Object> resultMap = productService.getReviewList(map);
         return new Gson().toJson(resultMap);
     }
 

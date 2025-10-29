@@ -15,6 +15,8 @@ public interface ProductMapper {
 	
 	int selectProductPage(HashMap<String, Object> map);
 	
+	int selectProductPageUser(HashMap<String, Object> map);
+	
 	List<Product> selectProductList(HashMap<String, Object> map);
 
 	Product selectProductInfo(HashMap<String, Object> map);
@@ -32,5 +34,15 @@ public interface ProductMapper {
 	Product selectProductImg(HashMap<String, Object> map);
 
 	List<Product> selectProductImgList(HashMap<String, Object> map);
+
+	List<Product> selectReviewList(HashMap<String, Object> map);
+	
+	List<Product> selectReviewAvg(HashMap<String, Object> map);
+	
+	List<Product> selectProductListUser(HashMap<String, Object> map);
+	
+	List<Product> selectProductTypeList(HashMap<String, Object> map);
+	
+	
 
 }
