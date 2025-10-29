@@ -2,7 +2,6 @@ package com.example.springProject2025.controller;
 
 import java.util.HashMap;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,6 +70,13 @@ public class AdminController {
 		return "admin/user-list"; // .jsp빠진형태
 	}
 	
+	// banner(메인 슬라이드 광고) list
+	@RequestMapping(value = "/admin/banner1.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String banner1List(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = adminService.getbanner1List(map);
+
 	@RequestMapping("admin/user-list/view.do")
 	public String userDetailView(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception { // HttpServletRequest 추가
 	    request.setAttribute("userId", map.get("userId")); // model.addAttribute 대신 request.setAttribute 사용
@@ -118,6 +124,12 @@ public class AdminController {
 	    return new Gson().toJson(resultMap);
 	}
 	
+	// banner update 수정
+	@RequestMapping(value = "/admin/bannerUpdate.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String update(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = adminService.bannerModify(map);
 	// 주문내역 상태 변경(신규주문->배송중, 배송중->배송완료) 메소드
 	@RequestMapping(value = "admin/orders/updateStatus.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
@@ -156,4 +168,26 @@ public class AdminController {
 	}
 
 
+		return new Gson().toJson(resultMap);
+	}
+	
+	// banner delete 삭제
+	@RequestMapping(value = "/admin/bannerDelete.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String delete(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = adminService.removeBanner(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	// banner insert 추가
+		@RequestMapping(value = "/admin/bannerInsert.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+		@ResponseBody
+		public String add(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+			HashMap<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap = adminService.addBanner(map);
+			
+			return new Gson().toJson(resultMap);
+		}
 }
