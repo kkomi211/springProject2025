@@ -42,7 +42,7 @@
 					WHERE rn = 1
 				) PI ON P.PRODUCT_NO = PI.PRODUCT_NO
 				WHERE O.USER_ID = #{sessionId}
-				ORDER BY O.CDATE DESC
+				ORDER BY O.CDATE DESC, O.ORDER_NO DESC
 			) a
 		) WHERE rnum BETWEEN #{startRow} AND #{endRow}
 	</select>
@@ -106,7 +106,7 @@
 				) PI ON P.PRODUCT_NO = PI.PRODUCT_NO
 				WHERE O.USER_ID = #{sessionId}
 				AND O.STATUS != '신규주문'
-				ORDER BY O.UDATE DESC
+				ORDER BY O.UDATE DESC , O.ORDER_NO DESC
 			) a
 		) WHERE rnum BETWEEN #{startRow} AND #{endRow}
 	</select>

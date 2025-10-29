@@ -512,20 +512,26 @@
                         orders: ordersData
                     };
                     
-                    console.log("--- 서버로 전송할 데이터 ---");
-                    console.log(requestData); 
-                    console.log("-----------------------------------------");
 
+                    let param = {
+                            sessionId: self.sessionId,
+                            ordersJson: JSON.stringify(ordersData)
+                        }
+
+                    console.log("--- 서버로 전송할 데이터 ---");
+                    console.log(param); 
+                    console.log("-----------------------------------------");
                     $.ajax({
                         url: "/home/mypage/refund-return-appli.dox",
                         type: "POST",
                         contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                         dataType: "json",
                         // JSON 문자열을 하나의 파라미터로 전송
-                        data: {
-                            sessionId: self.sessionId,
-                            ordersJson: JSON.stringify(ordersData)
-                        }, 
+                        // data: {
+                        //     sessionId: self.sessionId,
+                        //     ordersJson: JSON.stringify(ordersData)
+                        // }, 
+                        data : param,
                         success: function (res) {
                             if (res && (res.result === "success" || res.success === true)) {
                                 alert("정상적으로 신청이 접수되었습니다.");
