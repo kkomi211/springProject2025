@@ -31,4 +31,6 @@ public interface ProductMapper {
 	
 	Product selectProductImg(HashMap<String, Object> map);
 
+	List<Product> selectProductImgList(HashMap<String, Object> map);
+
 }

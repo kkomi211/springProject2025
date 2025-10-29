@@ -52,6 +52,7 @@
 		SELECT *
 		FROM PRODUCT_IMG
 		WHERE PRODUCT_NO = #{productNo}
+	
 	</select>
 	
 	<update id="editProduct" parameterType="hashmap">
@@ -81,4 +82,10 @@
 		DELETE FROM PRODUCT_IMG
 		WHERE PRODUCT_NO = #{productNo}
 	</delete>
+	
+	<select id="selectProductImgList" parameterType="hashmap">
+		SELECT *
+		FROM PRODUCT_IMG
+	</select>
+
 </mapper>

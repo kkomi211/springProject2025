@@ -86,5 +86,18 @@ public class ProductService {
 		int cnt = productmapper.insertProductImg(map);
 	}
 
+	public HashMap<String, Object> getProductImgList(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			List<Product> imgList = productmapper.selectProductImgList(map);
+			resultMap.put("imgList", imgList);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+
 	
 }

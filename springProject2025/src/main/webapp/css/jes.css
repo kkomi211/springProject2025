@@ -156,8 +156,30 @@ td input {
 
 .main-container{
     width:60%;
-    padding: 30px;
+    padding: 0px;
     border: 1px solid black;
     margin: 30px;
     float: left;
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    grid-template-columns: repeat(3, 380px);
+    grid-template-rows: repeat(3, 450px);
+    grid-auto-rows: 100px;
+}
+
+.product-box{
+    width: 70%;
+    padding: 30px;
+    border: 1px solid black;
+    margin: 30px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.small-img{
+   border: 1px solid black;
+   width: 200px;
+   height: 200px;
+    margin: 20px 0px;
 }
