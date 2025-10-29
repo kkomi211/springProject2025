@@ -30,4 +30,16 @@ public interface AdminMapper {
 
 	// 주문 상태 업데이트
 	int updateOrderStatus(HashMap<String, Object> map);
+	
+	// 회원 목록 조회
+	List<Admin> selectUserList(HashMap<String, Object> map);
+
+	// 회원 총 개수 조회
+	int selectUserListCount(HashMap<String, Object> map);
+
+	// 회원 상세 정보 조회
+	Admin selectUserDetail(HashMap<String, Object> map);
+	
+	// 회원 삭제
+	int deleteUser(HashMap<String, Object> map);
 }
