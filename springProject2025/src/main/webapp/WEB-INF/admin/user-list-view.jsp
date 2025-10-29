@@ -141,8 +141,12 @@
             },
             fnDeleteUser: function() {
                 let self = this;
+
+                console.log("현재 self.userId:", self.userId);
+                console.log("현재 self.detail.name:", self.detail.name);
                 
-                if(!confirm(`'${self.detail.name}' 회원(${self.userId})을 정말로 삭제하시겠습니까?`)) {
+                var confirmMessage = "'" + self.detail.name + "' 회원(" + self.userId + ")을 정말로 삭제하시겠습니까?";
+                if(!confirm(confirmMessage)) {
                     return; // 사용자가 '아니오'를 누르면 함수 종료
                 }
 
