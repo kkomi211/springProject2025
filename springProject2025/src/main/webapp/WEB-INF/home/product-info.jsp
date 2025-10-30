@@ -14,25 +14,6 @@
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <link rel="stylesheet" href="/css/jes.css">
-        <script src="/js/page-change.js"></script>
-        <style>
-
-        </style>
-    </head>
-
-
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/css/user-style.css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
-        <title>Homepage</title>
-        <script src="https://code.jquery.com/jquery-3.7.1.js"
-            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-        <link rel="stylesheet" href="/css/jes.css">
         <style>
 
         </style>
@@ -78,17 +59,19 @@
                     <div class="content">
                         <h1 class="margintop">제품 상세 </h1>
                         <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword">
-                        <button class="height40 bluebutton" @click="fnList">검색</button>
+                        <button class="height40 bluebutton" @click="">검색</button>
                         <hr>
                     </div>
                     <div class="side-bar">
                         <div class="category-box">
                             <div class="category">카테고리</div>
-                            <div class="subcategory" :class="{active: category == ''}" @click="selectCategory('')">전체</div>
+                            <div class="subcategory" :class="{active: category == ''}" @click="selectCategory('')">전체
+                            </div>
                             <div v-for="p in parents" :key="p.typeNo" class="subcategory-wrapper"
                                 @mouseenter="hoverParent = String(p.typeNo)" @mouseleave="hoverParent = null">
                                 <div class="subcategory"
-                                    :class="{active: category === p.typeNo || category === p.typePart}" @click="selectCategory(p.typeNo)">
+                                    :class="{active: category === p.typeNo || category === p.typePart}"
+                                    @click="selectCategory(p.typeNo)">
                                     {{ p.typeName }}
                                 </div>
 
@@ -106,8 +89,47 @@
                             </div>
                         </div>
                     </div>
-                    <div class="main-container">
-                        
+                    <div class="infoMain-container">
+                        <div class="img-box"><img :src="imgByProduct[String(productNo)] || '/img/no-image.png'"
+                                class="big-img" :alt="info.productName"></div>
+                        <div class="infoText-box">
+                            <div class="margin80">{{info.productName}}</div>
+                            <div class="margin80 font30">{{info.price}} 원</div>
+                            <div class="font30 margin80">
+                                <!-- 사이즈 -->
+                                <select class="select-box">
+                                    <option v-for="item in sizeList" >사이즈 : {{item.productSize}} 재고 : {{item.quantity}}</option>
+                                </select>
+                            </div>
+                            <div class="margin80">
+                                <button>장바구니</button>
+                                <button>결제하기</button>
+                            </div>
+                        </div>
+                        <div class="detail-box">{{info.productDetail}}</div>
+                        <div class="container-foot">
+                            <div class="foot-box" @click="status = 1" :class="{active: status == 1} ">상품문의</div>
+                            <div class="foot-box" @click="status = 2" :class="{active: status == 2} ">상품리뷰</div>
+                            <div v-if="status == 1">
+                                <div class="inquirySearch-box">
+                                    <input class="search">
+                                    <button class="bluebutton height40">검색</button>
+                                    <button class="bluebutton height40">작성하기</button>
+                                </div>
+                                <div class="table margintop100">
+                                    <table>
+                                        <tr>
+                                            <th>문의 제목</th>
+                                            <th>답변 상태</th>
+                                        </tr>
+                                        <tr v-for="item in inquiryList">
+                                            <td class="longTd">{{item.title}}</td>
+                                            <td class="shortTd">{{item.status}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
                 </main>
@@ -155,7 +177,14 @@
                     reviewList: [],
                     typeList: [],
                     hoverParent: null,
-                    productNo : "${productNo}"
+                    productNo: "${productNo}",
+                    category: "",
+                    keyword: "",
+                    info: {},
+                    sizeList: [],
+                    rating : "${rating}",
+                    status : 1,
+                    inquiryList : []
                 };
             },
             computed: {
@@ -165,17 +194,6 @@
                         const key = String(img.productNo);
                         // 여러 장이면 첫 장만 사용(원하면 배열로 push해서 썸네일/갤러리 구성 가능)
                         if (!m[key]) m[key] = img.imgPath;
-                    }
-                    return m;
-                },
-                ratingByName() {
-                    const m = {};
-                    for (const r of this.reviewList || []) {
-                        // 컬럼명이 대문자(AVG_RATING/REVIEW_CNT)로 올 수도 있어 둘 다 대응
-                        const name = String(r.productName || r.PRODUCT_NAME);
-                        const avg = Number(r.avgRating ?? r.AVG_RATING ?? 0);
-                        const cnt = Number(r.reviewCnt ?? r.REVIEW_CNT ?? 0);
-                        m[name] = { avg, cnt, rounded: Math.round(avg) };
                     }
                     return m;
                 },
@@ -203,18 +221,17 @@
                 fnInfo: function () {
                     let self = this;
                     let param = {
-                        productName : self.productName
+                        productNo: self.productNo
                     };
                     $.ajax({
-                        url: "/product/user/list.dox",
+                        url: "/product/user/info.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
                             console.log(data);
-                            self.list = data.list;
-                            self.totalPage = Math.ceil(data.total / self.pageSize);
-                            self.typeList = data.typeList;
+                            self.info = data.info;
+                            self.sizeList = data.sizeList;
                         }
                     });
                 },
@@ -246,29 +263,55 @@
                         }
                     });
                 },
-                fnPage(num) {
-                    let self = this;
-                    self.page = num;
-                    self.fnList();
-                },
                 selectCategory(typeNo) {
                     let self = this;
                     self.category = typeNo;
                     console.log(" == > " + self.category);
-                    
-                    self.fnList();
+
+                    // 페이지 이동 넣어야함
                 },
-                fnProductView(num){
-                    pageChange("/home/product-info.do", {productNo : num});
+                fnList() {
+                    let self = this;
+                    let param = {
+                    };
+                    $.ajax({
+                        url: "/product/user/list.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            self.typeList = data.typeList;
+                        }
+                    });
+                },
+                fnInquiry(){
+                    let self = this;
+                    let param = {
+                        productNo : self.productNo
+                    };
+                    $.ajax({
+                        url: "/product/inquiry/list.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            self.inquiryList = data.inquiryList;
+                        }
+                    });
                 }
-                
+
+
             }, // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분
                 let self = this;
                 self.fnList();
+                self.fnInfo();
                 self.fnImgList();
                 self.fnReviewList();
+                self.fnInquiry();
             }
         });
 

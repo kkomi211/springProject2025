@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.example.springProject2025.model.Admin;
 import com.example.springProject2025.model.Product;
 
 @Mapper
@@ -42,7 +43,12 @@ public interface ProductMapper {
 	List<Product> selectProductListUser(HashMap<String, Object> map);
 	
 	List<Product> selectProductTypeList(HashMap<String, Object> map);
-	
+
+	Product selectProductInfoUser(HashMap<String, Object> map);
+
+	List<Product> selectSizeAndQuantity(HashMap<String, Object> map);
+
+	List<Product> selectInquiryList(HashMap<String, Object> map);
 	
 
 }

@@ -33,4 +33,16 @@ public class Product {
 	private int helpfulCnt;
 	private double avgRating;
 	private int reviewCnt;
+	
+// inquiry 용
+	private int inquiryNo;
+//	private String productNo;
+//	private String title;
+//	private String content;
+	private String cDate;
+	private String uDate;
+	private String pwd;
+	private String status;
+	private String answer;
+	private String answerDate;
 }

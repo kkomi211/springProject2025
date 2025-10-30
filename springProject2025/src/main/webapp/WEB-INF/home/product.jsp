@@ -281,8 +281,8 @@
                     
                     self.fnList();
                 },
-                fnProductView(num){
-                    pageChange("/home/product-info.do", {productNo : num});
+                fnProductView(productNo, rating){
+                    pageChange("/home/product-info.do", {productNo : productNo});
                 }
                 
             }, // methods

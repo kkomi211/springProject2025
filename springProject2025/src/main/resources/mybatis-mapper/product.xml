@@ -165,5 +165,45 @@
 		GROUP BY p.PRODUCT_NAME
 		ORDER BY p.PRODUCT_NAME
 	</select>
+	
+	<select id="selectProductInfoUser" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT
+		  PRODUCT_NO,
+		  PRODUCT_NAME,
+		  PRICE,
+		  PRODUCT_DETAIL,
+		  CDATE, UDATE
+		FROM PRODUCT
+		WHERE PRODUCT_NO = #{productNo}
+	</select>
+	
+	<select id="selectSizeAndQuantity" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT
+		  PRODUCT_NO,
+		  PRODUCT_SIZE,
+		  QUANTITY,
+		  PRICE
+		FROM PRODUCT 
+		WHERE PRODUCT_NAME = (
+		  SELECT PRODUCT_NAME FROM PRODUCT WHERE PRODUCT_NO = 11
+		)
+		ORDER BY
+		  CASE WHEN REGEXP_LIKE(PRODUCT_SIZE, '^\d+$')
+		       THEN TO_NUMBER(PRODUCT_SIZE) END,
+		  PRODUCT_SIZE
+	</select>
 
+	<select id="selectInquiryList" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT *
+		FROM PRODUCT_INQUIRY
+		WHERE PRODUCT_NO IN(
+		    SELECT PRODUCT_NO
+		    FROM PRODUCT
+		    WHERE PRODUCT_NAME IN(
+		        SELECT PRODUCT_NAME
+		        FROM PRODUCT 
+		        WHERE PRODUCT_NO = #{productNo}
+		    )
+		)
+	</select>
 </mapper>
