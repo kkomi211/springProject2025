@@ -52,6 +52,21 @@ public class ProductController {
         return new Gson().toJson(resultMap);
     }
     
+    @RequestMapping(value = "/product/inquiry/view.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String inquiryView(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+        HashMap<String, Object> resultMap = productService.getInquiryView(map);
+        return new Gson().toJson(resultMap);
+    }
+    
+    @RequestMapping(value = "/product/review/list.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String reviewList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+        HashMap<String, Object> resultMap = productService.getProductReviewList(map);
+        return new Gson().toJson(resultMap);
+    }
+    
+    
 
     @RequestMapping(value = "/product/list.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
@@ -106,6 +121,13 @@ public class ProductController {
     @ResponseBody
     public String ReviewList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
         HashMap<String, Object> resultMap = productService.getReviewList(map);
+        return new Gson().toJson(resultMap);
+    }
+    
+    @RequestMapping(value = "/product/review/1up.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String heartUp(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+        HashMap<String, Object> resultMap = productService.getheartUp(map);
         return new Gson().toJson(resultMap);
     }
 

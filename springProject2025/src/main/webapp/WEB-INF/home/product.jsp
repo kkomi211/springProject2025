@@ -84,7 +84,7 @@
                     <div class="side-bar">
                         <div class="category-box">
                             <div class="category">카테고리</div>
-                            <div class="subcategory" :class="{active: category == ''}" @click="selectCategory('')">전체</div>
+                            <div class="subcategory" :class="{active: category == '' || category == 'undefined'}" @click="selectCategory('')">전체</div>
                             <div v-for="p in parents" :key="p.typeNo" class="subcategory-wrapper"
                                 @mouseenter="hoverParent = String(p.typeNo)" @mouseleave="hoverParent = null">
                                 <div class="subcategory"
@@ -173,7 +173,7 @@
                     pageSize: 9,
                     totalPage: "",
                     keyword: "",
-                    category: "",
+                    category: "${category}",
                     hoverParent: null
                 };
             },
