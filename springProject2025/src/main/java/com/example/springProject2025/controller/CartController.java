@@ -1,8 +1,6 @@
 package com.example.springProject2025.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,12 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.springProject2025.dao.CartService;
-import com.example.springProject2025.dao.OrderService;
-import com.example.springProject2025.model.Order;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -31,8 +24,8 @@ public class CartController {
 	
 	@RequestMapping("home/cart.do")
 	public String orders(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
-//		System.out.println("home/mypage/orders.do진입");
-//		request.setAttribute("sessionId", map.get("sessionId"));
+	//		System.out.println("home/mypage/orders.do진입");
+		request.setAttribute("sessionId", map.get("sessionId"));
 		return "home/cart"; // .jsp빠진형태
 	}
 	

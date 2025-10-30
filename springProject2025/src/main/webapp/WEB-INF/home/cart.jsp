@@ -20,7 +20,7 @@
         </style>
     </head>
 
-    <body>
+    <body style="background-color:white">
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
             <div class="container">
@@ -65,42 +65,69 @@
                             {{ userName }}
                         </div>
                     </div>
-                    <!-- <div>Main content</div> -->
-                    <main class="main-content">
-                        <h1 class="main-title">장바구니</h1>
+                    <main class="main-content" style="padding: 40px 0; max-width: 1200px; margin: 0 auto;">
+                        <h1 class="main-title" style="text-align: center; font-size: 32px; font-weight: 500; margin-bottom: 50px; border-bottom: 1px solid #ccc; padding-bottom: 20px;">장바구니</h1>
 
-                        <template v-for="(cart, index) in cartList" :key="cart.cartNo">
-                            <section class="order-item">
-                                <!-- <div class="order-status-header" :class="getStatusClass(order.status)">
-                                    ORDER STATUS :
-                                    <span class="status-text">{{ order.status }}</span>
-                                </div> -->
-                                <div class="order-details">
-                                    <img v-if="cart.imgPath && cart.imgName"
-                                        :src="cart.imgPath + '/' + cart.imgName" :alt="cart.productName"
-                                        class="product-image" style="width: 150px; height: 150px; object-fit: cover;">
-                                    <div v-else class="product-image"
-                                        style="background: #f0f0f0; min-width: 150px; height: 150px; display: flex; align-items: center; justify-content: center;">
-                                        이미지 없음
-                                    </div>
-                                    <div class="product-info" style="flex: 1; margin-left: 20px;">
-                                        <p class="product-name" style="font-size: 18px; font-weight: bold;">상품명 : {{
-                                            cart.productName || cart.productNo }}</p>
-                                        <p>수량 : {{ cart.quantity }}</p>
-                                        <!-- <p>주문번호 : {{ order.orderNo }}</p> -->
-                                        <p>브랜드 : {{ cart.brand }}</p>
-                                        <p>상품가격 : {{ formatCurrency(cart.paymentAmount) }}원</p>
-                                        <!-- <p>주문일자 : {{ order.cdate }}</p> -->
-                                    </div>
-
+                        <div class="cart-layout" style="display: flex; justify-content: space-between; gap: 40px;">
+                            <div class="cart-list-container" style="flex: 3; min-width: 60%;">
+                                <div class="cart-header-actions" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-top: 1px solid #000; border-bottom: 1px solid #ccc;">
+                                    <label style="display: flex; align-items: center; font-weight: bold;">
+                                        <input type="checkbox" :checked="isAllSelected" @change="toggleAll($event)" style="margin-right: 8px; width: 18px; height: 18px;">
+                                        전체선택
+                                    </label>
+                                    <button @click="removeSelected" style="color:#000; border: 1px solid #ccc; padding: 8px 15px; background: #fff; cursor: pointer;">선택삭제</button>
                                 </div>
-                            </section>
-                        </template>
 
-                        <div v-if="orderList.length === 0" style="text-align: center; padding: 50px;">
-                            장바구니 안의 내용이 없습니다.
+                                <template v-for="(list, index) in cartList" :key="list.cartNo">
+                                    <section class="cart-item" style="display: flex; padding: 20px 0; border-bottom: 1px solid #eee; align-items: center;">
+                                        <input type="checkbox" v-model="list.selected" @change="recomputeSummary" style="margin-right: 15px; width: 18px; height: 18px; flex-shrink: 0;">
+
+                                        <img v-if="list.imgPath && list.imgName" :src="list.imgPath + '/' + list.imgName" :alt="list.productName" style="width: 100px; height: 100px; object-fit: cover; margin-right: 20px; border: 1px solid #eee; flex-shrink: 0;">
+                                        <div v-else style="background: #f0f0f0; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; margin-right: 20px; flex-shrink: 0; font-size: 12px; color: #666;">이미지 없음</div>
+
+                                        <div class="product-info" style="flex-grow: 1;">
+                                            <p class="product-name" style="font-size: 16px; font-weight: bold; margin-bottom: 5px;">{{ list.productName || list.productNo }}</p>
+                                            <p style="font-size: 14px; color: #666; margin-bottom: 3px;">수량 : {{ list.quantity }} / 사이즈: {{ list.productSize || 'FREE' }}</p>
+                                            <p style="font-size: 14px; color: #666; margin-bottom: 3px;">브랜드 : {{ list.brand }}</p>
+                                            <p style="font-size: 16px; font-weight: bold;">상품가격 : {{ formatCurrency(list.price) }}원</p>
+
+                                            <div style="margin-top: 10px;">
+                                                <button style="color:#000; border: 1px solid #ccc; padding: 5px 10px; background: #fff; cursor: pointer; font-size: 13px; margin-right: 5px;">옵션 변경</button>
+                                                <button style="color:#000; border: 1px solid #ccc; padding: 5px 10px; background: #fff; cursor: pointer; font-size: 13px;">쿠폰 사용</button>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </template>
+
+                                <div v-if="cartList.length === 0" style="text-align: center; padding: 50px; border-bottom: 1px solid #ccc;">장바구니 안의 내용이 없습니다.</div>
+                            </div>
+
+                            <div class="payment-summary" style="flex: 1; min-width: 300px; padding: 20px; border: 1px solid #ccc; height: fit-content; margin-top: 40px;">
+                                <h2 style="font-size: 20px; font-weight: bold; margin-bottom: 20px;">구매 금액</h2>
+                                <div class="summary-item" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>상품 금액</span>
+                                    <span>{{ formatCurrency(totalProductPrice) }}원</span>
+                                </div>
+                                <div class="summary-item" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>할인 금액</span>
+                                    <span style="color: #e74c3c;">{{ formatCurrency(totalDiscount) }}원</span>
+                                </div>
+                                <div class="summary-item" style="display: flex; justify-content: space-between; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee;">
+                                    <span>배송비</span>
+                                    <span v-if="deliveryFee === 0" style="color: #27ae60;">무료배송</span>
+                                    <span v-else>{{ formatCurrency(deliveryFee) }}원</span>
+                                </div>
+
+                                <div class="summary-total" style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; margin-bottom: 20px;">
+                                    <span>총 구매 금액</span>
+                                    <span style="color: #000;">{{ formatCurrency(totalPaymentAmount) }}원</span>
+                                </div>
+
+                                <button :disabled="selectedCount === 0" style="width: 100%; padding: 15px; background: #000; color: #fff; border: none; font-size: 16px; cursor: pointer;">
+                                    {{ formatCurrency(totalPaymentAmount) }}원 구매하기 ({{ selectedCount }}개)
+                                </button>
+                            </div>
                         </div>
-
 
                     </main>
                 </main>
@@ -145,22 +172,71 @@
                     // 변수 - (key : value)
                     sessionId: "${sessionId}",
                     userName: "",
-                    orderList: [],
+                    cartList: [],
+                    // 합계/선택 상태
+                    totalProductPrice: 0,
+                    totalDiscount: 0,
+                    deliveryFee: 0,
+                    selectedCount: 0,
+                    isAllSelected: false,
                 };
+            },
+            computed: {
+                totalPaymentAmount() {
+                    return this.totalProductPrice - this.totalDiscount + this.deliveryFee;
+                }
             },
             methods: {
                 // 함수(메소드) - (key : function())
+                formatCurrency: function (value) {
+                    if (!value) return '0';
+                    const numValue = typeof value === 'string' ? parseInt(value) : value;
+                    return numValue.toLocaleString();
+                },
+                toggleAll: function(e) {
+                    const checked = e.target.checked;
+                    this.isAllSelected = checked;
+                    this.cartList.forEach(item => { item.selected = checked; });
+                    this.recomputeSummary();
+                },
+                removeSelected: function() {
+                    this.cartList = this.cartList.filter(item => !item.selected);
+                    this.recomputeSummary();
+                },
+                recomputeSummary: function() {
+                    let total = 0;
+                    let count = 0;
+                    this.cartList.forEach(item => {
+                        if (item.selected) {
+                            const price = parseInt(item.price);
+                            const quantity = parseInt(item.quantity || 1);
+                            if (!isNaN(price) && !isNaN(quantity)) {
+                                total += price * quantity;
+                                count += 1;
+                            }
+                        }
+                    });
+                    this.totalProductPrice = total;
+                    this.totalDiscount = 0;
+                    this.deliveryFee = total >= 50000 || total === 0 ? 0 : 3000;
+                    this.selectedCount = count;
+                    this.isAllSelected = this.cartList.length > 0 && this.cartList.every(i => !!i.selected);
+                },
                 fnList: function () {
                     let self = this;
                     let param = {sessionId: self.sessionId};
-                    alert("서버로 보내는 param"+ JSON.stringify(param));
+                    // alert("서버로 보내는 param"+ JSON.stringify(param));
                     $.ajax({
                         url: "/home/cart.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            alert("어쩃든 서버로 돌아옴" + JSON.stringify(data));
+                            // alert("어쩃든 서버로 돌아옴" + JSON.stringify(data));
+                            console.log("어쩃든 서버로 돌아옴 "+JSON.stringify(data))
+                            const list = (data && data.list) ? data.list : [];
+                            self.cartList = list.map(item => Object.assign({}, item, { selected: true }));
+                            self.$nextTick(() => self.recomputeSummary());
                         }
                     });
                 },
