@@ -30,6 +30,14 @@ public interface OrderMapper {
 	
 	// 반품/교환 신청 처리
 	int updateRefundExchange(HashMap<String, Object> map);
+
+	//리뷰리스트 개수
+	int selectReviewListCount(HashMap<String, Object> map);
+	
+	//리뷰리스트
+	List<Order> selectReviewList(HashMap<String, Object> map);
+	
+
 	
 
 }

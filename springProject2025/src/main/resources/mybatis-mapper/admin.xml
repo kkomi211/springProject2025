@@ -3,6 +3,124 @@
 	
 	<mapper namespace="com.example.springProject2025.mapper.AdminMapper">
 		
+		<!-- slide banner.xml(메인슬라이드) list-->
+		<select id="selectSlideBannerList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
+			SELECT *
+			FROM MAIN_SLIDE_IMAGE
+		</select>
+		
+		<!-- product banner.xml(제품) list-->
+		<select id="selectProductBannerList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
+			SELECT B.*, IMG_PATH
+			FROM PRODUCT_BANNER_IMG B
+			INNER JOIN PRODUCT_IMG P ON B.PRODUCT_NO = P.PRODUCT_NO			
+		</select>
+		
+		<select id="selectRallyBannerList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
+			SELECT R.*, I.IMG_PATH
+			FROM RALLY R
+			INNER JOIN RALLY_IMG I ON R.RALLY_NO = I.RALLY_NO		
+		</select>
+	
+	<!-- slide banner 수정/저장-->
+	<update id="updateBannerModify" parameterType="hashmap">
+	    UPDATE MAIN_SLIDE_IMAGE
+	    SET 
+	        TITLE           = #{title, jdbcType=VARCHAR},
+	        IMAGE_DIR       = #{imageDir, jdbcType=VARCHAR},
+	        LINK_URL        = #{linkUrl, jdbcType=VARCHAR},
+	        DISPLAY_ORDER   = #{displayOrder, jdbcType=NUMERIC},
+	        USER_ID         = #{userId, jdbcType=VARCHAR},
+	        CDATE           = SYSDATE
+	        WHERE 
+	        BANNER_ID       = #{bannerId, jdbcType=NUMERIC}
+	</update>
+
+	<!-- slide banner 삭제 -->
+	<delete id="deleteSlideBanner" parameterType="hashmap">
+		DELETE FROM MAIN_SLIDE_IMAGE
+		WHERE BANNER_ID = #{bannerId}
+	</delete>
+	
+	<!-- product banner 삭제 -->
+	<delete id="deleteProductBanner" parameterType="hashmap">
+		DELETE FROM PRODUCT_BANNER_IMG
+		WHERE PBANNER_IMG_NO = #{pBannerImgNo}
+	</delete>
+	
+	<!-- rally banner 삭제 -->
+	<delete id="deleteRallyBanner" parameterType="hashmap">
+		DELETE FROM RALLY
+		WHERE RALLY_NO = #{rallyNo}
+	</delete>
+	
+	<!-- slide banner 추가 -->
+    <insert id="insertSlideBanner" parameterType="hashmap">
+	    INSERT INTO MAIN_SLIDE_IMAGE
+	    (BANNER_ID, TITLE, IMAGE_DIR, LINK_URL, DISPLAY_ORDER, USER_ID, CDATE)
+	    VALUES (
+	        BANNER_SEQ.NEXTVAL,
+	        #{title, jdbcType=VARCHAR},
+	        #{imageDir, jdbcType=VARCHAR},
+	        #{linkUrl, jdbcType=VARCHAR},
+	        NVL(#{displayOrder, jdbcType=NUMERIC}, 0),
+	        #{userId, jdbcType=VARCHAR},
+	        SYSDATE
+	    )
+	</insert>
+	
+	<!-- product banner 추가 -->
+	<insert id="insertProductBanner" parameterType="hashmap">
+	    INSERT INTO PRODUCT_BANNER_IMG (
+	        PBANNER_IMG_NO,
+	        TITLE,
+	        PRODUCT_NO,
+	        PRODUCT_IMG_NO,  IMAGE_DIR,       CDATE
+	    ) VALUES (
+	        PRODUCT_BANNER_SEQ.NEXTVAL,
+	        
+	        #{title, jdbcType=VARCHAR},
+	        
+	        #{productNo, jdbcType=NUMERIC}, 
+	        
+	        #{productImgNo, jdbcType=VARCHAR},
+	        
+	        NULL,
+	        
+	        SYSDATE
+	    )
+	</insert>
+	
+	<!-- rally banner 추가 -->
+	<insert id="insertRallyBanner" parameterType="hashmap">
+		INSERT INTO RALLY (
+	        RALLY_NO,
+	        RALLY_NAME,
+	        RALLY_DATE,
+	        APPLICATION_PERIOD,
+	        PRICE,
+	        PHONE,
+	        TYPE,
+	        HOST
+	    )
+	    VALUES (
+	        RALLY_SEQ.NEXTVAL,
+	        #{rallyName},
+	        
+	        TO_DATE(#{rallyDate}, 'YYYY-MM-DD'), 
+	        
+	        TO_DATE(#{applicationPeriod}, 'YYYY-MM-DD'), 
+	        
+	        #{price},
+	        #{phone},
+	        #{type},
+	        #{host}
+	    )
+	</insert>
+
+
+
+
 		<!-- 상품 문의내역 전체 개수 조회 -->
 		<select id="selectInquiryListCount" parameterType="hashmap" resultType="int">
 		    SELECT COUNT(*)

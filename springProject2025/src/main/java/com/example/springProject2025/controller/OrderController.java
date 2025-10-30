@@ -49,6 +49,7 @@ public class OrderController {
 	
 	
 	
+	
 	@RequestMapping(value = "home/mypage/orders.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String orderslist(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
@@ -133,5 +134,8 @@ public class OrderController {
 	    return new Gson().toJson(resultMap);
 	}
 	
+	
+	
+
 
 }
