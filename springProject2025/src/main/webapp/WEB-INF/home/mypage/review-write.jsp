@@ -16,6 +16,8 @@
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
+        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+        <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 
     </head>
     <style>
@@ -225,9 +227,15 @@
                                             <label for="reviewContent"
                                                 style="display: block; font-weight: bold; margin-bottom: 5px; color: #555;">리뷰
                                                 내용</label>
-                                            <textarea id="reviewContent" v-model="reviewContent"
+                                            <!-- <textarea id="reviewContent" v-model="reviewContent"
                                                 placeholder="리뷰 내용을 10자 이상 작성해 주세요." rows="10"
-                                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 0.95rem;"></textarea>
+                                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 0.95rem;"></textarea> -->
+
+                                            <div id="editor"
+                                                style="width:100%; height:200px; border:1px solid #ccc; padding:10px;">
+
+                                            </div>
+
                                         </div>
 
                                         <div style="text-align: right;">
@@ -324,6 +332,7 @@
                     reviewTitle: '', // 리뷰 제목
                     reviewContent: '', // 리뷰 내용
 
+                    editorInstance: null,
                 };
             },
             methods: {
@@ -506,7 +515,17 @@
                         alert('리뷰 제목을 입력해 주세요.');
                         return;
                     }
-                    if (self.reviewContent.trim().length < 10) {
+                    alert("self.reviewContent.trim().length는" + self.reviewContent.trim().length);
+                    // if (self.reviewContent.trim().length < 10) {
+                    //     alert('리뷰 내용을 10자 이상 입력해 주세요.');
+                    //     return;
+                    // }
+                    // 2. HTML 태그를 제거하고 순수한 텍스트의 길이를 검사
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = self.reviewContent;
+                    const plainText = tempDiv.textContent || tempDiv.innerText || '';
+                    
+                    if (plainText.trim().length < 10) { 
                         alert('리뷰 내용을 10자 이상 입력해 주세요.');
                         return;
                     }
@@ -531,7 +550,7 @@
                         dataType: "json",
                         type: "POST",
                         data: param,
-                        success: function(data) {
+                        success: function (data) {
                             if (data.result === "success") {
                                 alert("리뷰가 성공적으로 등록되었습니다!");
                                 // 등록 배송완료 상품리뷰 목록 이동
@@ -540,11 +559,11 @@
                                 alert("리뷰 등록 실패: " + (data.message || "서버 오류"));
                             }
                         },
-                        error: function() {
+                        error: function () {
                             alert("리뷰 등록 중 통신 오류가 발생했습니다.");
                         }
                     });
-                    
+
                 },
 
 
@@ -564,6 +583,44 @@
                 // alert("데이터 확인 self.imgPath " + self.imgPath);
                 // alert("데이터 확인 self.imgName " + self.imgName);
                 // alert("데이터 확인 self.status " + self.status);
+
+                if (self.sessionId == "") {
+                    alert("로그인이 필요합니다.");
+                    location.href = "/home/login.do";
+                    return;
+                }
+
+                // Quill 에디터 초기화
+                // var quill = new Quill('#editor', {
+                //     theme: 'snow',
+                //     modules: {
+                //         toolbar: [
+                //             [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                //             ['bold', 'italic', 'underline'],
+                //             [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                //             ['link', 'image'],
+                //             ['clean']
+                //         ]
+                //     }
+                // });
+                self.editorInstance = new Quill('#editor', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: [
+                            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                            ['bold', 'italic', 'underline'],
+                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                            ['link', 'image'],
+                            ['clean']
+                        ]
+                    }
+                });
+
+                // 에디터 내용이 변경될 때마다 Vue 데이터를 업데이트
+                self.editorInstance.on('text-change', function () {
+                    // ⭐ self.contents 대신 self.reviewContent에 할당
+                    self.reviewContent = self.editorInstance.root.innerHTML;
+                });
 
             }
         });

@@ -132,7 +132,7 @@
                                         <span class="icon">📦</span>
                                         <a href="#">반품•교환 내역</a>
                                     </li>
-                                    <li>
+                                    <li @click="moveToMyinquiry">
                                         <span class="icon">💬</span>
                                         <a href="#">문의 내역</a>
                                     </li>
@@ -556,6 +556,13 @@
                         }
                     });
                 }, // submitReturnExchange
+                moveToMyinquiry: function () {
+                    let self = this;
+                   
+                    let sessionId = self.sessionId;
+
+                    pageChange("my-inquiry.do", { sessionId: sessionId });
+                },
 
             }, // methods
             mounted() {

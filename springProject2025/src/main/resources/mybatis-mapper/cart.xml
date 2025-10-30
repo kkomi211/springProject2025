@@ -1,0 +1,30 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+	<mapper namespace="com.example.springProject2025.mapper.CartMapper">
+	
+
+	
+		<!-- 나의 카트 안 물건 개수 조회 -->
+		<select id="selectCartListCnt" parameterType="hashmap" resultType="int">
+		select count(*)
+		from CART C
+		INNER JOIN PRODUCT P ON C.PRODUCT_NO = P.PRODUCT_NO
+		LEFT JOIN product_img I ON P.PRODUCT_NO = I.PRODUCT_NO
+		where C.user_id = #{sessionId}
+
+		</select>
+		
+		<!-- 나의 카트 안 물건 리스트 불러오기 -->
+		<select id="selectCartList" parameterType="hashmap" resultType="com.example.springProject2025.model.Cart">
+		select *
+		from CART C
+		INNER JOIN PRODUCT P ON C.PRODUCT_NO = P.PRODUCT_NO
+		LEFT JOIN product_img I ON P.PRODUCT_NO = I.PRODUCT_NO
+		where C.user_id = #{sessionId}
+		</select>
+	
+	
+	
+	
+	</mapper>
