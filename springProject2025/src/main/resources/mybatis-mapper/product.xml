@@ -1,0 +1,209 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.example.springProject2025.mapper.ProductMapper">
+	
+	<select id="selectProductList" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT *
+		FROM PRODUCT
+		WHERE 1=1
+		<if test="keyword != null and keyword != ''">
+			<if test="keytype == 'name'">
+				AND PRODUCT_NAME LIKE '%' || #{keyword} || '%'
+			</if>
+			<if test="keytype == 'no'">
+				AND PRODUCT_NO LIKE '%' || #{keyword} || '%'
+			</if>
+		</if>
+		
+		<if test="orderBy == 'down'">
+			ORDER BY QUANTITY ASC
+		</if>
+		<if test="orderBy == 'up'">
+			ORDER BY QUANTITY DESC
+		</if>
+		
+		<if test="pageSize != null and pageSize != ''">
+			OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+		</if>
+	</select>
+	
+	<select id="selectProductListUser" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT *
+		FROM (
+		  SELECT p.*,
+		         ROW_NUMBER() OVER (
+		           PARTITION BY p.PRODUCT_NAME
+		           ORDER BY p.PRODUCT_NO ASC
+		         ) AS rn
+		  FROM PRODUCT p
+		)
+		
+		WHERE rn = 1
+		<if test="keyword != null and keyword != ''">
+			<if test="keytype == 'name'">
+				AND PRODUCT_NAME LIKE '%' || #{keyword} || '%'
+			</if>
+			<if test="keytype == 'no'">
+				AND PRODUCT_NO LIKE '%' || #{keyword} || '%'
+			</if>
+		</if>
+		<if test="category != '' and category != null">
+			AND TYPE_NO LIKE '%' || #{category} || '%'
+			
+		</if>
+		
+		<if test="pageSize != null and pageSize != ''">
+			OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+		</if>
+	</select>
+	
+	<select id="selectProductPage" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM PRODUCT
+		WHERE 1=1
+		<if test="keyword != null and keyword != ''">
+			<if test="keytype == 'name'">
+				AND PRODUCT_NAME LIKE '%' || #{keyword} || '%'
+			</if>
+			<if test="keytype == 'no'">
+				AND PRODUCT_NO LIKE '%' || #{keyword} || '%'
+			</if>
+		</if>
+		
+	</select>
+	
+	<select id="selectProductTypeList" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT *
+		FROM PRODUCT_TYPE
+	</select>
+	
+	<select id="selectProductPageUser" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM (
+		  SELECT p.*,
+		         ROW_NUMBER() OVER (
+		           PARTITION BY p.PRODUCT_NAME
+		           ORDER BY p.PRODUCT_NO ASC
+		         ) AS rn
+		  FROM PRODUCT p
+		)
+		WHERE rn = 1
+		<if test="keyword != null and keyword != ''">
+			<if test="keytype == 'name'">
+				AND PRODUCT_NAME LIKE '%' || #{keyword} || '%'
+			</if>
+			<if test="keytype == 'no'">
+				AND PRODUCT_NO LIKE '%' || #{keyword} || '%'
+			</if>
+		</if>
+		<if test="category != '' and category != null">
+			AND TYPE_NO LIKE '%' || #{category} || '%'
+			
+		</if>
+	</select>
+	
+	<select id="selectReviewList" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT *
+		FROM REVIEW
+	</select>
+	
+	<select id="selectProductInfo" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT *
+		FROM PRODUCT
+		WHERE PRODUCT_NO = #{productNo}
+	</select>
+	
+	<select id="selectProductImg" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT *
+		FROM PRODUCT_IMG
+		WHERE PRODUCT_NO = #{productNo}
+	
+	</select>
+	
+	<update id="editProduct" parameterType="hashmap">
+		UPDATE PRODUCT
+		SET PRODUCT_NAME = #{productName}, PRICE = #{price}, PRODUCT_DETAIL = #{productDetail}, QUANTITY = #{quantity},
+		GENDER = #{gender}, TYPE_NO = #{typeNo}, UDATE = SYSDATE
+		WHERE PRODUCT_NO = #{productNo}
+	</update>
+	
+	<delete id="deleteProduct" parameterType="hashmap">
+		DELETE FROM PRODUCT
+		WHERE PRODUCT_NO = #{productNo}
+	</delete>
+	
+	<insert id="insertProduct" parameterType="hashmap" useGeneratedKeys="true" keyColumn="PRODUCT_NO" keyProperty="productNo">
+		INSERT INTO PRODUCT
+		VALUES (PRODUCT_SEQ.NEXTVAL, #{userId}, #{brand}, #{productName}, #{price}, #{productSize}, #{productDetail}, 0, #{quantity},
+		#{gender}, #{typeNo}, SYSDATE, SYSDATE)
+	</insert>
+	
+	<insert id="insertProductImg" parameterType="hashmap">
+		INSERT INTO PRODUCT_IMG
+		VALUES (PRODUCT_IMG_SEQ.NEXTVAL, #{productNo}, #{path}, #{fileName}, #{orgName}, #{size}, #{ext})
+	</insert>
+	
+	<delete id="deleteProductImg" parameterType="hashmap">
+		DELETE FROM PRODUCT_IMG
+		WHERE PRODUCT_NO = #{productNo}
+	</delete>
+	
+	<select id="selectProductImgList" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT *
+		FROM PRODUCT_IMG
+	</select>
+	
+	<select id="selectReviewAvg" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT
+		  p.PRODUCT_NAME,
+		  ROUND(AVG(r.RATING), 1) AS AVG_RATING, 
+		  COUNT(*)               AS REVIEW_CNT     
+		FROM REVIEW r
+		JOIN PRODUCT p
+		  ON p.PRODUCT_NO = r.PRODUCT_NO
+		GROUP BY p.PRODUCT_NAME
+		ORDER BY p.PRODUCT_NAME
+	</select>
+	
+	<select id="selectProductInfoUser" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT
+		  PRODUCT_NO,
+		  PRODUCT_NAME,
+		  PRICE,
+		  PRODUCT_DETAIL,
+		  CDATE, UDATE
+		FROM PRODUCT
+		WHERE PRODUCT_NO = #{productNo}
+	</select>
+	
+	<select id="selectSizeAndQuantity" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT
+		  PRODUCT_NO,
+		  PRODUCT_SIZE,
+		  QUANTITY,
+		  PRICE
+		FROM PRODUCT 
+		WHERE PRODUCT_NAME = (
+		  SELECT PRODUCT_NAME FROM PRODUCT WHERE PRODUCT_NO = 11
+		)
+		ORDER BY
+		  CASE WHEN REGEXP_LIKE(PRODUCT_SIZE, '^\d+$')
+		       THEN TO_NUMBER(PRODUCT_SIZE) END,
+		  PRODUCT_SIZE
+	</select>
+
+	<select id="selectInquiryList" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT *
+		FROM PRODUCT_INQUIRY
+		WHERE PRODUCT_NO IN(
+		    SELECT PRODUCT_NO
+		    FROM PRODUCT
+		    WHERE PRODUCT_NAME IN(
+		        SELECT PRODUCT_NAME
+		        FROM PRODUCT 
+		        WHERE PRODUCT_NO = #{productNo}
+		    )
+		)
+	</select>
+</mapper>
