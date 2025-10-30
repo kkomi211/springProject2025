@@ -83,7 +83,7 @@
                         <div class="modal-content">
                             <h2>로그인 성공했습니다</h2>
                             <a href="/home.do"><button>메인 화면 가기</button></a>
-                            <a href="javascript:;"><button>마이페이지 가기</button></a>
+                            <a href="/home/mypage/information.do"><button>마이페이지 가기</button></a>
                         </div>
                     </div>
                     <div v-if="noLoginModal" class="modal-overlay">

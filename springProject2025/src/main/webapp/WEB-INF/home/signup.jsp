@@ -80,8 +80,8 @@
                             <div class="form-row">
                                 <label>성별</label>
                                 <label>
-                                    <input type="radio" v-model="gender" value="M"> F
-                                    <input type="radio" v-model="gender" value="F"> M
+                                    <input type="radio" v-model="gender" value="F"> F
+                                    <input type="radio" v-model="gender" value="M"> M
                                 </label>
                             </div>
                             <div class="form-row">
@@ -179,7 +179,7 @@
                 birthday : "",
                 phone : "",
                 checkFlg : false,
-                gender: "M",
+                gender: "F",
 
                 smsFlg : false,
                 joinFlg : false, // 문자 인증 유무
@@ -210,7 +210,7 @@
                         if(data.result == "true"){
                             alert("이미 사용 중인 아이디 입니다.");
                         } else {
-                            alert("사용가능한 아이다 입니다.");
+                            alert("사용가능한 아이디 입니다.");
                             self.checkFlg = true;
                             document.querySelector("#name").focus();
                         }

@@ -26,5 +26,8 @@ public class Order {
     private List<Order> orders; // 프론트에서 orders을 보냄
     private String actionType; // 프론트에서 actionType을 보냄
     private String reason;     // 프론트에서 reason을 보냄
+    private String brand;
+    
+    private String rating; // 리뷰테이블에서 조회되서 여기 들어갈 예정...
 
 }

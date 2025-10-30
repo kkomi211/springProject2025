@@ -136,11 +136,11 @@
                                         <span class="icon">💬</span>
                                         <a href="#">문의 내역</a>
                                     </li>
-                                    <li>
+                                    <li @click="moveToInfo">
                                         <span class="icon">👤</span>
                                         <a href="#">나의 정보</a>
                                     </li>
-                                    <li>
+                                    <li @click="moveToReview">
                                         <span class="icon">⭐️</span>
                                         <a href="#">상품 리뷰</a>
                                     </li>
@@ -179,6 +179,7 @@
                                                 order.productName || order.productNo }}</p>
                                             <p>수량 : {{ order.quantity }}</p>
                                             <p>주문번호 : {{ order.orderNo }}</p>
+                                            <p>브랜드 : {{ order.brand }}</p>
                                             <p>상품가격 : {{ formatCurrency(order.paymentAmount) }}원</p>
                                             <p>주문일자 : {{ order.udate }}</p> <!--분명뭔가 요청을했고 그순간의 마지막 날짜를 기준잡았음-->
                                         </div>
@@ -459,10 +460,28 @@
                     console.log("반품•교환 내역 메뉴 클릭. pageChange 호출");
 
                     // 1. Vue의 sessionId 데이터에 접근
-                    const sessionIdParam = self.sessionId;
+                    let sessionId = self.sessionId;
 
                     // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장?)
-                    pageChange("orders.do", { sessionId: sessionIdParam });
+                    pageChange("orders.do", { sessionId: sessionId });
+                },
+
+                moveToReview: function () {
+                    let self = this;
+                   
+                    let sessionId = self.sessionId;
+
+                    pageChange("review.do", { sessionId: sessionId });
+                },
+                moveToInfo : function(){
+                    let self = this;
+                    console.log("나의 정보 메뉴 클릭. pageChange 호출");
+
+                    // 1. Vue의 sessionId 데이터에 접근
+                    // const sessionIdParam = self.sessionId;
+
+                    // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장?)
+                    pageChange("/home/mypage/information.do", { sessionId: self.sessionId });
                 },
 
                 // 모달 열기/닫기
