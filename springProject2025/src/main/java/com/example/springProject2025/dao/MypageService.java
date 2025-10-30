@@ -128,5 +128,19 @@ public class MypageService {
 		}
 		return resultMap;
 	}
+	
+	public HashMap<String, Object> deleteAccount(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		int cnt = mypageMapper.deleteAccount(map);
+		
+		if(cnt > 0 ) {
+			resultMap.put("result", "success"); 
+		} else { 
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
 
 }

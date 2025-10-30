@@ -30,4 +30,7 @@ public interface MypageMapper {
 	// 주소 수장
 	int insertNewAddr(HashMap<String, Object> map);
 	
+	// 계정 삭제
+	int deleteAccount(HashMap<String, Object> map);
+	
 }

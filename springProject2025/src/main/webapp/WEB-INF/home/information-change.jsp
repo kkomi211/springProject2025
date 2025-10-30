@@ -12,6 +12,7 @@
     <title>Homepage</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="/js/page-change.js"></script>
     <style>
         
     </style>
@@ -66,7 +67,7 @@
                             <h2 class="sidebar-heading">MY PAGE ></h2>
                             <nav class="mypage-menu">
                                 <ul>
-                                    <li>
+                                    <li @click="moveToOrder">
                                         <span class="icon">📝</span>
                                         <a href="#">주문•배송 내역</a>
                                     </li>
@@ -107,11 +108,11 @@
                                         </td>
                                         <td>
                                             <template v-if="!emailFlg">
-                                                <button @click="fnEmailChange">이메일 수정 </button>
+                                                <button class="btn" @click="fnEmailChange">이메일 수정 </button>
                                             </template>
                                             <template v-else>
-                                                <button @click="fnEmailCheck">중복확인 </button>
-                                                <button v-if="saveBtn" @click="fnEmailSave">저장</button>
+                                                <button class="btn" @click="fnEmailCheck">중복확인 </button>
+                                                <button class="btn" v-if="saveBtn" @click="fnEmailSave">저장</button>
                                             </template>
                                         </td>
                                     </tr>
@@ -122,8 +123,8 @@
                                             <template v-else><input type="text" v-model="info.name"></template>
                                         </td>
                                         <td>
-                                            <button v-if="!nameFlg" @click="fnNameChange">이름 수정 </button>
-                                            <button v-if="nameFlg" @click="fnNameSave">저장</button>
+                                            <button class="btn" v-if="!nameFlg" @click="fnNameChange">이름 수정 </button>
+                                            <button class="btn" v-if="nameFlg" @click="fnNameSave">저장</button>
                                         </td>
                                     </tr>
                                     <tr>
@@ -133,24 +134,36 @@
                                             <template v-else><input type="text" v-model="info.phone" id="phone"></template>
                                         </td>
                                         <td>
-                                            <button v-if="!phoneFlg" @click="fnPhoneChange">휴대폰번호 수정 </button>
-                                            <button v-if="phoneFlg" @click="fnPhoneSave">저장</button>
+                                            <button class="btn" v-if="!phoneFlg" @click="fnPhoneChange">휴대폰번호 수정 </button>
+                                            <button class="btn" v-if="phoneFlg" @click="fnPhoneSave">저장</button>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>비밀번호 변경</th>
                                         <td>
                                             <template v-if="!pwdFlg">
-                                                <div>현재 비밀번호 <label for=""><input type="password" v-model="pwd" id="pwd"></label></div>
-                                                <div>새 비밀번호<label for=""><input type="password" v-model="newPwd1" id="newPwd1"></label></div>
-                                                <div>비밀번호 재확인<label for=""><input type="password" v-model="newPwd2" id="newPwd2"></label></div>
+                                                <div>
+                                                    현재 비밀번호 
+                                                    <div><label for=""><input type="password" v-model="pwd" id="pwd"></label></div>
+                                                </div>
+                                                <div>
+                                                    새 비밀번호
+                                                    <div>
+                                                        <label for=""><input type="password" v-model="newPwd1" id="newPwd1"></label>
+                                                    </div></div>
+                                                <div>
+                                                    비밀번호 재확인
+                                                    <div>
+                                                        <label for=""><input type="password" v-model="newPwd2" id="newPwd2"></label>
+                                                    </div>
+                                                </div>
                                             </template>
                                             <template v-else>
                                                 <div>비밀번호 변경되었습니다.</div>
                                             </template>
                                         </td>
                                         <td>
-                                            <button @click="fnPwdChange">비밀번호 변경</button>
+                                            <button class="btn" @click="fnPwdChange">비밀번호 변경</button>
                                         </td>
                                     </tr>
                                     <tr>
@@ -160,15 +173,35 @@
                                             <div v-if="addrFlg"><input type="text" v-model="addr" id="addr" disabled></div>
                                         </td>
                                         <td>
-                                            <button v-if="!addrFlg" @click="fnAddr">주소 수정</button>
-                                            <button v-if="addrFlg" @click="fnAddrSave">저장</button>
+                                            <button class="btn" v-if="!addrFlg" @click="fnAddr">주소 수정</button>
+                                            <button class="btn" v-if="addrFlg" @click="fnAddrSave">저장</button>
                                         </td>
                                     </tr>
                                 </table>
                             </section>
                             <div class="bottom-btn">
-                                <button @click="fnDeleteAccount">탈퇴하기</button>
+                                <button class="btn" @click="fnConfirmDelete">탈퇴하기</button>
                             </div>
+
+                            <!-- Popup asking the user really wants to delete their account -->
+                             
+                            <div v-if="confirmDelete" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>정말로 이 계정을 삭제하시겠습니까?</h2>
+                                    <button class="btn" @click="closeModal">돌아가기</button>
+                                    <button class="btn" @click="fnDeleteAccount">삭제하기</button>
+                                </div>
+                            </div>
+
+                            <!-- Popup confirming the user deleted their account -->
+                             
+                            <div v-if="accountDeleted" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>회원님의 계정이 삭제되었습니다.</h2>
+                                    <button class="btn" @click="moveMainPage">닫기</button>
+                                </div>
+                            </div>
+
                         </main>
             </main>
 
@@ -230,7 +263,12 @@
                 phoneFlg : false,
                 saveBtn : false,
                 pwdFlg : false,
-                addrFlg : false
+                addrFlg : false,
+
+                // Popup Modal
+                confirmDelete : false,
+                accountDeleted : false
+
             };
         },
         methods: {
@@ -282,10 +320,20 @@
                 console.log("반품•교환 내역 메뉴 클릭. pageChange 호출");
                 
                 // 1. Vue의 sessionId 데이터에 접근
-                const sessionIdParam = self.sessionId;
+                // const sessionIdParam = self.sessionId;
 
                 // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장)
-                window.pageChange("refund-return.do", { sessionId: sessionIdParam });
+                pageChange("/home/mypage/refund-return.do", { sessionId: self.sessionId });
+            },
+            moveToOrder: function () {
+                let self = this;
+                console.log("반품•교환 내역 메뉴 클릭. pageChange 호출");
+
+                // 1. Vue의 sessionId 데이터에 접근
+                // const sessionIdParam = self.sessionId;
+
+                // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장?)
+                pageChange("/home/mypage/orders.do", { sessionId: self.sessionId });
             },
             fnAddr: function (){
                 let self = this;
@@ -345,7 +393,7 @@
                     data: param,
                     success: function (data) {
                         if(data.result == "success") {
-                            alert("이메일을 수장되었습니다.");
+                            alert("이메일이 수정되었습니다.");
                             self.emailFlg = false;
                         } else {
                             alert("오류가 발생했습니다.");
@@ -367,7 +415,7 @@
                     data: param,
                     success: function (data) {
                         if(data.result == "success") {
-                            alert("이름을 수장되었습니다.");
+                            alert("이름이 수정되었습니다.");
                             self.nameFlg = false;
                         } else {
                             alert("오류가 발생했습니다.");
@@ -393,7 +441,7 @@
                     data: param,
                     success: function (data) {
                         if(data.result == "success") {
-                            alert("전화번호를 수장되었습니다.");
+                            alert("전화번호가 수정되었습니다.");
                             self.phoneFlg = false;
                         } else {
                             alert("오류가 발생했습니다.");
@@ -415,10 +463,9 @@
                     data: param,
                     success: function (data) {
                         if(data.result == "success") {
-                            alert("Your pwd is matching.");
                             self.fnPwdSave();
                         } else {
-                            alert("The pwd you entered does not match your current pwd.");
+                            alert("입력하신 비밀번호가 현재 비밀번호와 일치하지 않습니다.");
                             document.querySelector("#pwd").focus();
                         }
                     }
@@ -428,17 +475,19 @@
                 let self = this;
                 let speChar = /^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])/;
 
-                if(self.newPwd1 == "" || self.newPwd2 == ""){
-                    alert("Enter new password.");
+                if(self.newPwd1 == ""){
+                    alert("새 비밀번호를 입력하세요.");
                     document.querySelector("#newPwd1").focus();
                     return;
                 }
                 if (self.newPwd1.length < 6 || !speChar.test(self.newPwd1)) {
-                    alert("Your pwd should be at least 6 characters, including letters and numbers.");
+                    alert("비밀번호는 공백 없이 6자 이상의 영문자, 숫자, 특수문자 조합으로 지정해주세요.");
+                    document.querySelector("#newPwd1").focus();
                     return; 
                 }
                 if (self.newPwd1 !== self.newPwd2) {
-                    alert("비밀번호가 서로 다릅니다.");
+                    alert("비밀번호가 서로 다릅니다. 다시 확인해주세요.");
+                    document.querySelector("#newPwd2").focus();
                     return; 
                 }
                 let param = {
@@ -454,10 +503,10 @@
                         console.log(data);
                         if (data.result === "success") {
                             // 로그인 성공 시 페이지 전환
-                            alert("password successfully changed !");
+                            alert("비밀번호 변경이 완료되었습니다!");
                             self.pwdFlg = true;
                         } else {
-                            alert("error");
+                            alert("오류가 발생했습니다.");
                         }
                     }
                 });
@@ -476,7 +525,7 @@
                     data: param,
                     success: function (data) {
                         if(data.result == "success") {
-                            alert("주소를 수장되었습니다.");
+                            alert("주소가 수정되었습니다.");
                             self.addrFlg = false;
                             self.fnInfo();
                         } else {
@@ -485,29 +534,38 @@
                     }
                 });
             },
-            fnDeleteAccount: function(){
+            fnConfirmDelete: function(){
                 let self = this;
-                if(!confirm("Are you sure you want to delete this account?")){
-                    return;
-                }
+                self.confirmDelete = true; // Modal Popup
+            },
+            fnDeleteAccount : function () {
+                let self = this;
                 let param = {
                     userId : self.sessionId
                 };
                 $.ajax({
-                    url: "/home/mypage/addrSave.dox",
+                    url: "/home/mypage/deleteAccount.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
                         if(data.result == "success") {
-                            alert("주소를 수장되었습니다.");
-                            self.addrFlg = false;
-                            self.fnInfo();
+                            self.confirmDelete = false;
+                            self.accountDeleted = true;
                         } else {
                             alert("오류가 발생했습니다.");
                         }
                     }
                 });
+                
+            },
+            moveMainPage : function(){
+                let self = this;
+                location.href="/home.do";
+            },
+            closeModal() {
+                let self = this;
+                self.confirmDelete = false;
             }
         }, // methods
         mounted() {

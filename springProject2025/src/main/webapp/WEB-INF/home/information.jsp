@@ -67,7 +67,7 @@
                             <h2 class="sidebar-heading">MY PAGE ></h2>
                             <nav class="mypage-menu">
                                 <ul>
-                                    <li>
+                                    <li @click="moveToOrder" >
                                         <span class="icon">📝</span>
                                         <a href="#">주문•배송 내역</a>
                                     </li>
@@ -116,8 +116,24 @@
                                 </table>
                             </section>
                             <div class="bottom-btn">
-                                <button @click="fnMypage(info.userId)" class="submit-btn">확인</button>
+                                <button @click="fnMypage(info.userId)" class="btn">확인</button>
                             </div>
+
+                            <!-- Popup message confirming password is correct -->
+                             
+                            <div v-if="pwdMatch" class="modal-overlay">
+                                <div class="modal-content">
+                                    <template v-if="pwdCorrect == true">
+                                        <h2>비밀번호가 확인되었습니다.</h2>
+                                        <button class="btn" @click="moveInfoPage">확인</button>
+                                    </template>
+                                    <template v-else-if="pwdCorrect == false">
+                                        <h2>비밀번호가 올바르지 않습니다.</h2>
+                                        <button class="btn" @click="closeModal">돌아가기</button>
+                                    </template>
+                                </div>
+                            </div>
+
                         </main>
             </main>
 
@@ -160,7 +176,11 @@
                 // 변수 - (key : value)
                 pwd : "",
                 sessionId : "${sessionId}",
-                info : {}
+                info : {},
+
+                // Modal Popup
+                pwdMatch : false,
+                pwdCorrect : null
             };
         },
         methods: {
@@ -204,25 +224,44 @@
                     data: param,
                     success: function (data) {
                         if(data.result == "success") {
-                            alert("info checked successfully !");
-                            pageChange("information/change.do", { sessionId: self.sessionId});
+                            self.pwdMatch = true;
+                            self.pwdCorrect = true;
                         } else {
-                            alert("error");
+                            self.pwdMatch = true;
+                            self.pwdCorrect = false;
                         }
 
                     }
                 });
+            },
+            moveInfoPage: function(){
+                let self = this;
+                pageChange("information/change.do", { sessionId: self.sessionId});
             },
             moveToRefund: function() {
                 let self = this;
                 console.log("반품•교환 내역 메뉴 클릭. pageChange 호출");
                 
                 // 1. Vue의 sessionId 데이터에 접근
-                const sessionIdParam = self.sessionId;
+                // const sessionIdParam = self.sessionId;
 
                 // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장)
-                window.pageChange("refund-return.do", { sessionId: sessionIdParam });
+                pageChange("refund-return.do", { sessionId: self.sessionId });
             },
+            moveToOrder: function () {
+                let self = this;
+                console.log("반품•교환 내역 메뉴 클릭. pageChange 호출");
+
+                // 1. Vue의 sessionId 데이터에 접근
+                // const sessionIdParam = self.sessionId;
+
+                // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장?)
+                pageChange("/home/mypage/orders.do", { sessionId: self.sessionId });
+            },
+            closeModal() {
+                let self = this;
+                self.pwdMatch = false;
+            }  
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
