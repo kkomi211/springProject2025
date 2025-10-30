@@ -29,7 +29,8 @@
 					O.STATUS as status,
 					O.UDATE as udate,
 					O.BECAUSE as because,
-					O.ORDER_REQUEST as orderRequest
+					O.ORDER_REQUEST as orderRequest,
+					P.BRAND
 				FROM ORDERS O
 				LEFT JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
 				LEFT JOIN (
@@ -92,7 +93,8 @@
 					O.STATUS as status,
 					O.UDATE as udate,
 					O.BECAUSE as because,
-					O.ORDER_REQUEST as orderRequest
+					O.ORDER_REQUEST as orderRequest,
+					P.BRAND
 				FROM ORDERS O
 				LEFT JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
 				LEFT JOIN (
@@ -119,5 +121,57 @@
 		    BECAUSE = #{reason}
 		WHERE ORDER_NO = #{orderNo}
 	</update>
+	
+	
+	
+	<!-- 리뷰 목록 개수 (페이징용) -->
+	<select id="selectReviewListCount" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM REVIEW
+		WHERE USER_ID = #{sessionId}
+	</select>
+	
+	
+	<!-- 리뷰 목록 (페이징 포함) -->
+	<select id="selectReviewList" parameterType="hashmap" resultType="com.example.springProject2025.model.Order">
+			SELECT * FROM (
+			SELECT a.*, ROWNUM AS rnum FROM (
+				SELECT 
+					O.ORDER_NO as orderNo,
+					O.USER_ID as userId,
+					O.CDATE as cdate,
+					O.PRODUCT_NO as productNo,
+					P.PRODUCT_NAME as productName,
+					PI.IMG_PATH as imgPath,
+					PI.IMG_NAME as imgName,
+					O.QUANTITY as quantity,
+					O.PAYMENT_AMOUNT as paymentAmount,
+					O.ADDR as addr,
+					O.PAYMENT_METHOD as paymentMethod,
+					O.STATUS as status,
+					O.UDATE as udate,
+					O.BECAUSE as because,
+					O.ORDER_REQUEST as orderRequest,
+					P.BRAND,
+					R.RATING
+				FROM ORDERS O
+				LEFT JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
+				LEFT JOIN (
+					SELECT PRODUCT_NO, IMG_PATH, IMG_NAME
+					FROM (
+						SELECT PRODUCT_NO, IMG_PATH, IMG_NAME,
+							ROW_NUMBER() OVER (PARTITION BY PRODUCT_NO ORDER BY PRODUCT_IMG_NO) as rn
+						FROM PRODUCT_IMG
+					)
+					WHERE rn = 1
+				) PI ON P.PRODUCT_NO = PI.PRODUCT_NO
+				LEFT JOIN Review R ON O.ORDER_NO = R.ORDER_NO
+				WHERE O.USER_ID = #{sessionId}
+				AND O.STATUS = '배송완료'
+				ORDER BY O.UDATE DESC , O.ORDER_NO DESC
+			) a
+		) WHERE rnum BETWEEN #{startRow} AND #{endRow}
+	</select>
+	
 	
 	</mapper>

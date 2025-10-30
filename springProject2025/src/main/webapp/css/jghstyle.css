@@ -472,3 +472,25 @@ ul {
 	background: #777;
 }
 
+
+
+
+
+button {
+    padding: 8px 18px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+
+
+.star-rating {
+  text-align: center;
+  margin-right: 5px;
+}
