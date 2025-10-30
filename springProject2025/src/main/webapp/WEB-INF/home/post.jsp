@@ -13,9 +13,6 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <style>
-
-
-
     </style>
 </head>
 <body>
@@ -90,67 +87,40 @@
                         <main class="main-content">
                             <div class="board-header">
                                 <h1 class="main-title">
-                                    게시판 •
-                                    {{
-                                        type === '' ? '전체 게시판' :  
-                                        type === 'B' ? '공지사항' :
-                                        type === 'Q' ? '문의게시판' :
-                                        type === 'F' ? '자유게시판' :
-                                        type === 'R' ? '대회게시판' :
-                                        '게시판'
-                                    }}
+                                    게시판 • 글쓰기
                                 </h1>
-                                <div class="search-bar">
-                                    <div class="search-wrapper">
-                                        <select v-model="type" @change="fnBoardList">
-                                            <option value="">전체</option>
-                                            <option value="B">공지사항</option>
-                                            <option value="Q">문의게시판</option>
-                                            <option value="F">자유게시판</option>
-                                            <option value="R">대회게시판</option>
-                                        </select>
-                                        <input type="text" placeholder="검색어" v-model="keyword" @keyup.enter="fnBoardList">
-                                        <button class="search-btn" @click="fnBoardList">🔍</button>
-                                    </div>
-                                </div>
                             </div>
-                            <select class="btn" v-model="pageSize" @change="fnBoardList">
-                                <option class="btn" value="5">5개씩</option>
-                                <option class="btn" value="10">10개씩</option>
-                                <option class="btn" value="20">20개씩</option>
-                            </select>
-                             <table>
+                            <table>
                                 <tr>
-                                    <th>No</th>
-                                    <th>제목</th>
-                                    <th>작정자</th>
-                                    <th>작성일</th>
-                                    <th>조회수</th>
+                                    <th>아이디</th>
                                 </tr>
-                                <tr v-for="item in boardList">
-                                    <td>{{item.boardNo}}</td>
+                                <tr>
+                                    <th>카테고리</th>
                                     <td>
-                                        <a href="javascript:;">{{item.title}}</a>
+                                        <input type="radio">공지
+                                        <input type="radio">문의
+                                        <input type="radio">자유
+                                        <input type="radio">대회
                                     </td>
-                                    <td>{{item.userId}}</td>
-                                    <td>{{item.cdate}}</td>
-                                    <td>{{item.viewCnt}}</td>
+                                </tr>
+                                <tr>
+                                    <th>제목</th>
+                                    <td>
+                                        <label for="">
+                                            <input type="text">
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>내용</th>
+                                    <td>
+                                        <textarea cols="50" rows="20" id=""></textarea>
+                                    </td>
                                 </tr>
                             </table>
-                            <div v-if="index > 0" class="pagination">
-                                <!-- <a v-if="page != 1" @click="fnMove(1)" href="javascript:void(0)">←</a> -->
-                                <a v-if="page >= 2" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
-                                <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index"
-                                    :key="num" >
-                                    <span :class="{ active: page == num }">{{ num }}</span>
-                                </a>
-                                <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
-                                <!-- <a v-if="page != index" @click="fnMove(index)" href="javascript:void(0)">→</a> -->
-                            </div>
-                            <div class="write-btn-wrapper">
-                                <a href="/home/community/post.do">
-                                    <button class="btn">글쓰기</button>
-                                </a>
+                            <div>
+                                <button>등록</button>
+                                <button @click="fnMoveToBoard">목록</button>
                             </div>
                         </main>
                 </div>
@@ -237,15 +207,13 @@
                     }
                 });
             },
-            fnMove: function (num) {
-                    let self = this;
-                    self.page = num;
-                    self.fnBoardList();
-            },
-            fnPage : function(num){
+            fnMoveToBoard : function(){
                 let self = this;
-                self.page = num;
-                self.fnBoardList();
+                // make a modal here
+                if(!confirm("Your post won't be saved. Continue?")){
+                    return;
+                }
+                location.href="/home/community/board.do";
             }
         }, // methods
         mounted() {

@@ -1,5 +1,16 @@
 package com.example.springProject2025.model;
 
-public class Board {
+import lombok.Data;
 
+@Data
+public class Board {
+	private String boardNo;
+	private String type;
+	private String title;
+	private String contents;
+	private String userId;
+	private String cdate;
+	private String udate;
+	private String viewCnt;
+	private int cnt;
 }
