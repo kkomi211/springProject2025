@@ -143,8 +143,8 @@
                         <select v-model="selectedNewProductNo" @change="updateNewProductDetails()">
                             <option value="">교환할 옵션 선택</option>
                             <option v-for="option in productOptions" :value="option.productNo" :key="option.productNo" 
-                                    :disabled="option.productStock === 0">
-                                {{ option.productName }} / {{ option.productSize }} (재고: {{ option.productStock }}) - {{ option.price.toLocaleString() }}원
+                                    :disabled="option.quantity === 0">
+                                {{ option.productName }} / {{ option.productSize }} (재고: {{ option.quantity }}) - {{ option.price.toLocaleString() }}원
                             </option>
                         </select>
                         
@@ -160,14 +160,14 @@
                                     <td>{{ newProductDetails.productName }}</td>
                                     <td>{{ newProductDetails.productSize }}</td>
                                     <td>{{ newProductDetails.price.toLocaleString() }}원</td>
-                                    <td>{{ newProductDetails.productStock }}</td>
+                                    <td>{{ newProductDetails.quantity }}</td>
                                 </tr>
                             </table>
 
                             <label for="exchangeQuantity">교환 수량:</label>
                             <input type="number" id="exchangeQuantity" v-model.number="exchangeQuantity" min="1" 
-                                   :max="newProductDetails.productStock" placeholder="수량">
-                            <p v-if="exchangeQuantity > newProductDetails.productStock" style="color:red; font-size:0.8rem;">재고가 부족합니다.</p>
+                                   :max="newProductDetails.quantity" placeholder="수량">
+                            <p v-if="exchangeQuantity > newProductDetails.quantity" style="color:red; font-size:0.8rem;">재고가 부족합니다.</p>
                         </div>
                     </div>
 
@@ -401,7 +401,7 @@
                             alert("교환 수량은 1개 이상이어야 합니다.");
                             return;
                         }
-                        if (self.exchangeQuantity > self.newProductDetails.productStock) {
+                        if (self.exchangeQuantity > self.newProductDetails.quantity) {
                             alert("선택한 제품의 재고가 부족하여 교환 수량을 처리할 수 없습니다.");
                             return;
                         }

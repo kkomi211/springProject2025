@@ -2,6 +2,7 @@ package com.example.springProject2025.controller;
 
 import java.util.HashMap;
 
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,7 @@ import com.example.springProject2025.dao.AdminService;
 import com.google.gson.Gson;
 
 import ch.qos.logback.core.model.Model;
-import jakarta.servlet.http.HttpServletRequest;
+
 
 @Controller
 public class AdminController {
@@ -76,6 +77,13 @@ public class AdminController {
 	    request.setAttribute("userId", map.get("userId")); // model.addAttribute 대신 request.setAttribute 사용
 	    // model.addAttribute("userId", map.get("userId")); // 이 줄은 제거하거나 주석 처리
 	    return "admin/user-list-view"; // admin/user-list/view.jsp 로 이동
+	}
+	
+	@RequestMapping("admin/board-report-view.do")
+	public String boardReportDetail(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		request.setAttribute("reportBoardNo", map.get("reportBoardNo"));
+		// model.addAttribute("reportBoardNo", reportBoardNo); // 상세보기에 필요한 신고게시물 식별번호 전달
+	    return "admin/board-report-view"; // admin/board-report-detail.jsp 로 이동
 	}
 	
 	// 상품 문의내역 리스트 불러오기 메소드
@@ -185,6 +193,38 @@ public class AdminController {
 	@ResponseBody
 	public String getProductOptions(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 	    HashMap<String, Object> resultMap = adminService.getProductOptions(map);
+	    return new Gson().toJson(resultMap);
+	}
+	
+	// 신고게시물 리스트 가져오기
+	@RequestMapping(value = "admin/board-report.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String getBoardReportList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = adminService.getBoardReportList(map);
+	    return new Gson().toJson(resultMap);
+	}
+	
+	// 신고게시물 상세보기
+	@RequestMapping(value = "admin/board-report-view.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String getBoardReportDetail(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = adminService.getBoardReportDetail(map);
+	    return new Gson().toJson(resultMap);
+	}
+	
+	// 신고게시물 관리자 처리
+	@RequestMapping(value = "admin/board-report/process.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String processBoardReport(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = adminService.processBoardReport(map);
+	    return new Gson().toJson(resultMap);
+	}
+	
+	// 신고게시물 삭제 처리
+	@RequestMapping(value = "admin/board-report/deleteBoard.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String deleteBoardReported(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	    HashMap<String, Object> resultMap = adminService.deleteBoardReported(map);
 	    return new Gson().toJson(resultMap);
 	}
 

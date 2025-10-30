@@ -75,4 +75,19 @@ public interface AdminMapper {
 
 	// 동일 브랜드, 제품명(괄호 전 부분)의 모든 관련 제품 옵션 조회 (재고가 0 이상인 것만)
 	List<Admin> selectRelatedProductOptions(HashMap<String, Object> map);
+	
+	// 신고 게시물 리스트 조회
+	List<Admin> selectBoardReportList(HashMap<String, Object> map);
+
+	// 신고 게시물 총 개수 조회
+	int selectBoardReportListCount(HashMap<String, Object> map);
+
+	// 신고 게시물 상세 조회
+	Admin selectBoardReportDetail(HashMap<String, Object> map);
+
+	// 신고 확인 상태 'Y'로 변경 (처리)
+	int updateReportStatusToY(HashMap<String, Object> map);
+
+	// 게시글 삭제
+	int deleteBoard(HashMap<String, Object> map);
 }

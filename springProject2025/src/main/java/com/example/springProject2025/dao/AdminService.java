@@ -446,7 +446,7 @@ public class AdminService {
 	        if (productDetails != null) {
 	            // 동일 브랜드, 동일 제품명(괄호 전 부분)의 모든 제품 목록 조회
 	            // 제품명에서 괄호 부분을 제거한 '제품명_줄기'를 매퍼에 전달
-	            String baseProductName = productDetails.getProductName().split(" \\(")[0];
+	        	String baseProductName = productDetails.getProductName().replaceAll("\\s*\\(.*\\)", "").trim(); 
 	            map.put("baseProductName", baseProductName);
 	            map.put("brand", productDetails.getBrand());
 	            
@@ -465,5 +465,122 @@ public class AdminService {
 	    return resultMap;
 	}
 	
+	// 신고게시물 리스트 가져오기(페이징 적용)
+	public HashMap<String, Object> getBoardReportList(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+	    try {
+	        int totalItems = adminMapper.selectBoardReportListCount(map);
+	        
+	        int pageSize = 5;
+	        int currentPage = 1;
+	        
+	        if (map.get("pageSize") != null && !map.get("pageSize").equals("")) {
+	            pageSize = Integer.parseInt(map.get("pageSize").toString());
+	        }
+	        
+	        if (map.get("currentPage") != null && !map.get("currentPage").equals("")) {
+	            currentPage = Integer.parseInt(map.get("currentPage").toString());
+	        }
+	        
+	        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
+	        int startIndex = (currentPage - 1) * pageSize;
+	        
+	        map.put("startIndex", startIndex);
+	        map.put("limit", pageSize); // MyBatis에서 limit 사용
+	        
+	        List<Admin> list = adminMapper.selectBoardReportList(map);
+	        
+	        resultMap.put("list", list);
+	        resultMap.put("totalItems", totalItems);
+	        resultMap.put("totalPages", totalPages);
+	        resultMap.put("currentPage", currentPage);
+	        resultMap.put("result", "success");
+	    } catch (Exception e) {
+	        resultMap.put("result", "fail");
+	        System.err.println("신고 게시물 리스트 조회 중 오류: " + e.getMessage());
+	    }
+	    return resultMap;
+	}
+	
+	// 신고게시물 상세보기
+	public HashMap<String, Object> getBoardReportDetail(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+	    try {
+	        Admin detail = adminMapper.selectBoardReportDetail(map);
+	        if (detail != null) {
+	            resultMap.put("detail", detail);
+	            resultMap.put("result", "success");
+	        } else {
+	            resultMap.put("result", "fail");
+	            resultMap.put("message", "신고 게시물 정보를 찾을 수 없습니다.");
+	        }
+	    } catch (Exception e) {
+	        resultMap.put("result", "fail");
+	        resultMap.put("message", "신고 게시물 상세 조회 중 오류: " + e.getMessage());
+	        System.err.println("신고 게시물 상세 조회 중 오류: " + e.getMessage());
+	    }
+	    return resultMap;
+	}
+	
+	// 신고게시물 관리자 처리
+	@Transactional // 트랜잭션 관리
+	public HashMap<String, Object> processBoardReport(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+	    try {
+	        // 신고 확인 상태를 'Y'로 변경
+	        int updateResult = adminMapper.updateReportStatusToY(map);
+	        if (updateResult > 0) {
+	            resultMap.put("result", "success");
+	            resultMap.put("message", "신고 확인 상태가 '처리완료'로 변경되었습니다.");
+	        } else {
+	            resultMap.put("result", "fail");
+	            resultMap.put("message", "신고 확인 상태 변경에 실패했습니다.");
+	        }
+	    } catch (Exception e) {
+	        resultMap.put("result", "fail");
+	        resultMap.put("message", "신고 확인 처리 중 오류: " + e.getMessage());
+	        System.err.println("신고 확인 처리 중 오류: " + e.getMessage());
+	        throw new RuntimeException(e);
+	    }
+	    return resultMap;
+	}
+	
+	// 신고게시물 삭제 처리
+	@Transactional // 트랜잭션 관리
+	public HashMap<String, Object> deleteBoardReported(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+	    try {
+	        // 1. BOARD 테이블에서 해당 게시글 삭제
+	        int deleteBoardResult = adminMapper.deleteBoard(map);
+	        if (deleteBoardResult == 0) {
+	            resultMap.put("result", "fail");
+	            resultMap.put("message", "게시글 삭제에 실패했습니다. 이미 삭제되었을 수 있습니다.");
+	            return resultMap;
+	        }
+
+	        // 2. REPORT_BOARD 테이블에서 해당 신고 기록의 상태를 'Y'로 변경
+	        map.put("reportStatus", "Y"); // 상태 'Y'로 업데이트
+	        int updateReportStatusResult = adminMapper.updateReportStatusToY(map);
+	        // updateReportStatusResult가 0이라도 에러는 아니지만, 메시지는 남겨둠
+	        if (updateReportStatusResult == 0) {
+	            System.err.println("경고: 게시글(" + map.get("reportedBoardNo") + ") 삭제 후 신고 기록(" + map.get("reportBoardNo") + ") 상태 업데이트에 실패했습니다.");
+	        }
+
+	        resultMap.put("result", "success");
+	        resultMap.put("message", "게시글이 삭제되었고, 신고 확인 상태가 '처리완료'로 변경되었습니다.");
+
+	    } catch (Exception e) {
+	        resultMap.put("result", "fail");
+	        // ORA-02292 (자식 레코드가 발견되었습니다) 에러는 BOARD_NO를 참조하는 다른 테이블(댓글 등)이 있을 때 발생 가능
+	        if (e.getMessage() != null && e.getMessage().contains("ORA-02292")) {
+	            resultMap.put("message", "게시글 삭제에 실패했습니다: 해당 게시글을 참조하는 댓글 또는 다른 데이터가 존재합니다. 먼저 관련 데이터를 삭제해주세요.");
+	        } else {
+	            resultMap.put("message", "게시글 삭제 처리 중 오류: " + e.getMessage());
+	        }
+	        System.err.println("게시글 삭제 처리 중 오류: " + e.getMessage());
+	        throw new RuntimeException(e);
+	    }
+	    return resultMap;
+	}
 
 }
