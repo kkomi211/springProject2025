@@ -77,4 +77,6 @@ public interface AdminMapper {
 	
 	// 회원 삭제
 	int deleteUser(HashMap<String, Object> map);
+
+	int insertRallyImg(HashMap<String, Object> map);
 }

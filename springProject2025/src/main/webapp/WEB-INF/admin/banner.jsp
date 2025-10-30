@@ -10,208 +10,10 @@
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/banner-style.css">
         <script src="/js/page-change.js"></script>
-
         <style>
-            body {
-                font-family: "Noto Sans KR", sans-serif;
-                background-color: #fbeff3;
-                text-align: center;
-                margin: 0;
-                padding: 0;
-            }
-
-            h2 {
-                margin-top: 30px;
-                font-size: 50px;
-            }
-
-            table {
-                border-collapse: collapse;
-                width: 80%;
-                max-width: 1100px;
-                background-color: white;
-                margin: 0 auto;
-                table-layout: fixed;
-                text-align: center;
-                border-radius: 8px;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            }
-
-            th,
-            td {
-                border: 1px solid #ddd;
-                padding: 10px;
-                word-break: break-all;
-            }
-
-            th {
-                background-color: #222;
-                color: white;
-                font-weight: bold;
-            }
-
-            tr:nth-child(even) {
-                background-color: #f9f9f9;
-            }
-
-            /* 버튼 스타일 유지 */
-            button {
-                background-color: #555;
-                color: white;
-                border: none;
-                padding: 5px 12px;
-                cursor: pointer;
-                border-radius: 4px;
-            }
-
-            button:hover {
-                background-color: #8e44ad;
-            }
-
-            /* 반응형 (화면이 좁을 때) */
-            @media (max-width: 1200px) {
-                .left-ad-area {
-                    position: static;
-                    /* 모바일에서는 고정 해제 */
-                    width: 100%;
-                    flex-direction: row;
-                    justify-content: center;
-                    margin-bottom: 20px;
-                }
-
-                .ad-box {
-                    flex: 1;
-                    height: auto;
-                    font-size: 1.1em;
-                }
-
-                table {
-                    width: 85%;
-                }
-            }
-
-            /* 이미지 미리보기 스타일 */
-            .preview-box {
-                margin-top: 40px;
-                padding: 20px;
-                background-color: #fff;
-                border: 2px solid #ddd;
-                display: inline-block;
-                border-radius: 8px;
-            }
-
-            .preview-box img {
-                max-width: 600px;
-                border-radius: 6px;
-            }
-
-            table img {
-                max-width: 600px;
-                border-radius: 6px;
-                margin: 10px 0;
-            }
-
-            .modal-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 999;
-            }
-
-            .modal-content {
-                background: white;
-                padding: 30px;
-                border-radius: 8px;
-                width: 400px;
-                text-align: center;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            }
-
-            .modal-input input {
-                display: block;
-                width: 100%;
-                padding: 8px;
-                margin: 10px 0;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-            }
-
-            .modal-buttons button {
-                margin: 2 10px;
-                padding: 8px 20px;
-                color: white;
-                border: none;
-                cursor: pointer;
-                border-radius: 4px;
-            }
-
-            /* 1. 테이블과 좌측 영역을 감싸는 컨테이너 추가 */
-            /* 전체 영역 기본 구조 */
-            .content-wrapper {
-                position: relative;
-                width: 100%;
-                display: flex;
-                justify-content: center;
-                /* 테이블을 화면 정중앙에 위치시킴 */
-                align-items: flex-start;
-                padding-top: 40px;
-            }
-
-            /* 2. 좌측 광고 영역 스타일 */
-            .left-ad-area {
-                position: fixed;
-                /* 스크롤 시 화면에 고정 */
-                top: 300px;
-                /* 화면 상단으로부터 거리 */
-                left: 60px;
-                /* 화면 왼쪽으로부터 거리 */
-                width: 200px;
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                z-index: 1000;
-                /* 다른 요소보다 위에 표시 */
-            }
-
-            /* 3. 각 광고 박스 스타일 */
-
-            .ad-box {
-                background-color: #f3f3f3;
-                border: 3px solid #000000;
-                padding: 40px;
-                height: 80px;
-                border-radius: 12px;
-                font-size: 1.2em;
-                font-weight: bold;
-                color: #3b3b3b;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                text-align: center;
-                box-shadow: 0 5px 8px rgba(0, 0, 0, 0.05);
-                background: rgba(231, 231, 231, 0.25);
-                /* 반투명 흰색 */
-                backdrop-filter: blur(1px);
-                /* 유리 효과 */
-                -webkit-backdrop-filter: blur(1px);
-                /* 사파리 호환 */
-                cursor: pointer;
-                /* 클릭 가능하도록 커서 변경 */
-            }
-
-            .product-banner-controls {
-                margin-bottom: 25px;
-                /* 테이블과의 간격 (원하는 값으로 조정 가능) */
-                text-align: center;
-                /* 버튼이 가운데 정렬되도록 */
-            }
+            
         </style>
     </head>
 
@@ -423,7 +225,7 @@
                     <th>문의 번호</th>
                     <th>참가부문</th>
                     <th>주최</th>
-                    <th>등록날  짜</th>
+                    <th>등록날 짜</th>
                     <th>삭제</th>
                 </tr>
 
@@ -479,7 +281,9 @@
                         <input v-model="newRallyBanner.phone" placeholder="문의 번호 입력">
                         <input v-model="newRallyBanner.type" placeholder="참가부문 입력">
                         <input v-model="newRallyBanner.host" placeholder="주최 입력">
-                        <input type="file">
+                        <input type="file" id="file1" name="file1" accept=".jpg, .png">
+
+
                     </div>
                     <div class="modal-buttons">
                         <button @click="confirmRallyAdd" style="background-color:rgb(60,173,255);">등록</button>
@@ -796,6 +600,7 @@
                     };
                 },
                 confirmRallyAdd() {
+                    let self = this;
                     let item = this.newRallyBanner;
                     if (!item.rallyName || !item.applicationPeriod || !item.price || !item.phone) {
                         alert("모든 항목을 입력해주세요!");
@@ -807,7 +612,12 @@
                         type: "POST",
                         dataType: "json",
                         data: item,
-                        success: (res) => {
+                        success: (data) => {
+                            var form = new FormData();
+                            form.append("file1", $("#file1")[0].files[0]);
+                            form.append("rallyNo", data.rallyNo); // 임시 pk
+                            self.upload(form);
+                           
                             alert("대회 배너 등록 완료!");
                             this.closeRallyAddModal();
                             this.fnList();
@@ -815,6 +625,26 @@
                         error: () => alert("대회 배너 등록 오류 발생!")
                     });
                 },
+
+                // 파일 업로드
+                upload: function (form) {
+                    console.log(form);
+
+                    var self = this;
+                    console.log("파일 업로드 실행");
+
+                    $.ajax({
+                        url: "/rally/fileUpload.dox"
+                        , type: "POST"
+                        , processData: false
+                        , contentType: false
+                        , data: form
+                        , success: function (response) {
+
+                        }
+                    });
+                }
+
 
             },
             mounted() {

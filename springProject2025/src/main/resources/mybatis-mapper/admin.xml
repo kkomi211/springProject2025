@@ -91,8 +91,11 @@
 	    )
 	</insert>
 	
+	
+	
+	
 	<!-- rally banner 추가 -->
-	<insert id="insertRallyBanner" parameterType="hashmap">
+	<insert id="insertRallyBanner" parameterType="hashmap" keyColumn="RALLY_NO" keyProperty="rallyNo">
 		INSERT INTO RALLY (
 	        RALLY_NO,
 	        RALLY_NAME,
@@ -117,8 +120,29 @@
 	        #{host}
 	    )
 	</insert>
-
-
+	
+	
+	<!-- rally img banner 추가-->
+	<insert id="insertRallyImg" parameterType="hashmap">
+		INSERT INTO RALLY_IMG (
+        RALLY_IMG_NO,
+        RALLY_NO,
+        IMG_PATH,
+        IMG_NAME,
+        IMG_ORGNAME,
+        IMG_SIZE,
+        IMG_ETC
+    )
+    VALUES (
+        RALLY_IMG_SEQ.NEXTVAL,
+        #{rallyNo},
+        #{imgPath},
+        #{imgName},
+        #{orgName},
+        #{size},
+        #{ext}
+    )
+	</insert>
 
 
 		<!-- 상품 문의내역 전체 개수 조회 -->
