@@ -71,6 +71,13 @@ public class ProductController {
         HashMap<String, Object> resultMap = productService.InsertProduct(map);
         return new Gson().toJson(resultMap);
     }
+    
+    @RequestMapping(value = "/product/img/list.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String productImgList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+        HashMap<String, Object> resultMap = productService.getProductImgList(map);
+        return new Gson().toJson(resultMap);
+    }
 
     // ===== 파일 업로드(JSON 응답) =====
     @RequestMapping(value = "/product/fileUpload.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")

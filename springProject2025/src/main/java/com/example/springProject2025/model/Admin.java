@@ -5,8 +5,21 @@ import lombok.Data;
 @Data
 public class Admin {
 
+	// default
 	private String userId;
 	private String name;
+
+	// banner model(메인) 테이블 컬럼명
+	private int bannerId;
+	private String imageDir;
+	private String linkUrl;
+	private int displayOrder;
+	
+	// banner model(제품) 테이블 컬럼명
+	private int pBannerImgNo;
+	private String productImgNo;
+	
+	
 	
 	// PRODUCT_INQUIRY 테이블 컬럼
 	private int inquiryNo;
