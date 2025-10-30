@@ -21,8 +21,8 @@ public class Admin {
 	// private String cDate; // inquiry_cDate
 	// private String uDate; // inquiry_uDate
 	// default
-	private String userId;
-	private String name;
+//	private String userId;
+//	private String name;
 
 	// banner model(slide) 테이블 컬럼명
 	private int bannerId;
@@ -40,17 +40,17 @@ public class Admin {
 	private String rallyName;
 	private String rallyDate;
 	private String applicationPeriod;
-	private int price;
+//	private int price;
 	private String type;
 	private String host;
 	
 	
 	// PRODUCT_INQUIRY 테이블 컬럼
-	private int inquiryNo;
-	private String productNo;
-	private String content;
-	private String cDate;
-	private String uDate;
+//	private int inquiryNo;
+//	private String productNo;
+//	private String content;
+//	private String cDate;
+//	private String uDate;
 	private String pwd;
 	// private String status; // inquiry_status
 	private String answer;
