@@ -11,8 +11,15 @@
 		
 		<!-- product banner.xml(제품) list-->
 		<select id="selectProductBannerList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
-			SELECT *
-			FROM PRODUCT_BANNER_IMG
+			SELECT B.*, IMG_PATH
+			FROM PRODUCT_BANNER_IMG B
+			INNER JOIN PRODUCT_IMG P ON B.PRODUCT_NO = P.PRODUCT_NO			
+		</select>
+		
+		<select id="selectRallyBannerList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
+			SELECT R.*, I.IMG_PATH
+			FROM RALLY R
+			INNER JOIN RALLY_IMG I ON R.RALLY_NO = I.RALLY_NO		
 		</select>
 	
 	<!-- slide banner 수정/저장-->
@@ -39,6 +46,12 @@
 	<delete id="deleteProductBanner" parameterType="hashmap">
 		DELETE FROM PRODUCT_BANNER_IMG
 		WHERE PBANNER_IMG_NO = #{pBannerImgNo}
+	</delete>
+	
+	<!-- rally banner 삭제 -->
+	<delete id="deleteRallyBanner" parameterType="hashmap">
+		DELETE FROM RALLY
+		WHERE RALLY_NO = #{rallyNo}
 	</delete>
 	
 	<!-- slide banner 추가 -->
@@ -75,6 +88,33 @@
 	        NULL,
 	        
 	        SYSDATE
+	    )
+	</insert>
+	
+	<!-- rally banner 추가 -->
+	<insert id="insertRallyBanner" parameterType="hashmap">
+		INSERT INTO RALLY (
+	        RALLY_NO,
+	        RALLY_NAME,
+	        RALLY_DATE,
+	        APPLICATION_PERIOD,
+	        PRICE,
+	        PHONE,
+	        TYPE,
+	        HOST
+	    )
+	    VALUES (
+	        RALLY_SEQ.NEXTVAL,
+	        #{rallyName},
+	        
+	        TO_DATE(#{rallyDate}, 'YYYY-MM-DD'), 
+	        
+	        TO_DATE(#{applicationPeriod}, 'YYYY-MM-DD'), 
+	        
+	        #{price},
+	        #{phone},
+	        #{type},
+	        #{host}
 	    )
 	</insert>
 

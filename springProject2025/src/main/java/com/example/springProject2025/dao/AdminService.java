@@ -251,15 +251,17 @@ public class AdminService {
 		return resultMap;
 	}
 
-	// banner(메인 슬라이드 광고) List
+	// banner(슬라이드, 제품, 대회 광고) List
 	public HashMap<String, Object> getSlidebannerList(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		List<Admin> list = adminMapper.selectSlideBannerList(map);
 		List<Admin> list1 = adminMapper.selectProductBannerList(map);
+		List<Admin> list2 = adminMapper.selectRallyBannerList(map);
 
 		resultMap.put("list", list);
 		resultMap.put("list1", list1);
+		resultMap.put("list2", list2);
 		resultMap.put("result", "success");
 		return resultMap;
 	}
@@ -294,7 +296,18 @@ public class AdminService {
 			resultMap.put("result", "success");
 			return resultMap;
 		}
+		
+	// rally banner delect 삭제
+		public HashMap<String, Object> removeRallyBanner(HashMap<String, Object> map) {
+			// TODO Auto-generated method stub
+			HashMap<String, Object> resultMap = new HashMap<String, Object>();
+			int rallydelet = adminMapper.deleteRallyBanner(map);
+
+			resultMap.put("result", "success");
+			return resultMap;
+		}
 	
+		
 	// slide banner insert 추가
 	public HashMap<String, Object> addSlideBanner(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
@@ -310,6 +323,16 @@ public class AdminService {
 			// TODO Auto-generated method stub
 			HashMap<String, Object> resultMap = new HashMap<String, Object>();
 			int productadd = adminMapper.insertProductBanner(map);
+
+			resultMap.put("result", "success");
+			return resultMap;
+		}
+		
+	// rally banner insert 추가
+		public HashMap<String, Object> addRallyBanner(HashMap<String, Object> map) {
+			// TODO Auto-generated method stub
+			HashMap<String, Object> resultMap = new HashMap<String, Object>();
+			int rallyadd = adminMapper.insertRallyBanner(map);
 
 			resultMap.put("result", "success");
 			return resultMap;

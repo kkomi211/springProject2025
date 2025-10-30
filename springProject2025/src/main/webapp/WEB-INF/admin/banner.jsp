@@ -370,7 +370,7 @@
 
                     <tr v-if="item.showImage">
                         <td colspan="5" style="text-align:center; background-color:#f9f9f9;">
-                            <img :src="item.imageDir" alt="제품 배너 이미지" style="max-width:600px; border-radius:6px;">
+                            <img :src="item.imgPath" alt="제품 배너 이미지" style="max-width:600px; border-radius:6px;">
                         </td>
                     </tr>
                 </template>
@@ -404,237 +404,429 @@
             </div>
 
 
-            <!-- 메인 슬라이드 광고-->
+            <!-- 대회 광고-->
             <h2 id="contest-banner-section">대회 배너 관리</h2>
 
+            <div class="product-banner-controls">
+                <button @click="openRallyAddModal" style="background-color:rgb(60,173,255);">
+                    광고 배너 추가
+                </button>
+            </div>
+
+            <table>
+                <tr>
+                    <th>대회 번호</th>
+                    <th>대회 이름</th>
+                    <th>대회 일시</th>
+                    <th>접수 기간</th>
+                    <th>가격</th>
+                    <th>문의 번호</th>
+                    <th>참가부문</th>
+                    <th>주최</th>
+                    <th>등록날  짜</th>
+                    <th>삭제</th>
+                </tr>
+
+                <template v-for="(item, index) in list2" :key="item.rallyNo">
+                    <tr>
+                        <td>{{item.rallyNo}}</td>
+                        <td @click="toggleRallyImage(index)"
+                            style="cursor:pointer; color:rgb(60,173,255); text-decoration:underline;">
+                            {{item.rallyName}}
+                        </td>
+                        <td>{{item.rallyDate}}</td>
+                        <td>{{item.applicationPeriod}}</td>
+                        <td>{{item.price}}</td>
+                        <td>{{item.phone}}</td>
+                        <td>{{item.type}}</td>
+                        <td>{{item.host}}</td>
+                        <td>{{item.cDate}}</td>
+                        <td>
+                            <button @click="openRallyDeleteModal(item)" style="background-color: #F24822;">삭제</button>
+                        </td>
+                    </tr>
+
+                    <tr v-if="item.showImage">
+                        <td colspan="10" style="text-align:center; background-color:#f9f9f9;">
+                            <img :src="item.imgPath" alt="대회 배너 이미지" style="max-width:600px; border-radius:6px;">
+                        </td>
+                    </tr>
+                </template>
+
+            </table>
+
+            <!-- 대회 배너 삭제 모달 -->
+            <div v-if="showRallyDeleteModal" class="modal-overlay">
+                <div class="modal-content">
+                    <h3>삭제 확인</h3>
+                    <p>"{{ rallyDeleteItem.rallyName }}" 배너를 정말 삭제하시겠습니까?</p>
+                    <div class="modal-buttons">
+                        <button @click="confirmRallyDelete()" style="background-color:#F24822;">삭제</button>
+                        <button @click="closeRallyDeleteModal" style="background-color:#7e7e7e;">취소</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 대회 배너 추가 모달 -->
+            <div v-if="showRallyAddModal" class="modal-overlay">
+                <div class="modal-content">
+                    <h3>대회 배너 추가</h3>
+                    <div class="modal-input">
+                        <input v-model="newRallyBanner.rallyName" placeholder="대회 이름 입력">
+                        <input v-model="newRallyBanner.rallyDate" placeholder="대회 날짜 입력">
+                        <input v-model="newRallyBanner.applicationPeriod" placeholder="접수 기간 입력">
+                        <input v-model="newRallyBanner.price" placeholder="가격 입력">
+                        <input v-model="newRallyBanner.phone" placeholder="문의 번호 입력">
+                        <input v-model="newRallyBanner.type" placeholder="참가부문 입력">
+                        <input v-model="newRallyBanner.host" placeholder="주최 입력">
+                        <input type="file">
+                    </div>
+                    <div class="modal-buttons">
+                        <button @click="confirmRallyAdd" style="background-color:rgb(60,173,255);">등록</button>
+                        <button @click="closeRallyAddModal" style="background-color:#7e7e7e;">취소</button>
+                    </div>
+                </div>
+            </div>
         </div>
+    </body>
 
-        <script>
-            // [가장 중요한 수정] 전역 함수로 분리하여 HTML에서 직접 호출 가능하게 함
-            function scrollToSection(sectionId) {
-                // 앵커 ID를 가진 요소의 위치를 찾습니다.
-                var targetPosition = $('#' + sectionId).offset().top;
+    </html>
 
-                // 부드럽게 스크롤합니다.
+    <script>
+
+        // [가장 중요한 수정] 전역 함수로 분리하여 HTML에서 직접 호출 가능하게 함
+        function scrollToSection(sectionId) {
+            const target = $('#' + sectionId);
+            if (target.length) {
                 $('html, body').animate({
-                    scrollTop: targetPosition - 50 // 상단에 50px 여백을 둠
+                    scrollTop: target.offset().top - 50
                 }, 800);
             }
+        }
 
-            const app = Vue.createApp({
-                data() {
-                    return {
-                        list: [], // 메인 슬라이드 배너
-                        list1: [], // 제품 배너
-                        editFlg: false,
-                        selectedImage: "", // 클릭된 이미지 저장 변수
+        const app = Vue.createApp({
+            data() {
+                return {
+                    list: [], // 메인 슬라이드 배너
+                    list1: [], // 제품 배너
+                    list2: [], // 대회 배너
+                    editFlg: false,
+                    selectedImage: "", // 클릭된 이미지 저장 변수
 
-                        // 메인 슬라이드 배너 (list)
-                        showMainDeleteModal: false,
-                        showMainAddModal: false,
-                        mainDeleteItem: null,
-                        newMainBanner: {
-                            title: "",
-                            imageDir: "",
-                            linkUrl: ""
-                        },
+                    // 메인 슬라이드 배너 (list)
+                    showMainDeleteModal: false,
+                    showMainAddModal: false,
+                    mainDeleteItem: null,
+                    newMainBanner: {
+                        title: "",
+                        imageDir: "",
+                        linkUrl: ""
+                    },
 
-                        // 제품 배너 (list1)
-                        showProductDeleteModal: false,
-                        showProductAddModal: false,
-                        productDeleteItem: null,
-                        newProductBanner: {
-                            title: "",
-                            productImgNo: "", // 이미지 경로 대신 번호를 쓰는 경우를 고려
-                            productNo: "",
+                    // 제품 배너 (list1)
+                    showProductDeleteModal: false,
+                    showProductAddModal: false,
+                    productDeleteItem: null,
+                    newProductBanner: {
+                        title: "",
+                        productImgNo: "", // 이미지 경로 대신 번호를 쓰는 경우를 고려
+                        productNo: "",
 
+                    },
+
+                    // 대회 배너 (list2)
+                    showRallyDeleteModal: false,
+                    showRallyAddModal: false,
+                    rallyDeleteItem: null,
+                    newRallyBanner: {
+                        rallyNo: "",
+                        rallyName: "",
+                        rallyDate: "",
+                        applicationPeriod: "",
+                        price: "",
+                        phone: "",
+                        phone: "",
+                        host: "",
+
+                    }
+                };
+            },
+            methods: {
+                fnLogout: function () {
+                    pageChange("home.do", { sessionId: "" });
+                },
+                fnList: function () {
+                    let self = this;
+                    $.ajax({
+                        url: "/admin/slidebanner.dox",
+                        dataType: "json",
+                        type: "POST",
+                        success: function (data) {
+                            console.log(data);
+                            // list (메인 슬라이드 배너) 초기화 및 isEditing, showImage 속성 추가
+                            self.list = data.list.map(item => ({
+                                ...item,
+                                isEditing: false,
+                                showImage: false // 이미지 토글을 위한 속성 추가
+                            }));
+                            // list1 (제품 배너) 초기화 및 isEditing, showImage 속성 추가
+                            self.list1 = data.list1.map(item => ({
+                                ...item,
+                                isEditing: false,
+                                showImage: false // 이미지 토글을 위한 속성 추가
+                            }));
+                            // list2 (대회 배너) 초기화 및 isEditing, showImage 속성 추가
+                            self.list2 = data.list2.map(item => ({
+                                ...item,
+                                isEditing: false,
+                                showImage: false // 이미지 토글을 위한 속성 추가
+
+                            }));
                         }
+                    });
+                },
+
+                // 메인 슬라이드 배너 기능 (list)
+                saveMainBanner(index) {
+                    let item = this.list[index];
+                    $.ajax({
+                        url: "/admin/bannerUpdate.dox",
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            bannerId: item.bannerId,
+                            title: item.title,
+                            imageDir: item.imageDir,
+                            linkUrl: item.linkUrl
+                        },
+                        success: (res) => {
+                            alert("메인 배너 저장 완료!");
+                            this.list[index].isEditing = false; // 수정모드 해제
+                            this.fnList();
+                        },
+                        error: () => {
+                            alert("메인 배너 저장 오류 발생!");
+                        }
+                    });
+                },
+                toggleImage(index) { // 메인 슬라이드 배너 이미지 토글
+                    this.list.forEach((item, i) => {
+                        if (i !== index) item.showImage = false;
+                    });
+                    this.list[index].showImage = !this.list[index].showImage;
+                },
+                openMainDeleteModal(item) {
+                    this.mainDeleteItem = item;
+                    this.showMainDeleteModal = true;
+                },
+                closeMainDeleteModal() {
+                    this.showMainDeleteModal = false;
+                    this.mainDeleteItem = null;
+                },
+                confirmMainDelete() {
+                    if (!this.mainDeleteItem) return;
+                    $.ajax({
+                        url: "/admin/bannerSlideDelete.dox",
+                        type: "POST",
+                        dataType: "json",
+                        data: { bannerId: this.mainDeleteItem.bannerId },
+                        success: (res) => {
+                            alert("메인 배너 삭제 완료!");
+                            this.closeMainDeleteModal();
+                            this.fnList(); // 리스트 갱신
+                        },
+                        error: () => {
+                            alert("메인 배너 삭제 중 오류 발생!");
+                        }
+                    });
+                },
+                openMainAddModal() {
+                    this.showMainAddModal = true;
+                    // 모달 열 때 입력값 초기화
+                    this.newMainBanner = { title: "", imageDir: "", linkUrl: "" };
+                },
+                closeMainAddModal() {
+                    this.showMainAddModal = false;
+                    this.newMainBanner = { title: "", imageDir: "", linkUrl: "" };
+                },
+                confirmMainAdd() {
+                    let item = this.newMainBanner;
+                    if (!item.title || !item.imageDir) {
+                        alert("모든 항목을 입력해주세요!");
+                        return;
+                    }
+                    $.ajax({
+                        url: "/admin/slideBannerInsert.dox",
+                        type: "POST",
+                        dataType: "json",
+                        data: item,
+                        success: (res) => {
+                            alert("메인 배너 등록 완료!");
+                            this.closeMainAddModal();
+                            this.fnList();
+                        },
+                        error: () => alert("메인 배너 등록 오류 발생!")
+                    });
+                },
+
+                // 제품 배너 기능 (list1)
+                toggleProductImage(index) { // 제품 배너 이미지 토글
+                    // list의 이미지 토글은 유지
+                    this.list.forEach(item => item.showImage = false);
+
+                    // list1 아이템만 토글
+                    this.list1.forEach((item, i) => {
+                        if (i !== index) item.showImage = false;
+                    });
+                    this.list1[index].showImage = !this.list1[index].showImage;
+                },
+                openProductDeleteModal(item) {
+                    this.productDeleteItem = item;
+                    this.showProductDeleteModal = true;
+                },
+                closeProductDeleteModal() {
+                    this.showProductDeleteModal = false;
+                    this.productDeleteItem = null;
+                },
+                confirmProductDelete() {
+                    if (!this.productDeleteItem) return;
+                    // 제품 배너 삭제는 pBannerImgNo를 사용한다고 가정하고 URL을 변경합니다.
+                    $.ajax({
+                        url: "/admin/productBannerDelete.dox", // 이 URL은 가정입니다. 실제 API URL로 수정하세요.
+                        type: "POST",
+                        dataType: "json",
+                        data: { pBannerImgNo: this.productDeleteItem.pBannerImgNo },
+                        success: (res) => {
+                            alert("제품 배너 삭제 완료!");
+                            this.closeProductDeleteModal();
+                            this.fnList(); // 리스트 갱신
+                        },
+                        error: () => {
+                            alert("제품 배너 삭제 중 오류 발생!");
+                        }
+                    });
+                },
+                openProductAddModal() {
+                    this.showProductAddModal = true;
+                    // 모달 열 때 입력값 초기화
+                    this.newProductBanner = { title: "", productImgNo: "", productNo: "" };
+                },
+                closeProductAddModal() {
+                    this.showProductAddModal = false;
+                    this.newProductBanner = { title: "", productImgNo: "", productNo: "" };
+                },
+                confirmProductAdd() {
+                    let item = this.newProductBanner;
+                    if (!item.title || !item.productImgNo || !item.productNo) {
+                        alert("모든 항목을 입력해주세요!");
+                        return;
+                    }
+                    // 제품 배너 추가는 새로운 API URL을 사용한다고 가정합니다.
+                    $.ajax({
+                        url: "/admin/productBannerInsert.dox", // 이 URL은 가정입니다. 실제 API URL로 수정하세요.
+                        type: "POST",
+                        dataType: "json",
+                        data: item,
+                        success: (res) => {
+                            alert("제품 배너 등록 완료!");
+                            this.closeProductAddModal();
+                            this.fnList();
+                        },
+                        error: () => alert("제품 배너 등록 오류 발생!")
+                    });
+                },
+
+                // 대회 광고 (list2)
+                toggleRallyImage(index) {
+                    // 대회 배너 이미지 토글
+                    this.list2.forEach((item, i) => {
+                        if (i !== index) item.showImage = false;
+                    });
+                    this.list2[index].showImage = !this.list2[index].showImage;
+                },
+                openRallyDeleteModal(item) {
+                    this.rallyDeleteItem = item;
+                    this.showRallyDeleteModal = true;
+                },
+                closeRallyDeleteModal() {
+                    this.showRallyDeleteModal = false;
+                    this.rallyDeleteItem = null;
+                },
+                confirmRallyDelete() {
+                    if (!this.rallyDeleteItem) return;
+                    // 대회 배너 삭제를 위한 API 호출
+                    $.ajax({
+                        url: "/admin/rallyBannerDelete.dox", // 실제 API URL을 사용해야 합니다.
+                        type: "POST",
+                        dataType: "json",
+                        data: { rallyNo: this.rallyDeleteItem.rallyNo },
+                        success: (res) => {
+                            alert("대회 배너 삭제 완료!");
+                            this.closeRallyDeleteModal();
+                            this.fnList(); // 리스트 갱신
+                        },
+                        error: () => {
+                            alert("대회 배너 삭제 중 오류 발생!");
+                        }
+                    });
+                },
+                openRallyAddModal() {
+                    this.showRallyAddModal = true;
+                    // 모달 열 때 입력값 초기화
+                    this.newRallyBanner = {
+                        rallyName: "",
+                        rallyDate: "",
+                        applicationPeriod: "",
+                        price: "",
+                        phone: "",
+                        type: "",
+                        host: ""
                     };
                 },
-                methods: {
-                    fnLogout: function () {
-                        pageChange("home.do", { sessionId: "" });
-                    },
-                    fnList: function () {
-                        let self = this;
-                        $.ajax({
-                            url: "/admin/slidebanner.dox",
-                            dataType: "json",
-                            type: "POST",
-                            success: function (data) {
-                                // list (메인 슬라이드 배너) 초기화 및 isEditing, showImage 속성 추가
-                                self.list = data.list.map(item => ({
-                                    ...item,
-                                    isEditing: false,
-                                    showImage: false // 이미지 토글을 위한 속성 추가
-                                }));
-                                // list1 (제품 배너) 초기화 및 isEditing, showImage 속성 추가
-                                self.list1 = data.list1.map(item => ({
-                                    ...item,
-                                    isEditing: false,
-                                    showImage: false // 이미지 토글을 위한 속성 추가
-                                }));
-                            }
-                        });
-                    },
-
-                    // 메인 슬라이드 배너 기능 (list)
-                    saveMainBanner(index) {
-                        let item = this.list[index];
-                        $.ajax({
-                            url: "/admin/bannerUpdate.dox",
-                            type: "POST",
-                            dataType: "json",
-                            data: {
-                                bannerId: item.bannerId,
-                                title: item.title,
-                                imageDir: item.imageDir,
-                                linkUrl: item.linkUrl
-                            },
-                            success: (res) => {
-                                alert("메인 배너 저장 완료!");
-                                this.list[index].isEditing = false; // 수정모드 해제
-                                this.fnList();
-                            },
-                            error: () => {
-                                alert("메인 배너 저장 오류 발생!");
-                            }
-                        });
-                    },
-                    toggleImage(index) { // 메인 슬라이드 배너 이미지 토글
-                        this.list.forEach((item, i) => {
-                            if (i !== index) item.showImage = false;
-                        });
-                        this.list[index].showImage = !this.list[index].showImage;
-                    },
-                    openMainDeleteModal(item) {
-                        this.mainDeleteItem = item;
-                        this.showMainDeleteModal = true;
-                    },
-                    closeMainDeleteModal() {
-                        this.showMainDeleteModal = false;
-                        this.mainDeleteItem = null;
-                    },
-                    confirmMainDelete() {
-                        if (!this.mainDeleteItem) return;
-                        $.ajax({
-                            url: "/admin/bannerSlideDelete.dox",
-                            type: "POST",
-                            dataType: "json",
-                            data: { bannerId: this.mainDeleteItem.bannerId },
-                            success: (res) => {
-                                alert("메인 배너 삭제 완료!");
-                                this.closeMainDeleteModal();
-                                this.fnList(); // 리스트 갱신
-                            },
-                            error: () => {
-                                alert("메인 배너 삭제 중 오류 발생!");
-                            }
-                        });
-                    },
-                    openMainAddModal() {
-                        this.showMainAddModal = true;
-                        // 모달 열 때 입력값 초기화
-                        this.newMainBanner = { title: "", imageDir: "", linkUrl: "" };
-                    },
-                    closeMainAddModal() {
-                        this.showMainAddModal = false;
-                        this.newMainBanner = { title: "", imageDir: "", linkUrl: "" };
-                    },
-                    confirmMainAdd() {
-                        let item = this.newMainBanner;
-                        if (!item.title || !item.imageDir) {
-                            alert("모든 항목을 입력해주세요!");
-                            return;
-                        }
-                        $.ajax({
-                            url: "/admin/slideBannerInsert.dox",
-                            type: "POST",
-                            dataType: "json",
-                            data: item,
-                            success: (res) => {
-                                alert("메인 배너 등록 완료!");
-                                this.closeMainAddModal();
-                                this.fnList();
-                            },
-                            error: () => alert("메인 배너 등록 오류 발생!")
-                        });
-                    },
-
-                    // 제품 배너 기능 (list1)
-                    toggleProductImage(index) { // 제품 배너 이미지 토글
-                        // list의 이미지 토글은 유지
-                        this.list.forEach(item => item.showImage = false);
-
-                        // list1 아이템만 토글
-                        this.list1.forEach((item, i) => {
-                            if (i !== index) item.showImage = false;
-                        });
-                        this.list1[index].showImage = !this.list1[index].showImage;
-                    },
-                    openProductDeleteModal(item) {
-                        this.productDeleteItem = item;
-                        this.showProductDeleteModal = true;
-                    },
-                    closeProductDeleteModal() {
-                        this.showProductDeleteModal = false;
-                        this.productDeleteItem = null;
-                    },
-                    confirmProductDelete() {
-                        if (!this.productDeleteItem) return;
-                        // 제품 배너 삭제는 pBannerImgNo를 사용한다고 가정하고 URL을 변경합니다.
-                        $.ajax({
-                            url: "/admin/productBannerDelete.dox", // 이 URL은 가정입니다. 실제 API URL로 수정하세요.
-                            type: "POST",
-                            dataType: "json",
-                            data: { pBannerImgNo: this.productDeleteItem.pBannerImgNo },
-                            success: (res) => {
-                                alert("제품 배너 삭제 완료!");
-                                this.closeProductDeleteModal();
-                                this.fnList(); // 리스트 갱신
-                            },
-                            error: () => {
-                                alert("제품 배너 삭제 중 오류 발생!");
-                            }
-                        });
-                    },
-                    openProductAddModal() {
-                        this.showProductAddModal = true;
-                        // 모달 열 때 입력값 초기화
-                        this.newProductBanner = { title: "", productImgNo: "", productNo: "" };
-                    },
-                    closeProductAddModal() {
-                        this.showProductAddModal = false;
-                        this.newProductBanner = { title: "", productImgNo: "", productNo: "" };
-                    },
-                    confirmProductAdd() {
-                        let item = this.newProductBanner;
-                        if (!item.title || !item.productImgNo || !item.productNo) {
-                            alert("모든 항목을 입력해주세요!");
-                            return;
-                        }
-                        // 제품 배너 추가는 새로운 API URL을 사용한다고 가정합니다.
-                        $.ajax({
-                            url: "/admin/productBannerInsert.dox", // 이 URL은 가정입니다. 실제 API URL로 수정하세요.
-                            type: "POST",
-                            dataType: "json",
-                            data: item,
-                            success: (res) => {
-                                alert("제품 배너 등록 완료!");
-                                this.closeProductAddModal();
-                                this.fnList();
-                            },
-                            error: () => alert("제품 배너 등록 오류 발생!")
-                        });
-                    },
-
+                closeRallyAddModal() {
+                    this.showRallyAddModal = false;
+                    this.newRallyBanner = {
+                        rallyName: "",
+                        rallyDate: "",
+                        applicationPeriod: "",
+                        price: "",
+                        phone: "",
+                        type: "",
+                        host: ""
+                    };
                 },
-                mounted() {
-                    this.fnList();
-                }
-            });
-            app.mount('#app');
-        </script>
+                confirmRallyAdd() {
+                    let item = this.newRallyBanner;
+                    if (!item.rallyName || !item.applicationPeriod || !item.price || !item.phone) {
+                        alert("모든 항목을 입력해주세요!");
+                        return;
+                    }
+                    // 대회 배너 추가를 위한 API 호출
+                    $.ajax({
+                        url: "/admin/rallyBannerInsert.dox", // 실제 API URL을 사용해야 합니다.
+                        type: "POST",
+                        dataType: "json",
+                        data: item,
+                        success: (res) => {
+                            alert("대회 배너 등록 완료!");
+                            this.closeRallyAddModal();
+                            this.fnList();
+                        },
+                        error: () => alert("대회 배너 등록 오류 발생!")
+                    });
+                },
+
+            },
+            mounted() {
+                this.fnList();
+            }
+        });
+        app.mount('#app');
+
+
+
+    </script>
+
     </body>
 
     </html>

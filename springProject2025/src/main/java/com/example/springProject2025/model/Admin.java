@@ -9,16 +9,27 @@ public class Admin {
 	private String userId;
 	private String name;
 
-	// banner model(메인) 테이블 컬럼명
+	// banner model(slide) 테이블 컬럼명
 	private int bannerId;
 	private String title;
 	private String imageDir;
 	private String linkUrl;
 	private int displayOrder;
 	
-	// banner model(제품) 테이블 컬럼명
+	// banner model(product) 테이블 컬럼명
 	private int pBannerImgNo;
-	private String productImgNo;	
+	private String productImgNo;
+	private String imgPath;
+	
+	// banner model(rally) 테이블 컬럼명
+	private int rallyNo;
+	private String rallyName;
+	private String rallyDate;
+	private String applicationPeriod;
+	private int price;
+	private String type;
+	private String host;
+	
 	
 	// PRODUCT_INQUIRY 테이블 컬럼
 	private int inquiryNo;

@@ -19,6 +19,9 @@ public interface AdminMapper {
 	// banner(제품 광고) 목록
 	List<Admin>selectProductBannerList(HashMap<String, Object> map);
 	
+	// banner(대회 광고) 목록
+	List<Admin>selectRallyBannerList(HashMap<String, Object> map);
+	
 	// banner(slide) 수정/저장/삭제/추가 (update)
 	int updateBannerModify(HashMap<String, Object> map);
 	
@@ -28,11 +31,17 @@ public interface AdminMapper {
 	// banner(product) 삭제
 	int deleteProductBanner(HashMap<String, Object> map);
 	
+	// banner(rally) 삭제
+	int deleteRallyBanner(HashMap<String, Object> map);
+	
 	// banner(slide) 추가
 	int insertSlideBanner(HashMap<String, Object> map);
 	
 	// banner(product) 추가
 	int insertProductBanner(HashMap<String, Object> paramMap);
+	
+	// banner(rally) 추가 
+	int insertRallyBanner(HashMap<String, Object> paramMap);
 	
 	
 	
