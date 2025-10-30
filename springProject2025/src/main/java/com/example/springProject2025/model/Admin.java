@@ -11,7 +11,6 @@ public class Admin {
 
 	// banner model(slide) 테이블 컬럼명
 	private int bannerId;
-	private String title;
 	private String imageDir;
 	private String linkUrl;
 	private int displayOrder;
