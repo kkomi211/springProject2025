@@ -34,11 +34,21 @@
                             <div>
                                 <input type="text" placeholder="검색어를 입력해 주세요.">
                             </div>
-                            <div>
-                                <a href="/home/login.do">로그인</a>
+                            <div v-if="sessionId != '' || sessionId != 'undefined' || sessionId != null">
+                                <div>
+                                    <a href="/home/login.do">로그인</a>
+                                </div>
+                                <div>
+                                    <a href="/home/signup.do">가입하기</a>
+                                </div>
                             </div>
-                            <div>
-                                <a href="/home/signup.do">가입하기</a>
+                            <div v-else>
+                                <div>
+                                    <a href="/home/signup.do">마이페이지</a>
+                                </div>
+                                <div>
+                                    <a href="/home/signup.do">로그아웃</a>
+                                </div>
                             </div>
                             <div><a href="/home/mypage/inquiry.do">문의</a></div>
                             <div><a href="/home/cart.do">장바구니</a></div>
