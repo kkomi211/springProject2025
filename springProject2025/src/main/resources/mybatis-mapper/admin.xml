@@ -614,4 +614,174 @@
 		    DELETE FROM BOARD
 		    WHERE BOARD_NO = #{reportedBoardNo}
 		</delete>
+		
+		
+		<!-- - 대시보드 쿼리들 - -->
+
+	    <!-- 주문 현황 (상태별 건수) -->
+	    <select id="selectOrderStatusCounts" resultType="hashmap">
+	        SELECT STATUS, COUNT(ORDER_NO) AS COUNT
+	        FROM ORDERS
+	        GROUP BY STATUS
+	        ORDER BY
+	            CASE STATUS
+	                WHEN '신규주문' THEN 1
+	                WHEN '배송중' THEN 2
+	                WHEN '배송완료' THEN 3
+	                WHEN '교환요청' THEN 4
+	                WHEN '교환완료' THEN 5
+	                WHEN '취소요청' THEN 6
+	                WHEN '취소완료' THEN 7
+	                WHEN '반품요청' THEN 8
+	                WHEN '반품완료' THEN 9
+	                ELSE 10
+	            END ASC
+	    </select>
+	
+	    <!-- 총 매출 (배송완료, 교환완료 상태만 합산) -->
+	    <select id="selectTotalSales" resultType="long">
+	        SELECT NVL(SUM(PAYMENT_AMOUNT), 0)
+	        FROM ORDERS
+	        WHERE STATUS IN ('배송완료', '교환완료')
+	    </select>
+	
+	    <!-- 이번 달 매출 (배송완료, 교환완료 상태만 합산) -->
+	    <select id="selectMonthlySales" resultType="long">
+	        SELECT NVL(SUM(PAYMENT_AMOUNT), 0)
+	        FROM ORDERS
+	        WHERE STATUS IN ('배송완료', '교환완료')
+	        AND TO_CHAR(CDATE, 'YYYYMM') = TO_CHAR(SYSDATE, 'YYYYMM')
+	    </select>
+	
+	    <!-- 지난 6개월 간 월별 매출 (라인 그래프용) -->
+	    <select id="selectLastSixMonthsSales" resultType="hashmap">
+		    WITH MONTH_DATA AS (
+		        -- 현재 월부터 6개월 전까지의 월 목록을 생성합니다. (Oracle의 Hierarchical Query 또는 Recursive CTE 사용)
+		        SELECT
+		            TO_CHAR(ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1 - LEVEL), 'YYYY-MM') AS SALES_MONTH,
+		            ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1 - LEVEL) AS MONTH_START_DATE
+		        FROM DUAL
+		        CONNECT BY LEVEL <![CDATA[<=]]> 6
+		    )
+		    SELECT
+		        MD.SALES_MONTH,
+		        NVL(SUM(O.PAYMENT_AMOUNT), 0) AS MONTHLY_SALES
+		    FROM MONTH_DATA MD
+		    LEFT JOIN ORDERS O ON TO_CHAR(O.CDATE, 'YYYY-MM') = MD.SALES_MONTH
+		                       AND O.STATUS IN ('배송완료', '교환완료')
+		    GROUP BY MD.SALES_MONTH, MD.MONTH_START_DATE
+		    ORDER BY MD.MONTH_START_DATE ASC
+		</select>
+	
+	    <!-- 총 상품 수 -->
+	    <select id="selectTotalProductCount" resultType="int">
+	        SELECT COUNT(PRODUCT_NO) FROM PRODUCT
+	    </select>
+	
+	    <!-- 재고 있음 상품 수 -->
+	    <select id="selectInStockProductCount" resultType="int">
+	        SELECT COUNT(PRODUCT_NO) FROM PRODUCT WHERE QUANTITY > 0
+	    </select>
+	
+	    <!-- 품절 임박 상품 수 (재고 1~9개) -->
+	    <select id="selectLowStockProductCount" resultType="int">
+	        SELECT COUNT(PRODUCT_NO) FROM PRODUCT WHERE QUANTITY BETWEEN 1 AND 9
+	    </select>
+	
+	    <!-- 판매량 Top N 상품 (LIMIT 대신 FETCH FIRST ROWS ONLY 사용) -->
+	    <select id="selectTopSellingProducts" parameterType="int" resultType="com.example.springProject2025.model.Admin">
+	        SELECT PRODUCT_NO, PRODUCT_NAME, SELL_COUNT
+	        FROM PRODUCT
+	        ORDER BY SELL_COUNT DESC
+	        FETCH FIRST #{limit} ROWS ONLY
+	    </select>
+	
+	    <!-- 총 회원 수 (일반 회원만) -->
+	    <select id="selectTotalUserCount" resultType="int">
+	        SELECT COUNT(USER_ID) FROM USERS WHERE USERTYPE = 'U'
+	    </select>
+	
+	    <!-- 오늘 가입한 신규 회원 수 -->
+	    <select id="selectNewUsersTodayCount" resultType="int">
+	        SELECT COUNT(USER_ID) FROM USERS WHERE USERTYPE = 'U' AND TRUNC(CDATE) = TRUNC(SYSDATE)
+	    </select>
+	
+	    <!-- 이번 달 가입한 신규 회원 수 -->
+	    <select id="selectNewUsersMonthCount" resultType="int">
+	        SELECT COUNT(USER_ID) FROM USERS WHERE USERTYPE = 'U' AND TO_CHAR(CDATE, 'YYYYMM') = TO_CHAR(SYSDATE, 'YYYYMM')
+	    </select>
+	
+	    <!-- 배송 중인 주문 수 -->
+	    <select id="selectDeliveryInProgressCount" resultType="int">
+	        SELECT COUNT(ORDER_NO) FROM ORDERS WHERE STATUS = '배송중'
+	    </select>
+	
+	    <!-- 신규 신고 게시물 수 (처리요망 상태 'N') -->
+	    <select id="selectNewReportsCount" resultType="int">
+	        SELECT COUNT(REPORT_BOARD_NO) FROM REPORT_BOARD WHERE STATUS = 'N'
+	    </select>
+	
+	    <!-- 반품 요청 대기 수 -->
+	    <select id="selectRefundRequestsCount" resultType="int">
+	        SELECT COUNT(ORDER_NO) FROM ORDERS WHERE STATUS = '반품요청'
+	    </select>
+	
+	    <!-- 교환 요청 대기 수 -->
+	    <select id="selectExchangeRequestsCount" resultType="int">
+	        SELECT COUNT(ORDER_NO) FROM ORDERS WHERE STATUS = '교환요청'
+	    </select>
+	
+	    <!-- 신규 상품 문의 (답변 대기중 'N') -->
+	    <select id="selectNewProductInquiriesCount" resultType="int">
+	        SELECT COUNT(INQUIRY_NO) FROM PRODUCT_INQUIRY WHERE STATUS = 'N'
+	    </select>
+	    
+	    <!-- 결제 방법별 매출 (추후 확장사항 반영 시 주석 처리 제거) -->
+	    <!--
+	    <select id="selectSalesByPaymentMethod" resultType="hashmap">
+	        SELECT PAYMENT_METHOD, NVL(SUM(PAYMENT_AMOUNT), 0) AS TOTAL_SALES
+	        FROM ORDERS
+	        WHERE STATUS IN ('배송완료', '교환완료')
+	        GROUP BY PAYMENT_METHOD
+	        ORDER BY TOTAL_SALES DESC
+	    </select>
+	    -->
+	
+	    <!-- 총 주문 건수 -->
+	    <select id="selectTotalOrdersCount" resultType="int">
+	        SELECT COUNT(ORDER_NO) FROM ORDERS
+	    </select>
+	
+	    <!-- 이번 달 주문 건수 -->
+	    <select id="selectMonthlyOrdersCount" resultType="int">
+	        SELECT COUNT(ORDER_NO)
+	        FROM ORDERS
+	        WHERE TO_CHAR(CDATE, 'YYYYMM') = TO_CHAR(SYSDATE, 'YYYYMM')
+	    </select>
+	
+	    <!-- 성별 회원 분포 -->
+	    <select id="selectUsersByGenderCount" resultType="hashmap">
+	        SELECT GENDER, COUNT(USER_ID) AS USER_COUNT
+	        FROM USERS
+	        WHERE USERTYPE = 'U'
+	        GROUP BY GENDER
+	        ORDER BY GENDER DESC
+	    </select>
+	
+	    <!-- 주문 이력이 있는 회원 수 -->
+	    <select id="selectUsersWithOrdersCount" resultType="int">
+	        SELECT COUNT(DISTINCT USER_ID)
+	        FROM ORDERS
+	        WHERE STATUS NOT IN ('취소완료', '반품완료') <!-- 취소/반품 완료는 실제 구매자로 간주 안함 -->
+	    </select>
+	    
+	    <!-- 총 미처리 요청 건수 (신고 + 반품요청 + 교환요청 + 상품문의 대기) -->
+	    <select id="selectTotalPendingRequestsCount" resultType="int">
+	        SELECT
+	            (SELECT COUNT(REPORT_BOARD_NO) FROM REPORT_BOARD WHERE STATUS = 'N') +
+	            (SELECT COUNT(ORDER_NO) FROM ORDERS WHERE STATUS = '반품요청') +
+	            (SELECT COUNT(ORDER_NO) FROM ORDERS WHERE STATUS = '교환요청') +
+	            (SELECT COUNT(INQUIRY_NO) FROM PRODUCT_INQUIRY WHERE STATUS = 'N')
+	        FROM DUAL
+	    </select>
 	</mapper>
