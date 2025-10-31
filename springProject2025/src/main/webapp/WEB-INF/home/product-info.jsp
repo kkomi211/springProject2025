@@ -40,16 +40,16 @@
                             <div>
                                 <a href="/home/signup.do">가입하기</a>
                             </div>
-                            <div><a href="/home/mypage/inquery.do">문의</a></div>
+                            <div><a href="/home/mypage/inquiry.do">문의</a></div>
                             <div><a href="/home/cart.do">장바구니</a></div>
                         </div>
                     </div>
                     <div class="bottom-header">
                         <div>
-                            <a href="/home/product.do">제품</a>
+                            <a href="javascript:;" @click="fnProduct">제품</a>
                         </div>
                         <div>
-                            <a href="/home/product.do">세일</a>
+                            <a href="javascript:;" @click="fnProduct">세일</a>
                         </div>
                         <div>
                             <a href="/home/community/board.do">커뮤니티</a>
@@ -61,19 +61,17 @@
                     <div class="content">
                         <h1 class="margintop">제품 상세 </h1>
                         <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword">
-                        <button class="height40 bluebutton" @click="">검색</button>
+                        <button class="height40 bluebutton" @click="fnProductSearch(keyword)">검색</button>
                         <hr>
                     </div>
                     <div class="side-bar">
                         <div class="category-box">
                             <div class="category">카테고리</div>
-                            <div class="subcategory" :class="{active: category == ''}" @click="selectCategory('')">전체
+                            <div class="subcategory" @click="selectCategory('')">전체
                             </div>
                             <div v-for="p in parents" :key="p.typeNo" class="subcategory-wrapper"
                                 @mouseenter="hoverParent = String(p.typeNo)" @mouseleave="hoverParent = null">
-                                <div class="subcategory"
-                                    :class="{active: category === p.typeNo || category === p.typePart}"
-                                    @click="selectCategory(p.typeNo)">
+                                <div class="subcategory" @click="selectCategory(p.typeNo)">
                                     {{ p.typeName }}
                                 </div>
 
@@ -92,21 +90,29 @@
                         </div>
                     </div>
                     <div class="infoMain-container">
+                        <h1 class="margintop">제품 상세 </h1>
                         <div class="img-box"><img :src="imgByProduct[String(productNo)] || '/img/no-image.png'"
                                 class="big-img" :alt="info.productName"></div>
                         <div class="infoText-box">
                             <div class="margin80">{{info.productName}}</div>
                             <div class="margin80 font30">{{info.price}} 원</div>
-                            <div class="font30 margin80">
+                            <div class="font30 margin30">
                                 <!-- 사이즈 -->
-                                <select class="select-box">
-                                    <option v-for="item in sizeList">사이즈 : {{item.productSize}} 재고 : {{item.quantity}}
+                                <select class="select-box" v-model="size" @change="fnMaxQuantityChange"> 
+                                    <option v-for="item in sizeList" :value="item.productSize">사이즈 :
+                                        {{item.productSize}} 재고 : {{item.quantity}}
                                     </option>
                                 </select>
                             </div>
-                            <div class="margin80">
-                                <button>장바구니</button>
-                                <button>결제하기</button>
+                            <div>
+                                <button class="bluebutton height40" @click="fnQuantity(-1)">-</button>
+                                <input class="height40" v-model="quantity" disabled>
+                                <button class="bluebutton height40" @click="fnQuantity(1)">+</button>
+                            </div>
+
+                            <div class="margin30">
+                                <button class="bluebutton margin30 height40" @click="fnCart">장바구니</button>
+                                <button class="bluebutton margin30 height40">결제하기</button>
                             </div>
                         </div>
                         <div class="detail-box">{{info.productDetail}}</div>
@@ -116,8 +122,9 @@
                             <div v-if="status == 1">
                                 <div class="inquirySearch-box">
                                     <input class="search" v-model="inquiryKeyword">
-                                    <button class="bluebutton height40"  @click="fnInquiry">검색</button>
-                                    <button class="bluebutton height40">작성하기</button>
+                                    <button class="bluebutton height40 margin30" @click="fnInquiry">검색</button>
+                                    <button class="bluebutton height40 margin30"
+                                        @click="fnProductInquiryAdd(productNo)">작성하기</button>
                                 </div>
                                 <div class="table margintop100">
                                     <table>
@@ -127,7 +134,7 @@
                                         </tr>
                                         <tr v-for="item in inquiryList">
                                             <td class="longTd" @click="openInquiry(item)">
-                                                {{item.title}}
+                                                <span class="cursor">{{item.title}}</span>
                                                 <span class="material-symbols-outlined"
                                                     v-if="item.pwd != undefined && item.pwd != null">key</span>
                                             </td>
@@ -136,54 +143,57 @@
                                     </table>
                                 </div>
                                 <div class="clear text-center margin30">
-                                    <span class="margin30 font30" :class="{bold: inquiryPage == num}"
+                                    <span class="margin30 font30 cursor" :class="{bold: inquiryPage == num}"
                                         v-for="num in inquiryTotalPage" @click="fnInquiryPage(num)">{{num}}</span>
                                 </div>
                             </div>
                             <div v-if="status == 2">
                                 <div class="inquirySearch-box">
-                                    <span class="margin30 cursor" :class="{bold: reviewArray == 1}" @click="fnReviewArray(1)">도움돼요순</span>
-                                    <span class="margin30 cursor" :class="{bold: reviewArray == 2}" @click="fnReviewArray(2)">최신순</span>
+                                    <span class="margin30 cursor" :class="{bold: reviewArray == 1}"
+                                        @click="fnReviewArray(1)">도움돼요순</span>
+                                    <span class="margin30 cursor" :class="{bold: reviewArray == 2}"
+                                        @click="fnReviewArray(2)">최신순</span>
                                     <input class="search" v-model="reviewKeyword">
-                                    <button class="bluebutton height40"  @click="fnReviewList">검색</button>
+                                    <button class="bluebutton height40" @click="fnReviewList">검색</button>
                                 </div>
-                            <div class="table margintop100">
-                                <table v-for="item in reviewList">
-                                    <tr>
-                                        <th>유저</th>
-                                        <td>{{item.userId}}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>리뷰날짜</th>
-                                        <td>{{item.cdate}}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>도움돼요 수</th>
-                                        <td>{{item.helpfulCnt}} 
-                                            <span class="material-symbols-outlined heart" @click="fnHeartUp(item.reviewNo)">
-                                                heart_plus
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>리뷰 제목</th>
-                                        <td>{{item.title}}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>별점</th>
-                                        <td>{{item.rating}}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>내용</th>
-                                        <td>{{item.content}}</td>
-                                    </tr>
-                                </table>
-                            </div>    
-                            <div class="clear text-center margin30">
+                                <div class="table margintop100">
+                                    <table v-for="item in reviewList">
+                                        <tr>
+                                            <th>유저</th>
+                                            <td>{{item.userId}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>리뷰날짜</th>
+                                            <td>{{item.cdate}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>도움돼요 수</th>
+                                            <td>{{item.helpfulCnt}}
+                                                <span class="material-symbols-outlined heart"
+                                                    @click="fnHeartUp(item.reviewNo)">
+                                                    heart_plus
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>리뷰 제목</th>
+                                            <td><span class="cursor">{{item.title}}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>별점</th>
+                                            <td>{{item.rating}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>내용</th>
+                                            <td>{{item.content}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="clear text-center margin30">
                                     <span class="margin30 font30 cursor" :class="{bold: reviewPage == num}"
                                         v-for="num in reviewTotalPage" @click="fnReviewPage(num)">{{num}}</span>
-                            </div>
-                    
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -211,9 +221,14 @@
                                     <span>작성자: {{ inquiryDetail.userId }}</span>
                                     <span>작성일: {{ inquiryDetail.cdate }}</span>
                                     <span>상태: {{ inquiryDetail.status }}</span>
-                                    <span v-if="inquiryDetail.answer != null && inquiryDetail.answer != undefined">답변내용: {{ inquiryDetail.status }}</span>
+                                    <span v-if="inquiryDetail.answer != null && inquiryDetail.answer != undefined">답변내용:
+                                        {{ inquiryDetail.status }}</span>
                                 </div>
                                 <div class="modal-content" v-html="inquiryDetail.content"></div>
+                                <div v-if="inquiryDetail.status == 'Y'">
+                                    <br><br>
+                                    <div class="modal-content" v-html="inquiryDetail.answer"></div>
+                                </div>
                                 <div class="modal-actions">
                                     <button class="height40" @click="closeInquiry">닫기</button>
                                 </div>
@@ -272,7 +287,7 @@
                     info: {},
                     sizeList: [],
                     rating: "${rating}",
-                    status: 2,
+                    status: 1,
                     inquiryList: [],
                     inquiryPage: 1,
                     inquiryPageSize: 6,
@@ -285,12 +300,16 @@
                     pwdInput: "",
                     pwdError: "",
                     loading: false,
-                    reviewArray : 1,
+                    reviewArray: 1,
                     reviewPage: 1,
                     reviewPageSize: 2,
                     reviewTotalPage: 0,
-                    reviewKeyword : "",
-                    inquiryKeyword : ""
+                    reviewKeyword: "",
+                    inquiryKeyword: "",
+                    quantity: 1,
+                    size: "",
+                    maxQuantity: 1,
+                    sessionId : "sessionId채워야댐"
                 };
             },
             computed: {
@@ -338,6 +357,9 @@
                             console.log(data);
                             self.info = data.info;
                             self.sizeList = data.sizeList;
+                            self.category = data.typeNo;
+                            self.size = data.sizeList[0].productSize;
+                            self.maxQuantity = data.sizeList[0].quantity;
                         }
                     });
                 },
@@ -358,11 +380,11 @@
                 fnReviewList() {
                     let self = this;
                     let param = {
-                        productNo : self.productNo,
-                        page : (self.reviewPage - 1) * self.reviewPageSize,
-                        pageSize : self.reviewPageSize,
-                        reviewArray : self.reviewArray,
-                        keyword : self.reviewKeyword
+                        productNo: self.productNo,
+                        page: (self.reviewPage - 1) * self.reviewPageSize,
+                        pageSize: self.reviewPageSize,
+                        reviewArray: self.reviewArray,
+                        keyword: self.reviewKeyword
                     };
                     $.ajax({
                         url: "/product/review/list.dox",
@@ -488,25 +510,25 @@
                         }
                     });
                 },
-                fnReviewPage(num){
+                fnReviewPage(num) {
                     let self = this;
                     self.reviewPage = num;
                     self.fnReviewList();
                 },
-                fnInquiryPage(num){
+                fnInquiryPage(num) {
                     let self = this;
                     self.inquiryPage = num;
-                    self.fnReviewList();
+                    self.fnInquiry();
                 },
-                fnReviewArray(num){
+                fnReviewArray(num) {
                     let self = this;
                     self.reviewArray = num;
                     self.fnReviewList();
                 },
-                fnHeartUp(reviewNo){
+                fnHeartUp(reviewNo) {
                     let self = this;
                     let param = {
-                        reviewNo : reviewNo
+                        reviewNo: reviewNo
                     };
                     $.ajax({
                         url: "/product/review/1up.dox",
@@ -519,8 +541,54 @@
                         }
                     });
                 },
-                fnCategoryProduct(category){
-                    pageChange("/home/product.do", {category : category});
+                fnCategoryProduct(category) {
+                    pageChange("/home/product.do", { keyword: "", category: category });
+                },
+                fnProduct() {
+                    pageChange("/home/product.do", { keyword: "", category: "" });
+                },
+                fnProductSearch(key) {
+                    pageChange("/home/product.do", { keyword: key, category: "" });
+                },
+                fnProductInquiryAdd(proNo) {
+                    pageChange("/home/product/inquiry/add.do", { productNo: proNo });
+                },
+                fnCart() {
+                    let self = this;
+                    let param = {
+                        productNo: self.productNo,
+                        size: self.size,
+                        userId: self.sessionId,
+                        quantity: self.quantity
+                    };
+                    $.ajax({
+                        url: "/product/cart/insert.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            if(confirm("장바구니로 이동하시겠습니까?")){
+                                pageChange("/home/cart.do", {sessionId : self.sessionId});
+                            } else {
+                                self.fnProduct();
+                            }
+                            
+                        }
+                    });
+                },
+                fnQuantity(num) {
+                    let self = this;
+                    if (self.quantity + num <= 0 || self.quantity + num > self.maxQuantity) {
+                        return;
+                    }
+                    self.quantity = self.quantity + num;
+                },
+                fnMaxQuantityChange() {
+                    const found = this.sizeList.find(
+                        s => String(s.productSize) === String(this.size)
+                    );
+                    this.maxQuantity = found ? Number(found.quantity) : 0;
                 }
 
 

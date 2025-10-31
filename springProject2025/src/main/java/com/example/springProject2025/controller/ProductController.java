@@ -37,6 +37,12 @@ public class ProductController {
         request.setAttribute("rating", map.get("rating"));
         return "admin/product-info"; // .jsp 빠진 형태
     }
+    @RequestMapping("home/product/inquiry/add.do")
+    public String inquiryAdd(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+    	request.setAttribute("productNo", map.get("productNo"));
+    	return "home/productInquiry-add"; // .jsp 빠진 형태
+    }
+    
     
     @RequestMapping(value = "/product/user/info.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
@@ -67,6 +73,12 @@ public class ProductController {
     }
     
     
+    @RequestMapping(value = "/product/inquiry/add.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String inquiryAdd(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+        HashMap<String, Object> resultMap = productService.getInquiryAdd(map);
+        return new Gson().toJson(resultMap);
+    }
 
     @RequestMapping(value = "/product/list.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
@@ -128,6 +140,13 @@ public class ProductController {
     @ResponseBody
     public String heartUp(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
         HashMap<String, Object> resultMap = productService.getheartUp(map);
+        return new Gson().toJson(resultMap);
+    }
+    
+    @RequestMapping(value = "/product/cart/insert.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String AddCart(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+        HashMap<String, Object> resultMap = productService.getCartAdd(map);
         return new Gson().toJson(resultMap);
     }
 

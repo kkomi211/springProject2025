@@ -222,10 +222,15 @@
 		  PRODUCT_NAME,
 		  PRICE,
 		  PRODUCT_DETAIL,
-		  CDATE, UDATE
+		  CDATE, UDATE, TYPE_NO, BRAND
 		FROM PRODUCT
 		WHERE PRODUCT_NO = #{productNo}
 	</select>
+	
+	<insert id="InsertProductInquiry" parameterType="hashmap">
+		INSERT INTO PRODUCT_INQUIRY
+		VALUES (PRODUCT_INQUIRY_SEQ.NEXTVAL, #{productNo}, #{title}, #{content}, #{userId}, SYSDATE, SYSDATE, #{pwd}, 'N', NULL, NULL)
+	</insert>
 	
 	<select id="selectSizeAndQuantity" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
 		SELECT
@@ -235,7 +240,7 @@
 		  PRICE
 		FROM PRODUCT 
 		WHERE PRODUCT_NAME = (
-		  SELECT PRODUCT_NAME FROM PRODUCT WHERE PRODUCT_NO = 11
+		  SELECT PRODUCT_NAME FROM PRODUCT WHERE PRODUCT_NO = #{productNo}
 		)
 		ORDER BY
 		  CASE WHEN REGEXP_LIKE(PRODUCT_SIZE, '^\d+$')
@@ -299,4 +304,20 @@
 		FROM PRODUCT_INQUIRY
 		WHERE INQUIRY_NO = #{inquiryNo}
 	</select>
+	
+	<select id="selectProductNoBySize" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
+		SELECT PRODUCT_NO
+		FROM PRODUCT
+		WHERE PRODUCT_NAME = (
+		    SELECT PRODUCT_NAME
+		    FROM PRODUCT
+		    WHERE PRODUCT_NO = #{productNo}
+		) AND PRODUCT_SIZE = #{size}
+	</select>
+	
+	<insert id="InsertCart" parameterType="hashmap">
+		INSERT INTO CART
+		VALUES (CART_SEQ.NEXTVAL, #{userId}, #{searchNo}, #{quantity}, SYSDATE)
+	</insert>
+	
 </mapper>

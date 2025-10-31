@@ -80,6 +80,9 @@ td input {
     width: 80%;
     height: 40px;
 }
+.redbutton:hover{
+    background-color: #BD2915;
+}
 
 .text-left {
     text-align: left;
@@ -87,6 +90,10 @@ td input {
 
 .text-center {
     text-align: center;
+}
+
+.text-right{
+    text-align: right;
 }
 
 .table th {
@@ -103,6 +110,10 @@ td input {
 
 .font30{
     font-size: 30px;
+}
+
+.font20{
+    font-size: 20px;
 }
 
 .redbutton {
@@ -158,25 +169,29 @@ td input {
 
 .side-bar{
     width:20%;
-    border: 1px solid black;
     margin: 30px;
     float: left;
+    border: 1px solid #ccc; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .category-box .category{
     width:100%;
-    border: 1px solid black;
     text-align: center;
     padding: 20px 20px;
     box-sizing: border-box;
+    border: 1px solid #ccc; 
+    background-color: white; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }   
 
 .category-box .subcategory{
     width:100%;
-    border: 1px solid black;
     text-align: center;
     padding: 10px 20px;
     box-sizing: border-box;
+    border: 1px solid #ccc; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .main-container{
@@ -191,6 +206,10 @@ td input {
     grid-template-columns: repeat(3, 380px);
     grid-template-rows: repeat(3, 450px);
     grid-auto-rows: 100px;
+    border: 1px solid #ccc; 
+    padding: 20px; 
+    background-color: white; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .infoMain-container{
@@ -199,16 +218,22 @@ td input {
     border: 1px solid black;
     margin: 30px;
     float: left;
+    border: 1px solid #ccc; 
+    padding: 20px; 
+    background-color: white; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
    
 }
 
 .product-box{
     width: 70%;
     padding: 30px;
-    border: 1px solid black;
     margin: 30px;
     text-align: center;
     box-sizing: border-box;
+    border: 1px solid #ccc; 
+    background-color: white; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .small-img{
@@ -216,6 +241,10 @@ td input {
     width: 200px;
     height: 200px;
     margin: 20px 0px;
+    border: 1px solid #ccc; 
+    background-color: white; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    
 }
 
 .star { color:#ddd; font-size:14px; }
@@ -280,6 +309,8 @@ td input {
 .big-img {
     width: 600px;
     height: 600px;
+    border: 1px solid #ccc; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .img-box{
@@ -307,9 +338,10 @@ td input {
 .container-foot{
     width:100%;
     padding: 0px;
-    border: 1px solid black;
     margin-top: 30px;
     position: relative;
+    border: 1px solid #ccc; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         
 }
 
@@ -361,4 +393,32 @@ td input {
 
 .cursor{
     cursor: pointer;
+}
+
+.infoMain-container h1{
+    text-align: center;
+    margin: 30px;
+}
+
+.inquiryTable{
+    clear: both;
+}   
+
+.editor-box input{
+    width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 0.95rem; background-color: #f9f9f9;
+    
+}
+
+.editor-box{
+    width: 90%;
+    margin: 30px;
+}
+
+.fontGray{
+    display: block; font-weight: bold; margin-bottom: 5px; color: #555;
+}
+
+#editor{
+    width: 100%;
+    height: 500px;
 }

@@ -221,5 +221,31 @@ public class ProductService {
 		return resultMap;
 	}
 
+	public HashMap<String, Object> getInquiryAdd(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			int cnt = productmapper.InsertProductInquiry(map);
+			resultMap.put("result", "success");
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+
+	public HashMap<String, Object> getCartAdd(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			Product product = productmapper.selectProductNoBySize(map);
+			map.put("searchNo", product.getProductNo());
+			int cnt = productmapper.InsertCart(map);
+			resultMap.put("result", "success");
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+
 	
 }
