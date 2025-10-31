@@ -134,42 +134,62 @@
                                     게시판 • 상세보기
                                 </h1>
                             </div>
-                           <table>
-                                <tr>
-                                    <th>아이디</th>
-                                    <td>{{sessionId}}</td>
-                                </tr>
-                                <tr>
-                                    <th>카테고리</th>
-                                    <td>
+                           
+                            <div class="post-container">
+                                <div class="post-header">
+                                    <div class="post-meta">
+                                    <span class="post-category">
                                         {{
                                         type === 'B' ? '공지사항' :
                                         type === 'Q' ? '문의게시판' :
                                         type === 'F' ? '자유게시판' :
                                         type === 'R' ? '대회게시판' :
                                         '게시판'
-                                    }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>제목</th>
-                                    <td>{{boardInfo.title}}</td>
-                                </tr>
-                                <tr>
-                                    <th>작성일 </th>
-                                    <td>{{boardInfo.chardate}}</td>
-                                </tr>
-                                <tr>
-                                    <th>내용</th>
-                                    <td>
-                                        <div v-html="boardInfo.contents"></div>
-                                    </td>
-                                </tr>
-                            </table>
-                            <div class="viewComment">
-                                <a href="javascript:;">>> 댓글 보기</a>
-                                <div v-for="item in commentList">{{item.userId}}</div>
+                                        }}
+                                    </span>
+                                    <span class="post-date">{{ boardInfo.chardate }}</span>
+                                    </div>
+                                    <h2 class="post-title">{{ boardInfo.title }}</h2>
+                                    <div class="post-author">
+                                    <strong>{{ sessionId }}</strong> 님의 게시글
+                                    </div>
+                                </div>
+
+                                <div class="post-content" v-html="boardInfo.contents"></div>
                             </div>
+
+                            <div class="comments-section">
+                                <h3 class="comment-title">
+                                    💬 {{ commentList.length }} Comments
+                                </h3>
+
+                                <div class="comment-view" v-if="commentList.length > 0">
+                                    <div v-for="item in commentList" :key="item.commentNo" class="comment-card">
+                                    <div class="comment-header">
+                                        <div class="comment-author">{{ item.userId }}</div>
+                                        <div class="comment-date">{{ item.chardate }}</div>
+                                    </div>
+                                    <div class="comment-body">
+                                        {{ item.contents }}
+                                    </div>
+                                    </div>
+                                </div>
+
+                                <div v-else class="no-comments">
+                                    아직 댓글이 없습니다. 첫 번째로 댓글을 남겨보세요!
+                                </div>
+                            </div>
+
+
+                            <div class="comment-box">
+                                <div class="comment-header">
+                                    <strong>{{userName}}</strong>
+                                </div>
+                                <div class="comment-input">
+                                    <textarea placeholder="댓글을 남겨보세요" v-model="commentContent"></textarea>
+                                    <button @click="fnPostComment">등록</button>
+                                </div>
+                                </div>
                             <div >
                                 <button @click="fnMoveToBoard">목록</button>
                             </div>
@@ -234,7 +254,10 @@
                 index: 0,
 
                 // popup modal
-                isLoggedIn : true
+                isLoggedIn : true,
+
+                // post comment
+                commentContent : ""
 
             };
         },
@@ -309,6 +332,30 @@
                             self.commentList = data.list;
                         } else {
                             console.log("오류");
+                        }
+
+                    }
+                });
+            },
+            fnPostComment : function(){
+                let self = this;
+                let param = {
+                    userId : self.sessionId,
+                    contents : self.commentContent,
+                    boardNo : self.boardNo
+                };
+                $.ajax({
+                    url: "/board/comment-post.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if(data.result == "success"){
+                            alert("Your post have been uploaded");
+                            self.fnViewComment();
+                            self.commentContent = "";
+                        } else {
+                            alert(error);
                         }
 
                     }

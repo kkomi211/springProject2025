@@ -15,6 +15,7 @@ public class Board {
 	private String udate;
 	private String viewCnt;
 	private int cnt;
+	private String pwd;
 	private String chardate;
 
 }

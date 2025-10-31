@@ -57,5 +57,19 @@ public class BoardService {
 		resultMap.put("list", list);
 		return resultMap;
 	}
+	
+	public HashMap<String, Object> addComment(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt = boardMapper.commentAdd(map);
+		
+		if(cnt > 0) {
+			resultMap.put("boardNo", map.get("boardNo"));
+			resultMap.put("result", "success");
+		} else {
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
 
 }

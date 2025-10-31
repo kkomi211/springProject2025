@@ -25,4 +25,10 @@ public interface BoardMapper {
 	
 	// 댓글 상세보기
 	List <Comment> commentInfo (HashMap<String, Object> map);
+	
+	// 댓글 추가
+	int commentAdd (HashMap<String, Object> map);
 }
+
+
+
