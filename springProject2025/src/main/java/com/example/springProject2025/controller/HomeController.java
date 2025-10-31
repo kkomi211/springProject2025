@@ -54,10 +54,10 @@ public class HomeController {
 		return "home/login"; // .jsp빠진형태
 	}
 	
-	@RequestMapping("home/cart.do")
-	public String cart(Model model) throws Exception {
-		return "home/cart"; // .jsp빠진형태
-	}
+//	@RequestMapping("home/cart.do")
+//	public String cart(Model model) throws Exception {
+//		return "home/cart"; // .jsp빠진형태
+//	}
 	
 	@RequestMapping("home/signup.do")
 	public String signup(Model model) throws Exception {
