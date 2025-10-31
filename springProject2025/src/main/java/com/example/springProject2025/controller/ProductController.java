@@ -27,18 +27,21 @@ public class ProductController {
     ProductService productService;
 
     @RequestMapping("admin/product-add.do")
-    public String refundReturn(Model model) throws Exception {
+    public String refundReturn(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+    	request.setAttribute("sessionId", map.get("sessionId"));
         return "admin/product-add"; // .jsp 빠진 형태
     }
 
     @RequestMapping("admin/product-info.do")
     public String productInfo(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception {
         request.setAttribute("productNo", map.get("productNo"));
+        request.setAttribute("sessionId", map.get("sessionId"));
         request.setAttribute("rating", map.get("rating"));
         return "admin/product-info"; // .jsp 빠진 형태
     }
     @RequestMapping("home/product/inquiry/add.do")
     public String inquiryAdd(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+    	request.setAttribute("sessionId", map.get("sessionId"));
     	request.setAttribute("productNo", map.get("productNo"));
     	return "home/productInquiry-add"; // .jsp 빠진 형태
     }

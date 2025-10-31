@@ -28,4 +28,9 @@ public class Cart {
 	private String imgSize;
 	private String imgEtc;
 	
+	
+	// PRODUCT 테이블 내용추가
+	private String productStock; //숫자인데 일괄적 String으로 받음
+	private String productGender;
+	
 }

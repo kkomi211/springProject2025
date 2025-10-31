@@ -80,9 +80,9 @@
                                         <span class="icon">💬</span>
                                         <a href="#">대회정보</a>
                                     </li>
-                                    <li @click="moveToInfo">
+                                    <li  @click="fnChat">
                                         <span class="icon">👤</span>
-                                        <a href="#">채팅방</a>
+                                        <a href="javascript:;">채팅방</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -334,6 +334,9 @@
                             self.userName = "Guest";
                         }
                     });
+            fnChat(){
+                let self = this;
+                pageChange("/home/community/chat.do", {sessionId : self.sessionId});  
             }
         }, // methods
         mounted() {
