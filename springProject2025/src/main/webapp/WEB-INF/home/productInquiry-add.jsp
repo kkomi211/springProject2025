@@ -14,25 +14,10 @@
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <link rel="stylesheet" href="/css/jes.css">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
         <script src="/js/page-change.js"></script>
-        <style>
-
-        </style>
-    </head>
-
-
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/css/user-style.css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
-        <title>Homepage</title>
-        <script src="https://code.jquery.com/jquery-3.7.1.js"
-            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-        <link rel="stylesheet" href="/css/jes.css">
+        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+        <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
         <style>
 
         </style>
@@ -76,19 +61,19 @@
 
                 <main>
                     <div class="content">
-                        <h1 class="margintop">제품</h1>
+                        <h1 class="margintop">제품 문의 작성 </h1>
                         <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword">
-                        <button class="height40 bluebutton" @click="fnList">검색</button>
+                        <button class="height40 bluebutton" @click="fnProductSearch(keyword)">검색</button>
                         <hr>
                     </div>
                     <div class="side-bar">
                         <div class="category-box">
                             <div class="category">카테고리</div>
-                            <div class="subcategory" :class="{active: category == '' || category == 'undefined'}" @click="selectCategory('')">전체</div>
+                            <div class="subcategory" @click="selectCategory('')">전체
+                            </div>
                             <div v-for="p in parents" :key="p.typeNo" class="subcategory-wrapper"
                                 @mouseenter="hoverParent = String(p.typeNo)" @mouseleave="hoverParent = null">
-                                <div class="subcategory"
-                                    :class="{ active: String(p.typeNo).slice(0, 2) === String(category ?? '').slice(0, 2) }" @click="selectCategory(p.typeNo)">
+                                <div class="subcategory" @click="selectCategory(p.typeNo)">
                                     {{ p.typeName }}
                                 </div>
 
@@ -106,25 +91,32 @@
                             </div>
                         </div>
                     </div>
-                    <div class="main-container">
-                        <span v-for="item in list" class="product-box" @click="fnProductView(item.productNo)">
-                            <div><img :src="imgByProduct[String(item.productNo)] || '/img/no-image.png'"
-                                    class="small-img" :alt="item.productName"></div>
-                            <div>{{item.productName}}</div>
-                            <div>{{item.price}} 원</div>
-                            <div v-if="ratingByName[item.productName]" class="stars">
-                                <span v-for="n in 5" :key="n" class="star"
-                                    :class="{ filled: n <= ratingByName[item.productName].rounded }">★</span>
-                                <span class="avg"> {{ ratingByName[item.productName].avg.toFixed(1) }}</span>
-                                <span class="cnt"> ({{ ratingByName[item.productName].cnt }})</span>
+                    <div class="infoMain-container">
+                        <h1>제품 문의 작성 </h1>
+                        <div class="img-box"><img :src="imgByProduct[String(productNo)] || '/img/no-image.png'"
+                                class="big-img" :alt="info.productName"></div>
+                        <div class="infoText-box">
+                            <div class="margin80 font20">상품명 : {{info.productName}}</div>
+                            <div class="margin80 font20">브랜드 : {{info.brand}}</div>
+                            <div class="margin80 font20">가격 : {{info.price}} 원</div>
+
+                        </div>
+                        <div class="container-foot">
+                            <div class="editor-box">
+                                <div class="margin30 fontGray">문의 제목</div>
+                                <div><input v-model="title"></div>
+                                <div class="margin30 fontGray">잠금 설정</div>
+                                <div><input v-model="pwd" placeholder="값을 입력하면 글이 잠깁니다"></div>
+                                <div class="margin30 fontGray">문의 내용</div>
+                                <div id="editor"></div>
+                                <div class="text-right">
+                                    <button class="bluebutton height40 margin30" @click="fnBack">돌아가기</button>
+                                    <button class="redbutton height40 margin30" @click="fnAddInquiry">작성하기</button>
+                                </div>
                             </div>
-                            <div v-else class="no-review">리뷰 없음</div>
-                        </span>
+                        </div>
                     </div>
-                    <div class="clear text-center">
-                        <span class="margin30 font30 cursor" :class="{bold: page == num}" v-for="num in totalPage"
-                            @click="fnPage(num)">{{num}}</span>
-                    </div>
+
                 </main>
 
                 <footer>
@@ -169,12 +161,16 @@
                     imgList: [],
                     reviewList: [],
                     typeList: [],
-                    page: 1,
-                    pageSize: 9,
-                    totalPage: "",
-                    keyword: "${keyword}",
-                    category: "${category}",
-                    hoverParent: null
+                    hoverParent: null,
+                    productNo: "${productNo}",
+                    category: "",
+                    keyword: "",
+                    info: {},
+                    sizeList: [],
+                    title: "",
+                    content: "",
+                    pwd: "",
+                    sessionId : "${sessionId}"
                 };
             },
             computed: {
@@ -184,17 +180,6 @@
                         const key = String(img.productNo);
                         // 여러 장이면 첫 장만 사용(원하면 배열로 push해서 썸네일/갤러리 구성 가능)
                         if (!m[key]) m[key] = img.imgPath;
-                    }
-                    return m;
-                },
-                ratingByName() {
-                    const m = {};
-                    for (const r of this.reviewList || []) {
-                        // 컬럼명이 대문자(AVG_RATING/REVIEW_CNT)로 올 수도 있어 둘 다 대응
-                        const name = String(r.productName || r.PRODUCT_NAME);
-                        const avg = Number(r.avgRating ?? r.AVG_RATING ?? 0);
-                        const cnt = Number(r.reviewCnt ?? r.REVIEW_CNT ?? 0);
-                        m[name] = { avg, cnt, rounded: Math.round(avg) };
                     }
                     return m;
                 },
@@ -219,25 +204,21 @@
             },
             methods: {
                 // 함수(메소드) - (key : function())
-                fnList: function () {
+                fnInfo: function () {
                     let self = this;
                     let param = {
-                        page: (self.page - 1) * self.pageSize,
-                        pageSize: 9,
-                        keyword: self.keyword,
-                        keytype: "name",
-                        category: self.category
+                        productNo: self.productNo
                     };
                     $.ajax({
-                        url: "/product/user/list.dox",
+                        url: "/product/user/info.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
                             console.log(data);
-                            self.list = data.list;
-                            self.totalPage = Math.ceil(data.total / self.pageSize);
-                            self.typeList = data.typeList;
+                            self.info = data.info;
+                            self.sizeList = data.sizeList;
+                            self.category = data.typeNo;
                         }
                     });
                 },
@@ -255,46 +236,97 @@
                         }
                     });
                 },
-                fnReviewList() {
+                selectCategory(typeNo) {
                     let self = this;
-                    let param = {};
+                    self.category = typeNo;
+                    console.log(" == > " + self.category);
+                    self.fnCategoryProduct(typeNo);
+                    // 페이지 이동 넣어야함
+                },
+                fnList() {
+                    let self = this;
+                    let param = {
+                    };
                     $.ajax({
-                        url: "/review/list.dox",
+                        url: "/product/user/list.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
                             console.log(data);
-                            self.reviewList = data.avgRating;
+                            self.typeList = data.typeList;
                         }
                     });
                 },
-                fnPage(num) {
+                fnCategoryProduct(category) {
+                    pageChange("/home/product.do", { keyword: "", category: category });
+                },
+                fnProduct() {
+                    pageChange("/home/product.do", { keyword: "", category: "" });
+                },
+                fnProductSearch(key) {
+                    pageChange("/home/product.do", { keyword: key, category: "" });
+                },
+                fnBack(){
                     let self = this;
-                    self.page = num;
-                    self.fnList();
+                    pageChange("/home/product-info.do", {productNo : self.productNo});
                 },
-                selectCategory(typeNo) {
+                fnAddInquiry(){
                     let self = this;
-                    self.category = typeNo;
-                    console.log(" == > " + self.category);
-                    
-                    self.fnList();
-                },
-                fnProductView(productNo, rating){
-                    pageChange("/home/product-info.do", {productNo : productNo});
-                },
-                fnProduct(){
-                    pageChange("/home/product.do", {category : ""});
+                    if(self.title == ""){
+                        alert("제목이 비어있습니다!");
+                        return;
+                    }
+                    if(self.content == ""){
+                        alert("내용이 비어있습니다!");
+                        return;
+                    }
+                    let param = {
+                        productNo : self.productNo,
+                        title : self.title,
+                        content : self.content,
+                        userId : self.sessionId,
+                        pwd : self.pwd
+                    };
+                    $.ajax({
+                        url: "/product/inquiry/add.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            alert("작성 완료!");
+                            self.fnBack();
+                        }
+                    });
                 }
-                
+
+
+
             }, // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분
                 let self = this;
                 self.fnList();
+                self.fnInfo();
                 self.fnImgList();
-                self.fnReviewList();
+                var quill = new Quill('#editor', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: [
+                            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                            ['bold', 'italic', 'underline'],
+                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                            ['link', 'image'],
+                            ['clean']
+                        ]
+                    }
+                });
+
+                // 에디터 내용이 변경될 때마다 Vue 데이터를 업데이트
+                quill.on('text-change', function () {
+                    self.content = quill.root.innerHTML;
+                });
             }
         });
 

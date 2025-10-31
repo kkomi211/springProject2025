@@ -65,7 +65,10 @@ public class HomeController {
 	}
 	
 	@RequestMapping("home/product.do")
-	public String product(Model model) throws Exception {
+	public String product(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		request.setAttribute("category", map.get("category"));
+		request.setAttribute("keyword", map.get("keyword"));
+		System.out.println(map);
 		return "home/product"; // .jsp빠진형태
 	}
 	
