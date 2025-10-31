@@ -126,6 +126,10 @@
                 gap: 10px;
                 margin-top: 18px;
             }
+
+            button {
+                font-size: 20px;
+            }
         </style>
     </head>
 
@@ -287,9 +291,9 @@
                             <div class="field quantity-field">
                                 <label>수량</label>
                                 <div class="qty-control">
-                                    <button type="button"  @click="decreaseQty">-</button>
+                                    <button type="button" @click="decreaseQty">-</button>
                                     <input type="text" class="qty-input" v-model.number="currentQty" />
-                                    <button type="button"  @click="increaseQty">+</button>
+                                    <button type="button" @click="increaseQty">+</button>
                                 </div>
                             </div>
 
@@ -358,6 +362,13 @@
                     deliveryFee: 0,
                     selectedCount: 0,
                     isAllSelected: false,
+
+                    // modal 관련 상태
+                    currentOptionChangeProductNo: null,
+                    availableSizes: ['250', '255', '260', '265', '270'], // 실제 값으로 변경 가능
+                    currentSelectedSize: '250',
+                    currentQty: 1,
+                    unitPrice: 156000 // 실제 상품가격을 해당 항목에서 동적으로 할당하세요
                 };
             },
             computed: {

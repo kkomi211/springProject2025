@@ -102,7 +102,7 @@ public class MypageService {
 		}
 
 		return resultMap;
-
+	}
 
 
 
