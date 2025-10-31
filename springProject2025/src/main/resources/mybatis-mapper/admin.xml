@@ -3,19 +3,26 @@
 	
 	<mapper namespace="com.example.springProject2025.mapper.AdminMapper">
 		
-		<!-- banner.xml(메인슬라이드) list-->
-		<select id="selectSldeeBannerList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
+		<!-- slide banner.xml(메인슬라이드) list-->
+		<select id="selectSlideBannerList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
 			SELECT *
 			FROM MAIN_SLIDE_IMAGE
 		</select>
 		
-		<!-- banner.xml(제품) list-->
+		<!-- product banner.xml(제품) list-->
 		<select id="selectProductBannerList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
-			SELECT *
-			FROM PRODUCT_BANNER_IMG
+			SELECT B.*, IMG_PATH
+			FROM PRODUCT_BANNER_IMG B
+			INNER JOIN PRODUCT_IMG P ON B.PRODUCT_NO = P.PRODUCT_NO			
+		</select>
+		
+		<select id="selectRallyBannerList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
+			SELECT R.*, I.IMG_PATH
+			FROM RALLY R
+			INNER JOIN RALLY_IMG I ON R.RALLY_NO = I.RALLY_NO		
 		</select>
 	
-	<!-- banner 수정/저장-->
+	<!-- slide banner 수정/저장-->
 	<update id="updateBannerModify" parameterType="hashmap">
 	    UPDATE MAIN_SLIDE_IMAGE
 	    SET 
@@ -29,14 +36,26 @@
 	        BANNER_ID       = #{bannerId, jdbcType=NUMERIC}
 	</update>
 
-	<!-- banner 삭제 -->
-	<delete id="deleteBanner" parameterType="hashmap">
+	<!-- slide banner 삭제 -->
+	<delete id="deleteSlideBanner" parameterType="hashmap">
 		DELETE FROM MAIN_SLIDE_IMAGE
 		WHERE BANNER_ID = #{bannerId}
 	</delete>
 	
-	<!-- banner 추가 -->
-    <insert id="insertBanner" parameterType="hashmap">
+	<!-- product banner 삭제 -->
+	<delete id="deleteProductBanner" parameterType="hashmap">
+		DELETE FROM PRODUCT_BANNER_IMG
+		WHERE PBANNER_IMG_NO = #{pBannerImgNo}
+	</delete>
+	
+	<!-- rally banner 삭제 -->
+	<delete id="deleteRallyBanner" parameterType="hashmap">
+		DELETE FROM RALLY
+		WHERE RALLY_NO = #{rallyNo}
+	</delete>
+	
+	<!-- slide banner 추가 -->
+    <insert id="insertSlideBanner" parameterType="hashmap">
 	    INSERT INTO MAIN_SLIDE_IMAGE
 	    (BANNER_ID, TITLE, IMAGE_DIR, LINK_URL, DISPLAY_ORDER, USER_ID, CDATE)
 	    VALUES (
@@ -50,7 +69,54 @@
 	    )
 	</insert>
 	
+	<!-- product banner 추가 -->
+	<insert id="insertProductBanner" parameterType="hashmap">
+	    INSERT INTO PRODUCT_BANNER_IMG (
+	        PBANNER_IMG_NO,
+	        TITLE,
+	        PRODUCT_NO,
+	        PRODUCT_IMG_NO,  IMAGE_DIR,       CDATE
+	    ) VALUES (
+	        PRODUCT_BANNER_SEQ.NEXTVAL,
+	        
+	        #{title, jdbcType=VARCHAR},
+	        
+	        #{productNo, jdbcType=NUMERIC}, 
+	        
+	        #{productImgNo, jdbcType=VARCHAR},
+	        
+	        NULL,
+	        
+	        SYSDATE
+	    )
+	</insert>
 	
+	<!-- rally banner 추가 -->
+	<insert id="insertRallyBanner" parameterType="hashmap">
+		INSERT INTO RALLY (
+	        RALLY_NO,
+	        RALLY_NAME,
+	        RALLY_DATE,
+	        APPLICATION_PERIOD,
+	        PRICE,
+	        PHONE,
+	        TYPE,
+	        HOST
+	    )
+	    VALUES (
+	        RALLY_SEQ.NEXTVAL,
+	        #{rallyName},
+	        
+	        TO_DATE(#{rallyDate}, 'YYYY-MM-DD'), 
+	        
+	        TO_DATE(#{applicationPeriod}, 'YYYY-MM-DD'), 
+	        
+	        #{price},
+	        #{phone},
+	        #{type},
+	        #{host}
+	    )
+	</insert>
 
 
 
@@ -286,5 +352,266 @@
 		<delete id="deleteUser" parameterType="hashmap">
 		    DELETE FROM USERS
 		    WHERE USER_ID = #{userId}
+		</delete>
+		
+		<!-- 교환/반품/취소 목록 개수 조회 -->
+		<select id="selectRefundReturnListCount" parameterType="hashmap" resultType="int">
+		    SELECT COUNT(O.ORDER_NO)
+		    FROM ORDERS O
+		    JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
+		    JOIN USERS U ON O.USER_ID = U.USER_ID
+		    <where>
+		        O.STATUS IN ('교환요청', '교환완료', '취소요청', '취소완료', '반품요청', '반품완료')
+		        <if test="keyword != null and keyword != ''">
+		            AND (P.PRODUCT_NAME LIKE '%' || #{keyword} || '%'
+		            OR O.USER_ID LIKE '%' || #{keyword} || '%'
+		            OR U.NAME LIKE '%' || #{keyword} || '%'
+		            OR O.ORDER_NO LIKE '%' || #{keyword} || '%')
+		        </if>
+		        <if test="statusOption != null and statusOption != ''">
+		            AND O.STATUS = #{statusOption}
+		        </if>
+		        <if test="startDate != null and startDate != ''">
+		            AND O.UDATE >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+		        </if>
+		        <if test="endDate != null and endDate != ''">
+		            AND O.UDATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD') + 0.99999
+		        </if>
+		    </where>
+		</select>
+		
+		<!-- 교환/반품/취소 목록 조회 -->
+		<select id="selectRefundReturnList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
+		    SELECT *
+		    FROM (
+		        SELECT SUB.*, ROWNUM AS RN
+		        FROM (
+		            SELECT
+		                O.ORDER_NO,
+		                P.PRODUCT_NAME,
+		                O.USER_ID,
+		                U.NAME,
+		                U.PHONE,
+		                TO_CHAR(O.UDATE, 'YYYY-MM-DD') AS UDATE,
+		                O.STATUS,
+		                O.PRODUCT_NO, <!-- 교환 처리 시 필요 -->
+		                O.QUANTITY,   <!-- 교환 처리 시 필요 -->
+		                O.BECAUSE     <!-- 교환/반품/취소 사유 -->
+		            FROM ORDERS O
+		            JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
+		            JOIN USERS U ON O.USER_ID = U.USER_ID
+		            <where>
+		                O.STATUS IN ('교환요청', '교환완료', '취소요청', '취소완료', '반품요청', '반품완료')
+		                <if test="keyword != null and keyword != ''">
+		                    AND (P.PRODUCT_NAME LIKE '%' || #{keyword} || '%'
+		                    OR O.USER_ID LIKE '%' || #{keyword} || '%'
+		                    OR U.NAME LIKE '%' || #{keyword} || '%'
+		                    OR O.ORDER_NO LIKE '%' || #{keyword} || '%')
+		                </if>
+		                <if test="statusOption != null and statusOption != ''">
+		                    AND O.STATUS = #{statusOption}
+		                </if>
+		                <if test="startDate != null and startDate != ''">
+		                    AND O.UDATE >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+		                </if>
+		                <if test="endDate != null and endDate != ''">
+		                    AND O.UDATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD') + 0.99999
+		                </if>
+		            </where>
+		            ORDER BY O.UDATE DESC, O.ORDER_NO DESC
+		        ) SUB
+		    )
+		    WHERE RN > #{startIndex} AND RN &lt;= #{startIndex} + #{pageSize}
+		</select>
+		
+		<!-- 교환/반품/취소 상태 업데이트 (일반적인 상태 변경) -->
+		<update id="updateRefundReturnStatus" parameterType="hashmap">
+		    UPDATE ORDERS
+		    SET STATUS = #{status},
+		        UDATE = SYSDATE
+		    WHERE ORDER_NO = #{orderNo}
+		    AND STATUS = #{currentStatus} <!-- 현재 상태와 일치할 때만 업데이트 (안전장치) -->
+		</update>
+		
+		<!-- 특정 주문 번호의 제품 정보(productNo, quantity) 조회 -->
+		<select id="selectOrderProductInfo" parameterType="hashmap" resultType="hashmap">
+		    SELECT PRODUCT_NO, QUANTITY
+		    FROM ORDERS
+		    WHERE ORDER_NO = #{orderNo}
+		</select>
+		
+		<!-- 제품 재고 업데이트 (+ 또는 -) -->
+		<update id="updateProductStock" parameterType="hashmap">
+		    UPDATE PRODUCT
+		    SET QUANTITY = QUANTITY + #{quantityChange}
+		    WHERE PRODUCT_NO = #{productNo}
+		</update>
+		
+		<!-- 제품 판매량(SELL_COUNT) 업데이트 (+ 또는 -) -->
+		<update id="updateProductSellCount" parameterType="hashmap">
+		    UPDATE PRODUCT
+		    SET SELL_COUNT = SELL_COUNT + #{quantityChange}
+		    WHERE PRODUCT_NO = #{productNo}
+		</update>
+		
+		<!-- 주문 상세 정보 전체 조회 (새로운 주문 생성에 재활용하기 위함) -->
+		<select id="selectOrderDetailsByOrderNo" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
+		    SELECT
+		        ORDER_NO, USER_ID, PRODUCT_NO, QUANTITY, PAYMENT_AMOUNT,
+		        ADDR, PAYMENT_METHOD, STATUS, BECAUSE, ORDER_REQUEST,
+		        CDATE, UDATE <!-- CDATE, UDATE도 가져옴 (CDATE는 새 주문에 복사) -->
+		    FROM ORDERS
+		    WHERE ORDER_NO = #{orderNo}
+		</select>
+		
+		<!-- 새로운 주문 번호 시퀀스 가져오기 (Oracle 예시) -->
+		<select id="getNextOrderNoSequence" resultType="int">
+		    SELECT ORDERS_SEQ.NEXTVAL FROM DUAL
+		</select>
+		
+		<!-- 교환으로 인한 신규 주문 삽입 -->
+		<insert id="insertNewOrderForExchange" parameterType="com.example.springProject2025.model.Admin">
+		    INSERT INTO ORDERS (
+		        ORDER_NO, USER_ID, CDATE, PRODUCT_NO, QUANTITY,
+		        PAYMENT_AMOUNT, ADDR, PAYMENT_METHOD, STATUS, ORDER_REQUEST, UDATE
+		    ) VALUES (
+		        #{orderNo},
+		        #{userId},
+		        SYSDATE, <!-- 새 주문이므로 현재 시간 -->
+		        #{productNo},
+		        #{quantity},
+		        #{paymentAmount},
+		        #{addr},
+		        #{paymentMethod},
+		        #{status},
+		        NULL,
+		        SYSDATE
+		    )
+		</insert>
+		
+		<!-- productNo로 제품 상세 정보 조회 -->
+		<select id="selectProductByProductNo" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
+		    SELECT PRODUCT_NO, BRAND, PRODUCT_NAME, PRICE, PRODUCT_SIZE, QUANTITY AS PRODUCT_STOCK <!-- QUANTITY를 PRODUCT_STOCK으로 별칭 -->
+		    FROM PRODUCT
+		    WHERE PRODUCT_NO = #{productNo}
+		</select>
+		
+		<!-- 동일 브랜드, 제품명(괄호 전 부분)의 모든 관련 제품 옵션 조회 (재고가 0 이상인 것만) -->
+		<select id="selectRelatedProductOptions" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
+		    SELECT
+		        PRODUCT_NO,
+		        PRODUCT_NAME,
+		        QUANTITY,
+		        PRICE
+		    FROM PRODUCT
+		    WHERE
+		        BRAND = #{brand} <!-- 동일 브랜드 내에서 검색 (service에서 map에 넣어준 brand) -->
+		        AND PRODUCT_NAME LIKE #{baseProductName} || '%'
+		        AND QUANTITY > 0 <!-- 재고가 있는 제품만 -->
+		    ORDER BY PRODUCT_NAME, PRODUCT_SIZE
+		</select>
+		
+		<!-- 신고 게시물 목록 개수 조회 -->
+		<select id="selectBoardReportListCount" parameterType="hashmap" resultType="int">
+		    SELECT COUNT(RB.REPORT_BOARD_NO)
+		    FROM REPORT_BOARD RB
+		    JOIN BOARD B ON RB.BOARD_NO = B.BOARD_NO
+		    JOIN USERS U_R ON RB.REPORTER_ID = U_R.USER_ID <!-- 신고자 -->
+		    JOIN USERS U_B ON B.USER_ID = U_B.USER_ID <!-- 게시글 작성자 -->
+		    <where>
+		        <if test="keyword != null and keyword != ''">
+		            AND (B.TITLE LIKE '%' || #{keyword} || '%'
+		            OR B.CONTENTS LIKE '%' || #{keyword} || '%'
+		            OR B.USER_ID LIKE '%' || #{keyword} || '%'
+		            OR RB.REPORTER_ID LIKE '%' || #{keyword} || '%')
+		        </if>
+		        <if test="reportStatus != null and reportStatus != ''">
+		            AND RB.STATUS = #{reportStatus}
+		        </if>
+		        <if test="startDate != null and startDate != ''">
+		            AND RB.CDATE >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+		        </if>
+		        <if test="endDate != null and endDate != ''">
+		            AND RB.CDATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD') + 0.99999
+		        </if>
+		    </where>
+		</select>
+		
+		<!-- 신고 게시물 목록 조회 -->
+		<select id="selectBoardReportList" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
+		    SELECT *
+		    FROM (
+		        SELECT SUB.*, ROWNUM AS RN
+		        FROM (
+		            SELECT
+		                RB.REPORT_BOARD_NO AS REPORTBOARDNO,
+		                RB.BOARD_NO AS REPORTEDBOARDNO, <!-- 신고된 게시글 번호 -->
+		                RB.REPORTER_ID AS REPORTERID,    <!-- 신고자 아이디 -->
+		                TO_CHAR(RB.CDATE, 'YYYY-MM-DD') AS CDATE, <!-- 신고 날짜 -->
+		                RB.STATUS AS REPORTSTATUS,      <!-- 신고 확인 상태 -->
+		                B.TITLE AS BOARDTITLE,         <!-- 게시글 제목 (추가 조회) -->
+		                B.USER_ID AS BOARDUSERID,      <!-- 게시글 작성자 ID (추가 조회) -->
+		                U_R.NAME AS REPORTERNAME,       <!-- 신고자 이름 (추가 조회) -->
+		                U_B.NAME AS BOARDAUTHORNAME     <!-- 게시글 작성자 이름 (추가 조회) -->
+		            FROM REPORT_BOARD RB
+		            JOIN BOARD B ON RB.BOARD_NO = B.BOARD_NO
+		            JOIN USERS U_R ON RB.REPORTER_ID = U_R.USER_ID <!-- 신고자 정보 가져오기 -->
+		            JOIN USERS U_B ON B.USER_ID = U_B.USER_ID <!-- 게시글 작성자 정보 가져오기 -->
+		            <where>
+		                <if test="keyword != null and keyword != ''">
+		                    AND (B.TITLE LIKE '%' || #{keyword} || '%'
+		                    OR B.CONTENTS LIKE '%' || #{keyword} || '%'
+		                    OR B.USER_ID LIKE '%' || #{keyword} || '%'
+		                    OR RB.REPORTER_ID LIKE '%' || #{keyword} || '%')
+		                </if>
+		                <if test="reportStatus != null and reportStatus != ''">
+		                    AND RB.STATUS = #{reportStatus}
+		                </if>
+		                <if test="startDate != null and startDate != ''">
+		                    AND RB.CDATE >= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+		                </if>
+		                <if test="endDate != null and endDate != ''">
+		                    AND RB.CDATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD') + 0.99999
+		                </if>
+		            </where>
+		            ORDER BY RB.CDATE DESC, RB.REPORT_BOARD_NO DESC
+		        ) SUB
+		    )
+		    WHERE RN > #{startIndex} AND RN &lt;= #{startIndex} + #{limit}
+		</select>
+		
+		<!-- 신고 게시물 상세 조회 -->
+		<select id="selectBoardReportDetail" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
+		    SELECT
+		        RB.REPORT_BOARD_NO AS REPORTBOARDNO,
+		        RB.BOARD_NO AS REPORTEDBOARDNO,
+		        RB.REPORTER_ID AS REPORTERID,
+		        TO_CHAR(RB.CDATE, 'YYYY-MM-DD') AS CDATE,
+		        RB.STATUS AS REPORTSTATUS,
+		        B.BOARD_NO AS BOARDNO,          <!-- BOARD_NO를 명시적으로 Board 테이블 컬럼으로 -->
+		        B.TYPE AS BOARDTYPE,            <!-- 게시판 유형 -->
+		        B.TITLE AS BOARDTITLE,          <!-- 게시글 제목 -->
+		        B.CONTENTS AS BOARDCONTENT,     <!-- 게시글 내용 -->
+		        B.USER_ID AS BOARDUSERID,       <!-- 게시글 작성자 ID -->
+		        U_R.NAME AS REPORTERNAME,       <!-- 신고자 이름 -->
+		        U_B.NAME AS BOARDAUTHORNAME     <!-- 게시글 작성자 이름 -->
+		    FROM REPORT_BOARD RB
+		    JOIN BOARD B ON RB.BOARD_NO = B.BOARD_NO
+		    JOIN USERS U_R ON RB.REPORTER_ID = U_R.USER_ID
+		    JOIN USERS U_B ON B.USER_ID = U_B.USER_ID
+		    WHERE RB.REPORT_BOARD_NO = #{reportBoardNo}
+		</select>
+		
+		<!-- 신고 확인 상태 'Y'로 변경 -->
+		<update id="updateReportStatusToY" parameterType="hashmap">
+		    UPDATE REPORT_BOARD
+		    SET STATUS = 'Y'
+		    WHERE REPORT_BOARD_NO = #{reportBoardNo}
+		</update>
+		
+		<!-- 게시글 삭제 -->
+		<delete id="deleteBoard" parameterType="hashmap">
+		    DELETE FROM BOARD
+		    WHERE BOARD_NO = #{reportedBoardNo}
 		</delete>
 	</mapper>
