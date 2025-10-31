@@ -80,6 +80,9 @@ td input {
     width: 80%;
     height: 40px;
 }
+.redbutton:hover{
+    background-color: #BD2915;
+}
 
 .text-left {
     text-align: left;
@@ -87,6 +90,10 @@ td input {
 
 .text-center {
     text-align: center;
+}
+
+.text-right{
+    text-align: right;
 }
 
 .table th {
@@ -103,6 +110,10 @@ td input {
 
 .font30{
     font-size: 30px;
+}
+
+.font20{
+    font-size: 20px;
 }
 
 .redbutton {
@@ -158,25 +169,29 @@ td input {
 
 .side-bar{
     width:20%;
-    border: 1px solid black;
     margin: 30px;
     float: left;
+    border: 1px solid #ccc; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .category-box .category{
     width:100%;
-    border: 1px solid black;
     text-align: center;
     padding: 20px 20px;
     box-sizing: border-box;
+    border: 1px solid #ccc; 
+    background-color: white; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }   
 
 .category-box .subcategory{
     width:100%;
-    border: 1px solid black;
     text-align: center;
     padding: 10px 20px;
     box-sizing: border-box;
+    border: 1px solid #ccc; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .main-container{
@@ -191,6 +206,10 @@ td input {
     grid-template-columns: repeat(3, 380px);
     grid-template-rows: repeat(3, 450px);
     grid-auto-rows: 100px;
+    border: 1px solid #ccc; 
+    padding: 20px; 
+    background-color: white; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .infoMain-container{
@@ -199,16 +218,22 @@ td input {
     border: 1px solid black;
     margin: 30px;
     float: left;
+    border: 1px solid #ccc; 
+    padding: 20px; 
+    background-color: white; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
    
 }
 
 .product-box{
     width: 70%;
     padding: 30px;
-    border: 1px solid black;
     margin: 30px;
     text-align: center;
     box-sizing: border-box;
+    border: 1px solid #ccc; 
+    background-color: white; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .small-img{
@@ -216,6 +241,10 @@ td input {
     width: 200px;
     height: 200px;
     margin: 20px 0px;
+    border: 1px solid #ccc; 
+    background-color: white; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    
 }
 
 .star { color:#ddd; font-size:14px; }
@@ -280,6 +309,8 @@ td input {
 .big-img {
     width: 600px;
     height: 600px;
+    border: 1px solid #ccc; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .img-box{
@@ -307,10 +338,10 @@ td input {
 .container-foot{
     width:100%;
     padding: 0px;
-    border: 1px solid black;
     margin-top: 30px;
-    height: 500px;
     position: relative;
+    border: 1px solid #ccc; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         
 }
 
@@ -333,4 +364,61 @@ td input {
     position: absolute;
     top: 50px;
     width: 100%;
+}
+
+.modal-backdrop{
+  position: fixed; inset: 0; background: rgba(0,0,0,.45);
+  display: flex; align-items: center; justify-content: center; z-index: 999;
+}
+.modal-card{
+  width: min(720px, 92vw); max-height: 80vh; overflow: auto;
+  background: #fff; border-radius: 12px; padding: 20px 24px; box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+.modal-title{ font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+.modal-desc{ color: #555; margin-bottom: 12px; }
+.modal-input{ width: 100%; padding: 10px 12px; border:1px solid #ddd; border-radius:8px; }
+.modal-actions{ display:flex; gap:10px; justify-content:flex-end; margin-top: 16px; }
+.modal-content{ white-space: pre-wrap; line-height: 1.6; border-top:1px solid #eee; padding-top:12px; }
+.meta{ display:flex; gap:12px; color:#666; font-size: 13px; margin-bottom: 12px; }
+.error{ color:#d32f2f; margin-top:8px; }
+
+.heart{
+    color: red;
+    cursor: pointer;
+}
+
+.heart:hover{
+    font-weight: bold;
+}
+
+.cursor{
+    cursor: pointer;
+}
+
+.infoMain-container h1{
+    text-align: center;
+    margin: 30px;
+}
+
+.inquiryTable{
+    clear: both;
+}   
+
+.editor-box input{
+    width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 0.95rem; background-color: #f9f9f9;
+    
+}
+
+.editor-box{
+    width: 90%;
+    margin: 30px;
+}
+
+.fontGray{
+    display: block; font-weight: bold; margin-bottom: 5px; color: #555;
+}
+
+#editor{
+    width: 100%;
+    height: 500px;
 }

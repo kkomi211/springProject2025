@@ -50,5 +50,20 @@ public interface ProductMapper {
 
 	List<Product> selectInquiryList(HashMap<String, Object> map);
 	
+	int selectInquiryCount(HashMap<String, Object> map);
+
+	int selectInquiryPwd(HashMap<String, Object> map);
+
+	Product selectInquiryView(HashMap<String, Object> map);
+	
+	int selectReviewListCnt(HashMap<String, Object> map);
+
+	int updateReviewHeart(HashMap<String, Object> map);
+
+	int InsertProductInquiry(HashMap<String, Object> map);
+
+	int InsertCart(HashMap<String, Object> map);
+	
+	Product selectProductNoBySize(HashMap<String, Object> map);
 
 }
