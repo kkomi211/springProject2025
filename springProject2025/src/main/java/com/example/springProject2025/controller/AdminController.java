@@ -7,22 +7,20 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model; // Spring MVC Model
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.ui.Model; // Spring MVC Model
 
 import com.example.springProject2025.dao.AdminService;
 import com.google.gson.Gson;
+
 //import ch.qos.logback.core.model.Model;
 import jakarta.servlet.http.HttpServletRequest;   // ← jakarta로 통일
 import jakarta.servlet.http.HttpServletResponse;  // ← jakarta로 통일
-
-import ch.qos.logback.core.model.Model;
-import jakarta.servlet.http.HttpServletRequest;
 
 
 @Controller
@@ -401,17 +399,7 @@ public class AdminController {
 		return fileName;
 	}
 			
-		// rally banner insert 추가
-				@RequestMapping(value = "/admin/rallyBannerInsert.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-				@ResponseBody
-			public String rallyadd(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
-				HashMap<String, Object> resultMap = new HashMap<String, Object>();
-				resultMap = adminService.addRallyBanner(map);
-								
-				return new Gson().toJson(resultMap);
-			}	
-				
-				
+		
 	/**
      * 주문 현황 데이터 조회 (막대 그래프용)
      */
