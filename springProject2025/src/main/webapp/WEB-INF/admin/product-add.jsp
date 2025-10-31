@@ -114,7 +114,8 @@
                     gender: "",
                     typeNo: "",
                     productDetail: "",
-                    sizeNum : 1
+                    sizeNum : 1,
+                    sessionId : "${sessionId}"
                 };
             },
             methods: {

@@ -259,17 +259,20 @@
                     });
                 },
                 fnCategoryProduct(category) {
-                    pageChange("/home/product.do", { keyword: "", category: category });
+                    let self = this;
+                    pageChange("/home/product.do", { keyword: "", category: category, sessionId : self.sessionId });
                 },
                 fnProduct() {
-                    pageChange("/home/product.do", { keyword: "", category: "" });
+                    let self = this;
+                    pageChange("/home/product.do", { keyword: "", category: "", sessionId : self.sessionId });
                 },
                 fnProductSearch(key) {
-                    pageChange("/home/product.do", { keyword: key, category: "" });
+                    let self = this;
+                    pageChange("/home/product.do", { keyword: key, category: "", sessionId : self.sessionId });
                 },
                 fnBack(){
                     let self = this;
-                    pageChange("/home/product-info.do", {productNo : self.productNo});
+                    pageChange("/home/product-info.do", {productNo : self.productNo, sessionId : self.sessionId});
                 },
                 fnAddInquiry(){
                     let self = this;

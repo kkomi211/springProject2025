@@ -66,6 +66,7 @@ public class HomeController {
 	
 	@RequestMapping("home/product.do")
 	public String product(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		request.setAttribute("sessionId", map.get("sessionId"));
 		request.setAttribute("category", map.get("category"));
 		request.setAttribute("keyword", map.get("keyword"));
 		System.out.println(map);
@@ -79,6 +80,7 @@ public class HomeController {
 	
 	@RequestMapping("home/product-info.do")
     public String productInfo(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		request.setAttribute("sessionId", map.get("sessionId"));
         request.setAttribute("productNo", map.get("productNo"));
         return "home/product-info"; // .jsp 빠진 형태
     }

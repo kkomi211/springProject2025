@@ -174,7 +174,8 @@
                     totalPage: "",
                     keyword: "${keyword}",
                     category: "${category}",
-                    hoverParent: null
+                    hoverParent: null,
+                    sessionId : "${sessionId}"
                 };
             },
             computed: {
@@ -282,10 +283,12 @@
                     self.fnList();
                 },
                 fnProductView(productNo, rating){
-                    pageChange("/home/product-info.do", {productNo : productNo});
+                    let self = this;
+                    pageChange("/home/product-info.do", {productNo : productNo, sessionId : self.sessionId});
                 },
                 fnProduct(){
-                    pageChange("/home/product.do", {category : ""});
+                    let self = this;
+                    pageChange("/home/product.do", {category : "", sessionId : self.sessionId});
                 }
                 
             }, // methods

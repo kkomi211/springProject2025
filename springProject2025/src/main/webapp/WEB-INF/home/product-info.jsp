@@ -309,7 +309,7 @@
                     quantity: 1,
                     size: "",
                     maxQuantity: 1,
-                    sessionId : "sessionId채워야댐"
+                    sessionId : "${sessionId}"
                 };
             },
             computed: {
@@ -542,16 +542,20 @@
                     });
                 },
                 fnCategoryProduct(category) {
-                    pageChange("/home/product.do", { keyword: "", category: category });
+                    let self = this;
+                    pageChange("/home/product.do", { keyword: "", category: category, sessionId : self.sessionId });
                 },
                 fnProduct() {
-                    pageChange("/home/product.do", { keyword: "", category: "" });
+                    let self = this;
+                    pageChange("/home/product.do", { keyword: "", category: "", sessionId : self.sessionId });
                 },
                 fnProductSearch(key) {
-                    pageChange("/home/product.do", { keyword: key, category: "" });
+                    let self = this;
+                    pageChange("/home/product.do", { keyword: key, category: "", sessionId : self.sessionId });
                 },
                 fnProductInquiryAdd(proNo) {
-                    pageChange("/home/product/inquiry/add.do", { productNo: proNo });
+                    let self = this;
+                    pageChange("/home/product/inquiry/add.do", { productNo: proNo, sessionId : self.sessionId });
                 },
                 fnCart() {
                     let self = this;
