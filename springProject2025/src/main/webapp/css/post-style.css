@@ -1,0 +1,313 @@
+/* ------------------------------
+   기본 리셋 및 폰트 설정
+------------------------------ */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #333;
+  background-color: #f8f8f8;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ------------------------------
+   헤더 영역
+------------------------------ */
+.header {
+  padding: 20px 40px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+}
+
+.header-welcome {
+  font-size: 14px;
+  color: #999;
+}
+
+.header-user {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 5px;
+  margin-left: 40px;
+}
+
+.bottom-header {
+  background-color: #fff; /* ensure navbar is also white */
+}
+
+/* ------------------------------
+   메인 레이아웃 (사이드바 + 메인 콘텐츠)
+------------------------------ */
+.page-container {
+  display: flex;
+  max-width: 1200px;
+  margin: 2px auto;
+  padding: 0 40px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* ------------------------------
+   사이드바 스타일
+------------------------------ */
+.sidebar {
+  width: 280px;
+  padding: 30px 0;
+  border-right: 1px solid #eee;
+  flex-shrink: 0;
+}
+
+.sidebar-heading {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  padding: 0 30px;
+}
+
+.mypage-menu li {
+  display: flex;
+  align-items: center;
+  padding: 12px 30px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.mypage-menu li:hover,
+.mypage-menu li.active {
+  background-color: #f7f7f7;
+  font-weight: bold;
+}
+
+.mypage-menu li .icon {
+  margin-right: 15px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* ------------------------------
+   메인 콘텐츠 (게시판 테이블)
+------------------------------ */
+.main-content {
+  flex-grow: 1;
+  padding: 30px 40px;
+}
+
+.board-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #333;
+}
+
+.main-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+/* ------------------------------
+   게시판 테이블
+------------------------------ */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+th,
+td {
+  border-bottom: 1px solid #eee;
+  padding: 12px 20px;
+  text-align: left;
+}
+
+th {
+  background-color: #f7f7f7;
+  font-weight: bold;
+}
+
+/* ------------------------------
+   버튼 스타일
+------------------------------ */
+button {
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: all 0.2s;
+  min-width: 100px;
+  margin-right: 10px;
+}
+
+ /* 텍스트 에디터 */
+
+#editor-container {
+      width: 100%;
+      max-width: 690px;
+      height: 500px;
+      margin: 40px auto;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    /* Toolbar */
+    .ql-toolbar {
+      border-radius: 5px 8px 0 0;
+      background-color: #f9f9f9;
+      border-bottom: 1px solid #ddd;
+    }
+
+    /* Buttons hover */
+    .ql-toolbar button:hover {
+      background-color: #eaeaea;
+      border-radius: 4px;
+    }
+
+    /* Editable area */
+    .ql-editor {
+      min-height: 250px;
+      font-size: 1rem;
+      line-height: 1.6;
+      padding: 15px;
+      /* border-radius: 0 0 8px 8px; */
+      color: #333;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    /* Placeholder text */
+    .ql-editor.ql-blank::before {
+      font-style: italic;
+      color: #aaa;
+    }
+  
+    /* 모달 스타일 (간단 안내용) */
+.modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.45);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+.modal {
+	width: 420px;
+	max-width: 90%;
+	background: #fff;
+	border-radius: 8px;
+	padding: 18px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+	text-align: left;
+}
+
+.modal h3 {
+	margin: 0 0 8px 0;
+	font-size: 18px;
+}
+
+.modal p {
+	margin: 6px 0 12px;
+	font-size: 14px;
+	color: #333;
+}
+
+.modal .missing-list {
+	max-height: 120px;
+	overflow-y: auto;
+	background: #fafafa;
+	border: 1px solid #eee;
+	padding: 8px;
+	margin-bottom: 12px;
+	font-size: 13px;
+}
+
+.modal .btns {
+	text-align: right;
+}
+
+.modal .btn {
+	display: inline-block;
+	padding: 8px 14px;
+	border-radius: 6px;
+	border: none;
+	background: #1976d2;
+	color: #fff;
+	cursor: pointer;
+	margin-left: 8px;
+}
+
+.modal .btn.secondary {
+	background: #777;
+}
+
+.modal-overlay {
+
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+
+}
+
+.modal-content {
+
+	background-color: #fff;
+	padding: 30px;
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+	width: 90%;
+	max-width: 450px;
+	text-align: center;
+
+}
+
+.modal-title {
+	font-size: 1.5rem;
+	font-weight: bold;
+	margin-bottom: 15px;
+}
+
+.modal-content p {
+	margin-bottom: 20px;
+	font-size: 1rem;
+}
+
+/* 댓글 섹션 */
+.viewComment {
+  margin-top: 15px;
+  margin-left: 10px;
+  font-size: 13px;
+}
+      

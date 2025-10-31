@@ -40,4 +40,22 @@
 	    </if>
 	</select>
 	
+	<insert id="boardAdd" parameterType="hashmap" useGeneratedKeys="true" keyColumn="BOARD_NO" keyProperty="boardNo" >
+		INSERT INTO BOARD
+		(BOARD_NO, TYPE, TITLE, CONTENTS, USER_ID, CDATE, UDATE, VIEW_CNT, PWD)
+		VALUES(BOARD_SEQ.NEXTVAL, #{type}, #{title}, #{content}, #{userId}, SYSDATE, SYSDATE, 0, #{keylock})
+	</insert>
+	
+	<select id="boardInfo" parameterType="hashmap" resultType="com.example.springProject2025.model.Board">
+		SELECT B.*, TO_CHAR(CDATE, 'YYYY-MM-DD') AS CHARDATE
+		FROM BOARD B
+		WHERE BOARD_NO = #{boardNo}
+	</select>
+	
+	<select id="commentInfo" parameterType="hashmap" resultType="com.example.springProject2025.model.Comment">
+		SELECT C.*, TO_CHAR(CDATE, 'YYYY-MM-DD') AS CHARDATE
+		FROM COMMENTS C
+		WHERE BOARD_NO = #{boardNo}
+	</select>
+	
 </mapper>

@@ -102,6 +102,7 @@ ul {
 .main-content {
   flex-grow: 1;
   padding: 30px 40px;
+  
 }
 
 .main-title {
@@ -177,11 +178,13 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
+  /* box-shadow: 0px 0px 4px -1px; */
+  border-radius: 8px;
 }
 
 th, td {
   border-bottom: 1px solid #eee;
-  padding: 12px 10px;
+  padding: 12px 20px;
   text-align: left;
 }
 
@@ -203,7 +206,7 @@ tr:hover {
 /* ------------------------------
    공통 버튼 스타일
 ------------------------------ */
-.btn {
+.btn, .page-btn {
   padding: 10px 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -214,13 +217,12 @@ tr:hover {
   transition: all 0.2s;
   min-width: 100px;
   text-align: center;
+  margin-bottom: 10px;
 }
 
 .btn:hover {
   background-color: #f0f0f0;
 }
-
-
 /* 페이지네이션 */
 .pagination {
   display: flex;
