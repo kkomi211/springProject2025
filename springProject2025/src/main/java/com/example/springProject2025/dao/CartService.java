@@ -38,6 +38,17 @@ public class CartService {
 		return resultMap;
 	}
 
+	public HashMap<String, Object> removeCartItemList(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt = cartMapper.deleteCartItemList(map);
+
+		resultMap.put("cnt", cnt);
+		resultMap.put("result", "success");
+		
+		return resultMap;
+	}
+
 	
 
 }

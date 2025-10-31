@@ -25,6 +25,14 @@
 		</select>
 	
 	
+		<delete id="deleteCartItemList" parameterType="hashmap">
+		DELETE FROM CART
+		WHERE CART_NO IN
+			<foreach collection="list" item="item" index="index" open="(" close=")" separator=","> 
+				#{item} 
+			</foreach> 
+		</delete>
+
 	
 	
 	</mapper>
