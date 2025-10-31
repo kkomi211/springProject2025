@@ -40,7 +40,7 @@
             <!-- 메인 슬라이드 광고-->
             <h2 id="main-slide-banner-section">메인 슬라이드 배너 관리</h2>
             <div>
-                <button @click="openMainAddModal" style="background-color:rgb(60,173,255);">
+                <button @click="openMainAddModal" style="background-color:#007bff;">
                     메인 배너 추가
                 </button>
             </div>
@@ -66,7 +66,7 @@
                             <template v-if="!item.isEditing">
                                 <td>{{item.bannerId}}</td>
                                 <td @click="toggleImage(index)"
-                                    style="cursor:pointer; color:rgb(60,173,255); text-decoration:underline;">
+                                    style="cursor:pointer; color:#007bff; text-decoration:underline;">
                                     {{item.title}}
                                 </td>
                                 <td>{{item.imageDir}}</td>
@@ -74,7 +74,7 @@
                                 <td>{{item.cDate}}</td>
                                 <td>
                                     <button @click="item.isEditing = true"
-                                        style="background-color: rgb(60,173,255);">수정하기</button>
+                                        style="background-color: #007bff;">수정하기</button>
                                 </td>
                             </template>
 
@@ -86,11 +86,11 @@
                                 <td>{{item.cDate}}</td>
                                 <td>
                                     <button @click="saveMainBanner(index)"
-                                        style="background-color: rgb(60,173,255);">저장하기</button>
+                                        style="background-color: #007bff;">저장하기</button>
                                     <button @click="item.isEditing = false"
                                         style="background-color: #7e7e7e;">취소하기</button>
                                     <button @click="openMainDeleteModal(item)"
-                                        style="background-color: #F24822;">삭제</button>
+                                        style="background-color: #dc3545;">삭제</button>
                                 </td>
                             </template>
                         </tr>
@@ -110,7 +110,7 @@
                     <h3>삭제 확인</h3>
                     <p>"{{ mainDeleteItem.title }}" 배너를 정말 삭제하시겠습니까?</p>
                     <div class="modal-buttons">
-                        <button @click="confirmMainDelete()" style="background-color:#F24822;">삭제</button>
+                        <button @click="confirmMainDelete()" style="background-color:#dc3545;">삭제</button>
                         <button @click="closeMainDeleteModal" style="background-color:#7e7e7e;">취소</button>
                     </div>
                 </div>
@@ -125,7 +125,7 @@
                         <input v-model="newMainBanner.linkUrl" placeholder="링크 URL 입력">
                     </div>
                     <div class="modal-buttons">
-                        <button @click="confirmMainAdd" style="background-color:rgb(60,173,255);">등록</button>
+                        <button @click="confirmMainAdd" style="background-color:#007bff;">등록</button>
                         <button @click="closeMainAddModal" style="background-color:#7e7e7e;">취소</button>
                     </div>
                 </div>
@@ -142,7 +142,7 @@
             <h2 id="product-banner-section">제품 배너 관리</h2>
 
             <div class="product-banner-controls">
-                <button @click="openProductAddModal" style="background-color:rgb(60,173,255);">
+                <button @click="openProductAddModal" style="background-color:#007bff;">
                     제품 배너 추가
                 </button>
             </div>
@@ -160,13 +160,13 @@
                     <tr>
                         <td>{{item.pBannerImgNo}}</td>
                         <td @click="toggleProductImage(index)"
-                            style="cursor:pointer; color:rgb(60,173,255); text-decoration:underline;">
+                            style="cursor:pointer; color:#007bff; text-decoration:underline;">
                             {{item.title}}
                         </td>
                         <td>{{item.productNo}}</td>
                         <td>{{item.cDate}}</td>
                         <td>
-                            <button @click="openProductDeleteModal(item)" style="background-color: #F24822;">삭제</button>
+                            <button @click="openProductDeleteModal(item)" style="background-color: #dc3545;">삭제</button>
                         </td>
                     </tr>
 
@@ -184,7 +184,7 @@
                     <h3>삭제 확인</h3>
                     <p>"{{ productDeleteItem.title }}" 배너를 정말 삭제하시겠습니까?</p>
                     <div class="modal-buttons">
-                        <button @click="confirmProductDelete()" style="background-color:#F24822;">삭제</button>
+                        <button @click="confirmProductDelete()" style="background-color:#dc3545;">삭제</button>
                         <button @click="closeProductDeleteModal" style="background-color:#7e7e7e;">취소</button>
                     </div>
                 </div>
@@ -199,7 +199,7 @@
                         <input v-model="newProductBanner.productNo" placeholder="상품 번호 입력">
                     </div>
                     <div class="modal-buttons">
-                        <button @click="confirmProductAdd" style="background-color:rgb(60,173,255);">등록</button>
+                        <button @click="confirmProductAdd" style="background-color:#007bff;">등록</button>
                         <button @click="closeProductAddModal" style="background-color:#7e7e7e;">취소</button>
                     </div>
                 </div>
@@ -210,7 +210,7 @@
             <h2 id="contest-banner-section">대회 배너 관리</h2>
 
             <div class="product-banner-controls">
-                <button @click="openRallyAddModal" style="background-color:rgb(60,173,255);">
+                <button @click="openRallyAddModal" style="background-color:#007bff;">
                     광고 배너 추가
                 </button>
             </div>
@@ -233,7 +233,7 @@
                     <tr>
                         <td>{{item.rallyNo}}</td>
                         <td @click="toggleRallyImage(index)"
-                            style="cursor:pointer; color:rgb(60,173,255); text-decoration:underline;">
+                            style="cursor:pointer; color:#007bff; text-decoration:underline;">
                             {{item.rallyName}}
                         </td>
                         <td>{{item.rallyDate}}</td>
@@ -244,7 +244,7 @@
                         <td>{{item.host}}</td>
                         <td>{{item.cDate}}</td>
                         <td>
-                            <button @click="openRallyDeleteModal(item)" style="background-color: #F24822;">삭제</button>
+                            <button @click="openRallyDeleteModal(item)" style="background-color: #dc3545;">삭제</button>
                         </td>
                     </tr>
 
@@ -263,7 +263,7 @@
                     <h3>삭제 확인</h3>
                     <p>"{{ rallyDeleteItem.rallyName }}" 배너를 정말 삭제하시겠습니까?</p>
                     <div class="modal-buttons">
-                        <button @click="confirmRallyDelete()" style="background-color:#F24822;">삭제</button>
+                        <button @click="confirmRallyDelete()" style="background-color:#dc3545;">삭제</button>
                         <button @click="closeRallyDeleteModal" style="background-color:#7e7e7e;">취소</button>
                     </div>
                 </div>
@@ -286,7 +286,7 @@
 
                     </div>
                     <div class="modal-buttons">
-                        <button @click="confirmRallyAdd" style="background-color:rgb(60,173,255);">등록</button>
+                        <button @click="confirmRallyAdd" style="background-color:r#007bff;">등록</button>
                         <button @click="closeRallyAddModal" style="background-color:#7e7e7e;">취소</button>
                     </div>
                 </div>
