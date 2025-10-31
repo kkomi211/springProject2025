@@ -517,7 +517,7 @@
         text-align: center;
     }
     .product-option-table th {
-        background-color: #f8f9fa;
+        background-color: black;
         font-weight: bold;
     }
     .product-option-table tr.selected-option {
