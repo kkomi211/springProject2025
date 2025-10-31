@@ -11,6 +11,11 @@ import com.example.springProject2025.model.Comment;
 @Mapper
 public interface BoardMapper {
 	
+	// rally-board(대회정보) 목록
+		List<Board>selectRallyBoardList(HashMap<String, Object> map);
+	
+
+ 
 	// 게시판 리스트
 	List <Board>boardList(HashMap<String, Object> map);
 	

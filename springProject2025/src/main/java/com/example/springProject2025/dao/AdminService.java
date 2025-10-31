@@ -660,8 +660,9 @@ public class AdminService {
 			// TODO Auto-generated method stub
 			HashMap<String, Object> resultMap = new HashMap<String, Object>();
 			int rallyadd = adminMapper.insertRallyBanner(map);
-
+			System.out.println("rallyNo from map: " + map.get("rallyNo"));
 			resultMap.put("result", "success");
+			resultMap.put("rallyNo", map.get("rallyNo"));
 			return resultMap;
 		}
 	
@@ -766,5 +767,10 @@ public class AdminService {
     
     
     
+
+		public void addRallyImg(HashMap<String, Object> map) {
+			// TODO Auto-generated method stub
+			int cnt = adminMapper.insertRallyImg(map);
+		}
 
 }

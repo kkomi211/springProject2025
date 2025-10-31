@@ -1,5 +1,7 @@
 package com.example.springProject2025.controller;
 
+import java.io.File;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,9 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.ui.Model; // Spring MVC Model
 
 import com.example.springProject2025.dao.AdminService;
 import com.google.gson.Gson;
+//import ch.qos.logback.core.model.Model;
+import jakarta.servlet.http.HttpServletRequest;   // ← jakarta로 통일
+import jakarta.servlet.http.HttpServletResponse;  // ← jakarta로 통일
 
 import ch.qos.logback.core.model.Model;
 import jakarta.servlet.http.HttpServletRequest;
@@ -83,7 +90,7 @@ public class AdminController {
 		resultMap = adminService.getSlidebannerList(map);
 		return new Gson().toJson(resultMap);
 	}
-	
+
 	// banner(제품 광고) list
 	@RequestMapping(value = "/admin/productbanner.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
@@ -92,6 +99,7 @@ public class AdminController {
 		resultMap = adminService.getSlidebannerList(map);
 		return new Gson().toJson(resultMap);
 	}
+
 	
 	@RequestMapping("admin/board-report-view.do")
 	public String boardReportDetail(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception {
@@ -108,7 +116,7 @@ public class AdminController {
 		resultMap = adminService.getSlidebannerList(map);
 		return new Gson().toJson(resultMap);
 	}
-	
+
 	@RequestMapping("admin/user-list/view.do")
 	public String userDetailView(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map)
 			throws Exception { // HttpServletRequest 추가
@@ -155,16 +163,17 @@ public class AdminController {
 		resultMap = adminService.getOrdersList(map);
 		return new Gson().toJson(resultMap);
 	}
-	
+
 	// slide banner update 수정
 	@RequestMapping(value = "/admin/bannerUpdate.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String update(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap = adminService.bannerModify(map);
-		
+
 		return new Gson().toJson(resultMap);
 	}
+
 	// 주문내역 상태 변경(신규주문->배송중, 배송중->배송완료) 메소드
 	@RequestMapping(value = "admin/orders/updateStatus.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
@@ -196,9 +205,9 @@ public class AdminController {
 	@RequestMapping(value = "admin/user-list/delete.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String deleteUser(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
-	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
-	    resultMap = adminService.deleteUser(map);
-	    return new Gson().toJson(resultMap);
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = adminService.deleteUser(map);
+		return new Gson().toJson(resultMap);
 	}
 	
 	
@@ -266,59 +275,131 @@ public class AdminController {
 	    return new Gson().toJson(resultMap);
 	}
 
-
-	
-	
 	// slide banner delete 삭제
 	@RequestMapping(value = "/admin/bannerSlideDelete.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String slidedelete(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
-		System.out.println("--------------------------"+ map);
+		System.out.println("--------------------------" + map);
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap = adminService.removeSlideBanner(map);
-		
+
 		return new Gson().toJson(resultMap);
 	}
-	
+
 	// product banner delete 삭제
-		@RequestMapping(value = "/admin/productBannerDelete.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-		@ResponseBody
-		public String productdelete(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
-			HashMap<String, Object> resultMap = new HashMap<String, Object>();
-			resultMap = adminService.removeProductBanner(map);
-			
-			return new Gson().toJson(resultMap);
-		}
-		
+	@RequestMapping(value = "/admin/productBannerDelete.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String productdelete(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = adminService.removeProductBanner(map);
+
+		return new Gson().toJson(resultMap);
+	}
+
 	// rally banner delete 삭제
-		@RequestMapping(value = "/admin/rallyBannerDelete.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-		@ResponseBody
-		public String rallydelete(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
-			HashMap<String, Object> resultMap = new HashMap<String, Object>();
-			resultMap = adminService.removeRallyBanner(map);
-					
-			return new Gson().toJson(resultMap);
-		}
-	
+	@RequestMapping(value = "/admin/rallyBannerDelete.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String rallydelete(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = adminService.removeRallyBanner(map);
+
+		return new Gson().toJson(resultMap);
+	}
+
 	// slide banner insert 추가
-		@RequestMapping(value = "/admin/slideBannerInsert.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-		@ResponseBody
-		public String slideadd(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
-			HashMap<String, Object> resultMap = new HashMap<String, Object>();
-			resultMap = adminService.addSlideBanner(map);
-			
-			return new Gson().toJson(resultMap);
-		}
-		
+	@RequestMapping(value = "/admin/slideBannerInsert.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String slideadd(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = adminService.addSlideBanner(map);
+
+		return new Gson().toJson(resultMap);
+	}
+
 	// product banner insert 추가
-			@RequestMapping(value = "/admin/productBannerInsert.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-			@ResponseBody
-			public String productadd(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
-				HashMap<String, Object> resultMap = new HashMap<String, Object>();
-				resultMap = adminService.addProductBanner(map);
-					
-				return new Gson().toJson(resultMap);
+	@RequestMapping(value = "/admin/productBannerInsert.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String productadd(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = adminService.addProductBanner(map);
+
+		return new Gson().toJson(resultMap);
+	}
+
+	// rally banner insert 추가
+	@RequestMapping(value = "/admin/rallyBannerInsert.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String rallyadd(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = adminService.addRallyBanner(map);
+
+		return new Gson().toJson(resultMap);
+	}
+
+	// ===== 파일 업로드(JSON 응답) =====
+	@RequestMapping("/rally/fileUpload.dox")
+	public String result(@RequestParam("file1") MultipartFile multi, @RequestParam("rallyNo") int rallyNo,
+			HttpServletRequest request, HttpServletResponse response, Model model) {
+
+		String url = null;
+		String path = "c:\\img";
+
+		try {
+			String uploadpath = path;
+			String originFilename = multi.getOriginalFilename();
+			String extName = originFilename.substring(originFilename.lastIndexOf("."), originFilename.length());
+			long size = multi.getSize();
+			String saveFileName = genSaveFileName(extName);
+
+//			System.out.println("uploadpath : " + uploadpath);
+			System.out.println("originFilename : " + originFilename);
+			System.out.println("extensionName : " + extName);
+			System.out.println("size : " + size);
+			System.out.println("saveFileName : " + saveFileName);
+			String path2 = System.getProperty("user.dir");
+			System.out.println("Working Directory = " + path2 + "\\src\\webapp\\img");
+			if (!multi.isEmpty()) {
+				File file = new File(path2 + "\\src\\main\\webapp\\img", saveFileName);
+				multi.transferTo(file); 
+
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("fileName", saveFileName);
+				map.put("path", "/img/" + saveFileName);
+				map.put("rallyNo", rallyNo);
+				map.put("orgName", originFilename);
+				map.put("size", size);
+				map.put("ext", extName);
+
+				// insert 쿼리 실행
+				adminService.addRallyImg(map);
+
+				model.addAttribute("filename", multi.getOriginalFilename());
+				model.addAttribute("uploadPath", file.getAbsolutePath());
+
+				return "redirect:list.do";
 			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return "redirect:list.do";
+	}
+
+	// 현재 시간을 기준으로 파일 이름 생성
+	private String genSaveFileName(String extName) {
+		String fileName = "";
+
+		Calendar calendar = Calendar.getInstance();
+		fileName += calendar.get(Calendar.YEAR);
+		fileName += calendar.get(Calendar.MONTH);
+		fileName += calendar.get(Calendar.DATE);
+		fileName += calendar.get(Calendar.HOUR);
+		fileName += calendar.get(Calendar.MINUTE);
+		fileName += calendar.get(Calendar.SECOND);
+		fileName += calendar.get(Calendar.MILLISECOND);
+		fileName += extName;
+
+		return fileName;
+	}
 			
 		// rally banner insert 추가
 				@RequestMapping(value = "/admin/rallyBannerInsert.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")

@@ -16,7 +16,6 @@ public class Admin {
 	// PRODUCT_INQUIRY 테이블
 	private int inquiryNo;
 	private String productNo;
-	private String title; // inquiry_title
 	private String content; // inquiry_content
 	// private String cDate; // inquiry_cDate
 	// private String uDate; // inquiry_uDate
@@ -34,16 +33,23 @@ public class Admin {
 	private int pBannerImgNo;
 	private String productImgNo;
 	private String imgPath;
-	
+
 	// banner model(rally) 테이블 컬럼명
 	private int rallyNo;
-	private String rallyName;
+	private String rallyName; 
 	private String rallyDate;
 	private String applicationPeriod;
 //	private int price;
 	private String type;
 	private String host;
+	private String title;
 	
+	// banner model(rally_img) 테이블 컬럼명
+	private String imgName;
+	private int rallyImgNo;
+	private String imgOrgName;
+	private String imgSize;
+	private String imgEtc;
 	
 	// PRODUCT_INQUIRY 테이블 컬럼
 //	private int inquiryNo;

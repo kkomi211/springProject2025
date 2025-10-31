@@ -78,6 +78,8 @@ public interface AdminMapper {
 	
 	// 회원 삭제
 	int deleteUser(HashMap<String, Object> map);
+
+	int insertRallyImg(HashMap<String, Object> map);
 	
 	// 교환/반품/취소 목록 조회
 	List<Admin> selectRefundReturnList(HashMap<String, Object> map);
