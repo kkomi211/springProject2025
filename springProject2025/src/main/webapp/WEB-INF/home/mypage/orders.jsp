@@ -84,7 +84,7 @@
                                         <span class="icon">💬</span>
                                         <a href="#">문의 내역</a>
                                     </li>
-                                    <li>
+                                    <li @click="moveToInfo">
                                         <span class="icon">👤</span>
                                         <a href="#">나의 정보</a>
                                     </li>
@@ -400,6 +400,17 @@
                     let sessionId = self.sessionId;
 
                     // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장)
+                    window.pageChange("refund-return.do", { sessionId: sessionIdParam });
+                    },
+                moveToInfo : function(){
+                    let self = this;
+                    console.log("나의 정보 메뉴 클릭. pageChange 호출");
+
+                    // 1. Vue의 sessionId 데이터에 접근
+                    // const sessionIdParam = self.sessionId;
+
+                    // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장?)
+                    pageChange("/home/mypage/information.do", { sessionId: self.sessionId });
                     window.pageChange("refund-return.do", { sessionId: sessionId });
                 },
                 moveToReview: function () {
