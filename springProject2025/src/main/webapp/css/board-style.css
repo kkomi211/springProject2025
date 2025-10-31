@@ -1,0 +1,273 @@
+/* ------------------------------
+   기본 리셋 및 폰트 설정
+------------------------------ */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #333;
+  background-color: #f8f8f8;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ------------------------------
+   헤더 영역
+------------------------------ */
+.header {
+  padding: 20px 40px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+}
+
+.header-welcome {
+  font-size: 14px;
+  color: #999;
+}
+
+.header-user {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 5px;
+  margin-left: 40px;
+}
+
+/* ------------------------------
+   메인 레이아웃 (사이드바 + 메인 콘텐츠)
+------------------------------ */
+.page-container {
+  display: flex;
+  max-width: 1200px;
+  margin: 2px auto;
+  padding: 0 40px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* ------------------------------
+   사이드바 스타일
+------------------------------ */
+.sidebar {
+  width: 280px;
+  padding: 30px 0;
+  border-right: 1px solid #eee;
+  flex-shrink: 0;
+}
+
+.sidebar-heading {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  padding: 0 30px;
+}
+
+.mypage-menu li {
+  display: flex;
+  align-items: center;
+  padding: 12px 30px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.mypage-menu li:hover,
+.mypage-menu li.active {
+  background-color: #f7f7f7;
+  font-weight: bold;
+}
+
+.mypage-menu li .icon {
+  margin-right: 15px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* ------------------------------
+   메인 콘텐츠 (게시판 테이블)
+------------------------------ */
+.main-content {
+  flex-grow: 1;
+  padding: 30px 40px;
+  
+}
+
+.main-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+/* ------------------------------
+   게시판 헤더 + 검색바 수정
+------------------------------ */
+.board-header {
+  display: flex;                 /* horizontal layout */
+  align-items: center;           /* vertical alignment */
+  justify-content: space-between;/* 게시판 left, search bar right */
+  margin-bottom: 20px;
+  border-bottom: 2px solid #333;
+  padding-bottom: none;
+}
+
+.search-bar {
+  margin-bottom: 15px; /* align with title */
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* space between select, input, button */
+  width: 100%;
+  max-width: 450px; /* optional */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.search-wrapper select,
+.search-wrapper input,
+.search-wrapper .search-btn {
+  height: 32px;       /* unify height for alignment */
+  font-size: 14px;    /* match text size */
+}
+
+.search-wrapper select {
+  border: none;
+  outline: none;
+  width: 110px;
+  padding: 0 12px;
+  background-color: rgb(197, 197, 197);
+  color: black;
+  cursor: pointer;
+}
+
+.search-wrapper input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 0 10px;
+}
+
+.search-wrapper .search-btn {
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0 12px;
+  color: #2a2a72;
+}
+
+/* 게시판 테이블 스타일 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  /* box-shadow: 0px 0px 4px -1px; */
+  border-radius: 8px;
+}
+
+th, td {
+  border-bottom: 1px solid #eee;
+  padding: 12px 20px;
+  text-align: left;
+}
+
+th {
+  background-color: #f7f7f7;
+  font-weight: bold;
+}
+
+tr:hover {
+  background-color: #fafafa;
+}
+
+.write-btn-wrapper {
+    display: flex;
+    justify-content: flex-end; /* push button to the right */
+    margin: 20px 0;            /* optional spacing above/below */
+}
+
+/* ------------------------------
+   공통 버튼 스타일
+------------------------------ */
+.btn, .page-btn {
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: all 0.2s;
+  min-width: 100px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.btn:hover {
+  background-color: #f0f0f0;
+}
+/* 페이지네이션 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+  padding-bottom: 20px;
+}
+
+.pagination a {
+  display: block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  margin: 0 4px;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.pagination a.arrow {
+  border: none;
+  font-size: 16px;
+  width: auto;
+  height: auto;
+  line-height: 1;
+  margin: 0 10px;
+  border-radius: 0;
+}
+
+.pagination a.active {
+  background-color: #333;
+  color: #fff;
+  border-color: #333;
+}
+
+.pagination a:not(.active):hover {
+  background-color: #f0f0f0;
+}
+
+.pagination span.active {
+  color: black;
+  font-weight: bold;
+}
+
+.bottom-header {
+  background-color: white;
+}
