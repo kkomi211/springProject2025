@@ -7,7 +7,6 @@ import lombok.Data;
 //BOARD 테이블
 public class Board {
 	private String boardNo;
-	private String type;
 	private String title;
 	private String contents;
 	private String userId;

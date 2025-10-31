@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.springProject2025.dao.BoardService;
 import com.google.gson.Gson;
 
-import ch.qos.logback.core.model.Model;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller

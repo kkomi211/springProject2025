@@ -21,7 +21,6 @@ import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;   // ← jakarta로 통일
 import jakarta.servlet.http.HttpServletResponse;  // ← jakarta로 통일
 
-import ch.qos.logback.core.model.Model;
 import jakarta.servlet.http.HttpServletRequest;
 
 
@@ -335,6 +334,8 @@ public class AdminController {
 
 		return new Gson().toJson(resultMap);
 	}
+	
+	
 
 	// ===== 파일 업로드(JSON 응답) =====
 	@RequestMapping("/rally/fileUpload.dox")
@@ -401,15 +402,7 @@ public class AdminController {
 		return fileName;
 	}
 			
-		// rally banner insert 추가
-				@RequestMapping(value = "/admin/rallyBannerInsert.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-				@ResponseBody
-			public String rallyadd(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
-				HashMap<String, Object> resultMap = new HashMap<String, Object>();
-				resultMap = adminService.addRallyBanner(map);
-								
-				return new Gson().toJson(resultMap);
-			}	
+		
 				
 				
 	/**
