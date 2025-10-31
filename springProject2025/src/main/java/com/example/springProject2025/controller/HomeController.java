@@ -22,7 +22,8 @@ public class HomeController {
 	}
 	
 	@RequestMapping("home/community/board.do")
-	public String board(Model model) throws Exception {
+	public String board(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
+		request.setAttribute("sessionId", map.get("sessionId"));
 		return "home/board"; // .jsp빠진형태
 	}
 	
