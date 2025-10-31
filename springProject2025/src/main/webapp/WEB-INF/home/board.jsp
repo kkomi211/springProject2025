@@ -334,6 +334,7 @@
                             self.userName = "Guest";
                         }
                     });
+            },
             fnChat(){
                 let self = this;
                 pageChange("/home/community/chat.do", {sessionId : self.sessionId});  
