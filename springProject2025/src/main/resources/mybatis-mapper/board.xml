@@ -58,4 +58,11 @@
 		WHERE BOARD_NO = #{boardNo}
 	</select>
 	
+	<insert id="commentAdd" parameterType="hashmap" useGeneratedKeys="true" keyColumn="BOARD_NO" keyProperty="boardNo" >
+		INSERT INTO COMMENTS
+		VALUES(COMMENTS_SEQ.NEXTVAL, #{userId}, #{contents}, #{boardNo}, SYSDATE, SYSDATE)
+	</insert>
+	
 </mapper>
+
+

@@ -74,4 +74,14 @@ public class BoardController {
 		return new Gson().toJson(resultMap);
 	}
 	
+	@RequestMapping(value = "/board/comment-post.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String addComment(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println("comment data " + map);
+		resultMap = boardService.addComment(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
 }

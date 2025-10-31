@@ -130,7 +130,11 @@
                                 <tr v-for="item in boardList">
                                     <td>{{item.boardNo}}</td>
                                     <td>
-                                        <a href="javascript:;" @click="fnPostView(item.boardNo)">{{item.title}}</a>
+                                        <a href="javascript:;" @click="fnPostView(item.boardNo)">
+                                            {{item.title}}
+                                            <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
+                                        </a>
+                                        
                                     </td>
                                     <td>{{item.userId}}</td>
                                     <td>{{item.cdate}}</td>
@@ -150,6 +154,20 @@
                             <div class="write-btn-wrapper">
                                 <button @click="moveToPost" class="btn">글쓰기</button>
                             </div>
+
+                            <!-- Popup asking for the user post's password -->
+                             
+                            <div v-if="pwdCorrect" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>비밀글로 보호된 게시물입니다.</h2>
+                                    <p>비밀번호를 입력해야 내용을 확인할 수 있습니다.</p>
+                                    <input class="btn" type="password" @keyup.enter="fnKeylock" placeholder="비밀번호 입력">
+                                    <div>
+                                        <button class="btn" @click="pwdCorrect = false">닫기</button>
+                                    </div>
+                                </div>
+                            </div>
+
                         </main>
                 </div>
             </main>
@@ -202,7 +220,12 @@
                 cnt: 0,
                 page: 1,
                 pageSize: 10,
-                index: 0
+                index: 0,
+
+                // modal popup 
+                pwdCorrect : false,
+                selectedPost: null,  // store the post object being clicked
+                keylock: ""  
             };
         },
         methods: {
@@ -274,7 +297,43 @@
                 let param = {
                     boardNo : boardNo
                 };
-                pageChange("board/view.do", {boardNo : boardNo});
+                let post = self.boardList.find(item => item.boardNo === boardNo);
+                    
+                if (post.pwd && post.pwd.length > 0) {
+                    // Show password modal
+                    self.selectedPost = post;
+                    self.pwdCorrect = true;
+                    self.keylock = ""; // reset input
+                } else {
+                    // No lock, go directly to the post
+                    pageChange("board/view.do", { boardNo: boardNo });
+                }
+
+                // pageChange("board/view.do", {boardNo : boardNo});
+            },
+            fnKeylock : function(){
+                let self = this;
+                let param = {
+                    keylock : self.keylock
+                };
+                    $.ajax({
+                        url: "/home/community/board/keylock.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data : param,
+                        success: function (data) {
+                            if(data.result == "success"){
+                                // location.href="";
+                                alert("Correct password.");
+                            } else {
+                                alert("Wrong password.");
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("사용자 정보 조회 실패:", error);
+                            self.userName = "Guest";
+                        }
+                    });
             }
         }, // methods
         mounted() {
