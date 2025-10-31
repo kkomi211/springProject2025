@@ -18,9 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.springProject2025.dao.AdminService;
 import com.google.gson.Gson;
 
-//import ch.qos.logback.core.model.Model;
 import jakarta.servlet.http.HttpServletRequest;   // ← jakarta로 통일
 import jakarta.servlet.http.HttpServletResponse;  // ← jakarta로 통일
+
+import jakarta.servlet.http.HttpServletRequest;
 
 
 @Controller
@@ -333,6 +334,8 @@ public class AdminController {
 
 		return new Gson().toJson(resultMap);
 	}
+	
+	
 
 	// ===== 파일 업로드(JSON 응답) =====
 	@RequestMapping("/rally/fileUpload.dox")
@@ -400,6 +403,7 @@ public class AdminController {
 	}
 			
 		
+				
 	/**
      * 주문 현황 데이터 조회 (막대 그래프용)
      */
