@@ -88,8 +88,8 @@
                     </div>
                     <div v-if="noLoginModal" class="modal-overlay">
                         <div class="modal-content">
-                            <h2>로그인 실패했습니다</h2>
-                            <p>로그인 다시 시도해보세요</p>
+                            <h2>로그인에 실패했습니다</h2>
+                            <p>다시 시도해보세요</p>
                             <button @click="closeModal">돌아가기</button>
                         </div>
                     </div>

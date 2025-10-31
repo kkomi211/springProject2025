@@ -5,14 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/user-style.css">
+    <link rel="stylesheet" href="/css/chat-style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
-    <title>Homepage</title>
+    <title>Community</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="/js/page-change.js"></script>
     <style>
-        
+
+
+
     </style>
 </head>
 <body>
@@ -50,7 +54,63 @@
             </header>
 
             <main>
-                <div>Main content</div>
+                
+                <div class="header">
+                        <div class="header-welcome">
+                            Welcome,
+                        </div>
+                        <div class="header-user">
+                            {{ userName }}
+                        </div>
+                </div>
+                <div class="page-container">
+                        <aside class="sidebar">
+                            <h2 class="sidebar-heading"> COMMUNITY ></h2>
+                            <nav class="mypage-menu">
+                                <ul>
+                                    <li>
+                                        <span class="icon">📝</span>
+                                        <a href="#">게시판</a>
+                                    </li>
+                                    <li @click="">
+                                        <span class="icon">📦</span>
+                                        <a href="javascript:;">크루 찾기</a>
+                                    </li>
+                                    <li>
+                                        <span class="icon">💬</span>
+                                        <a href="#">대회정보</a>
+                                    </li>
+                                    <li class="active"  @click="fnChat">
+                                        <span class="icon">👤</span>
+                                        <a href="javascript:;">채팅방</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </aside>
+                        <main class="main-content">
+                            <div class="board-header">
+                                <h1 class="main-title">
+                                    나의 채팅방
+                                </h1>
+                                <div class="search-bar">
+                                    <div class="search-wrapper">
+                                        <input type="text" placeholder="검색어" v-model="keyword">
+                                        <button class="search-btn">🔍</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <table>
+                                <tr>
+                                    <th>채팅방이름</th>
+                                    <th>생성날짜</th>
+                                </tr>
+                                <tr v-for="item in chatList">
+                                    <td>{{item.name}}</td>
+                                    <td>{{item.cdate}}</td>
+                                </tr>
+                            </table>
+                        </main>
+                </div>
             </main>
 
             <footer>
@@ -90,20 +150,49 @@
         data() {
             return {
                 // 변수 - (key : value)
+                sessionId : "${sessionId}",
+                userName : "",
+                keyword : "",
+                chatList : []
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnList: function () {
+            fnGetUserInfo: function () {
+                    let self = this;
+                    $.ajax({
+                        url: "/home/mypage/userInfo.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: { userId: self.sessionId },
+                        success: function (data) {
+                            console.log("사용자 이름:", data);
+                            self.userName = data;
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("사용자 정보 조회 실패:", error);
+                            self.userName = "Guest";
+                        }
+                    });
+                },
+            fnChat(){
                 let self = this;
-                let param = {};
+                pageChange("/home/community/chat.do", {sessionId : self.sessionId});
+            },
+            fnGetUserChatList(){
+                let self = this;
+                let param = {
+                    userId : self.sessionId
+                }
                 $.ajax({
-                    url: "",
+                    url: "/home/mypage/chatroom/list.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-
+                        console.log(data);
+                        self.chatList = data.list;
+                        
                     }
                 });
             }
@@ -111,6 +200,8 @@
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+            self.fnGetUserInfo();
+            self.fnGetUserChatList();
         }
     });
 
