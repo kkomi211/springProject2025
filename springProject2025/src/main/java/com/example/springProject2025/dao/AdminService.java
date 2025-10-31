@@ -665,6 +665,108 @@ public class AdminService {
 			resultMap.put("rallyNo", map.get("rallyNo"));
 			return resultMap;
 		}
+	
+		
+	/**
+     * 주문 현황 (상태별 건수) 조회
+     * @return List<HashMap<String, Object>> (status, count)
+     */
+    public List<HashMap<String, Object>> getOrderStatusCounts() {
+        return adminMapper.selectOrderStatusCounts();
+    }
+
+    /**
+     * 매출 현황 요약 (총 매출, 이번 달 매출, 월별 매출 추이) 조회
+     * @return HashMap<String, Object>
+     */
+    public HashMap<String, Object> getSalesSummary() {
+        HashMap<String, Object> summary = new HashMap<>();
+        
+        long totalSales = adminMapper.selectTotalSales(); // 총 매출
+        long monthlySales = adminMapper.selectMonthlySales(); // 이번 달 매출
+        List<HashMap<String, Object>> monthlySalesList = adminMapper.selectLastSixMonthsSales(); // 지난 6개월 월별 매출
+        // List<HashMap<String, Object>> salesByPaymentMethod = adminMapper.selectSalesByPaymentMethod(); 결제 방법별 매출
+        int totalOrdersCount = adminMapper.selectTotalOrdersCount(); // 총 주문 건수
+        int monthlyOrdersCount = adminMapper.selectMonthlyOrdersCount(); // 이번 달 주문 건수
+
+        summary.put("totalSales", totalSales);
+        summary.put("monthlySales", monthlySales);
+        summary.put("monthlySalesList", monthlySalesList);
+        // summary.put("salesByPaymentMethod", salesByPaymentMethod);
+        summary.put("totalOrdersCount", totalOrdersCount);
+        summary.put("monthlyOrdersCount", monthlyOrdersCount);
+        
+        return summary;
+    }
+
+    /**
+     * 상품 요약 정보 조회
+     * @return HashMap<String, Object> (총 상품, 재고 있음, 품절 임박, Top 5 판매 상품)
+     */
+    public HashMap<String, Object> getProductSummary() {
+        HashMap<String, Object> summary = new HashMap<>();
+
+        int totalProducts = adminMapper.selectTotalProductCount();
+        int inStockProducts = adminMapper.selectInStockProductCount();
+        int lowStockProducts = adminMapper.selectLowStockProductCount(); // 재고 1~9개
+        List<Admin> topSellingProducts = adminMapper.selectTopSellingProducts(5); // Top 5
+
+        summary.put("totalProducts", totalProducts);
+        summary.put("inStockProducts", inStockProducts);
+        summary.put("lowStockProducts", lowStockProducts);
+        summary.put("topSellingProducts", topSellingProducts);
+
+        return summary;
+    }
+
+    /**
+     * 회원 요약 정보 조회
+     * @return HashMap<String, Object> (총 회원 수, 오늘 가입, 이번 달 가입)
+     */
+    public HashMap<String, Object> getUserSummary() {
+        HashMap<String, Object> summary = new HashMap<>();
+
+        int totalUsers = adminMapper.selectTotalUserCount();
+        int newUsersToday = adminMapper.selectNewUsersTodayCount();
+        int newUsersMonth = adminMapper.selectNewUsersMonthCount();
+        List<HashMap<String, Object>> usersByGender = adminMapper.selectUsersByGenderCount(); // 성별 분포
+        int usersWithOrdersCount = adminMapper.selectUsersWithOrdersCount(); // 구매 이력 회원 수
+
+        summary.put("totalUsers", totalUsers);
+        summary.put("newUsersToday", newUsersToday);
+        summary.put("newUsersMonth", newUsersMonth);
+        summary.put("usersByGender", usersByGender);
+        summary.put("usersWithOrdersCount", usersWithOrdersCount);
+
+        return summary;
+    }
+
+    /**
+     * 요청/상태 요약 정보 조회 (배송 중, 신규 신고, 반품/교환 요청, 상품 문의)
+     * @return HashMap<String, Object>
+     */
+    public HashMap<String, Object> getRequestSummary() {
+        HashMap<String, Object> summary = new HashMap<>();
+
+        int deliveryInProgress = adminMapper.selectDeliveryInProgressCount();
+        int newReports = adminMapper.selectNewReportsCount();
+        int refundRequests = adminMapper.selectRefundRequestsCount();
+        int exchangeRequests = adminMapper.selectExchangeRequestsCount();
+        int newProductInquiries = adminMapper.selectNewProductInquiriesCount(); // 답변 대기중 문의
+        int totalPendingRequestsCount = adminMapper.selectTotalPendingRequestsCount(); // 총 미처리 요청 추가
+
+        summary.put("deliveryInProgress", deliveryInProgress);
+        summary.put("newReports", newReports);
+        summary.put("refundRequests", refundRequests);
+        summary.put("exchangeRequests", exchangeRequests);
+        summary.put("newProductInquiries", newProductInquiries);
+        summary.put("totalPendingRequestsCount", totalPendingRequestsCount);
+
+        return summary;
+    }
+    
+    
+    
 
 		public void addRallyImg(HashMap<String, Object> map) {
 			// TODO Auto-generated method stub

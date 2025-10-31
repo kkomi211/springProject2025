@@ -3,10 +3,11 @@ package com.example.springProject2025.controller;
 import java.io.File;
 import java.util.Calendar;
 import java.util.HashMap;
-
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,8 @@ import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;   // ← jakarta로 통일
 import jakarta.servlet.http.HttpServletResponse;  // ← jakarta로 통일
 
+import ch.qos.logback.core.model.Model;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 @Controller
@@ -31,7 +34,7 @@ public class AdminController {
 	@RequestMapping("admin.do")
 	public String login(Model model) throws Exception {
 		System.out.println("컨트롤러 admin.do진입");
-		return "admin/admin-main-default"; // .jsp빠진형태
+		return "admin/admin-main"; // .jsp빠진형태
 	}
 
 	@RequestMapping("admin/banner.do")
@@ -397,4 +400,110 @@ public class AdminController {
 
 		return fileName;
 	}
+			
+		// rally banner insert 추가
+				@RequestMapping(value = "/admin/rallyBannerInsert.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+				@ResponseBody
+			public String rallyadd(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+				HashMap<String, Object> resultMap = new HashMap<String, Object>();
+				resultMap = adminService.addRallyBanner(map);
+								
+				return new Gson().toJson(resultMap);
+			}	
+				
+				
+	/**
+     * 주문 현황 데이터 조회 (막대 그래프용)
+     */
+    @GetMapping("admin/dashboard/orderStatus.dox")
+    @ResponseBody
+    public String getOrderStatusData() {
+        HashMap<String, Object> resultMap = new HashMap<>();
+        try {
+            List<HashMap<String, Object>> data = adminService.getOrderStatusCounts();
+            resultMap.put("result", "success");
+            resultMap.put("data", data);
+        } catch (Exception e) {
+            resultMap.put("result", "fail");
+            resultMap.put("message", "주문 현황 조회 중 오류: " + e.getMessage());
+            System.err.println("주문 현황 조회 중 오류: " + e.getMessage());
+        }
+        return new Gson().toJson(resultMap);
+    }
+
+    /**
+     * 매출 현황 데이터 조회 (총 매출, 월별 매출 그래프용)
+     */
+    @GetMapping("admin/dashboard/salesSummary.dox")
+    @ResponseBody
+    public String getSalesSummaryData() {
+        HashMap<String, Object> resultMap = new HashMap<>();
+        try {
+            HashMap<String, Object> data = adminService.getSalesSummary();
+            resultMap.put("result", "success");
+            resultMap.put("data", data);
+        } catch (Exception e) {
+            resultMap.put("result", "fail");
+            resultMap.put("message", "매출 현황 조회 중 오류: " + e.getMessage());
+            System.err.println("매출 현황 조회 중 오류: " + e.getMessage());
+        }
+        return new Gson().toJson(resultMap);
+    }
+
+    /**
+     * 상품 요약 데이터 조회
+     */
+    @GetMapping("admin/dashboard/productSummary.dox")
+    @ResponseBody
+    public String getProductSummaryData() {
+        HashMap<String, Object> resultMap = new HashMap<>();
+        try {
+            HashMap<String, Object> data = adminService.getProductSummary();
+            resultMap.put("result", "success");
+            resultMap.put("data", data);
+        } catch (Exception e) {
+            resultMap.put("result", "fail");
+            resultMap.put("message", "상품 요약 조회 중 오류: " + e.getMessage());
+            System.err.println("상품 요약 조회 중 오류: " + e.getMessage());
+        }
+        return new Gson().toJson(resultMap);
+    }
+
+    /**
+     * 회원 요약 데이터 조회
+     */
+    @GetMapping("admin/dashboard/userSummary.dox")
+    @ResponseBody
+    public String getUserSummaryData() {
+        HashMap<String, Object> resultMap = new HashMap<>();
+        try {
+            HashMap<String, Object> data = adminService.getUserSummary();
+            resultMap.put("result", "success");
+            resultMap.put("data", data);
+        } catch (Exception e) {
+            resultMap.put("result", "fail");
+            resultMap.put("message", "회원 요약 조회 중 오류: " + e.getMessage());
+            System.err.println("회원 요약 조회 중 오류: " + e.getMessage());
+        }
+        return new Gson().toJson(resultMap);
+    }
+
+    /**
+     * 요청/상태 요약 데이터 조회 (배송, 신고, 반품/교환)
+     */
+    @GetMapping("admin/dashboard/requestSummary.dox")
+    @ResponseBody
+    public String getRequestSummaryData() {
+        HashMap<String, Object> resultMap = new HashMap<>();
+        try {
+            HashMap<String, Object> data = adminService.getRequestSummary();
+            resultMap.put("result", "success");
+            resultMap.put("data", data);
+        } catch (Exception e) {
+            resultMap.put("result", "fail");
+            resultMap.put("message", "요청 요약 조회 중 오류: " + e.getMessage());
+            System.err.println("요청 요약 조회 중 오류: " + e.getMessage());
+        }
+        return new Gson().toJson(resultMap);
+    }
 }

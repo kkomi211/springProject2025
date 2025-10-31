@@ -1,0 +1,73 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+	<mapper namespace="com.example.springProject2025.mapper.CartMapper">
+	
+
+	
+		<!-- 나의 카트 안 물건 개수 조회 -->
+		<select id="selectCartListCnt" parameterType="hashmap" resultType="int">
+		select count(*)
+		from CART C
+		INNER JOIN PRODUCT P ON C.PRODUCT_NO = P.PRODUCT_NO
+		LEFT JOIN product_img I ON P.PRODUCT_NO = I.PRODUCT_NO
+		where C.user_id = #{sessionId}
+
+		</select>
+		
+		<!-- 나의 카트 안 물건 리스트 불러오기 -->
+		<select id="selectCartList" parameterType="hashmap" resultType="com.example.springProject2025.model.Cart">
+		select *
+		from CART C
+		INNER JOIN PRODUCT P ON C.PRODUCT_NO = P.PRODUCT_NO
+		LEFT JOIN product_img I ON P.PRODUCT_NO = I.PRODUCT_NO
+		where C.user_id = #{sessionId}
+		</select>
+	
+	
+		<delete id="deleteCartItemList" parameterType="hashmap">
+		DELETE FROM CART
+		WHERE CART_NO IN
+			<foreach collection="list" item="item" index="index" open="(" close=")" separator=","> 
+				#{item} 
+			</foreach> 
+		</delete>
+		
+		
+		<!-- productNo로 제품 상세 정보 조회 -->
+		<select id="selectProductByProductNo" parameterType="hashmap" resultType="com.example.springProject2025.model.Cart">
+		    SELECT 	P.PRODUCT_NO, P.BRAND, P.PRODUCT_NAME, 
+		    		P.PRICE, P.PRODUCT_SIZE, P.QUANTITY AS PRODUCT_STOCK, <!-- QUANTITY를 PRODUCT_STOCK으로 별칭 -->
+		    		C.QUANTITY
+		    FROM PRODUCT P
+		    INNER JOIN CART C ON P.PRODUCT_NO = C.PRODUCT_NO
+		    WHERE 1=1
+		    AND P.PRODUCT_NO = #{productNo}
+		    AND C.CART_NO = #{cartNo}
+		</select>
+		
+		<!-- 동일 브랜드, 제품명(괄호 전 부분)의 모든 관련 제품 옵션 조회 (재고가 0 이상인 것만) -->
+		<select id="selectRelatedProductOptions" parameterType="hashmap" resultType="com.example.springProject2025.model.Cart">
+		    SELECT
+		        *
+		    FROM PRODUCT
+		    WHERE
+		        BRAND = #{brand} <!-- 동일 브랜드 내에서 검색 (service에서 map에 넣어준 brand) -->
+		        AND PRODUCT_NAME LIKE #{baseProductName} || '%'
+		        AND QUANTITY > 0 <!-- 재고가 있는 제품만 -->
+		    ORDER BY PRODUCT_NAME, PRODUCT_SIZE
+		</select>
+
+		<!--카드 안의제품 수량 사이즈 변경-->
+		<!--{sessionId=jgh1, originalCartNo=1008, originalProductNo=113, newProductNo=112, quantity=5}-->
+		<update id="updateCartItem" parameterType="hashmap">
+			UPDATE CART 
+			SET 
+				PRODUCT_NO = #{newProductNo}, 
+				QUANTITY = #{quantity}
+			WHERE 1=1
+			AND CART_NO = #{originalCartNo}
+			AND USER_ID = #{sessionId}
+		</update>
+	
+	</mapper>

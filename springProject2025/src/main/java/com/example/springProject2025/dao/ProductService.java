@@ -5,16 +5,22 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.example.springProject2025.controller.OrderController;
 import com.example.springProject2025.mapper.ProductMapper;
 import com.example.springProject2025.model.Admin;
 import com.example.springProject2025.model.Product;
 
 @Service
 public class ProductService {
+
+    private final OrderController orderController;
 	
 	@Autowired
 	ProductMapper productmapper;
+
+    ProductService(OrderController orderController) {
+        this.orderController = orderController;
+    }
 	
 	public HashMap<String, Object> getProductList(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
@@ -151,8 +157,89 @@ public class ProductService {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			List<Product> inquiryList = productmapper.selectInquiryList(map);
+			int cnt = productmapper.selectInquiryCount(map);
 			resultMap.put("inquiryList", inquiryList);
+			resultMap.put("inquiryTotal", cnt);
 			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+
+	public HashMap<String, Object> getInquiryView(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println("dfddddddddddddddd");
+		System.out.println(map);
+		try {
+			int cnt = productmapper.selectInquiryPwd(map);
+			if(cnt < 1) {
+				resultMap.put("success", "false");
+				resultMap.put("code", "BAD_PWD");
+				resultMap.put("message", "비밀번호가 일치하지 않습니다.");
+			} else {
+				Product inquiry = productmapper.selectInquiryView(map);
+				resultMap.put("success", "true");
+				resultMap.put("inquiry", inquiry);
+
+			}
+			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		System.out.println(resultMap);
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> getProductReviewList(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
+		try {
+			List<Product> reviewList = productmapper.selectReviewList(map);
+			int cnt = productmapper.selectReviewListCnt(map);
+			resultMap.put("reviewList", reviewList);
+			resultMap.put("cnt", cnt);
+			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+
+	public HashMap<String, Object> getheartUp(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			int cnt = productmapper.updateReviewHeart(map);
+			resultMap.put("result", "success");
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+
+	public HashMap<String, Object> getInquiryAdd(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			int cnt = productmapper.InsertProductInquiry(map);
+			resultMap.put("result", "success");
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+
+	public HashMap<String, Object> getCartAdd(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			Product product = productmapper.selectProductNoBySize(map);
+			map.put("searchNo", product.getProductNo());
+			int cnt = productmapper.InsertCart(map);
+			resultMap.put("result", "success");
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");

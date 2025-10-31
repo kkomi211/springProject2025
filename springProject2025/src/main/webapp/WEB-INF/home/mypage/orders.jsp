@@ -14,7 +14,6 @@
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-        <script src="/css/jghstyle.css"></script>
         <script src="/js/page-change.js"></script>
 
     </head>
@@ -81,7 +80,7 @@
                                         <span class="icon">📦</span>
                                         <a href="javascript:;">반품•교환 내역</a>
                                     </li>
-                                    <li>
+                                    <li @click="moveToMyinquiry">
                                         <span class="icon">💬</span>
                                         <a href="#">문의 내역</a>
                                     </li>
@@ -420,7 +419,14 @@
                     let sessionId = self.sessionId;
 
                     pageChange("review.do", { sessionId: sessionId });
-                }
+                },
+                moveToMyinquiry: function () {
+                    let self = this;
+                   
+                    let sessionId = self.sessionId;
+
+                    pageChange("my-inquiry.do", { sessionId: sessionId });
+                },
             }, // methods
             mounted() {
                 let self = this;
