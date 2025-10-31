@@ -5,18 +5,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/user-style.css">
-    <link rel="stylesheet" href="/css/board-style.css">
+    <link rel="stylesheet" href="/css/post-style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
     <title>Community</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script src="/js/page-change.js"></script>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
     <style>
+        textarea {
+            /* !important를 사용하여 다른 CSS보다 우선순위를 높입니다. */
+            resize: none !important;
+            background-color: #f9f9f9;
+        }
 
+        input[readonly], textarea[readonly] {
+            background-color: #f9f9f9;
+            cursor: default;
+        }
 
+        .main-content {
+            position: relative;
+            /* 버튼 기준점을 주기 위해 필요 */
+        }
 
+        .main-content button {
+            display: block;
+            /* 버튼을 블록요소로 만들어 */
+            margin-left: auto;
+            /* 오른쪽으로 밀어냄 */
+            margin-top: 1px;
+            /* 위 요소와의 간격 */
+            margin-right: 5px;
+            /* 오른쪽 여백 (조절 가능) */
+            padding: 10px 20px;
+            padding: 8px 18px;
+            background-color: rgb(233, 233, 233);
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            /* font-weight: 600; */
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        /*  hover 효과 */
+        .main-content button:hover {
+            background-color: gray;
+            transform: scale(1.02);
+            /* 살짝 커지는 느낌 */
+        }
     </style>
 </head>
 <body>
@@ -80,9 +121,9 @@
                                         <span class="icon">💬</span>
                                         <a href="#">대회정보</a>
                                     </li>
-                                    <li  @click="fnChat">
+                                    <li @click="moveToInfo">
                                         <span class="icon">👤</span>
-                                        <a href="javascript:;">채팅방</a>
+                                        <a href="#">채팅방</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -90,84 +131,61 @@
                         <main class="main-content">
                             <div class="board-header">
                                 <h1 class="main-title">
-                                    게시판 •
-                                    {{
-                                        type === '' ? '전체 게시판' :  
-                                        type === 'B' ? '공지사항' :
-                                        type === 'Q' ? '문의게시판' :
-                                        type === 'F' ? '자유게시판' :
-                                        type === 'R' ? '대회게시판' :
-                                        '게시판'
-                                    }}
+                                    게시판 • 글쓰기
                                 </h1>
-                                <div class="search-bar">
-                                    <div class="search-wrapper">
-                                        <select v-model="type" @change="fnBoardList">
-                                            <option value="">전체</option>
-                                            <option value="B">공지사항</option>
-                                            <option value="Q">문의게시판</option>
-                                            <option value="F">자유게시판</option>
-                                            <option value="R">대회게시판</option>
-                                        </select>
-                                        <input type="text" placeholder="검색어" v-model="keyword" @keyup.enter="fnBoardList">
-                                        <button class="search-btn" @click="fnBoardList">🔍</button>
-                                    </div>
-                                </div>
                             </div>
-                            <select class="btn" v-model="pageSize" @change="fnBoardList">
-                                <option class="btn" value="5">5개씩</option>
-                                <option class="btn" value="10">10개씩</option>
-                                <option class="btn" value="20">20개씩</option>
-                            </select>
-                             <table>
+                            <table>
                                 <tr>
-                                    <th>No</th>
-                                    <th>제목</th>
-                                    <th>작정자</th>
-                                    <th>작성일</th>
-                                    <th>조회수</th>
+                                    <th>아이디</th>
+                                    <td>{{sessionId}}</td>
                                 </tr>
-                                <tr v-for="item in boardList">
-                                    <td>{{item.boardNo}}</td>
+                                <tr>
+                                    <th>카테고리</th>
                                     <td>
-                                        <a href="javascript:;" @click="fnPostView(item.boardNo)">
-                                            {{item.title}}
-                                            <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
-                                        </a>
-                                        
+                                        <input type="radio" value="B" v-model="type">공지
+                                        <input type="radio" value="Q" v-model="type">문의
+                                        <input type="radio" value="F" v-model="type">자유
+                                        <input type="radio" value="R" v-model="type">대회
                                     </td>
-                                    <td>{{item.userId}}</td>
-                                    <td>{{item.cdate}}</td>
-                                    <td>{{item.viewCnt}}</td>
+                                </tr>
+                                <tr>
+                                    <th>제목</th>
+                                    <td>
+                                        <label for="">
+                                            <input type="text" v-model="title" id="title">
+                                        </label>
+                                        <div>
+                                            <label for=""><input type="text" placeholder="잠금설정" v-model="keylock"></label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>내용</th>
+                                    <td>
+                                        <div id="editor-container">
+                                            <div id="editor"></div>
+                                        </div>
+                                    </td>
                                 </tr>
                             </table>
-                            <div v-if="index > 0" class="pagination">
-                                <!-- <a v-if="page != 1" @click="fnMove(1)" href="javascript:void(0)">←</a> -->
-                                <a v-if="page >= 2" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
-                                <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index"
-                                    :key="num" >
-                                    <span :class="{ active: page == num }">{{ num }}</span>
-                                </a>
-                                <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
-                                <!-- <a v-if="page != index" @click="fnMove(index)" href="javascript:void(0)">→</a> -->
-                            </div>
-                            <div class="write-btn-wrapper">
-                                <button @click="moveToPost" class="btn">글쓰기</button>
+                            <div>
+                                <button @click="fnPost">등록</button>
+                                <button @click="fnMoveToBoard">목록</button>
                             </div>
 
-                            <!-- Popup asking for the user post's password -->
+                            <!-- If the user is not logged in -->
                              
-                            <div v-if="pwdCorrect" class="modal-overlay">
+                            <div v-if="!isLoggedIn" class="modal-overlay">
                                 <div class="modal-content">
-                                    <h2>비밀글로 보호된 게시물입니다.</h2>
-                                    <p>비밀번호를 입력해야 내용을 확인할 수 있습니다.</p>
-                                    <input class="btn" type="password" @keyup.enter="fnKeylock" placeholder="비밀번호 입력">
+                                    <h2>로그인 후 이용해주세요.</h2>
                                     <div>
-                                        <button class="btn" @click="pwdCorrect = false">닫기</button>
+                                        <button class="btn" @click="moveToLogin">로그인</button>
+                                        <button class="btn" @click="moveToBoard">닫기</button>
                                     </div>
                                 </div>
                             </div>
 
+                            </div>
                         </main>
                 </div>
             </main>
@@ -212,9 +230,11 @@
                 sessionId : "${sessionId}",
                 userName : "",
                 boardList : [],
-                postInfo : {},
                 keyword : "",
-                type : "",
+                type : "B",
+                title : "",
+                keylock : "",
+                content : "",
 
                 // pagination
                 cnt: 0,
@@ -222,10 +242,9 @@
                 pageSize: 10,
                 index: 0,
 
-                // modal popup 
-                pwdCorrect : false,
-                selectedPost: null,  // store the post object being clicked
-                keylock: ""  
+                // popup modal
+                isLoggedIn : true
+
             };
         },
         methods: {
@@ -278,66 +297,67 @@
                     }
                 });
             },
-            fnMove: function (num) {
-                    let self = this;
-                    self.page = num;
-                    self.fnBoardList();
-            },
-            fnPage : function(num){
+            fnMoveToBoard : function(){
                 let self = this;
-                self.page = num;
-                self.fnBoardList();
+                // make a modal here
+                if(!confirm("게시글이 저장되지 않습니다. 계속 진행하시겠습니까?")){
+                    return;
+                }
+                location.href="/home/community/board.do";
             },
-            moveToPost : function(){
+            fnPost : function(){
                 let self = this;
-                pageChange("/home/community/board/post.do", { sessionId: self.sessionId});
-            },
-            fnPostView:function(boardNo){
-                let self = this;
-                let param = {
-                    boardNo : boardNo
-                };
-                let post = self.boardList.find(item => item.boardNo === boardNo);
-                    
-                if (post.pwd && post.pwd.length > 0) {
-                    // Show password modal
-                    self.selectedPost = post;
-                    self.pwdCorrect = true;
-                    self.keylock = ""; // reset input
-                } else {
-                    // No lock, go directly to the post
-                    pageChange("board/view.do", { boardNo: boardNo });
+                // 제목이 비어있으면
+                if (self.title.trim() === "") {
+                    alert("제목을 입력해주세요.");
+                    document.querySelector("#title").focus();
+                    return;
                 }
 
-                // pageChange("board/view.do", {boardNo : boardNo});
-            },
-            fnKeylock : function(){
-                let self = this;
+                // 내용이 비어있으면
+                if (self.content.trim() === "" || self.content === "<p><br></p>") {
+                    alert("내용을 입력해주세요.");
+                    document.querySelector("#editor").focus();
+                    return;
+                }
+
+                console.log("Post userId == >" + self.userId);
+                console.log("Post type == >" + self.type);
+                console.log("Post title == >" + self.title);
+                console.log("Post content == >" + self.content);
+                console.log("Post keylock == >" + self.keylock);
                 let param = {
+                    userId : self.sessionId,
+                    type : self.type,
+                    title : self.title,
+                    content : self.content,
                     keylock : self.keylock
                 };
-                    $.ajax({
-                        url: "/home/community/board/keylock.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data : param,
-                        success: function (data) {
-                            if(data.result == "success"){
-                                // location.href="";
-                                alert("Correct password.");
-                            } else {
-                                alert("Wrong password.");
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("사용자 정보 조회 실패:", error);
-                            self.userName = "Guest";
+                 $.ajax({
+                    url: "/board/post.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    
+                    success: function (data) {
+                        if(data.result == "success"){
+                            console.log(data);
+                            alert("Your post was uploaded !");
+                            location.href="/home/community/board.do";
+                        } else {
+                            console.log("오류");
                         }
-                    });
+
+                    }
+                });
             },
-            fnChat(){
+            moveToLogin : function(){
                 let self = this;
-                pageChange("/home/community/chat.do", {sessionId : self.sessionId});  
+                location.href="/home/login.do";
+            },
+            moveToBoard : function(){
+                let self = this;
+                location.href="/home/community/board.do";
             }
         }, // methods
         mounted() {
@@ -345,6 +365,31 @@
             let self = this;
             self.fnBoardList();
             self.fnGetUserInfo();
+            console.log("User ID : " + self.userId);
+            if(self.sessionId == ""){
+                self.isLoggedIn = false;
+            } else {
+                self.isLoggedIn = true;
+            }
+
+            // text editor
+            var quill = new Quill('#editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                        ['bold', 'italic', 'underline'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['link', 'image'],
+                        ['clean']
+                    ]
+                }
+            });
+
+            // 에디터 내용이 변경될 때마다 Vue 데이터를 업데이트
+            quill.on('text-change', function() {
+                self.content = quill.root.innerHTML;
+            });
         }
     });
 

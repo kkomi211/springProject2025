@@ -76,5 +76,30 @@ public class CartController {
 	    return new Gson().toJson(resultMap);
 	
 	}
+	
+	
+	// 모달에서 제품 옵션을 가져올 때 (동일 제품의 다른 사이즈 옵션 리스트)(사실상 키값이 다른 제품임)
+	@RequestMapping(value = "home/cartItemChange.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String getProductOptions(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	    System.out.println("home/cartItemChange.dox 진입");
+		HashMap<String, Object> resultMap = cartService.getProductOptions(map);
+		System.out.println("화면으로 되돌려주기 직전 result값 " + resultMap);
+	    return new Gson().toJson(resultMap);
+	}
+	
+	
+	//모달창에서 장바구니의 제품의 사이즈와 수량을 변경할 때
+	@RequestMapping(value = "home/cartItemEdit.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String editCartItemOptChanUpda(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println("home/cartItemEdit.dox 들어온 map은 " + map); // 프론트에서 보내줘야 받을수 있음
+		resultMap = cartService.editCartItem(map);
+		System.out.println("home/cartItemEdit.dox resultMap은 " + resultMap.toString());
+
+		return new Gson().toJson(resultMap);
+	}
+	
 
 }

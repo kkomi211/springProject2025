@@ -32,7 +32,42 @@
 				#{item} 
 			</foreach> 
 		</delete>
+		
+		
+		<!-- productNo로 제품 상세 정보 조회 -->
+		<select id="selectProductByProductNo" parameterType="hashmap" resultType="com.example.springProject2025.model.Cart">
+		    SELECT 	P.PRODUCT_NO, P.BRAND, P.PRODUCT_NAME, 
+		    		P.PRICE, P.PRODUCT_SIZE, P.QUANTITY AS PRODUCT_STOCK, <!-- QUANTITY를 PRODUCT_STOCK으로 별칭 -->
+		    		C.QUANTITY
+		    FROM PRODUCT P
+		    INNER JOIN CART C ON P.PRODUCT_NO = C.PRODUCT_NO
+		    WHERE 1=1
+		    AND P.PRODUCT_NO = #{productNo}
+		    AND C.CART_NO = #{cartNo}
+		</select>
+		
+		<!-- 동일 브랜드, 제품명(괄호 전 부분)의 모든 관련 제품 옵션 조회 (재고가 0 이상인 것만) -->
+		<select id="selectRelatedProductOptions" parameterType="hashmap" resultType="com.example.springProject2025.model.Cart">
+		    SELECT
+		        *
+		    FROM PRODUCT
+		    WHERE
+		        BRAND = #{brand} <!-- 동일 브랜드 내에서 검색 (service에서 map에 넣어준 brand) -->
+		        AND PRODUCT_NAME LIKE #{baseProductName} || '%'
+		        AND QUANTITY > 0 <!-- 재고가 있는 제품만 -->
+		    ORDER BY PRODUCT_NAME, PRODUCT_SIZE
+		</select>
 
-	
+		<!--카드 안의제품 수량 사이즈 변경-->
+		<!--{sessionId=jgh1, originalCartNo=1008, originalProductNo=113, newProductNo=112, quantity=5}-->
+		<update id="updateCartItem" parameterType="hashmap">
+			UPDATE CART 
+			SET 
+				PRODUCT_NO = #{newProductNo}, 
+				QUANTITY = #{quantity}
+			WHERE 1=1
+			AND CART_NO = #{originalCartNo}
+			AND USER_ID = #{sessionId}
+		</update>
 	
 	</mapper>

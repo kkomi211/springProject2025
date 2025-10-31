@@ -517,7 +517,7 @@
         text-align: center;
     }
     .product-option-table th {
-        background-color: #f8f9fa;
+        background-color: black;
         font-weight: bold;
     }
     .product-option-table tr.selected-option {
@@ -660,4 +660,61 @@
     .btn-process-report:hover { background-color: #218838; }
     .btn-back { background-color: #6c757d; color: white; }
     .btn-back:hover { background-color: #5a6268; }
+	
+	
+	/* ================================================= */
+	/* 관리자 메인 페이지 스타일 */
+	/*
+	.adminbody { font-family: Arial, sans-serif; background-color: #f4f7fa; margin: 0; }
+    .topbar { background-color: #333; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .nav-black { background-color: #222; padding: 10px 0; text-align: center; }
+    .nav-black a { color: white; padding: 10px 20px; text-decoration: none; display: inline-block; }
+    .nav-black a:hover, .nav-black a.active { background-color: #555; }
+    .content { padding: 20px; max-width: 1200px; margin: 20px auto; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    */
+	/* 모든 대시보드 카드 내부 테이블의 마지막 td를 오른쪽 정렬 */
+    .dashboard-card table td:last-child {
+        text-align: right;
+    }
+
+    /* 모든 대시보드 카드 내부 테이블 th 가운데 정렬 */
+    .dashboard-card table th {
+        text-align: center;
+    }
+	.dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+    .dashboard-card {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .dashboard-card h3 {
+        margin-top: 0;
+        color: #333;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+    }
+    .dashboard-card table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .dashboard-card th, .dashboard-card td {
+        padding: 8px 12px;
+        border: 1px solid #eee;
+        text-align: left;
+    }
+    .dashboard-card th { background-color: black; font-weight: bold; }
+    .dashboard-card td { color: #555; }
+    .dashboard-chart-container {
+        position: relative;
+        height: 450px; /* 차트 높이 고정 */
+        width: 100%;
+        margin-bottom: 20px;
+    }
 	

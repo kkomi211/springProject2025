@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.example.springProject2025.model.Admin;
 
@@ -77,6 +78,8 @@ public interface AdminMapper {
 	
 	// 회원 삭제
 	int deleteUser(HashMap<String, Object> map);
+
+	int insertRallyImg(HashMap<String, Object> map);
 	
 	// 교환/반품/취소 목록 조회
 	List<Admin> selectRefundReturnList(HashMap<String, Object> map);
@@ -125,4 +128,74 @@ public interface AdminMapper {
 
 	// 게시글 삭제
 	int deleteBoard(HashMap<String, Object> map);
+	
+	
+	
+	// --- 대시보드 관련 ---
+
+    // 주문 현황 (상태별 건수)
+    List<HashMap<String, Object>> selectOrderStatusCounts();
+
+    // 총 매출 (배송완료, 교환완료)
+    Long selectTotalSales();
+
+    // 이번 달 매출 (배송완료, 교환완료)
+    Long selectMonthlySales();
+
+    // 지난 6개월 간 월별 매출
+    List<HashMap<String, Object>> selectLastSixMonthsSales();
+
+    // 총 상품 수
+    int selectTotalProductCount();
+
+    // 재고 있음 상품 수
+    int selectInStockProductCount();
+
+    // 품절 임박 상품 수 (재고 1~9개)
+    int selectLowStockProductCount();
+
+    // 판매량 Top N 상품
+    List<Admin> selectTopSellingProducts(@Param("limit") int limit); // @Param 사용
+
+    // 총 회원 수 (일반 회원만)
+    int selectTotalUserCount();
+
+    // 오늘 가입한 신규 회원 수
+    int selectNewUsersTodayCount();
+
+    // 이번 달 가입한 신규 회원 수
+    int selectNewUsersMonthCount();
+
+    // 배송 중인 주문 수
+    int selectDeliveryInProgressCount();
+
+    // 신규 신고 게시물 수 (처리요망 상태 'N')
+    int selectNewReportsCount();
+
+    // 반품 요청 대기 수
+    int selectRefundRequestsCount();
+
+    // 교환 요청 대기 수
+    int selectExchangeRequestsCount();
+
+    // 신규 상품 문의 (답변 대기중 'N')
+    int selectNewProductInquiriesCount();
+    
+    // 결제 방법별 매출 (결제 방법이 아직 다양하지 않아서 추후 확장 사항으로 남겨둠)
+    // List<HashMap<String, Object>> selectSalesByPaymentMethod();
+
+    // 총 주문 건수
+    int selectTotalOrdersCount();
+
+    // 이번 달 주문 건수
+    int selectMonthlyOrdersCount();
+
+    // 성별 회원 분포
+    List<HashMap<String, Object>> selectUsersByGenderCount();
+
+    // 주문 이력이 있는 회원 수
+    int selectUsersWithOrdersCount();
+
+    // 총 미처리 요청 건수 (신고 + 반품요청 + 교환요청 + 상품문의 대기)
+    int selectTotalPendingRequestsCount();
 }

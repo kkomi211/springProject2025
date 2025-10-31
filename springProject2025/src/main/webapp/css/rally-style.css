@@ -1,0 +1,181 @@
+/* ==============================
+   기본 레이아웃
+============================== */
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #222;
+  background-color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ==============================
+   상단 제목 + 검색창
+============================== */
+.board-header {
+  width: 1000px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 40px auto 20px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.board-header h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #111;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-box input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 6px 10px;
+  width: 200px;
+  font-size: 14px;
+}
+
+.search-box button {
+  background-color: #222;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.search-box button:hover {
+  background-color: #444;
+}
+
+/* ==============================
+   대회 리스트 카드
+============================== */
+.rally-list {
+  width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 9px auto;
+}
+
+.rally-item {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.rally-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-3px);
+}
+
+/* 이미지 */
+.rally-img img {
+  width: 100px;
+  height: 150px;
+  padding: 50px;
+  object-fit: cover;
+  display: block;
+}
+
+/* 정보 영역 */ 
+.rally-info {
+  flex: 1;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.rally-info h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #111;
+}
+
+.rally-info p {
+  font-size: 15px;
+  margin: 3px 0;
+  color: #444;
+}
+
+/* 강조 텍스트 */
+.rally-info strong {
+  color: #000;
+  margin-right: 4px;
+}
+
+/* ==============================
+   페이지네이션
+============================== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px 0 60px;
+  gap: 6px;
+}
+
+.pagination button {
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.pagination button:hover {
+  background-color: #f0f0f0;
+}
+
+.pagination button.active {
+  background-color: #222;
+  color: white;
+  border-color: #222;
+}
+
+/* ==============================
+   반응형 (태블릿 이하)
+============================== */
+@media (max-width: 768px) {
+  .rally-list {
+    width: 95%;
+  }
+
+  .rally-item {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .rally-img img {
+    width: 100%;
+    height: auto;
+  }
+
+  .rally-info {
+    padding: 12px 16px;
+    text-align: center;
+  }
+}
