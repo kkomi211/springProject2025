@@ -34,7 +34,7 @@
 		<!-- 본문 -->
 		<div class="content">
             <div>
-		        <h2>ghldnjs </h2>
+		        <h2>회원 정보 상세 화면</h2>
             </div>
             <div>
                 <table class="detail-table">
