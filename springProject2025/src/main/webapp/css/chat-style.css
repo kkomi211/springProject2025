@@ -102,7 +102,7 @@ ul {
 .main-content {
   flex-grow: 1;
   padding: 30px 40px;
-  
+
 }
 
 .main-title {
@@ -116,24 +116,30 @@ ul {
    게시판 헤더 + 검색바 수정
 ------------------------------ */
 .board-header {
-  display: flex;                 /* horizontal layout */
-  align-items: center;           /* vertical alignment */
-  justify-content: space-between;/* 게시판 left, search bar right */
+  display: flex;
+  /* horizontal layout */
+  align-items: center;
+  /* vertical alignment */
+  justify-content: space-between;
+  /* 게시판 left, search bar right */
   margin-bottom: 20px;
   border-bottom: 2px solid #333;
   padding-bottom: none;
 }
 
 .search-bar {
-  margin-bottom: 15px; /* align with title */
+  margin-bottom: 15px;
+  /* align with title */
 }
 
 .search-wrapper {
   display: flex;
   align-items: center;
-  gap: 5px; /* space between select, input, button */
+  gap: 5px;
+  /* space between select, input, button */
   width: 100%;
-  max-width: 450px; /* optional */
+  max-width: 450px;
+  /* optional */
   border: 1px solid #ccc;
   border-radius: 5px;
   overflow: hidden;
@@ -143,8 +149,10 @@ ul {
 .search-wrapper select,
 .search-wrapper input,
 .search-wrapper .search-btn {
-  height: 32px;       /* unify height for alignment */
-  font-size: 14px;    /* match text size */
+  height: 32px;
+  /* unify height for alignment */
+  font-size: 14px;
+  /* match text size */
 }
 
 .search-wrapper select {
@@ -182,7 +190,8 @@ table {
   border-radius: 8px;
 }
 
-th, td {
+th,
+td {
   border-bottom: 1px solid #eee;
   padding: 12px 20px;
   text-align: left;
@@ -198,15 +207,18 @@ tr:hover {
 }
 
 .write-btn-wrapper {
-    display: flex;
-    justify-content: flex-end; /* push button to the right */
-    margin: 20px 0;            /* optional spacing above/below */
+  display: flex;
+  justify-content: flex-end;
+  /* push button to the right */
+  margin: 20px 0;
+  /* optional spacing above/below */
 }
 
 /* ------------------------------
    공통 버튼 스타일
 ------------------------------ */
-.btn, .page-btn {
+.btn,
+.page-btn {
   padding: 10px 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -223,6 +235,7 @@ tr:hover {
 .btn:hover {
   background-color: #f0f0f0;
 }
+
 /* 페이지네이션 */
 .pagination {
   display: flex;
@@ -275,14 +288,37 @@ tr:hover {
 
 /* 정은성의 css */
 
-.text-right{
-    text-align: right;
+.text-right {
+  text-align: right;
 }
 
-.text-left{
-    text-align: left;
+.text-left {
+  text-align: left;
 }
 
-.text-center{
-    text-align: center;
+.text-center {
+  text-align: center;
+}
+
+#chatBox {
+  width: 100%;
+  max-width: 800px;
+  height: 600px;
+  border: 1px solid #ccc;
+  overflow-y: auto;
+  margin: 20px auto;
+  padding: 10px;
+  background: #f9f9f9;
+}
+
+.bold{
+  font-weight: bold;
+}
+
+.margin30{
+  margin: 30px;
+}
+
+.red{
+  color: red;
 }

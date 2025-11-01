@@ -7,11 +7,36 @@
 	<select id="selectChatroomList" parameterType="hashmap" resultType="com.example.springProject2025.model.Chat">
 		SELECT *
 		FROM CHAT
-		WHERE CHATROOM_NO IN (
-		    SELECT CHATROOM_NO
-		    FROM CHAT_MEMBER
-		    WHERE USER_ID = #{userId}
-		)
+		WHERE 1=1
+		<if test="userId != '' and userId != 'undefined' and userId != null">
+			AND CHATROOM_NO IN (
+			    SELECT CHATROOM_NO
+			    FROM CHAT_MEMBER
+			    WHERE USER_ID = #{userId}
+			)
+		</if>
+		<if test="chatroomNo != '' and chatroomNo != 'undefined' and chatroomNo != null">
+			AND CHATROOM_NO = #{chatroomNo}
+		</if>
 	</select>
+	
+	<insert id="insertMessage" parameterType="hashmap">
+		INSERT INTO CHAT_MESSAGE
+		VALUES (CHAT_MESSAGE_SEQ.NEXTVAL, SYSDATE, #{message}, #{senderId}, #{chatroomNo})
+	</insert>
+	
+	<select id="selectMessageList" parameterType="hashmap" resultType="com.example.springProject2025.model.Chat">
+	   	SELECT *
+		FROM CHAT_MESSAGE M
+		INNER JOIN USERS U ON U.USER_ID = M.SENDER_ID
+		WHERE CHATROOM_NO = #{chatroomNo}
+		ORDER BY M.CDATE ASC
+  	</select>
+  	
+  	<delete id="deleteMessage" parameterType="hashmap">
+  		DELETE CHAT_MESSAGE
+  		WHERE CHAT_ID = #{chatId}
+  	</delete>
+  	
 	
 </mapper>
