@@ -19,6 +19,7 @@ public class Chat {
 	private String message;
 	private String senderId;
 	private String nickname;
+	private String userId;
 	
 //	dddddddddddddddd
 	private String sender;

@@ -64,6 +64,35 @@ public class ChatService {
 		}
 		return resultMap;
 	}
+
+	public HashMap<String, Object> getMemberList(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
+		try {
+			List<Chat> list = chatMapper.selectMemberList(map);
+			Chat owner = chatMapper.selectOwner(map);
+			resultMap.put("memberList", list);
+			resultMap.put("owner", owner);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+
+	public HashMap<String, Object> DeleteMember(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
+		try {
+			int cnt = chatMapper.deleteMember(map);
+			resultMap.put("result", "success");
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+	
 	
 	
 	
