@@ -52,6 +52,7 @@ public class BoardService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		Board info = boardMapper.boardInfo(map);
+		int cnt = boardMapper.viewCnt(map);
 		
 		resultMap.put("result", "success");
 		resultMap.put("info", info);
@@ -75,6 +76,46 @@ public class BoardService {
 		
 		if(cnt > 0) {
 			resultMap.put("boardNo", map.get("boardNo"));
+			resultMap.put("result", "success");
+		} else {
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> checkKeylock(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt = boardMapper.checkKeylock(map);
+		
+		if(cnt > 0) {
+			resultMap.put("boardNo", map.get("boardNo"));
+			resultMap.put("result", "success");
+		} else {
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> changePost(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt = boardMapper.changePost(map);
+		
+		if(cnt > 0) {
+			resultMap.put("result", "success");
+		} else {
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> deletePost(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt = boardMapper.deletePost(map);
+		
+		if(cnt > 0) {
 			resultMap.put("result", "success");
 		} else {
 			resultMap.put("result", "fail");

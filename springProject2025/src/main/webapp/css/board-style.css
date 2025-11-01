@@ -203,6 +203,10 @@ tr:hover {
     margin: 20px 0;            /* optional spacing above/below */
 }
 
+#view-cnt{
+  text-align: center;
+}
+
 /* ------------------------------
    공통 버튼 스타일
 ------------------------------ */
@@ -222,6 +226,12 @@ tr:hover {
 
 .btn:hover {
   background-color: #f0f0f0;
+}
+
+.bottom-btn, .list-btn {
+  display: flex;
+  justify-content: flex-end;
+  gap:0px;
 }
 /* 페이지네이션 */
 .pagination {

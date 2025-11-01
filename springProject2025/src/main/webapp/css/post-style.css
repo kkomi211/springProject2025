@@ -130,12 +130,16 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
-  border-radius: 8px;
+  box-sizing: border-box;
+   table-layout: auto;
 }
 
 th,
 td {
   border-bottom: 1px solid #eee;
+  border-top: 1px solid #eee;
+  border-right: 1px solid #eee;
+  border-left: 1px solid #eee;
   padding: 12px 20px;
   text-align: left;
 }
@@ -143,23 +147,49 @@ td {
 th {
   background-color: #f7f7f7;
   font-weight: bold;
+  white-space: nowrap; 
+  vertical-align: top; 
+  border-left: 1px solid #eee;  
 }
 
 /* ------------------------------
    버튼 스타일
 ------------------------------ */
 button {
-  padding: 10px 15px;
-  border: 1px solid #ccc;
+  padding: 10px 20px;
+  padding: 8px 18px;
+  border: none;
   border-radius: 5px;
-  background-color: #fff;
+  background-color: rgb(233, 233, 233);
+  font-size: 0.95rem;
   cursor: pointer;
   font-size: 14px;
-  color: #333;
+  color: black;
   transition: all 0.2s;
   min-width: 100px;
   margin-right: 10px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
+
+button:hover {
+  background-color: gray;
+  transform: scale(1.02);
+  /* 살짝 커지는 느낌 */
+}
+
+.modal-btn {
+    display: flex;               /* arrange children horizontally */
+    gap: 5px;                   /* space between buttons */
+    justify-content: center ; /* align left */
+    margin-top: 10px;
+}
+.bottom-btn, .list-btn  {
+    display: flex;               /* arrange children horizontally */
+    gap: 5px;                   /* space between buttons */
+    justify-content: flex-end ; /* align left */
+    margin-top: 20px;
+}
+
 
  /* 텍스트 에디터 */
 
@@ -418,6 +448,10 @@ button {
   color: #666;
 }
 
+.post-author input{
+  width: 100%;
+}
+
 .post-content {
   border-top: 1px solid #eee;
   padding-top: 15px;
@@ -502,6 +536,49 @@ button {
   margin-top: 15px;
   font-style: italic;
 }
+
+/* 수정 */
+#title, #keylock{
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 0.95rem;
+}
+#title {
+  width: 600px;
+}
+#keylock{
+  width: 100px;
+  text-align: center;
+}
+
+.title-input{
+  display: flex;
+  gap: 10px;
+}
+
+#editor{
+  width:100%;
+  height:300px;
+  border:1px solid #ccc;
+  padding:15px;
+}
+
+/* If your editor has an ID of #editor */
+#editor + .ql-toolbar .ql-formats button {
+  margin-right: 2px;
+  padding: 4px;
+}
+
+#editor + .ql-toolbar .ql-formats button:last-child {
+  margin-right: 0;
+}
+
+.review-write-box {
+  border: 1px solid #ccc; padding: 20px; margin-top: 20px; background-color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
 
 
       
