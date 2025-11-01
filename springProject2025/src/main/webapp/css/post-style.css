@@ -149,17 +149,28 @@ th {
    버튼 스타일
 ------------------------------ */
 button {
-  padding: 10px 15px;
-  border: 1px solid #ccc;
+  padding: 10px 20px;
+  padding: 8px 18px;
+  border: none;
   border-radius: 5px;
-  background-color: #fff;
+  background-color: rgb(233, 233, 233);
+  font-size: 0.95rem;
   cursor: pointer;
   font-size: 14px;
-  color: #333;
+  color: black;
   transition: all 0.2s;
   min-width: 100px;
   margin-right: 10px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
+
+button:hover {
+  background-color: gray;
+  transform: scale(1.02);
+  /* 살짝 커지는 느낌 */
+}
+
+/*  */
 
  /* 텍스트 에디터 */
 
@@ -431,6 +442,12 @@ button {
   max-width: 100%;
   border-radius: 6px;
   margin-top: 10px;
+}
+
+.bottom-btn, .list-btn {
+  display: flex;
+  justify-content: flex-end;
+  gap:0px;
 }
 
 /* 댓글 보기 */

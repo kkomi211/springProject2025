@@ -14,6 +14,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script src="/js/page-change.js"></script>
     <style>
         textarea {
             /* !important를 사용하여 다른 CSS보다 우선순위를 높입니다. */
@@ -131,7 +132,7 @@
                         <main class="main-content">
                             <div class="board-header">
                                 <h1 class="main-title">
-                                    게시판 • 글쓰기
+                                    게시판 • 수정하기
                                 </h1>
                             </div>
                             <table>
@@ -142,34 +143,32 @@
                                 <tr>
                                     <th>카테고리</th>
                                     <td>
-                                        <input type="radio" value="B" v-model="type">공지
-                                        <input type="radio" value="Q" v-model="type">문의
-                                        <input type="radio" value="F" v-model="type">자유
-                                        <input type="radio" value="R" v-model="type">대회
+                                    <input type="radio" value="B" v-model="type">공지
+                                    <input type="radio" value="Q" v-model="type">문의
+                                    <input type="radio" value="F" v-model="type">자유
+                                    <input type="radio" value="R" v-model="type">대회
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>제목</th>
                                     <td>
-                                        <label for="">
-                                            <input type="text" v-model="title" id="title">
-                                        </label>
                                         <div>
-                                            <label for=""><input type="text" placeholder="잠금설정" v-model="keylock"></label>
+                                            <label for=""><input type="text" v-model="boardInfo.title"></label>
+                                        </div>
+                                        <div>
+                                            <label for=""><input type="password" placeholder="잠금설정" v-model="boardInfo.pwd"></label>
                                         </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>내용</th>
                                     <td>
-                                        <div id="editor-container">
-                                            <div id="editor"></div>
-                                        </div>
+                                        <div id="editor"></div>
                                     </td>
                                 </tr>
                             </table>
                             <div>
-                                <button @click="fnPost">등록</button>
+                                <button @click="fnEditPost">저장</button>
                                 <button @click="fnMoveToBoard">목록</button>
                             </div>
 
@@ -230,8 +229,10 @@
                 sessionId : "${sessionId}",
                 userName : "",
                 boardList : [],
+                boardInfo : {},
+                boardNo : "${boardNo}",
                 keyword : "",
-                type : "B",
+                type : "",
                 title : "",
                 keylock : "",
                 content : "",
@@ -250,46 +251,77 @@
         methods: {
             // 함수(메소드) - (key : function())
             fnGetUserInfo: function () {
-                    let self = this;
-                    $.ajax({
-                        url: "/home/mypage/userInfo.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data: { userId: self.sessionId },
-                        success: function (data) {
-                            console.log("사용자 이름:", data);
-                            self.userName = data;
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("사용자 정보 조회 실패:", error);
-                            self.userName = "Guest";
-                        }
-                    });
-                },
-            fnBoardList: function () {
                 let self = this;
-                let startRow = (self.page - 1) * self.pageSize + 1;
-                let endRow = self.page * self.pageSize;
-                let param = {
-                    type : self.type,
-                    keyword : self.keyword.trim(),
-                    page: self.page,
-                    pageSize: self.pageSize,
-                    startRow: startRow,
-                    endRow: endRow
-                };
-                console.log("type ==>" + self.type, "keyword ==>" + self.keyword);
                 $.ajax({
-                    url: "/board/list.dox",
+                    url: "/home/mypage/userInfo.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: { userId: self.sessionId },
+                    success: function (data) {
+                        console.log("사용자 이름:", data);
+                        self.userName = data;
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("사용자 정보 조회 실패:", error);
+                        self.userName = "Guest";
+                    }
+                });
+            },
+            fnEditPost : function (){
+                let self = this;
+                let param = {
+                    userId : self.sessionId,
+                    type : self.type,
+                    boardNo : self.boardNo,
+                    title : self.boardInfo.title,
+                    keylock : self.boardInfo.pwd,
+                    contents : self.content
+                };
+                console.log("updated type == > ", self.type);
+                console.log("updated title == > ", self.boardInfo.title);
+                console.log("updated keylock == > ", self.boardInfo.pwd);
+                console.log("updated content == > ", self.content);
+                console.log("user ID == > ", self.sessionId);
+                console.log("board NO == > ", self.boardNo);
+                // console.log("updated title == > ", self.title);
+
+                $.ajax({
+                    url: "/board/post-edit.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if(data.result == "success"){
+                            alert("게시글이 수정되었습니다.");
+                            pageChange("/home/community/board/view.do", { boardNo: self.boardInfo.boardNo });
+                        } else {
+                            alert("수정 중 오류가 발생했습니다.");
+                        }
+                    }
+                });
+            },
+            fnBoardInfo: function () {
+                let self = this;
+                let param = {
+                    boardNo : self.boardNo
+                };
+                console.log("boardNo ==>" + self.boardNo)
+                $.ajax({
+                    url: "/board/view.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
                         if(data.result == "success"){
                             console.log(data);
-                            self.boardList = data.list;
-                            self.cnt = data.cnt;
-                            self.index = Math.ceil(self.cnt / self.pageSize);
+                            self.boardInfo = data.info;
+                            self.type = self.boardInfo.type;
+                            self.keylock = self.boardInfo.pwd;
+                            self.content = self.boardInfo.contents;
+
+                            if (self.quill) {
+                                self.quill.root.innerHTML = self.boardInfo.contents || "";
+                            }
                         } else {
                             console.log("오류");
                         }
@@ -305,67 +337,16 @@
                 }
                 location.href="/home/community/board.do";
             },
-            fnPost : function(){
-                let self = this;
-                // 제목이 비어있으면
-                if (self.title.trim() === "") {
-                    alert("제목을 입력해주세요.");
-                    document.querySelector("#title").focus();
-                    return;
-                }
-
-                // 내용이 비어있으면
-                if (self.content.trim() === "" || self.content === "<p><br></p>") {
-                    alert("내용을 입력해주세요.");
-                    document.querySelector("#editor").focus();
-                    return;
-                }
-
-                console.log("Post userId == >" + self.userId);
-                console.log("Post type == >" + self.type);
-                console.log("Post title == >" + self.title);
-                console.log("Post content == >" + self.content);
-                console.log("Post keylock == >" + self.keylock);
-                let param = {
-                    userId : self.sessionId,
-                    type : self.type,
-                    title : self.title,
-                    content : self.content,
-                    keylock : self.keylock
-                };
-                 $.ajax({
-                    url: "/board/post.dox",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    
-                    success: function (data) {
-                        if(data.result == "success"){
-                            console.log(data);
-                            alert("게시글이 등록되었습니다!");
-                            location.href="/home/community/board.do";
-                        } else {
-                            console.log("오류");
-                        }
-
-                    }
-                });
-            },
             moveToLogin : function(){
                 let self = this;
                 location.href="/home/login.do";
-            },
-            moveToBoard : function(){
-                let self = this;
-                location.href="/home/community/board.do";
             }
         }, // methods
         mounted() {
-            // 처음 시작할 때 실행되는 부분
             let self = this;
-            self.fnBoardList();
+            
             self.fnGetUserInfo();
-            console.log("User ID : " + self.userId);
+
             if(self.sessionId == ""){
                 self.isLoggedIn = false;
             } else {
@@ -373,23 +354,23 @@
             }
 
             // text editor
-            var quill = new Quill('#editor', {
+            self.quill = new Quill('#editor', {
                 theme: 'snow',
                 modules: {
                     toolbar: [
                         [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
                         ['bold', 'italic', 'underline'],
-                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
                         ['link', 'image'],
                         ['clean']
                     ]
                 }
             });
 
-            // 에디터 내용이 변경될 때마다 Vue 데이터를 업데이트
-            quill.on('text-change', function() {
-                self.content = quill.root.innerHTML;
+            self.quill.on('text-change', function () {
+                self.content = self.quill.root.innerHTML;
             });
+            self.fnBoardInfo();
         }
     });
 

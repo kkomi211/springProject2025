@@ -121,7 +121,7 @@
                             </select>
                              <table>
                                 <tr>
-                                    <th>No</th>
+                                    <th>번호</th>
                                     <th>제목</th>
                                     <th>작정자</th>
                                     <th>작성일</th>
@@ -137,7 +137,7 @@
                                         
                                     </td>
                                     <td>{{item.userId}}</td>
-                                    <td>{{item.cdate}}</td>
+                                    <td>{{item.chardate}}</td>
                                     <td>{{item.viewCnt}}</td>
                                 </tr>
                             </table>
@@ -161,7 +161,7 @@
                                 <div class="modal-content">
                                     <h2>비밀글로 보호된 게시물입니다.</h2>
                                     <p>비밀번호를 입력해야 내용을 확인할 수 있습니다.</p>
-                                    <input class="btn" type="password" @keyup.enter="fnKeylock" placeholder="비밀번호 입력">
+                                    <input class="btn" type="password" @keyup.enter="fnKeylock" placeholder="비밀번호 입력" v-model="keylock">
                                     <div>
                                         <button class="btn" @click="pwdCorrect = false">닫기</button>
                                     </div>
@@ -311,29 +311,35 @@
 
                 // pageChange("board/view.do", {boardNo : boardNo});
             },
-            fnKeylock : function(){
+            fnKeylock: function() {
                 let self = this;
+                if (!self.selectedPost) return; // safety check
+
                 let param = {
-                    keylock : self.keylock
+                    boardNo: self.selectedPost.boardNo, // send the post ID
+                    keylock: self.keylock               // send the password entered
                 };
-                    $.ajax({
-                        url: "/home/community/board/keylock.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data : param,
-                        success: function (data) {
-                            if(data.result == "success"){
-                                // location.href="";
-                                alert("Correct password.");
-                            } else {
-                                alert("Wrong password.");
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("사용자 정보 조회 실패:", error);
-                            self.userName = "Guest";
+
+                $.ajax({
+                    url: "/board/keylock.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function(data) {
+                        if(data.result === "success"){
+                            // alert("Password correct");
+                            self.pwdCorrect = false; // close modal
+                            // redirect to the post
+                            pageChange("board/view.do", { boardNo: self.selectedPost.boardNo });
+                        } else if(data.result === "fail") {
+                            alert("비밀번호가 올바르지 않습니다."); // wrong password
+                            self.keylock = "";
                         }
-                    });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Keylock check failed:", error);
+                    }
+                });
             },
             fnChat(){
                 let self = this;

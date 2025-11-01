@@ -33,6 +33,12 @@ public interface BoardMapper {
 	
 	// 댓글 추가
 	int commentAdd (HashMap<String, Object> map);
+	
+	// 잠금 확인 
+	int checkKeylock(HashMap<String, Object> map);
+	
+	// 게시글 수정
+	int changePost(HashMap<String, Object> map);
 }
 
 
