@@ -107,6 +107,7 @@
                             </h1>
                         </div>
                         
+                        <!-- 게시글 보기 -->
                         <div class="post-container">
                             <div class="post-header">
                                 <div class="post-meta">
@@ -125,7 +126,7 @@
                                     {{ boardInfo.title }}
                                 </h2>
                                 <div class="post-author">
-                                <strong>{{ boardInfo.userId }}</strong> 님의 게시글
+                                    <strong>{{ boardInfo.userId }}</strong> 님의 게시글
                                 </div>
                             </div>
 
@@ -135,6 +136,8 @@
                                 <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn" @click="fnConfirmDelete">🗑️ 삭제</button>
                             </div>
                         </div>
+
+                        <!-- 댓글 보기 -->
 
                         <div class="comments-section">
                             <h3 class="comment-title">
@@ -158,7 +161,8 @@
                             </div>
                         </div>
 
-                        <div class="comment-box">
+                        <!-- 댓글 쓰기 -->
+                        <div v-if="sessionId != '' " class="comment-box">
                             <div class="comment-header">
                                 <strong>{{userName}}</strong>
                             </div>
@@ -175,13 +179,21 @@
                         <!-- Modal Popup -->
                          <!-- v-if="confirmDelete"  -->
                          <div v-if="confirmDelete" class="modal-overlay">
-                            <div class="modal-content">
+
+                            <div v-if="!deleted" class="modal-content">
                                 <h2>정말 이 게시글을 삭제하시겠습니까?</h2>
                                 <div>
                                     <button class="btn" @click="fnCancel">취소</button>
                                     <button class="btn" @click="fnDeletePost">삭제</button>
                                 </div>
                             </div>
+                            <div v-else class="modal-content">
+                                <h2>게시글이 삭제되었습니다.</h2>
+                                <div>
+                                    <button class="btn" @click="fnMoveToBoard">확인</button>
+                                </div>
+                            </div>
+
                         </div>
 
                     </main>
@@ -248,6 +260,7 @@
                 // popup modal
                 isLoggedIn : true,
                 confirmDelete : false,
+                deleted : false,
 
                 // post comment
                 commentContent : ""
@@ -338,6 +351,10 @@
                     contents : self.commentContent,
                     boardNo : self.boardNo
                 };
+                if(self.commentContent.trim() == ""){
+                    alert("빈 댓글은 등록할 수 없습니다.");
+                    return;
+                }
                 $.ajax({
                     url: "/board/comment-post.dox",
                     dataType: "json",
@@ -367,7 +384,27 @@
             fnCancel : function(){
                 let self = this;
                 self.confirmDelete = false;
+            },
+            fnDeletePost : function (){
+                let self = this;
+                let param = {
+                    userId : self.sessionId,
+                    boardNo : self.boardNo
+                };
+                $.ajax({
+                    url: "/board/delete.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if(data.result == "success"){
+                            self.deleted = true;
+                        } else {
+                            alert("error");
+                        }
 
+                    }
+                });
             }
         }, // methods
         mounted() {

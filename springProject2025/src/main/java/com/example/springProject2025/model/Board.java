@@ -16,6 +16,7 @@ public class Board {
 	private int cnt;
 	private String pwd;
 	private String chardate;
+	private String commentCnt;
 
 	// rally-board (대회정보) 테이블
 	private int rallyNo;

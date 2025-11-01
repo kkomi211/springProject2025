@@ -39,6 +39,12 @@ public interface BoardMapper {
 	
 	// 게시글 수정
 	int changePost(HashMap<String, Object> map);
+	
+	// 게시글 삭제
+	int deletePost(HashMap<String, Object> map);
+	
+	// 조회수 증가
+	int viewCnt (HashMap<String, Object> map);
 }
 
 

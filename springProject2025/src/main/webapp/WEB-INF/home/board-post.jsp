@@ -31,33 +31,7 @@
             /* 버튼 기준점을 주기 위해 필요 */
         }
 
-        .main-content button {
-            display: block;
-            /* 버튼을 블록요소로 만들어 */
-            margin-left: auto;
-            /* 오른쪽으로 밀어냄 */
-            margin-top: 1px;
-            /* 위 요소와의 간격 */
-            margin-right: 5px;
-            /* 오른쪽 여백 (조절 가능) */
-            padding: 10px 20px;
-            padding: 8px 18px;
-            background-color: rgb(233, 233, 233);
-            color: black;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            /* font-weight: 600; */
-            transition: background-color 0.2s ease, transform 0.1s ease;
-        }
-
-        /*  hover 효과 */
-        .main-content button:hover {
-            background-color: gray;
-            transform: scale(1.02);
-            /* 살짝 커지는 느낌 */
-        }
+ 
     </style>
 </head>
 <body>
@@ -151,11 +125,11 @@
                                 <tr>
                                     <th>제목</th>
                                     <td>
-                                        <label for="">
-                                            <input type="text" v-model="title" id="title">
-                                        </label>
-                                        <div>
-                                            <label for=""><input type="text" placeholder="잠금설정" v-model="keylock"></label>
+                                        <div class="title-input">
+                                            <label for="">
+                                                <input type="text" v-model="title" id="title" >
+                                            </label>
+                                            <label for=""><input type="password" placeholder="잠금설정" v-model="keylock" id="keylock"></label>
                                         </div>
                                     </td>
                                 </tr>
@@ -168,7 +142,7 @@
                                     </td>
                                 </tr>
                             </table>
-                            <div>
+                            <div class="bottom-btn">
                                 <button @click="fnPost">등록</button>
                                 <button @click="fnMoveToBoard">목록</button>
                             </div>
@@ -178,9 +152,9 @@
                             <div v-if="!isLoggedIn" class="modal-overlay">
                                 <div class="modal-content">
                                     <h2>로그인 후 이용해주세요.</h2>
-                                    <div>
-                                        <button class="btn" @click="moveToLogin">로그인</button>
-                                        <button class="btn" @click="moveToBoard">닫기</button>
+                                    <div class="modal-btn">
+                                        <button @click="moveToLogin">로그인</button>
+                                        <button @click="moveToBoard">닫기</button>
                                     </div>
                                 </div>
                             </div>

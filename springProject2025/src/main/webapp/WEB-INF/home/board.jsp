@@ -123,9 +123,10 @@
                                 <tr>
                                     <th>번호</th>
                                     <th>제목</th>
+                                    <th>댓글</th>
                                     <th>작정자</th>
                                     <th>작성일</th>
-                                    <th>조회수</th>
+                                    <th id="view-cnt">조회수</th>
                                 </tr>
                                 <tr v-for="item in boardList">
                                     <td>{{item.boardNo}}</td>
@@ -134,16 +135,16 @@
                                             {{item.title}}
                                             <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
                                         </a>
-                                        
                                     </td>
+                                    <td>💬 {{item.commentCnt}} </td>
                                     <td>{{item.userId}}</td>
                                     <td>{{item.chardate}}</td>
-                                    <td>{{item.viewCnt}}</td>
+                                    <td id="view-cnt">{{item.viewCnt}}</td>
                                 </tr>
                             </table>
                             <div v-if="index > 0" class="pagination">
                                 <!-- <a v-if="page != 1" @click="fnMove(1)" href="javascript:void(0)">←</a> -->
-                                <a v-if="page >= 2" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
+                                <a v-if="page != 1" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
                                 <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index"
                                     :key="num" >
                                     <span :class="{ active: page == num }">{{ num }}</span>
@@ -254,7 +255,7 @@
                 let param = {
                     type : self.type,
                     keyword : self.keyword.trim(),
-                    page: self.page,
+                    page : (self.page-1) * self.pageSize,
                     pageSize: self.pageSize,
                     startRow: startRow,
                     endRow: endRow
