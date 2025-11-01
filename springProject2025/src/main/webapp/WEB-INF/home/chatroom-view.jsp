@@ -99,25 +99,34 @@
                                 <h1 class="main-title">
                                     {{chatInfo.name}} 채팅방
                                 </h1>
-                                <div class="search-bar">
-                                    <div class="search-wrapper">
-                                        <input type="text" placeholder="검색어" v-model="keyword">
-                                        <button class="search-btn">🔍</button>
-                                    </div>
-                                </div>
                             </div>
                             <div id="chatBox">
                                 <div v-for="item in messageList" class="margin30">
                                     <a class="bold">{{item.nickname}}</a> : 
                                     {{item.message}}
-                                    <button class="red" v-if="item.senderId == sessionId" @click="fndeleteMessage(item.chatId)">삭제</button>
+                                    <button class="red" v-if="item.senderId == sessionId || sessionId == ownerId" @click="fndeleteMessage(item.chatId)">삭제</button>
                                     <div class="text-right">{{item.cdate}}</div>
                                 </div>
                             </div>
                             <input type="text" id="message" placeholder="메시지를 입력하세요..."
                                 @keyup.enter="sendMessage">
                             <button @click="sendMessage">전송</button>
+                            <div>
+                                <button class="margin30" @click="fnChat">돌아가기</button>
+                                <button class="margin30" @click="fnDeleteMember(sessionId)">탈퇴하기</button>
+                            </div>
                         </main>
+                        <aside class="sidebar">
+                            <h2 class="sidebar-heading"> 채팅방 유저 목록</h2>
+                            <nav class="mypage-menu">
+                                <ul>
+                                    <li v-for="item in memberList">
+                                        <a :class="{bold: item.userId == ownerId}">{{item.nickname}}</a>
+                                        <button class="red" v-if="sessionId == ownerId && item.userId != ownerId" @click="fnDeleteMember(item.userId)">x</button>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </aside>
                     </div>
                 </main>
 
@@ -165,7 +174,9 @@
                     chatInfo: {},
                     chatroomNo: "${chatroomNo}",
                     stompClient: null,
-                    messageList : []
+                    messageList : [],
+                    memberList : [],
+                    ownerId : ""
                 };
             },
             methods: {
@@ -298,6 +309,41 @@
                 showMessage(message) {
                     let self = this;
                     self.fnMessageList();
+                },
+                fnMemberList(){
+                    let self = this;
+                    let param = {
+                        chatroomNo : self.chatroomNo
+                    }
+                    $.ajax({
+                        url: "/home/mypage/member/list.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            self.memberList = data.memberList;
+                            self.ownerId = data.owner.userId;
+                        }
+                    });
+                },
+                fnDeleteMember(userId){
+                    let self = this;
+                    let param = {
+                        userId : userId,
+                        chatroomNo : self.chatroomNo
+                    }
+                    $.ajax({
+                        url: "/home/mypage/member/delete.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            alert("삭제되었습니다!");
+                            self.fnMemberList();
+                        }
+                    });
                 }
             }, // methods
             mounted() {
@@ -306,6 +352,7 @@
                 self.fnGetUserInfo();
                 self.fnGetUserChatList();
                 self.fnMessageList();
+                self.fnMemberList();
                 self.connect();
             }
         });

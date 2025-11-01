@@ -17,5 +17,11 @@ public interface ChatMapper {
 	int insertMessage(HashMap<String, Object> map);
 
 	int deleteMessage(HashMap<String, Object> map);
+
+	List<Chat> selectMemberList(HashMap<String, Object> map);
+
+	Chat selectOwner(HashMap<String, Object> map);
+
+	int deleteMember(HashMap<String, Object> map);
 	
 }
