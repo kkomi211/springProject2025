@@ -13,13 +13,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.springProject2025.dao.OrderService;
+import com.example.springProject2025.dao.CartService;
 import com.example.springProject2025.model.Order;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.lang.reflect.Type;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class OrderController {
@@ -27,6 +31,9 @@ public class OrderController {
 	
 	@Autowired
 	OrderService orderService;
+	
+	@Autowired
+	CartService cartService;
 	
 	@RequestMapping("home/mypage/orders.do")
 	public String orders(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
@@ -45,6 +52,68 @@ public class OrderController {
 		return "home/mypage/refund-return"; // .jsp빠진형태
 	}
 	
+	@RequestMapping("home/payment/paybefore.do")
+	public String paybefore(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map, HttpSession session) throws Exception {
+		System.out.println("home/payment/paybefore.do 진입");
+		System.out.println("들어온 map값" + map);
+		
+		// 브라우저 세션에서 sessionId 가져오기 (파라미터 대신 사용)
+		Object sessionId = session.getAttribute("sessionId");
+		if (sessionId != null) {
+			request.setAttribute("sessionId", sessionId);
+			System.out.println("세션에서 가져온 sessionId: " + sessionId);
+		} else {
+			// 세션이 없으면 파라미터로부터 가져오기 (폴백)
+			request.setAttribute("sessionId", map.get("sessionId"));
+			System.out.println("세션에 없음. 파라미터에서 가져온 sessionId: " + map.get("sessionId"));
+		}
+		
+		// 선택된 cartNo 목록 전달 (기존 프로젝트 스타일)
+		// pageChange가 JSON.stringify로 변환한 문자열이 selectedCartNos 파라미터로 전달됨
+		Object selectedCartNos = map.get("selectedCartNos");
+		if (selectedCartNos != null) {
+			// 배열이거나 문자열 모두 그대로 전달 (JSP에서 사용)
+			request.setAttribute("selectedCartNos", selectedCartNos.toString());
+		}
+		return "home/payment/paybefore"; // .jsp빠진형태
+	}
+	
+//	@RequestMapping("payment/paybefore.do")
+//	public String paybeforeAlt(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
+//		System.out.println("payment/paybefore.do 진입 (대체 경로)");
+//		System.out.println("들어온 map값" + map);
+//		request.setAttribute("sessionId", map.get("sessionId"));
+//		// 체크된 상품 데이터가 JSON 문자열로 전달될 경우를 위해 처리
+//		if (map.get("selectedItemsJson") != null) {
+//			request.setAttribute("selectedItemsJson", map.get("selectedItemsJson"));
+//		}
+//		return "home/payment/paybefore"; // .jsp빠진형태
+//	}
+	
+	@RequestMapping("home/payment/payafter.do")
+	public String payafter(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map, HttpSession session) throws Exception {
+		System.out.println("home/payment/payafter.do 진입");
+		System.out.println("들어온 map값" + map);
+		
+		// 브라우저 세션에서 sessionId 가져오기 (파라미터 대신 사용)
+		Object sessionId = session.getAttribute("sessionId");
+		if (sessionId != null) {
+			request.setAttribute("sessionId", sessionId);
+			System.out.println("세션에서 가져온 sessionId: " + sessionId);
+		} else {
+			// 세션이 없으면 파라미터로부터 가져오기 (폴백)
+			request.setAttribute("sessionId", map.get("sessionId"));
+			System.out.println("세션에 없음. 파라미터에서 가져온 sessionId: " + map.get("sessionId"));
+		}
+		
+		// 주문 정보 전달
+		request.setAttribute("orderItems", map.get("orderItems"));
+		request.setAttribute("totalAmount", map.get("totalAmount"));
+		request.setAttribute("paymentMethod", map.get("paymentMethod"));
+		request.setAttribute("productName", map.get("productName"));
+		
+		return "home/payment/payafter"; // .jsp빠진형태
+	}
 	
 	
 	
@@ -132,6 +201,35 @@ public class OrderController {
 	    resultMap = orderService.processRefundExchange(paramMap);
 
 	    return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "home/payment/selectedCartItems.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String getSelectedCartItems(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		System.out.println("home/payment/selectedCartItems.dox 진입");
+		System.out.println("들어온 map값: " + map);
+		
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		// 1. 프론트에서 전송한 JSON 문자열을 "selectedCartNosJson" 키로 받습니다 (cartItemDelete와 동일한 방식)
+		String jsonString = (String) map.get("selectedCartNosJson");
+		
+		// 2. JSON 문자열을 List<Object> 형태로 파싱합니다.
+		List<Object> cartNoList = new ArrayList<>();
+		if (jsonString != null) {
+			ObjectMapper mapper = new ObjectMapper();
+			cartNoList = mapper.readValue(jsonString, new TypeReference<List<Object>>() {});
+		}
+		
+		// 3. 서비스로 전달할 paramMap을 구성합니다.
+		map.put("list", cartNoList); // cartNo 목록을 'list' 키로 서비스에 전달
+		
+		System.out.println("파싱된 cartNoList: " + cartNoList);
+		
+		// 4. 서비스 호출 (선택된 상품 정보 조회)
+		resultMap = cartService.getSelectedCartItems(map);
+		
+		return new Gson().toJson(resultMap);
 	}
 	
 	
