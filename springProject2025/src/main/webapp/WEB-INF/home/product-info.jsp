@@ -117,7 +117,7 @@
 
                             <div class="margin30">
                                 <button class="bluebutton margin30 height40" @click="fnCart">장바구니</button>
-                                <button class="bluebutton margin30 height40">결제하기</button>
+                                <button class="bluebutton margin30 height40" @click="fnPayment">결제하기</button>
                             </div>
                         </div>
                         <div class="detail-box">{{info.productDetail}}</div>
@@ -616,6 +616,9 @@
                             self.userName = "Guest";
                         }
                     });
+                },
+                fnPayment(){
+                    let self = this;
                 }
 
 
