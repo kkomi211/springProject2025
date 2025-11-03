@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,13 @@ public class HomeController {
 	
 	@Autowired
 	HomeService homeService;
+	
+	@Value("${client_id}")
+	private String client_id;
+
+	@Value("${redirect_uri}")
+	private String redirect_uri;
+	
 	
 	@RequestMapping("home.do")
 	public String userList(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
@@ -67,6 +75,15 @@ public class HomeController {
 	@RequestMapping("home/login.do")
 	public String iogin(Model model) throws Exception {
 		return "home/login"; // .jsp빠진형태
+	}
+	
+	@RequestMapping("home/testjghlogin.do")
+	public String testjghlogin(Model model) throws Exception {
+		String location = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + client_id
+				+ "&redirect_uri=" + redirect_uri;
+		model.addAttribute("location", location);
+		System.out.println("home/testjghlogin.do 테스트중");
+		return "home/testjghlogin"; // .jsp빠진형태
 	}
 	
 //	@RequestMapping("home/cart.do")
