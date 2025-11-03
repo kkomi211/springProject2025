@@ -34,13 +34,19 @@
                                 <input type="text" placeholder="검색어를 입력해 주세요.">
                             </div>
                             <div>
-                                <a href="/home/login.do">로그인</a>
+                                <template v-if="sessionId != ''">
+                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                                </template>
+                                <template v-else>
+                                    <a href="/home/login.do">로그인</a>
+                                </template>
                             </div>
-                            <div>
+                            <div v-if="sessionId == ''">
                                 <a href="/home/signup.do">가입하기</a>
                             </div>
-                            <div><a href="/home/mypage/inquery.do">문의</a></div>
-                            <div><a href="/home/cart.do">장바구니</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
+
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -400,7 +406,7 @@
                     let sessionId = self.sessionId;
 
                     // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장)
-                    window.pageChange("refund-return.do", { sessionId: sessionIdParam });
+                    pageChange("refund-return.do", { sessionId: sessionId});
                     },
                 moveToInfo : function(){
                     let self = this;
@@ -411,7 +417,7 @@
 
                     // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장?)
                     pageChange("/home/mypage/information.do", { sessionId: self.sessionId });
-                    window.pageChange("refund-return.do", { sessionId: sessionId });
+                    // window.pageChange("refund-return.do", { sessionId: sessionId });
                 },
                 moveToReview: function () {
                     let self = this;

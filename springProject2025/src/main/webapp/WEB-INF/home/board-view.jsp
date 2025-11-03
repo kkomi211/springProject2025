@@ -14,6 +14,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script src="/js/page-change.js"></script>
     <style>
         textarea {
             /* !important를 사용하여 다른 CSS보다 우선순위를 높입니다. */
@@ -25,39 +26,7 @@
             background-color: #f9f9f9;
             cursor: default;
         }
-
-        .main-content {
-            position: relative;
-            /* 버튼 기준점을 주기 위해 필요 */
-        }
-
-        .main-content button {
-            display: block;
-            /* 버튼을 블록요소로 만들어 */
-            margin-left: auto;
-            /* 오른쪽으로 밀어냄 */
-            margin-top: 1px;
-            /* 위 요소와의 간격 */
-            margin-right: 5px;
-            /* 오른쪽 여백 (조절 가능) */
-            padding: 10px 20px;
-            padding: 8px 18px;
-            background-color: rgb(233, 233, 233);
-            color: black;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            /* font-weight: 600; */
-            transition: background-color 0.2s ease, transform 0.1s ease;
-        }
-
-        /*  hover 효과 */
-        .main-content button:hover {
-            background-color: gray;
-            transform: scale(1.02);
-            /* 살짝 커지는 느낌 */
-        }
+        
     </style>
 </head>
 <body>
@@ -104,67 +73,79 @@
                             {{ userName }}
                         </div>
                 </div>
+
                 <div class="page-container">
-                        <aside class="sidebar">
-                            <h2 class="sidebar-heading"> COMMUNITY ></h2>
-                            <nav class="mypage-menu">
-                                <ul>
-                                    <li class="active">
-                                        <span class="icon">📝</span>
-                                        <a href="#">게시판</a>
-                                    </li>
-                                    <li @click="moveToRefund">
-                                        <span class="icon">📦</span>
-                                        <a href="javascript:;">크루 찾기</a>
-                                    </li>
-                                    <li>
-                                        <span class="icon">💬</span>
-                                        <a href="#">대회정보</a>
-                                    </li>
-                                    <li @click="moveToInfo">
-                                        <span class="icon">👤</span>
-                                        <a href="#">채팅방</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </aside>
-                        <main class="main-content">
-                            <div class="board-header">
-                                <h1 class="main-title">
-                                    게시판 • 상세보기
-                                </h1>
-                            </div>
-                           
-                            <div class="post-container">
-                                <div class="post-header">
-                                    <div class="post-meta">
-                                    <span class="post-category">
-                                        {{
-                                        type === 'B' ? '공지사항' :
-                                        type === 'Q' ? '문의게시판' :
-                                        type === 'F' ? '자유게시판' :
-                                        type === 'R' ? '대회게시판' :
-                                        '게시판'
-                                        }}
-                                    </span>
-                                    <span class="post-date">{{ boardInfo.chardate }}</span>
-                                    </div>
-                                    <h2 class="post-title">{{ boardInfo.title }}</h2>
-                                    <div class="post-author">
-                                    <strong>{{ sessionId }}</strong> 님의 게시글
-                                    </div>
+
+                    <aside class="sidebar">
+                        <h2 class="sidebar-heading"> COMMUNITY ></h2>
+                        <nav class="mypage-menu">
+                            <ul>
+                                <li class="active">
+                                    <span class="icon">📝</span>
+                                    <a href="#">게시판</a>
+                                </li>
+                                <li @click="moveToRefund">
+                                    <span class="icon">📦</span>
+                                    <a href="javascript:;">크루 찾기</a>
+                                </li>
+                                <li>
+                                    <span class="icon">💬</span>
+                                    <a href="#">대회정보</a>
+                                </li>
+                                <li @click="moveToInfo">
+                                    <span class="icon">👤</span>
+                                    <a href="#">채팅방</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </aside>
+
+                    <main class="main-content">
+                        <div class="board-header">
+                            <h1 class="main-title">
+                                게시판 • 상세보기
+                            </h1>
+                        </div>
+                        
+                        <!-- 게시글 보기 -->
+                        <div class="post-container">
+                            <div class="post-header">
+                                <div class="post-meta">
+                                <span class="post-category">
+                                    {{
+                                    type === 'B' ? '공지사항' :
+                                    type === 'Q' ? '문의게시판' :
+                                    type === 'F' ? '자유게시판' :
+                                    type === 'R' ? '대회게시판' :
+                                    '게시판'
+                                    }}
+                                </span>
+                                <span class="post-date">{{ boardInfo.chardate }}</span>
                                 </div>
-
-                                <div class="post-content" v-html="boardInfo.contents"></div>
+                                <h2 class="post-title">
+                                    {{ boardInfo.title }}
+                                </h2>
+                                <div class="post-author">
+                                    <strong>{{ boardInfo.userId }}</strong> 님의 게시글
+                                </div>
                             </div>
 
-                            <div class="comments-section">
-                                <h3 class="comment-title">
-                                    💬 {{ commentList.length }} Comments
-                                </h3>
+                            <div class="post-content" v-html="boardInfo.contents"></div>
+                            <div class="bottom-btn">
+                                <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn" @click="fnMoveToEdit">✏️ 수정</button>
+                                <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn" @click="fnConfirmDelete">🗑️ 삭제</button>
+                            </div>
+                        </div>
 
-                                <div class="comment-view" v-if="commentList.length > 0">
-                                    <div v-for="item in commentList" :key="item.commentNo" class="comment-card">
+                        <!-- 댓글 보기 -->
+
+                        <div class="comments-section">
+                            <h3 class="comment-title">
+                                💬 {{ commentList.length }} Comments
+                            </h3>
+
+                            <div class="comment-view" v-if="commentList.length > 0">
+                                <div v-for="item in commentList" :key="item.commentNo" class="comment-card">
                                     <div class="comment-header">
                                         <div class="comment-author">{{ item.userId }}</div>
                                         <div class="comment-date">{{ item.chardate }}</div>
@@ -172,30 +153,53 @@
                                     <div class="comment-body">
                                         {{ item.contents }}
                                     </div>
-                                    </div>
-                                </div>
-
-                                <div v-else class="no-comments">
-                                    아직 댓글이 없습니다. 첫 번째로 댓글을 남겨보세요!
                                 </div>
                             </div>
 
+                            <div v-else class="no-comments">
+                                아직 댓글이 없습니다. 첫 번째로 댓글을 남겨보세요!
+                            </div>
+                        </div>
 
-                            <div class="comment-box">
-                                <div class="comment-header">
-                                    <strong>{{userName}}</strong>
-                                </div>
-                                <div class="comment-input">
-                                    <textarea placeholder="댓글을 남겨보세요" v-model="commentContent"></textarea>
-                                    <button @click="fnPostComment">등록</button>
-                                </div>
-                                </div>
-                            <div >
-                                <button @click="fnMoveToBoard">목록</button>
+                        <!-- 댓글 쓰기 -->
+                        <div v-if="sessionId != '' " class="comment-box">
+                            <div class="comment-header">
+                                <strong>{{userName}}</strong>
                             </div>
+                            <div class="comment-input">
+                                <textarea placeholder="댓글을 남겨보세요" v-model="commentContent" @keyup.enter="fnPostComment"></textarea>
+                                <button @click="fnPostComment">등록</button>
                             </div>
-                        </main>
+                        </div>
+
+                        <div class="list-btn">
+                            <button  @click="fnMoveToBoard">목록</button>
+                        </div>
+
+                        <!-- Modal Popup -->
+                         <!-- v-if="confirmDelete"  -->
+                         <div v-if="confirmDelete" class="modal-overlay">
+
+                            <div v-if="!deleted" class="modal-content">
+                                <h2>정말 이 게시글을 삭제하시겠습니까?</h2>
+                                <div>
+                                    <button class="btn" @click="fnCancel">취소</button>
+                                    <button class="btn" @click="fnDeletePost">삭제</button>
+                                </div>
+                            </div>
+                            <div v-else class="modal-content">
+                                <h2>게시글이 삭제되었습니다.</h2>
+                                <div>
+                                    <button class="btn" @click="fnMoveToBoard">확인</button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </main>
+
                 </div>
+
             </main>
 
             <footer>
@@ -255,6 +259,8 @@
 
                 // popup modal
                 isLoggedIn : true,
+                confirmDelete : false,
+                deleted : false,
 
                 // post comment
                 commentContent : ""
@@ -295,6 +301,7 @@
                         if(data.result == "success"){
                             console.log(data);
                             self.boardInfo = data.info;
+                            self.type = self.boardInfo.type;
                         } else {
                             console.log("오류");
                         }
@@ -344,6 +351,10 @@
                     contents : self.commentContent,
                     boardNo : self.boardNo
                 };
+                if(self.commentContent.trim() == ""){
+                    alert("빈 댓글은 등록할 수 없습니다.");
+                    return;
+                }
                 $.ajax({
                     url: "/board/comment-post.dox",
                     dataType: "json",
@@ -351,11 +362,45 @@
                     data: param,
                     success: function (data) {
                         if(data.result == "success"){
-                            alert("Your post have been uploaded");
+                            alert("등록되었습니다!");
                             self.fnViewComment();
                             self.commentContent = "";
                         } else {
                             alert(error);
+                        }
+
+                    }
+                });
+            },
+            fnMoveToEdit : function (){
+                let self = this;
+                // location.href="/home/community/board/edit.do";
+                pageChange("/home/community/board/edit.do", {boardNo : self.boardNo});
+            },
+            fnConfirmDelete : function(){
+                let self = this;
+                self.confirmDelete = true;
+            },
+            fnCancel : function(){
+                let self = this;
+                self.confirmDelete = false;
+            },
+            fnDeletePost : function (){
+                let self = this;
+                let param = {
+                    userId : self.sessionId,
+                    boardNo : self.boardNo
+                };
+                $.ajax({
+                    url: "/board/delete.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if(data.result == "success"){
+                            self.deleted = true;
+                        } else {
+                            alert("error");
                         }
 
                     }

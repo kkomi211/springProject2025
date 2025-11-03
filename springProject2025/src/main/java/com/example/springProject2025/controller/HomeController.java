@@ -12,7 +12,8 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 public class HomeController {
 	@RequestMapping("home.do")
-	public String userList(Model model) throws Exception {
+	public String userList(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
+		request.setAttribute("sessionId", map.get("sessionId"));
 		return "home/home"; // .jsp빠진형태
 	}
 	
@@ -85,5 +86,10 @@ public class HomeController {
         request.setAttribute("productNo", map.get("productNo"));
         return "home/product-info"; // .jsp 빠진 형태
     }
+	
+	@RequestMapping("home/addr.do")
+	public String addr(Model model) throws Exception {
+		return "home/jusoPopup"; // 주소 검색 팝업 (.jsp빠진형태)
+	}
 
 }

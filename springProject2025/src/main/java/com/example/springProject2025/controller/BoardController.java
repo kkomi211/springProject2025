@@ -21,9 +21,16 @@ public class BoardController {
 	@Autowired
 	BoardService boardService;
 	 
-	@RequestMapping("home/community/rally.do")
+	// rally board list
+	@RequestMapping("/home/community/rally.do")
 	public String rallyList(Model model) throws Exception {
 		return "home/rally-board"; // .jsp빠진형태
+	}
+	
+	// crew board list
+	@RequestMapping("/home/community/crewBoard.do")
+	public String crewBoardList(Model model) throws Exception {
+		return "home/crew"; // .jsp빠진형태
 	}
 	
 	// rally board list(목록) 
@@ -35,8 +42,17 @@ public class BoardController {
 			return new Gson().toJson(resultMap);
 		}
 		
+	// crew board list(목록) 
+		@RequestMapping(value = "/home/crew/board.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+		@ResponseBody
+		public String crewBoardList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+			HashMap<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap = boardService.getCrewBoardList(map);
+			return new Gson().toJson(resultMap);
+		}
+		
 	
-	@RequestMapping("home/community/board/post.do")
+	@RequestMapping("/home/community/board/post.do")
 	public String boardPost(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
 		request.setAttribute("sessionId", map.get("sessionId"));
 		return "home/board-post"; // .jsp빠진형태
@@ -47,6 +63,13 @@ public class BoardController {
 		request.setAttribute("sessionId", map.get("sessionId"));
 		request.setAttribute("boardNo", map.get("boardNo"));
 		return "home/board-view"; // .jsp빠진형태
+	}
+	
+	@RequestMapping("home/community/board/edit.do")
+	public String boardEdit(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
+		request.setAttribute("sessionId", map.get("sessionId"));
+		request.setAttribute("boardNo", map.get("boardNo"));
+		return "home/board-edit"; // .jsp빠진형태
 	}
 	
 	@RequestMapping(value = "/board/list.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
@@ -95,6 +118,33 @@ public class BoardController {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		System.out.println("comment data " + map);
 		resultMap = boardService.addComment(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/board/keylock.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String checkKeylock(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = boardService.checkKeylock(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/board/post-edit.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String changePost(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = boardService.changePost(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/board/delete.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String deletePost(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = boardService.deletePost(map);
 		
 		return new Gson().toJson(resultMap);
 	}

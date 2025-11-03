@@ -97,6 +97,19 @@ public class CartService {
 		return resultMap;
 	}
 
+	public HashMap<String, Object> getSelectedCartItems(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			List<Cart> list = cartMapper.selectSelectedCartItems(map);
+			resultMap.put("list", list);
+			resultMap.put("result", "success");
+		} catch (Exception e) {
+			resultMap.put("result", "fail");
+			System.out.println("CartService - getSelectedCartItems 에러: " + e.getMessage());
+		}
+		return resultMap;
+	}
+
 	
 
 }

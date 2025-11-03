@@ -40,9 +40,9 @@
             <!-- 본문 -->
             <div class="content">
                 <div>
-                    <h1>상품 리스트</h1>
+                    <h2>상품 리스트</h2>
                 </div>
-                <div class="search-box">
+                <div class="search-box search-filters">
                     <input class="search margin30" placeholder="검색" v-model="keyword">
                     <select class="margin30 height40" v-model="keytype">
                         <option value="no">제품번호</option>
@@ -52,7 +52,7 @@
                 </div>
 
                 <div class="table">
-                    <table>
+                    <table class="newtable">
                         <tr>
                             <th>제품번호</th>
                             <th>제품이름</th>
@@ -78,8 +78,8 @@
                         </tr>
                     </table>
                 </div>
-                <div class="page">
-                    <a v-for="num in totalPage" :key="num" class="margin30" :class="{ red: num === page }"
+                <div class="pagination">
+                    <a v-for="num in totalPage" :key="num" class="margin30" :class="{ active: num === page }"
                         @click="fnPage(num)">{{num}}</a>
                 </div>
                 <div class="button">
