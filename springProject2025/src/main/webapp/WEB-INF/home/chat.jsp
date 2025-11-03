@@ -104,7 +104,7 @@
                                     <th>채팅방이름</th>
                                     <th>생성날짜</th>
                                 </tr>
-                                <tr v-for="item in chatList">
+                                <tr v-for="item in chatList" @click="fnShowChat(item.chatroomNo)">
                                     <td>{{item.name}}</td>
                                     <td>{{item.cdate}}</td>
                                 </tr>
@@ -153,7 +153,8 @@
                 sessionId : "${sessionId}",
                 userName : "",
                 keyword : "",
-                chatList : []
+                chatList : [],
+                
             };
         },
         methods: {
@@ -191,10 +192,14 @@
                     data: param,
                     success: function (data) {
                         console.log(data);
-                        self.chatList = data.list;
+                        self.chatList = data.chatlist;
                         
                     }
                 });
+            },
+            fnShowChat(chatroomNo){
+               let self = this;
+               pageChange("/home/community/chat/show.do", {sessionId : self.sessionId, chatroomNo: chatroomNo});
             }
         }, // methods
         mounted() {

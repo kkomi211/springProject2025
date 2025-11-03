@@ -121,11 +121,12 @@
                             </select>
                              <table>
                                 <tr>
-                                    <th>No</th>
+                                    <th>번호</th>
                                     <th>제목</th>
+                                    <th>댓글</th>
                                     <th>작정자</th>
                                     <th>작성일</th>
-                                    <th>조회수</th>
+                                    <th id="view-cnt">조회수</th>
                                 </tr>
                                 <tr v-for="item in boardList">
                                     <td>{{item.boardNo}}</td>
@@ -134,16 +135,16 @@
                                             {{item.title}}
                                             <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
                                         </a>
-                                        
                                     </td>
+                                    <td>💬 {{item.commentCnt}} </td>
                                     <td>{{item.userId}}</td>
-                                    <td>{{item.cdate}}</td>
-                                    <td>{{item.viewCnt}}</td>
+                                    <td>{{item.chardate}}</td>
+                                    <td id="view-cnt">{{item.viewCnt}}</td>
                                 </tr>
                             </table>
                             <div v-if="index > 0" class="pagination">
                                 <!-- <a v-if="page != 1" @click="fnMove(1)" href="javascript:void(0)">←</a> -->
-                                <a v-if="page >= 2" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
+                                <a v-if="page != 1" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
                                 <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index"
                                     :key="num" >
                                     <span :class="{ active: page == num }">{{ num }}</span>
@@ -161,7 +162,7 @@
                                 <div class="modal-content">
                                     <h2>비밀글로 보호된 게시물입니다.</h2>
                                     <p>비밀번호를 입력해야 내용을 확인할 수 있습니다.</p>
-                                    <input class="btn" type="password" @keyup.enter="fnKeylock" placeholder="비밀번호 입력">
+                                    <input class="btn" type="password" @keyup.enter="fnKeylock" placeholder="비밀번호 입력" v-model="keylock">
                                     <div>
                                         <button class="btn" @click="pwdCorrect = false">닫기</button>
                                     </div>
@@ -254,7 +255,7 @@
                 let param = {
                     type : self.type,
                     keyword : self.keyword.trim(),
-                    page: self.page,
+                    page : (self.page-1) * self.pageSize,
                     pageSize: self.pageSize,
                     startRow: startRow,
                     endRow: endRow
@@ -311,29 +312,39 @@
 
                 // pageChange("board/view.do", {boardNo : boardNo});
             },
-            fnKeylock : function(){
+            fnKeylock: function() {
                 let self = this;
+                if (!self.selectedPost) return; // safety check
+
                 let param = {
-                    keylock : self.keylock
+                    boardNo: self.selectedPost.boardNo, // send the post ID
+                    keylock: self.keylock               // send the password entered
                 };
-                    $.ajax({
-                        url: "/home/community/board/keylock.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data : param,
-                        success: function (data) {
-                            if(data.result == "success"){
-                                // location.href="";
-                                alert("Correct password.");
-                            } else {
-                                alert("Wrong password.");
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("사용자 정보 조회 실패:", error);
-                            self.userName = "Guest";
+
+                $.ajax({
+                    url: "/board/keylock.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function(data) {
+                        if(data.result === "success"){
+                            // alert("Password correct");
+                            self.pwdCorrect = false; // close modal
+                            // redirect to the post
+                            pageChange("board/view.do", { boardNo: self.selectedPost.boardNo });
+                        } else if(data.result === "fail") {
+                            alert("비밀번호가 올바르지 않습니다."); // wrong password
+                            self.keylock = "";
                         }
+<<<<<<< HEAD
                     });
+=======
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Keylock check failed:", error);
+                    }
+                });
+>>>>>>> branch 'develop' of https://github.com/kkomi211/springProject2025.git
             },
             fnChat(){
                 let self = this;

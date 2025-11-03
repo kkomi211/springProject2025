@@ -15,8 +15,16 @@ public class Chat {
 	private String chatMemberId;
 	private String joinDate;
 	private String role;
-	private String chat_id;
+	private String chatId;
 	private String message;
 	private String senderId;
+	private String nickname;
+	private String userId;
+	
+//	dddddddddddddddd
+	private String sender;
+	private Long roomNo;     // 방 번호
+	private String content;  // 내용
+
 
 }
