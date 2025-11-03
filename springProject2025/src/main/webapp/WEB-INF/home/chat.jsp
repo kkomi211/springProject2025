@@ -200,13 +200,21 @@
             fnShowChat(chatroomNo){
                let self = this;
                pageChange("/home/community/chat/show.do", {sessionId : self.sessionId, chatroomNo: chatroomNo});
+            },
+            fnCheckLogin(){
+                let self = this;
+                if(self.sessionId == ""){
+                    alert("로그인해주세요!");
+                    location.href="/home/login.do";
+                }
             }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+            self.fnCheckLogin();
             self.fnGetUserInfo();
-            self.fnGetUserChatList();
+            self.fnGetUserChatList();   
         }
     });
 

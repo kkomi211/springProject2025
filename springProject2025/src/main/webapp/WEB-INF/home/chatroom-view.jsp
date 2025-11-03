@@ -116,12 +116,12 @@
                                 <button class="margin30" @click="fnDeleteMember(sessionId)">탈퇴하기</button>
                             </div>
                         </main>
-                        <aside class="sidebar">
+                        <aside class="sidebar" v-if="!directFlg">
                             <h2 class="sidebar-heading"> 채팅방 유저 목록</h2>
                             <nav class="mypage-menu">
                                 <ul>
                                     <li v-for="item in memberList">
-                                        <a :class="{bold: item.userId == ownerId}">{{item.nickname}}</a>
+                                        <a :class="{bold: item.userId == ownerId}" @click="fnDirectChat(item.userId)">{{item.nickname}}</a>
                                         <button class="red" v-if="sessionId == ownerId && item.userId != ownerId" @click="fnDeleteMember(item.userId)">x</button>
                                     </li>
                                 </ul>
@@ -176,7 +176,8 @@
                     stompClient: null,
                     messageList : [],
                     memberList : [],
-                    ownerId : ""
+                    ownerId : "",
+                    directFlg : false
                 };
             },
             methods: {
@@ -215,7 +216,9 @@
                         success: function (data) {
                             console.log(data);
                             self.chatInfo = data.chatlist[0];
-
+                            if(self.chatInfo.roomType == 'DIRECT'){
+                                self.directFlg = true;
+                            }
                         }
                     });
                 },
@@ -272,7 +275,7 @@
                     $.ajax({
                         url: "/home/mypage/message/add.dox",
                         dataType: "json",
-                        type: "POST",
+                        type: "POST",   
                         data: param,
                         success: function (data) {
                             console.log(data);
@@ -344,11 +347,37 @@
                             self.fnMemberList();
                         }
                     });
+                },
+                fnDirectChat(userId){
+                    let self = this;
+                    if(userId == self.sessionId){
+                        return;
+                    }
+                    if(!confirm("1ㄷ1 채팅을 하시겠습니까?")){
+                        return
+                    }
+                    let param = {
+                        userId : userId,
+                        sessionId : self.sessionId
+                    }
+                    $.ajax({
+                        url: "/home/mypage/member/chat.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param, 
+                        success: function (data) {
+                            console.log(data);
+                            if(data.result != "fail"){
+                                pageChange("/home/community/chat/show.do", {sessionId : self.sessionId, chatroomNo: data.chatroomNo});
+                            }
+                        }
+                    });
                 }
             }, // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분
                 let self = this;
+                self.directFlg = false;
                 self.fnGetUserInfo();
                 self.fnGetUserChatList();
                 self.fnMessageList();
