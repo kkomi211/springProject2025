@@ -39,7 +39,7 @@
             <div>
 		        <h2>대시보드 요약</h2>
             </div>
-            <div class="dashboard-grid">
+            <div class="dashboard-grid">    
                 <!-- 주문 현황 (막대 그래프) -->
                 <div class="dashboard-card" style="grid-column: span 2;">
                     <h3>주문 현황</h3>

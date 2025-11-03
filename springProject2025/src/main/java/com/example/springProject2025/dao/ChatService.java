@@ -92,6 +92,31 @@ public class ChatService {
 		}
 		return resultMap;
 	}
+
+	public HashMap<String, Object> memberChat(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
+		try {
+			Chat cnt = chatMapper.checkMemberChat(map);
+			System.out.println(map);
+			if(cnt.getCnt() == 0) {
+				int chat = chatMapper.createMemberChat(map);
+				int chat2 = chatMapper.createMember(map);		
+				int chat3 = chatMapper.createMemberOwner(map);
+				int chat4 = chatMapper.createMemberPair(map);
+				resultMap.put("result", "success");
+				resultMap.put("chatroomNo", map.get("chatroomNo"));
+			}
+			else {
+				resultMap.put("result", "이미 있음");
+				resultMap.put("chatroomNo", cnt.getChatroomNo());			
+			}
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
 	
 	
 	

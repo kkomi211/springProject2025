@@ -39,62 +39,63 @@
 
             <!-- 본문 -->
             <div class="content">
-                <h1>상품 등록</h1>
-            </div>
+                <h2>상품 등록</h2>
 
-            <div class="table text-left">
-                <table>
-                    <tr>
-                        <th>제품이름</th>
-                        <td><input v-model="productName"></td>
-                    </tr>
-                    <tr>
-                        <th>브랜드</th>
-                        <td><input v-model="brand"></td>
-                    </tr>
-                    <tr>
-                        <th>가격</th>
-                        <td><input v-model="price"></td>
-                    </tr>
-                    <tr>
-                        <th>사이즈</th>
-                        <td>
-                            <input v-for="num in sizeNum" v-model="productSize[num]" class="smallInput">
-                            <button class="bluebutton height40" @click="fnSizeNum(1)">+</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            재고
-                        </th>
-                        <td>
-                            <input v-for="num in sizeNum" v-model="quantity[num]" class="smallInput">
-                            <button class="bluebutton height40" @click="fnSizeNum(-1)">-</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>성별</th>
-                        <td><input v-model="gender"></td>
-                    </tr>
-                    <tr>
-                        <th>제품분류</th>
-                        <td><input v-model="typeNo"></td>
-                    </tr>
-                    <tr>
-                        <th>상세설명</th>
-                        <td><input v-model="productDetail"></td>
-                    </tr>
-                    <tr>
-                        <th>이미지</th>
-                        <td><input type="file" id="file1" name="file1" accept=".jpg, .png"></td>
-                    </tr>
-                </table>
+
+                <div class="text-left">
+                    <table class="newtable addtable">
+                        <tr>
+                            <th>제품이름</th>
+                            <td><input v-model="productName"></td>
+                        </tr>
+                        <tr>
+                            <th>브랜드</th>
+                            <td><input v-model="brand"></td>
+                        </tr>
+                        <tr>
+                            <th>가격</th>
+                            <td><input v-model="price"></td>
+                        </tr>
+                        <tr>
+                            <th>사이즈</th>
+                            <td>
+                                <input v-for="num in sizeNum" v-model="productSize[num]" class="smallInput">
+                                <button class="bluebutton height40" @click="fnSizeNum(1)">+</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                재고
+                            </th>
+                            <td>
+                                <input v-for="num in sizeNum" v-model="quantity[num]" class="smallInput">
+                                <button class="bluebutton height40" @click="fnSizeNum(-1)">-</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>성별</th>
+                            <td><input v-model="gender"></td>
+                        </tr>
+                        <tr>
+                            <th>제품분류</th>
+                            <td><input v-model="typeNo"></td>
+                        </tr>
+                        <tr>
+                            <th>상세설명</th>
+                            <td><input v-model="productDetail"></td>
+                        </tr>
+                        <tr>
+                            <th>이미지</th>
+                            <td><input type="file" id="file1" name="file1" accept=".jpg, .png"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="button">
+                    <button class="margin30 height40 redbutton rightbutton" @click="fnAddSystem">등록하기</button>
+                    <button class="margin30 height40 bluebutton leftbutton" @click="fnBack">돌아가기</button>
+                </div>
+                <div class="bottom200"></div>
             </div>
-            <div class="button">
-                <button class="margin30 height40 redbutton rightbutton" @click="fnAddSystem">등록하기</button>
-                <button class="margin30 height40 bluebutton leftbutton" @click="fnBack">돌아가기</button>
-            </div>
-            <div class="bottom200"></div>
         </div>
     </body>
 
@@ -114,8 +115,8 @@
                     gender: "",
                     typeNo: "",
                     productDetail: "",
-                    sizeNum : 1,
-                    sessionId : "${sessionId}"
+                    sizeNum: 1,
+                    sessionId: "${sessionId}"
                 };
             },
             methods: {
@@ -138,20 +139,20 @@
                     };
                     console.log(self.productSize[i]);
                     console.log(self.quantity[i]);
-                    
+
                     $.ajax({
                         url: "/product/add.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            
+
                             console.log(data.productNo);
                             var form = new FormData();
                             form.append("file1", $("#file1")[0].files[0]);
                             form.append("productNo", data.productNo); // 임시 pk
                             self.upload(form);
-                            
+
 
                         }
                     });
@@ -161,7 +162,7 @@
                 },
                 upload: function (form) {
                     console.log(form);
-                    
+
                     var self = this;
                     $.ajax({
                         url: "/product/fileUpload.dox"
@@ -175,17 +176,17 @@
                         }
                     });
                 },
-                fnSizeNum(num){
+                fnSizeNum(num) {
                     let self = this;
-                    if(self.sizeNum + num < 1 || self.sizeNum + num > 7){
+                    if (self.sizeNum + num < 1 || self.sizeNum + num > 7) {
                         return;
                     }
                     self.sizeNum = self.sizeNum + num;
                 },
-                fnAddSystem(){
+                fnAddSystem() {
                     let self = this;
-                    for(let i = 0; i < self.sizeNum; i++){
-                        self.fnAddProduct(i+1);
+                    for (let i = 0; i < self.sizeNum; i++) {
+                        self.fnAddProduct(i + 1);
                     }
                     alert("작성이 완료되었습니다!");
                     self.fnBack();

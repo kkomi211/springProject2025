@@ -624,10 +624,19 @@
                     <div class="search-box">
                         <input type="text" placeholder="검색어를 입력해 주세요.">
                     </div>
-                    <div><a href="/home/login.do">로그인</a></div>
-                    <div><a href="/home/signup.do">가입하기</a></div>
-                    <div><a href="/home/mypage/inquiry.do">문의</a></div>
-                    <div><a href="/home/cart.do">장바구니</a></div>
+                    <div>
+                        <template v-if="sessionId != ''">
+                            <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                        </template>
+                        <template v-else>
+                            <a href="/home/login.do">로그인</a>
+                        </template>
+                    </div>
+                    <div v-if="sessionId == ''">
+                        <a href="/home/signup.do">가입하기</a>
+                    </div>
+                    <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                    <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
                 </div>
             </div>
             <div class="bottom-header">
@@ -657,6 +666,13 @@
                     <div class="swiper-side-cover right"></div>
                 </div>
 
+                 <!-- Logout popup -->
+                <div v-if="isLoggedOut" class="modal-overlay">
+                    <div class="modal-content">
+                        <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
+                        <a href="/home.do"><button>메인 화면으로 가기</button></a>
+                    </div>
+                </div>
                 <!-- 추천 상품 영역 -->
                 <section class="products-showcase">
                     <h2>추천 상품</h2>
@@ -671,7 +687,7 @@
                         <p v-if="recommendedProducts.length === 0">추천 상품이 없습니다.</p>
                     </div>
                 </section>
-
+              
                 <!-- 최신 대회 영역 -->
                 <section class="rally-showcase">
                     <h2>진행중인 대회</h2>
@@ -739,6 +755,10 @@
             </div>
         </footer>
     </div>
+</body>
+</html>
+
+
 
     <script>
         const app = Vue.createApp({
@@ -905,7 +925,24 @@
                 formatCurrency(value) { // 통화 형식 포맷 함수
                     if (value === null || value === undefined) return '0 원';
                     return value.toLocaleString('ko-KR') + ' 원';
-                }
+                },
+                fnLogout : function(){
+                let self = this;
+                let param = {};
+                $.ajax({
+                    url: "/member/logout.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if(data.result == "success"){
+                            self.userName = data.userName;
+                            self.isLoggedOut = true;
+                        }
+
+                    }
+                });
+            }
             },
             mounted() {
                 this.fetchMainSlideImages();
