@@ -2,15 +2,26 @@ package com.example.springProject2025.controller;
 
 import java.util.HashMap;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import ch.qos.logback.core.model.Model;
+//import ch.qos.logback.core.model.Model;
+import org.springframework.ui.Model;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class HomeController {
+	
+	// @value ==> 카카오 록인
+	
+	@Value("${client_id}") // the name should be the same as the one in application.properties
+	private String client_id;
+
+    @Value("${redirect_uri}")
+    private String redirect_uri;
+	
 	@RequestMapping("home.do")
 	public String userList(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
 		request.setAttribute("sessionId", map.get("sessionId"));
@@ -53,6 +64,9 @@ public class HomeController {
 	
 	@RequestMapping("home/login.do")
 	public String iogin(Model model) throws Exception {
+		// 카카오 록인
+		String location = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id="+client_id+"&redirect_uri="+redirect_uri;
+        model.addAttribute("location", location);
 		return "home/login"; // .jsp빠진형태
 	}
 	
