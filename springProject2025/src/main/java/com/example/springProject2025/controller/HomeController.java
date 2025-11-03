@@ -30,14 +30,10 @@ public class HomeController {
 
     @Value("${redirect_uri}")
     private String redirect_uri;
-	@Autowired
+	
+    @Autowired
 	HomeService homeService;
 	
-	@Value("${client_id}")
-	private String client_id;
-
-	@Value("${redirect_uri}")
-	private String redirect_uri;
 	
 	
 	@RequestMapping("home.do")
