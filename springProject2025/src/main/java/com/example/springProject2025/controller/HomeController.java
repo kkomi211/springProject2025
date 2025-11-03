@@ -65,8 +65,10 @@ public class HomeController {
 	@RequestMapping("home/login.do")
 	public String iogin(Model model) throws Exception {
 		// 카카오 록인
-		String location = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id="+client_id+"&redirect_uri="+redirect_uri;
-        model.addAttribute("location", location);
+		String location = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id="+client_id+"&redirect_uri="+redirect_uri+"&prompt=login";
+		model.addAttribute("location", location);
+//		model.addAttribute("client_id", client_id);
+//	    model.addAttribute("redirect_uri", redirect_uri);
 		return "home/login"; // .jsp빠진형태
 	}
 	
