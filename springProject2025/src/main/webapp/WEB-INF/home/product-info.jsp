@@ -34,24 +34,19 @@
                             <div>
                                 <input type="text" placeholder="검색어를 입력해 주세요.">
                             </div>
-                            <div v-if="sessionId != '' || sessionId != 'undefined' || sessionId != null">
-                                <div>
+                            <div>
+                                <template v-if="sessionId != ''">
+                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                                </template>
+                                <template v-else>
                                     <a href="/home/login.do">로그인</a>
-                                </div>
-                                <div>
-                                    <a href="/home/signup.do">가입하기</a>
-                                </div>
+                                </template>
                             </div>
-                            <div v-else>
-                                <div>
-                                    <a href="/home/signup.do">마이페이지</a>
-                                </div>
-                                <div>
-                                    <a href="/home/signup.do">로그아웃</a>
-                                </div>
+                            <div v-if="sessionId == ''">
+                                <a href="/home/signup.do">가입하기</a>
                             </div>
-                            <div><a href="/home/mypage/inquiry.do">문의</a></div>
-                            <div><a href="/home/cart.do">장바구니</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -61,7 +56,7 @@
                         <div>
                             <a href="javascript:;" @click="fnProduct">세일</a>
                         </div>
-                        <div>   
+                        <div>
                             <a href="/home/community/board.do">커뮤니티</a>
                         </div>
                     </div>
@@ -73,7 +68,7 @@
                         <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword">
                         <button class="height40 bluebutton" @click="fnList">검색</button>
                     </div>
-                   
+
                     <div class="side-bar">
                         <div class="category-box">
                             <div class="category">카테고리</div>
@@ -108,7 +103,7 @@
                             <div class="margin80 font30">{{info.price}} 원</div>
                             <div class="font30 margin30">
                                 <!-- 사이즈 -->
-                                <select class="select-box" v-model="size" @change="fnMaxQuantityChange"> 
+                                <select class="select-box" v-model="size" @change="fnMaxQuantityChange">
                                     <option v-for="item in sizeList" :value="item.productSize">사이즈 :
                                         {{item.productSize}} 재고 : {{item.quantity}}
                                     </option>
@@ -319,8 +314,8 @@
                     quantity: 1,
                     size: "",
                     maxQuantity: 1,
-                    sessionId : "${sessionId}",
-                    userName : ""
+                    sessionId: "${sessionId}",
+                    userName: ""
                 };
             },
             computed: {
@@ -554,19 +549,19 @@
                 },
                 fnCategoryProduct(category) {
                     let self = this;
-                    pageChange("/home/product.do", { keyword: "", category: category, sessionId : self.sessionId });
+                    pageChange("/home/product.do", { keyword: "", category: category, sessionId: self.sessionId });
                 },
                 fnProduct() {
                     let self = this;
-                    pageChange("/home/product.do", { keyword: "", category: "", sessionId : self.sessionId });
+                    pageChange("/home/product.do", { keyword: "", category: "", sessionId: self.sessionId });
                 },
                 fnProductSearch(key) {
                     let self = this;
-                    pageChange("/home/product.do", { keyword: key, category: "", sessionId : self.sessionId });
+                    pageChange("/home/product.do", { keyword: key, category: "", sessionId: self.sessionId });
                 },
                 fnProductInquiryAdd(proNo) {
                     let self = this;
-                    pageChange("/home/product/inquiry/add.do", { productNo: proNo, sessionId : self.sessionId });
+                    pageChange("/home/product/inquiry/add.do", { productNo: proNo, sessionId: self.sessionId });
                 },
                 fnCart() {
                     let self = this;
@@ -583,12 +578,12 @@
                         data: param,
                         success: function (data) {
                             console.log(data);
-                            if(confirm("장바구니로 이동하시겠습니까?")){
-                                pageChange("/home/cart.do", {sessionId : self.sessionId});
+                            if (confirm("장바구니로 이동하시겠습니까?")) {
+                                pageChange("/home/cart.do", { sessionId: self.sessionId });
                             } else {
                                 self.fnProduct();
                             }
-                            
+
                         }
                     });
                 },
