@@ -164,6 +164,7 @@
                                 <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
                                 <!-- <a v-if="page != index" @click="fnMove(index)" href="javascript:void(0)">→</a> -->
                             </div>
+                            
                             <div class="write-btn-wrapper">
                                 <button @click="moveToPost" class="btn">글쓰기</button>
                             </div>

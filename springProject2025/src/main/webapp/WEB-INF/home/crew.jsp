@@ -126,20 +126,23 @@
                                 </tr>
 
                             </table>
-
-                            <!-- 페이지네이션 -->
-                            <div v-if="pageCount > 1" class="pagination">
-                                <a v-if="page > 1" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
-                                <a v-for="num in index" :key="num" @click="fnMove(num)" href="javascript:void(0)">
+                            <div v-if="index > 0" class="pagination">
+                                <!-- <a v-if="page != 1" @click="fnMove(1)" href="javascript:void(0)">←</a> -->
+                                <a v-if="page != 1" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
+                                <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index"
+                                    :key="num">
                                     <span :class="{ active: page == num }">{{ num }}</span>
                                 </a>
-                                <a v-if="page < pageCount" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
+                                <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
+                                <!-- <a v-if="page != index" @click="fnMove(index)" href="javascript:void(0)">→</a> -->
                             </div>
 
-                            <!-- 글쓰기 버튼 -->
+                            <!-- 글쓰기 버튼1111111111111111111111 -->
                             <div class="write-btn-wrapper">
                                 <button @click="moveToPost" class="btn">글쓰기</button>
                             </div>
+
+
 
                             <!--  비밀번호 모달 -->
                             <div v-if="pwdCorrect" class="modal-overlay">
@@ -202,7 +205,7 @@
                         page: 1,
                         pageSize: 10,
                         pageCount: 0,
-                        index: [],
+                        index: 0,
                         // modal
                         pwdCorrect: false,
                         inputPwd: "",
@@ -263,7 +266,7 @@
                     },
                     fnEnterChat(chatroomNo) {
                         alert("채팅방 번호 " + chatroomNo + "에 입장합니다.");
-                        location.href = "/home/community/chat/show.do?roomNo=" + chatroomNo;
+                        location.href = "/home/community/chat/show.do?chatroomNo=" + chatroomNo;
 
                     },
                     moveToPost() {
