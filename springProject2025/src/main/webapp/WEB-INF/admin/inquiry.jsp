@@ -156,7 +156,7 @@
         methods: {
             // 함수(메소드) - (key : function())
             fnLogout: function () {
-                pageChange("home.do", {sessionId : ""});
+                pageChange("/home.do", {sessionId : ""});
             },
             fnInquiryList : function(page) {
                 let self = this;

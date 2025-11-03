@@ -7,6 +7,9 @@ body {
   color: #333;
   background-color: #f8f8f8;
 }
+.bottom-header {
+  background-color: white;
+}
 .container{
             width: 100%;
             min-height: 100vh;
