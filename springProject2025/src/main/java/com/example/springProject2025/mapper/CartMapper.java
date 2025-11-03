@@ -27,5 +27,7 @@ public interface CartMapper {
 	//모달창에서 제품 사이즈 수량 수정
 	int updateCartItem(HashMap<String, Object> map);
 	
+	// 선택된 cartNo 목록으로 상품 정보 조회 (주문서용)
+	List<Cart> selectSelectedCartItems(HashMap<String, Object> map);
 
 }

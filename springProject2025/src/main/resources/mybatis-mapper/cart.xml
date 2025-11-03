@@ -23,6 +23,21 @@
 		LEFT JOIN product_img I ON P.PRODUCT_NO = I.PRODUCT_NO
 		where C.user_id = #{sessionId}
 		</select>
+		
+		<!-- 선택된 cartNo 목록으로 상품 정보 조회 (주문서용) -->
+		<select id="selectSelectedCartItems" parameterType="hashmap" resultType="com.example.springProject2025.model.Cart">
+		select *
+		from CART C
+		INNER JOIN PRODUCT P ON C.PRODUCT_NO = P.PRODUCT_NO
+		LEFT JOIN product_img I ON P.PRODUCT_NO = I.PRODUCT_NO
+		where C.user_id = #{sessionId}
+		<if test="list != null and list.size() > 0">
+		AND C.CART_NO IN
+		<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+		</if>
+		</select>
 	
 	
 		<delete id="deleteCartItemList" parameterType="hashmap">

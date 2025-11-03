@@ -27,8 +27,8 @@
             </div>
 
             <div class="nav-black">
-                <a href="/admin.do" class="active">MAIN</a>
-                <a href="/admin/banner.do">배너 이미지 관리</a>
+                <a href="/admin.do">MAIN</a>
+                <a href="/admin/banner.do" class="active">배너 이미지 관리</a>
                 <a href="/admin/inquiry.do">문의/리스트</a>
                 <a href="/admin/refund-return.do">교환/환불</a>
                 <a href="/admin/product.do">상품 리스트</a>

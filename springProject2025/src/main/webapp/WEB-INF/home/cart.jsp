@@ -147,13 +147,19 @@
                                 <input type="text" placeholder="검색어를 입력해 주세요.">
                             </div>
                             <div>
-                                <a href="/home/login.do">로그인</a>
+                                <template v-if="sessionId != ''">
+                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                                </template>
+                                <template v-else>
+                                    <a href="/home/login.do">로그인</a>
+                                </template>
                             </div>
-                            <div>
+                            <div v-if="sessionId == ''">
                                 <a href="/home/signup.do">가입하기</a>
                             </div>
-                            <div><a href="/home/mypage/inquiry.do">문의</a></div>
-                            <div><a href="/home/cart.do">장바구니</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
+
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -263,8 +269,9 @@
                                     <span style="color: #000;">{{ formatCurrency(totalPaymentAmount) }}원</span>
                                 </div>
 
-                                <button :disabled="selectedCount === 0"
-                                    style="width: 100%; padding: 15px; background: #000; color: #fff; border: none; font-size: 16px; cursor: pointer;">
+                                <button :disabled="selectedCount === 0" @click="proceedToCheckout"
+                                    style="width: 100%; padding: 15px; background: #000; color: #fff; border: none; font-size: 16px; cursor: pointer;"
+                                    :style="{ opacity: selectedCount === 0 ? 0.5 : 1, cursor: selectedCount === 0 ? 'not-allowed' : 'pointer' }">
                                     {{ formatCurrency(totalPaymentAmount) }}원 구매하기 ({{ selectedCount }}종류)
                                 </button>
                             </div>
@@ -661,7 +668,7 @@
                         : null;
                     if (stock !== null) {
                         if (q > stock) {
-                            alert(`선택한 옵션의 최대 수량은 ${stock}개 입니다.`);
+                            alert(`선택한 옵션의 재고 수량을 초과합니다`);
                             q = stock;
                         }
                     }
@@ -734,6 +741,32 @@
                             alert("서버 오류가 발생했습니다. 다시 시도해 주세요.");
                         }
                     });
+                },
+                proceedToCheckout: function () {
+                    // 체크된 상품만 필터링
+                    let selectedItems = this.cartList.filter(item => item.selected);
+                    
+                    if (selectedItems.length === 0) {
+                        alert("주문할 상품을 선택해주세요.");
+                        return;
+                    }
+
+                    // 체크된 상품의 cartNo 목록만 추출 (기존 프로젝트 스타일)
+                    let selectedCartNos = selectedItems.map(item => item.cartNo);
+                    
+                    // pageChange 함수를 사용하여 paybefore.jsp로 이동
+                    // sessionId는 브라우저 세션에서 자동으로 가져오므로 파라미터로 전달할 필요 없음
+                    if (typeof pageChange === 'function') {
+                        pageChange("payment/paybefore.do", {
+                            selectedCartNos: selectedCartNos
+                        });
+                    } 
+                    // else {
+                    //     // pageChange 함수가 없는 경우 직접 URL로 이동
+                    //     let url = "/home/payment/paybefore.do?sessionId=" + encodeURIComponent(this.sessionId) + 
+                    //                 "&selectedItemsJson=" + encodeURIComponent(selectedItemsJson);
+                    //     window.location.href = url;
+                    // }
                 },
 
             }, // methods

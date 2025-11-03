@@ -172,6 +172,79 @@
 			) a
 		) WHERE rnum BETWEEN #{startRow} AND #{endRow}
 	</select>
+	<!--
+	<insert id="insertOrderList" parameterType="java.util.List">
+	    INSERT INTO ORDERS (
+	        ORDER_NO, 
+	        USER_ID, 
+	        CDATE, 
+	        PRODUCT_NO, 
+	        QUANTITY, 
+	        PAYMENT_AMOUNT, 
+	        ADDR, 
+	        PAYMENT_METHOD, 
+	        STATUS, 
+	        UDATE, 
+	        ORDER_REQUEST,
+	        BECAUSE
+	    )
+	    <foreach collection="list" item="orderItem" index="index" separator="UNION ALL">
+	        SELECT
+	            ORDERS_SEQ.NEXTVAL,
+	            #{orderItem.userId}, 
+	            SYSDATE, 
+	            #{orderItem.productNo}, 
+	            #{orderItem.quantity}, 
+	            #{orderItem.paymentAmount}, 
+	            #{orderItem.addr}, 
+	            #{orderItem.paymentMethod}, 
+	            '신규주문',  SYSDATE,
+	            #{orderItem.orderRequest},
+	            NULL
+	        FROM DUAL
+	    </foreach>
+	</insert>
+	-->
 	
+	<insert id="insertOrderItem" parameterType="hashmap">
+	    INSERT INTO ORDERS (
+	        ORDER_NO, 
+	        USER_ID, 
+	        CDATE, 
+	        PRODUCT_NO, 
+	        QUANTITY, 
+	        PAYMENT_AMOUNT, 
+	        ADDR, 
+	        PAYMENT_METHOD, 
+	        STATUS, 
+	        UDATE, 
+	        ORDER_REQUEST,
+	        BECAUSE
+	    ) VALUES (
+	        ORDERS_SEQ.NEXTVAL,
+	        #{userId}, SYSDATE, 
+	        #{productNo}, 
+	        #{quantity}, 
+	        #{paymentAmount}, 
+	        #{addr}, 
+	        #{paymentMethod}, 
+	        '신규주문', 
+	        SYSDATE,
+	        #{orderRequest},
+	        NULL
+	    )
+	</insert>
+	
+	<select id="selectRecentOrderDate" parameterType="String" resultType="String">
+    SELECT 
+        TO_CHAR(CDATE, 'YYYY-MM-DD HH24:MI:SS') 
+    FROM 
+        ORDERS 
+    WHERE 
+        USER_ID = #{userId}
+    ORDER BY 
+        ORDER_NO DESC
+    FETCH FIRST 1 ROW ONLY 
+    </select>
 	
 	</mapper>

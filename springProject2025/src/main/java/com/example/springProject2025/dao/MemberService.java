@@ -44,6 +44,7 @@ public class MemberService {
 				result = "success";
 				session.setAttribute("sessionId", member.getUserId());
 				session.setAttribute("sessionName", member.getName());
+				resultMap.put("userType", member.getUsertype());
 			} else {
 				message = "아이디와 패스워드를 확인해주세요.";	
 				result = "fail";
@@ -54,6 +55,21 @@ public class MemberService {
 		}
 		resultMap.put("result", result);
 	    resultMap.put("message", message);
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> memberLogout(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		// 세션정보 삭제하는 방법은
+		// 1개씩 키값을 이용해서 삭제하거나, 전체를 한번에 삭제
+		
+		String userName = (String) session.getAttribute("sessionName");
+		resultMap.put("userName", userName);
+		resultMap.put("result", "success");
+		
+		session.removeAttribute("sessionId"); // 1개씩 삭제
+		
 		return resultMap;
 	}
 	

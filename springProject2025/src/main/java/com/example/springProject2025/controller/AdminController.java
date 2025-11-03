@@ -370,7 +370,7 @@ public class AdminController {
 				map.put("orgName", originFilename);
 				map.put("size", size);
 				map.put("ext", extName);
-
+				System.out.println(map);
 				// insert 쿼리 실행
 				adminService.addRallyImg(map);
 
