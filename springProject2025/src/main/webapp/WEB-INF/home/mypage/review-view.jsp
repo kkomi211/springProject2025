@@ -25,7 +25,8 @@
             background-color: #f9f9f9;
         }
 
-        input[readonly], textarea[readonly] {
+        input[readonly],
+        textarea[readonly] {
             background-color: #f9f9f9;
             cursor: default;
         }
@@ -79,13 +80,19 @@
                                 <input type="text" placeholder="검색어를 입력해 주세요.">
                             </div>
                             <div>
-                                <a href="/home/login.do">로그인</a>
+                                <template v-if="sessionId != ''">
+                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                                </template>
+                                <template v-else>
+                                    <a href="/home/login.do">로그인</a>
+                                </template>
                             </div>
-                            <div>
+                            <div v-if="sessionId == ''">
                                 <a href="/home/signup.do">가입하기</a>
                             </div>
-                            <div><a href="/home/mypage/inquery.do">문의</a></div>
-                            <div><a href="/home/cart.do">장바구니</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
+
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -119,21 +126,21 @@
                                 <ul>
                                     <li @click="moveToOrder">
                                         <span class="icon">📝</span>
-                                        <a href="javascript:;">주문•배송 내역</a>
+                                        <a href="#">주문•배송 내역</a>
                                     </li>
                                     <li @click="moveToRefund">
                                         <span class="icon">📦</span>
-                                        <a href="#">반품•교환 내역</a>
+                                        <a href="javascript:;">반품•교환 내역</a>
                                     </li>
-                                    <li>
+                                    <li @click="moveToMyinquiry">
                                         <span class="icon">💬</span>
                                         <a href="#">문의 내역</a>
                                     </li>
-                                    <li>
+                                    <li @click="mvInfo">
                                         <span class="icon">👤</span>
                                         <a href="#">나의 정보</a>
                                     </li>
-                                    <li class="active" @click="moveToReview">
+                                    <li @click="moveToReview" class="active">
                                         <span class="icon">⭐️</span>
                                         <a href="#">상품 리뷰</a>
                                     </li>
@@ -155,8 +162,7 @@
                                 <table class="product-info-table"
                                     style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                                     <tr>
-                                        <td rowspan="2"
-                                            style="width: 200px; padding-right: 20px; vertical-align: top;">
+                                        <td rowspan="2" style="width: 200px; padding-right: 20px; vertical-align: top;">
                                             <div
                                                 style="width: 150px; height: 150px; overflow: hidden; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd;">
                                                 <img :src="review.imgPath + '/' + review.imgName" alt="상품 이미지"
@@ -213,7 +219,8 @@
                                             style="display: block; font-weight: bold; margin-bottom: 5px; color: #555;">리뷰
                                             내용</label>
                                         <div v-html="review.content"
-                                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 0.95rem; background-color: #f9f9f9; min-height: 200px; white-space: pre-wrap;"></div>
+                                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 0.95rem; background-color: #f9f9f9; min-height: 200px; white-space: pre-wrap;">
+                                        </div>
                                     </div>
 
                                     <div style="margin-bottom: 10px; color: #666; font-size: 0.9rem;">
@@ -343,23 +350,54 @@
                     });
                 },
 
+                mvInfo: function () {
+                    let self = this;
+                    // console.log("반품•교환 내역 메뉴 클릭. pageChange 호출");
+                    // alert(
+                    //     "mvInfo함수 시작"
+                    // )
+                    // let sessionId = self.sessionId;
+
+                    // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장?)
+                    pageChange("/home/mypage/information.do", {});
+                },
+
                 moveToOrder: function () {
                     let self = this;
+                    console.log("반품•교환 내역 메뉴 클릭. pageChange 호출");
+
                     let sessionId = self.sessionId;
+
+                    // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장?)
                     pageChange("orders.do", { sessionId: sessionId });
                 },
 
-                moveToRefund: function () {
+                moveToMyinquiry: function () {
                     let self = this;
+
                     let sessionId = self.sessionId;
-                    window.pageChange("refund-return.do", { sessionId: sessionId });
+
+                    pageChange("my-inquiry.do", { sessionId: sessionId });
                 },
 
                 moveToReview: function () {
                     let self = this;
+
                     let sessionId = self.sessionId;
+
                     pageChange("review.do", { sessionId: sessionId });
                 },
+                moveToRefund: function () {
+                    let self = this;
+                    console.log("반품•교환 내역 메뉴 클릭. pageChange 호출");
+
+                    // 1. Vue의 sessionId 데이터에 접근
+                    let sessionId = self.sessionId;
+
+                    // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장)
+                    window.pageChange("refund-return.do", { sessionId: sessionId });
+                },
+
             }, // methods
             mounted() {
                 let self = this;
@@ -370,4 +408,3 @@
 
         app.mount('#app');
     </script>
-

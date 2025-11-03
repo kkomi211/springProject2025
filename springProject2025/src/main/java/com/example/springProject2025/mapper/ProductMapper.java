@@ -66,4 +66,6 @@ public interface ProductMapper {
 	
 	Product selectProductNoBySize(HashMap<String, Object> map);
 
+	int updateProductStockAndSellCount(HashMap<String, Object> item);
+
 }

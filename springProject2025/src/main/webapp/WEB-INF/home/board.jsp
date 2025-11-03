@@ -336,15 +336,13 @@
                             alert("비밀번호가 올바르지 않습니다."); // wrong password
                             self.keylock = "";
                         }
-<<<<<<< HEAD
-                    });
-=======
+        
                     },
                     error: function(xhr, status, error) {
                         console.error("Keylock check failed:", error);
                     }
                 });
->>>>>>> branch 'develop' of https://github.com/kkomi211/springProject2025.git
+
             },
             fnChat(){
                 let self = this;
