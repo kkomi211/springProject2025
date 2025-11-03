@@ -67,7 +67,10 @@
                                 <button @click="fnLogin" class="submit-btn">로그인</button>
                             </div>
                             <div class="form-submit">
-                                <button class="submit-btn" style="background-color: yellow; color: black;">카카오 로그인</button>
+                                 <!-- <a href="javascript:void(0)" @click="openKakaoPopup">  -->
+                                <a href="${location}"> 
+                                    <img src="/img/kakao.png">
+                                </a>
                             </div>
                         </div>
                         <div id="other">
@@ -130,6 +133,8 @@
 </html>
 
 <script>
+    console.log("client_id =", "${client_id}");
+    console.log("redirect_uri =", "${redirect_uri}");
     const app = Vue.createApp({
         data() {
             return {
@@ -137,7 +142,12 @@
                 userId : "",
                 pwd : "",
                 isLoginModal : false,
-                noLoginModal : false
+                noLoginModal : false,
+
+                //kakao login
+                // location : "${location}"
+                client_id: "${client_id}", 
+                redirect_uri: "${redirect_uri}"
             };
         },
         methods: {
@@ -176,11 +186,38 @@
             closeModal() {
                 let self = this;
                 self.noLoginModal = false;
+            },
+
+            // Kakao Popup window
+            openKakaoPopup() {
+                let self = this;
+                let kakaoUrl = "https://kauth.kakao.com/oauth/authorize?response_type=code"
+                                + "&client_id=" + self.client_id
+                                + "&redirect_uri=" + self.redirect_uri
+                                + "&prompt=login";
+
+                // Use local variables
+                let width = 850;
+                let height = 950;
+                let left = (window.innerWidth / 2) - (width / 2);
+                let top = (window.innerHeight / 2) - (height / 2);
+
+                // Debugging
+                console.log("Popup URL:", kakaoUrl);
+                console.log(`width=${width},height=${height},left=${left},top=${top}`);
+
+                window.open(
+                    kakaoUrl, // use local variable
+                    "KakaoLogin",
+                    `width=${width},height=${height},left=${left},top=${top},resizable=no,scrollbars=yes`
+                );
             }
+
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+            
         }
     });
 

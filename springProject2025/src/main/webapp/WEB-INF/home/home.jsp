@@ -942,14 +942,37 @@
 
                     }
                 });
-            }
             },
-            mounted() {
-                this.fetchMainSlideImages();
-                this.fetchRecommendedProducts();
-                this.fetchLatestRallies();
+            fnKakao: function(){
+                let self = this;
+                let param = {
+                    code : self.code
+                };
+                $.ajax({
+                    url: "/kakao.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        console.log(data);
+                        self.sessionName = data.properties.nickname;
+                    }
+                });
             }
-        });
+        }, // methods
+        mounted() {
+            // 처음 시작할 때 실행되는 부분
+            let self = this;
+            const queryParams = new URLSearchParams(window.location.search);
+            self.code = queryParams.get('code') || '';
+            if(self.code != ""){
+                self.fnKakao();
+            }
+            this.fetchMainSlideImages();
+            this.fetchRecommendedProducts();
+            this.fetchLatestRallies();
+        }
+    });
 
         app.mount('#app');
     </script>
