@@ -681,7 +681,7 @@
                             <a :href="'/home/product-info.do?productNo=' + product.productNo">
                                 <img :src="product.imgPath" :alt="product.productName">
                                 <h3>{{ product.productName }}</h3>
-                                <p>{{ formatCurrency(product.productPrice) }}</p> <%-- formatCurrency 적용 --%>
+                                <p>{{ formatCurrency(product.productPrice) }}</p>
                             </a>
                         </div>
                         <p v-if="recommendedProducts.length === 0">추천 상품이 없습니다.</p>
@@ -767,7 +767,8 @@
                     mainSlideImages: [],
                     recommendedProducts: [],
                     latestRallies: [],
-                    sessionId: '${sessionId}'
+                    sessionId: '${sessionId}',
+                    isLoggedOut : false
                 };
             },
             methods: {
@@ -793,10 +794,12 @@
                         url: '/api/recommendedProducts.dox',
                         method: 'GET',
                         dataType: 'json',
+                        data: { limit: 4 },
                         success: (response) => {
-                            console.log(response.data);
+                            console.log("Recommended Products Data (from backend):", response.data);
                             if (response.result === 'success') {
-                                self.recommendedProducts = response.data;
+                                self.recommendedProducts = response.data.slice(0, 4);
+                                console.log("Recommended Products Data (after slice, assigned to Vue):", self.recommendedProducts);
                             } else { console.error("추천 상품 로드 실패:", response.message); }
                         },
                         error: (error) => { console.error("추천 상품 AJAX 오류:", error); }
@@ -808,9 +811,11 @@
                         url: '/api/latestRallies.dox',
                         method: 'GET',
                         dataType: 'json',
+                        data: { limit: 3 },
                         success: (response) => {
+                            console.log(response.data);
                             if (response.result === 'success') {
-                                self.latestRallies = response.data;
+                                self.latestRallies = response.data.slice(0, 3);
                                 self.$nextTick(() => { self.initRallySwiper(); });
                             } else { console.error("최신 대회 로드 실패:", response.message); }
                         },
@@ -927,22 +932,22 @@
                     return value.toLocaleString('ko-KR') + ' 원';
                 },
                 fnLogout : function(){
-                let self = this;
-                let param = {};
-                $.ajax({
-                    url: "/member/logout.dox",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    success: function (data) {
-                        if(data.result == "success"){
-                            self.userName = data.userName;
-                            self.isLoggedOut = true;
-                        }
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if(data.result == "success"){
+                                self.userName = data.userName;
+                                self.isLoggedOut = true;
+                            }
 
-                    }
-                });
-            }
+                        }
+                    });
+                }
             },
             mounted() {
                 this.fetchMainSlideImages();

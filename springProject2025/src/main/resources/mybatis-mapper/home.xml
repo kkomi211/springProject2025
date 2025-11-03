@@ -10,9 +10,9 @@
         ORDER BY DISPLAY_ORDER ASC, CDATE DESC
     </select>
 
-    <!-- 베스트셀러/추천 상품 (누적판매수 기준) - ROWNUM 및 인라인 뷰로 수정 -->
-    <select id="selectTopSellingProducts" parameterType="int" resultType="com.example.springProject2025.model.Home">
-        SELECT *
+    <!-- 베스트셀러/추천 상품 (누적판매수 기준) - ROWNUM 및 인라인 뷰로 수정 (Old-style) -->
+	<select id="selectTopSellingProducts" parameterType="int" resultType="com.example.springProject2025.model.Home">
+	    SELECT *
         FROM (
             SELECT
                 P.PRODUCT_NO,
@@ -27,7 +27,7 @@
             ORDER BY P.SELL_COUNT DESC, P.UDATE DESC
         )
         WHERE ROWNUM &lt;= #{limit}
-    </select>
+	</select>
 
     <!-- 최신 대회 정보 조회 (현재 날짜 기준 접수 기간 내인 것 우선) - ROWNUM 및 인라인 뷰로 수정 -->
     <select id="selectLatestRallies" parameterType="int" resultType="com.example.springProject2025.model.Home">
