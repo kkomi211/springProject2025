@@ -3,6 +3,7 @@ package com.example.springProject2025.controller;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,13 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 public class HomeController {
 	
+	// @value ==> 카카오 록인
+	
+	@Value("${client_id}") // the name should be the same as the one in application.properties
+	private String client_id;
+
+    @Value("${redirect_uri}")
+    private String redirect_uri;
 	@Autowired
 	HomeService homeService;
 	
@@ -74,6 +82,11 @@ public class HomeController {
 	
 	@RequestMapping("home/login.do")
 	public String iogin(Model model) throws Exception {
+		// 카카오 록인
+		String location = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id="+client_id+"&redirect_uri="+redirect_uri+"&prompt=login";
+		model.addAttribute("location", location);
+//		model.addAttribute("client_id", client_id);
+//	    model.addAttribute("redirect_uri", redirect_uri);
 		return "home/login"; // .jsp빠진형태
 	}
 	
