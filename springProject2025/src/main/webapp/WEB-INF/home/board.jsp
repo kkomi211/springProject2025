@@ -162,9 +162,10 @@
                                 <div class="modal-content">
                                     <h2>비밀글로 보호된 게시물입니다.</h2>
                                     <p>비밀번호를 입력해야 내용을 확인할 수 있습니다.</p>
-                                    <input class="btn" type="password" @keyup.enter="fnKeylock" placeholder="비밀번호 입력" v-model="keylock">
+                                    <input class="btn" type="password" @keyup.enter="fnKeylock" placeholder="비밀번호 입력" v-model="keylock" id="keylock">
                                     <div>
-                                        <button class="btn" @click="pwdCorrect = false">닫기</button>
+                                        <button style="margin-right: 10px;" class="btn" @click="pwdCorrect = false">닫기</button>
+                                        <button class="btn" @click="fnKeylock">확인</button>
                                     </div>
                                 </div>
                             </div>
@@ -334,6 +335,7 @@
                             pageChange("board/view.do", { boardNo: self.selectedPost.boardNo });
                         } else if(data.result === "fail") {
                             alert("비밀번호가 올바르지 않습니다."); // wrong password
+                            document.querySelector("#keylock").focus();
                             self.keylock = "";
                         }
                     },
