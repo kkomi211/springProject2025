@@ -1,16 +1,29 @@
 package com.example.springProject2025.controller;
 
 import java.util.HashMap;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import ch.qos.logback.core.model.Model;
+
+import com.example.springProject2025.dao.HomeService;
+import com.example.springProject2025.model.Home;
+import com.google.gson.Gson;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class HomeController {
+	
+	@Autowired
+	HomeService homeService;
+	
 	@RequestMapping("home.do")
 	public String userList(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
 		request.setAttribute("sessionId", map.get("sessionId"));
@@ -91,5 +104,62 @@ public class HomeController {
 	public String addr(Model model) throws Exception {
 		return "home/jusoPopup"; // 주소 검색 팝업 (.jsp빠진형태)
 	}
+	
+	/**
+     * 메인 슬라이드 이미지 데이터 조회 (AJAX)
+     */
+    @GetMapping("/api/mainSlideImages.dox")
+    @ResponseBody
+    public String getMainSlideImages() {
+        HashMap<String, Object> resultMap = new HashMap<>();
+        try {
+            List<Home> slideImages = homeService.getMainSlideImages();
+            resultMap.put("result", "success");
+            resultMap.put("data", slideImages);
+        } catch (Exception e) {
+            resultMap.put("result", "fail");
+            resultMap.put("message", "메인 슬라이드 이미지 조회 중 오류: " + e.getMessage());
+            System.err.println("메인 슬라이드 이미지 조회 중 오류: " + e.getMessage());
+        }
+        return new Gson().toJson(resultMap);
+    }
+
+    /**
+     * 추천 상품 목록 조회 (AJAX)
+     */
+    @GetMapping("/api/recommendedProducts.dox")
+    @ResponseBody
+    public String getRecommendedProducts() {
+        HashMap<String, Object> resultMap = new HashMap<>();
+        try {
+            List<Home> products = homeService.getRecommendedProducts(8); // 8개 상품 가져오기
+            resultMap.put("result", "success");
+            resultMap.put("data", products);
+        } catch (Exception e) {
+            resultMap.put("result", "fail");
+            resultMap.put("message", "추천 상품 조회 중 오류: " + e.getMessage());
+            System.err.println("추천 상품 조회 중 오류: " + e.getMessage());
+        }
+        return new Gson().toJson(resultMap);
+    }
+
+    /**
+     * 최신 대회 목록 조회 (AJAX)
+     */
+    @GetMapping("/api/latestRallies.dox")
+    @ResponseBody
+    public String getLatestRallies() {
+        HashMap<String, Object> resultMap = new HashMap<>();
+        try {
+            List<Home> rallies = homeService.getLatestRallies(4); // 4개 대회 가져오기
+            resultMap.put("result", "success");
+            resultMap.put("data", rallies);
+        } catch (Exception e) {
+            resultMap.put("result", "fail");
+            resultMap.put("message", "최신 대회 조회 중 오류: " + e.getMessage());
+            System.err.println("최신 대회 조회 중 오류: " + e.getMessage());
+        }
+        return new Gson().toJson(resultMap);
+    }
 
 }
