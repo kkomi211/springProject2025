@@ -57,6 +57,21 @@ public class MemberService {
 		return resultMap;
 	}
 	
+	public HashMap<String, Object> memberLogout(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		// 세션정보 삭제하는 방법은
+		// 1개씩 키값을 이용해서 삭제하거나, 전체를 한번에 삭제
+		
+		String userName = (String) session.getAttribute("sessionName");
+		resultMap.put("userName", userName);
+		resultMap.put("result", "success");
+		
+		session.removeAttribute("sessionId"); // 1개씩 삭제
+		
+		return resultMap;
+	}
+	
 	public HashMap<String, Object> memberSignup(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();

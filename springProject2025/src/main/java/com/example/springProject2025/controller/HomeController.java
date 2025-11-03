@@ -12,7 +12,8 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 public class HomeController {
 	@RequestMapping("home.do")
-	public String userList(Model model) throws Exception {
+	public String userList(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
+		request.setAttribute("sessionId", map.get("sessionId"));
 		return "home/home"; // .jsp빠진형태
 	}
 	
