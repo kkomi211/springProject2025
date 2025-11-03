@@ -12,6 +12,7 @@
     <title>Homepage</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="/js/page-change.js"></script>
     <style>
        
     </style>
@@ -160,6 +161,9 @@
                     success: function (data) {
                         console.log(data);
                         if (data.result === "success") {
+                            if(data.userType == "A"){
+                                pageChange("/admin.do", {sessionId : self.userId});
+                            }
                             // 로그인 성공 시 페이지 전환
                             self.isLoginModal = true;
                         } else {
