@@ -38,13 +38,18 @@
                                 <input type="text" placeholder="검색어를 입력해 주세요.">
                             </div>
                             <div>
-                                <a href="/home/login.do">로그인</a>
+                                <template v-if="sessionId != ''">
+                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                                </template>
+                                <template v-else>
+                                    <a href="/home/login.do">로그인</a>
+                                </template>
                             </div>
-                            <div>
+                            <div v-if="sessionId == ''">
                                 <a href="/home/signup.do">가입하기</a>
                             </div>
-                            <div><a href="/home/mypage/inquiry.do">문의</a></div>
-                            <div><a href="/home/cart.do">장바구니</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -77,19 +82,19 @@
                                 <ul>
                                     <li>
                                         <span class="icon">📝</span>
-                                        <a href="#">게시판</a>
+                                        <a href="/home/community/board.do">게시판</a>
                                     </li>
-                                    <li @click="">
+                                    <li>
                                         <span class="icon">📦</span>
-                                        <a href="javascript:;">크루 찾기</a>
+                                        <a href="/home/community/crew.do">크루 찾기</a>
                                     </li>
                                     <li>
                                         <span class="icon">💬</span>
-                                        <a href="#">대회정보</a>
+                                        <a href="/home/community/rally.do">대회정보</a>
                                     </li>
-                                    <li class="active" @click="fnChat">
+                                    <li class="active">
                                         <span class="icon">👤</span>
-                                        <a href="javascript:;">채팅방</a>
+                                        <a href="/home/community/chat.do">채팅방</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -102,27 +107,29 @@
                             </div>
                             <div id="chatBox">
                                 <div v-for="item in messageList" class="margin30">
-                                    <a class="bold">{{item.nickname}}</a> : 
+                                    <a class="bold">{{item.nickname}}</a> :
                                     {{item.message}}
-                                    <button class="red" v-if="item.senderId == sessionId || sessionId == ownerId" @click="fndeleteMessage(item.chatId)">삭제</button>
+                                    <button class="red" v-if="item.senderId == sessionId || sessionId == ownerId"
+                                        @click="fndeleteMessage(item.chatId)">삭제</button>
                                     <div class="text-right">{{item.cdate}}</div>
                                 </div>
                             </div>
-                            <input type="text" id="message" placeholder="메시지를 입력하세요..."
-                                @keyup.enter="sendMessage">
+                            <input type="text" id="message" placeholder="메시지를 입력하세요..." @keyup.enter="sendMessage">
                             <button @click="sendMessage">전송</button>
                             <div>
                                 <button class="margin30" @click="fnChat">돌아가기</button>
                                 <button class="margin30" @click="fnDeleteMember(sessionId)">탈퇴하기</button>
                             </div>
                         </main>
-                        <aside class="sidebar">
+                        <aside class="sidebar" v-if="!directFlg">
                             <h2 class="sidebar-heading"> 채팅방 유저 목록</h2>
                             <nav class="mypage-menu">
                                 <ul>
                                     <li v-for="item in memberList">
-                                        <a :class="{bold: item.userId == ownerId}">{{item.nickname}}</a>
-                                        <button class="red" v-if="sessionId == ownerId && item.userId != ownerId" @click="fnDeleteMember(item.userId)">x</button>
+                                        <a :class="{bold: item.userId == ownerId}"
+                                            @click="fnDirectChat(item.userId)">{{item.nickname}}</a>
+                                        <button class="red" v-if="sessionId == ownerId && item.userId != ownerId"
+                                            @click="fnDeleteMember(item.userId)">x</button>
                                     </li>
                                 </ul>
                             </nav>
@@ -174,9 +181,10 @@
                     chatInfo: {},
                     chatroomNo: "${chatroomNo}",
                     stompClient: null,
-                    messageList : [],
-                    memberList : [],
-                    ownerId : ""
+                    messageList: [],
+                    memberList: [],
+                    ownerId: "",
+                    directFlg: false
                 };
             },
             methods: {
@@ -215,11 +223,13 @@
                         success: function (data) {
                             console.log(data);
                             self.chatInfo = data.chatlist[0];
-
+                            if (self.chatInfo.roomType == 'DIRECT') {
+                                self.directFlg = true;
+                            }
                         }
                     });
                 },
-                fnMessageList(){
+                fnMessageList() {
                     let self = this;
                     let chatBox = document.getElementById("chatBox");
                     let param = {
@@ -266,8 +276,8 @@
 
                     let param = {
                         chatroomNo: self.chatroomNo,
-                        senderId : self.sessionId,
-                        message : messageContent
+                        senderId: self.sessionId,
+                        message: messageContent
                     }
                     $.ajax({
                         url: "/home/mypage/message/add.dox",
@@ -276,7 +286,7 @@
                         data: param,
                         success: function (data) {
                             console.log(data);
-                            
+
                             document.getElementById("message").value = "";
 
 
@@ -285,13 +295,13 @@
                         }
                     });
                 },
-                fndeleteMessage(chatId){
+                fndeleteMessage(chatId) {
                     let self = this;
                     let chatBox = document.getElementById("chatBox");
                     let messageContent = document.getElementById("message").value;
 
                     let param = {
-                        chatId : chatId
+                        chatId: chatId
                     }
                     $.ajax({
                         url: "/home/mypage/message/delete.dox",
@@ -310,10 +320,10 @@
                     let self = this;
                     self.fnMessageList();
                 },
-                fnMemberList(){
+                fnMemberList() {
                     let self = this;
                     let param = {
-                        chatroomNo : self.chatroomNo
+                        chatroomNo: self.chatroomNo
                     }
                     $.ajax({
                         url: "/home/mypage/member/list.dox",
@@ -327,11 +337,11 @@
                         }
                     });
                 },
-                fnDeleteMember(userId){
+                fnDeleteMember(userId) {
                     let self = this;
                     let param = {
-                        userId : userId,
-                        chatroomNo : self.chatroomNo
+                        userId: userId,
+                        chatroomNo: self.chatroomNo
                     }
                     $.ajax({
                         url: "/home/mypage/member/delete.dox",
@@ -344,11 +354,37 @@
                             self.fnMemberList();
                         }
                     });
+                },
+                fnDirectChat(userId) {
+                    let self = this;
+                    if (userId == self.sessionId) {
+                        return;
+                    }
+                    if (!confirm("1ㄷ1 채팅을 하시겠습니까?")) {
+                        return
+                    }
+                    let param = {
+                        userId: userId,
+                        sessionId: self.sessionId
+                    }
+                    $.ajax({
+                        url: "/home/mypage/member/chat.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            if (data.result != "fail") {
+                                pageChange("/home/community/chat/show.do", { sessionId: self.sessionId, chatroomNo: data.chatroomNo });
+                            }
+                        }
+                    });
                 }
             }, // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분
                 let self = this;
+                self.directFlg = false;
                 self.fnGetUserInfo();
                 self.fnGetUserChatList();
                 self.fnMessageList();

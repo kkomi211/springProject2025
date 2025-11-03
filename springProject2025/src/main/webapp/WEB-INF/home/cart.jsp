@@ -758,7 +758,6 @@
                     // sessionId는 브라우저 세션에서 자동으로 가져오므로 파라미터로 전달할 필요 없음
                     if (typeof pageChange === 'function') {
                         pageChange("payment/paybefore.do", {
-                            // sessionId: this.sessionId, // 브라우저 세션에서 자동으로 가져오므로 주석처리
                             selectedCartNos: selectedCartNos
                         });
                     } 
