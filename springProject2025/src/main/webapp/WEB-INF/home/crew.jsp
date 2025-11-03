@@ -52,24 +52,24 @@
                     <div class="page-container">
                         <!--  왼쪽 사이드바 -->
                         <aside class="sidebar">
-                            <h2 class="sidebar-heading">COMMUNITY ></h2>
+                            <h2 class="sidebar-heading"> COMMUNITY ></h2>
                             <nav class="mypage-menu">
                                 <ul>
                                     <li class="active">
                                         <span class="icon">📝</span>
-                                        <a href="#">게시판</a>
+                                        <a href="/home/community/board.do">게시판</a>
                                     </li>
-                                    <li @click="moveToRefund">
+                                    <li>
                                         <span class="icon">📦</span>
-                                        <a href="javascript:;">크루 찾기</a>
+                                        <a href="/home/community/crew.do">크루 찾기</a>
                                     </li>
                                     <li>
                                         <span class="icon">💬</span>
-                                        <a href="#">대회정보</a>
+                                        <a href="/home/community/rally.do">대회정보</a>
                                     </li>
-                                    <li @click="fnChat">
+                                    <li>
                                         <span class="icon">👤</span>
-                                        <a href="javascript:;">채팅방</a>
+                                        <a href="/home/community/chat.do">채팅방</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -120,7 +120,11 @@
 
                                     </td>
                                     <td>{{item.intro}}</td>
+                                    <td class="entry-btn-cell">
+                                        <button class="entry-btn" @click="fnEnterChat(item.chatroomNo)">입장하기</button>
+                                    </td>
                                 </tr>
+
                             </table>
 
                             <!-- 페이지네이션 -->
@@ -257,18 +261,18 @@
                             alert("비밀번호가 틀렸습니다.");
                         }
                     },
-                    moveToRefund() {
-                        alert("크루 찾기 페이지로 이동합니다.");
-                    },
-                    fnChat() {
-                        alert("채팅방으로 이동합니다.");
+                    fnEnterChat(chatroomNo) {
+                        alert("채팅방 번호 " + chatroomNo + "에 입장합니다.");
+                        location.href = "/home/community/chat/show.do?roomNo=" + chatroomNo;
+
                     },
                     moveToPost() {
                         alert("글쓰기 페이지로 이동합니다.");
+                        window.location.href = "/home/community/board/post.do?sessionId=" + this.sessionId;
                     },
-                    fnPostView(boardNo) {
-                        alert("게시글 상세보기 페이지로 이동 (" + boardNo + ")");
-                    }
+
+
+
                 },
                 mounted() {
                     this.fnList();

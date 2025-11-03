@@ -67,19 +67,19 @@
                                     <ul>
                                         <li class="active">
                                             <span class="icon">📝</span>
-                                            <a href="#">게시판</a>
+                                            <a href="/home/community/board.do">게시판</a>
                                         </li>
-                                        <li @click="moveToRefund">
+                                        <li>
                                             <span class="icon">📦</span>
-                                            <a href="javascript:;">크루 찾기</a>
+                                            <a href="/home/community/crew.do">크루 찾기</a>
                                         </li>
                                         <li>
                                             <span class="icon">💬</span>
-                                            <a href="#">대회정보</a>
+                                            <a href="/home/community/rally.do">대회정보</a>
                                         </li>
-                                        <li @click="fnChat">
+                                        <li>
                                             <span class="icon">👤</span>
-                                            <a href="javascript:;">채팅방</a>
+                                            <a href="/home/community/chat.do">채팅방</a>
                                         </li>
                                     </ul>
                                 </nav>
@@ -162,8 +162,10 @@
                                             <button class="btn" @click="pwdCorrect = false">닫기</button>
                                         </div>
                                     </div>
+                                </div>
                             </main>
                         </div>
+                    </div>
                 </main>
 
                 <footer>
@@ -258,17 +260,11 @@
                             alert("비밀번호가 틀렸습니다.");
                         }
                     },
-                    moveToRefund() {
-                        alert("크루 찾기 페이지로 이동합니다.");
-                    },
-                    fnChat() {
-                        alert("채팅방으로 이동합니다.");
-                    },
                     moveToPost() {
                         alert("글쓰기 페이지로 이동합니다.");
-                        let self = this;
-                        pageChange("/home/community/board/post.do", { sessionId: self.sessionId });
-                    }
+                        window.location.href = "/home/community/board/post.do?sessionId=" + this.sessionId;
+                    },
+
                 },
                 mounted() {
                     this.fnList();
