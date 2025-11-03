@@ -69,10 +69,17 @@
 
                 <main>
                     <div class="content">
-                        <h1 class="margintop">제품 상세 </h1>
+                        <h1 class="margintop">제품</h1>
                         <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword">
-                        <button class="height40 bluebutton" @click="fnProductSearch(keyword)">검색</button>
-                        <hr>
+                        <button class="height40 bluebutton" @click="fnList">검색</button>
+                    </div>
+                    <div class="header">
+                        <div class="header-welcome">
+                            Welcome,
+                        </div>
+                        <div class="header-user">
+                            {{ userName }}
+                        </div>
                     </div>
                     <div class="side-bar">
                         <div class="category-box">
@@ -319,7 +326,8 @@
                     quantity: 1,
                     size: "",
                     maxQuantity: 1,
-                    sessionId : "${sessionId}"
+                    sessionId : "${sessionId}",
+                    userName : ""
                 };
             },
             computed: {
@@ -603,6 +611,23 @@
                         s => String(s.productSize) === String(this.size)
                     );
                     this.maxQuantity = found ? Number(found.quantity) : 0;
+                },
+                fnUserInfo() {
+                    let self = this;
+                    $.ajax({
+                        url: "/home/mypage/userInfo.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: { userId: self.sessionId },
+                        success: function (data) {
+                            console.log("사용자 이름:", data);
+                            self.userName = data;
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("사용자 정보 조회 실패:", error);
+                            self.userName = "Guest";
+                        }
+                    });
                 }
 
 
@@ -615,6 +640,7 @@
                 self.fnImgList();
                 self.fnReviewList();
                 self.fnInquiry();
+                self.fnUserInfo();
             }
         });
 

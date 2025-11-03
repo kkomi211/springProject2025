@@ -61,4 +61,33 @@
 			AND CHATROOM_NO = #{chatroomNo}
 	</delete>
 	
+	<select id="checkMemberChat" parameterType="hashmap" resultType="com.example.springProject2025.model.Chat">
+		SELECT COUNT(*) AS CNT, DIRECT_CHATROOM_NO AS CHATROOM_NO
+		FROM CHATROOM_DIRECT_PAIR
+		WHERE 1=1
+			AND ((USER_ID_A = #{userId} AND USER_ID_B = #{sessionId}) 
+			OR (USER_ID_A = #{sessionId} AND USER_ID_B = #{userId}))
+		GROUP BY DIRECT_CHATROOM_NO
+	</select>
+	
+	<insert id="createMemberChat" parameterType="hashmap" useGeneratedKeys="true" keyColumn="CHATROOM_NO" keyProperty="chatroomNo">
+		INSERT INTO CHAT
+		VALUES (CHAT_SEQ.NEXTVAL, 'DIRECT', #{sessionId} || ' ' || #{userId} || '의채팅방', #{sessionId}, SYSDATE, 
+		 #{sessionId} || ' ' || #{userId}', NULL, SYSDATE)
+	</insert>
+	
+	<insert id="createMemberPair" parameterType="hashmap">
+		INSERT INTO CHATROOM_DIRECT_PAIR
+		VALUES (#{chatroomNo}, #{sessionId}, #{userId})
+	</insert>
+	
+	<insert id="createMember" parameterType="hashmap">
+		INSERT INTO CHAT_MEMBER
+		VALUES (CHAT_MEMBER_SEQ.NEXTVAL, SYSDATE, 'M', #{userId}, #{chatroomNo})
+	</insert>
+	
+	<insert id="createMemberOwner" parameterType="hashmap">
+		INSERT INTO CHAT_MEMBER
+		VALUES (CHAT_MEMBER_SEQ.NEXTVAL, SYSDATE, 'O', #{sessionId}, #{chatroomNo})
+	</insert>
 </mapper>

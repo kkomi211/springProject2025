@@ -37,6 +37,15 @@ tr {
     padding: 10px 10px;
 }
 
+.page-container {
+  display: flex;
+  max-width: 1300px;
+  margin: 2px auto;
+  padding: 0 40px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
 
 td,
 tr {
@@ -169,10 +178,27 @@ td input {
 
 .side-bar{
     width:20%;
-    margin: 30px;
+    margin-bottom: 30px;
     float: left;
     border: 1px solid #ccc; 
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.sidebar{
+    width: 280px;
+  padding: 30px 0;
+  border-right: 1px solid #eee;
+  flex-shrink: 0;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 30px 40px;
+
+}
+
+.product-box:hover{
+    cursor: pointer;
 }
 
 .category-box .category{
@@ -195,10 +221,10 @@ td input {
 }
 
 .main-container{
-    width:60%;
+    width:80%;
     padding: 0px;
-    border: 1px solid black;
-    margin: 30px;
+    margin-bottom: 30px;
+    margin-left: 30px;
     float: left;
     display: grid;
     justify-content: center;
@@ -206,17 +232,18 @@ td input {
     grid-template-columns: repeat(3, 380px);
     grid-template-rows: repeat(3, 450px);
     grid-auto-rows: 100px;
-    border: 1px solid #ccc; 
     padding: 20px; 
-    background-color: white; 
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.margin-right{
+    margin-right: 200px;
 }
 
 .infoMain-container{
     width:60%;
     padding: 0px;
     border: 1px solid black;
-    margin: 30px;
+    margin-bottom: 30px;
     float: left;
     border: 1px solid #ccc; 
     padding: 20px; 
@@ -270,12 +297,17 @@ td input {
 .active{
     background-color: rgb(37, 37, 37);
     color: white;
+}   
+
+.category-box .active{
+    background-color: #f7f7f7;
+    font-weight: bold;
 }
 
 
 .category-box .subcategory:hover{
-    background-color: rgb(37, 37, 37);
-    color: white;
+   background-color: #f7f7f7;
+    font-weight: bold;  
 }
 
 .subcategory-wrapper { position: relative; }
@@ -286,6 +318,8 @@ td input {
   cursor: pointer; 
   border: 1px solid #ddd;
   border-right: none;          /* 오른쪽 보더 제거 → 붙어 보이게 */
+  background-color: white; 
+  color: black;
 }
 
 .subcategory-children{
@@ -421,4 +455,24 @@ td input {
 #editor{
     width: 100%;
     height: 500px;
+}
+
+.header {
+  padding: 20px 40px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+}
+
+.header-welcome {
+  font-size: 14px;
+  color: #999;
+}
+
+.header-user {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 5px;
+  margin-left: 40px;
 }

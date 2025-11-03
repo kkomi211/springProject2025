@@ -79,51 +79,64 @@
                         <h1 class="margintop">제품</h1>
                         <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword">
                         <button class="height40 bluebutton" @click="fnList">검색</button>
-                        <hr>
                     </div>
-                    <div class="side-bar">
-                        <div class="category-box">
-                            <div class="category">카테고리</div>
-                            <div class="subcategory" :class="{active: category == '' || category == 'undefined'}" @click="selectCategory('')">전체</div>
-                            <div v-for="p in parents" :key="p.typeNo" class="subcategory-wrapper"
-                                @mouseenter="hoverParent = String(p.typeNo)" @mouseleave="hoverParent = null">
-                                <div class="subcategory"
-                                    :class="{ active: String(p.typeNo).slice(0, 2) === String(category ?? '').slice(0, 2) }" @click="selectCategory(p.typeNo)">
-                                    {{ p.typeName }}
-                                </div>
-
-                                <!-- 호버 시 depth=2 목록 -->
-                                <div class="subcategory-children" v-if="hoverParent === String(p.typeNo)">
-                                    <div v-for="c in childrenByParent[String(p.typeNo)]" :key="c.typeNo"
-                                        class="subcategory child" @click="selectCategory(c.typeNo)">
-                                        {{ c.typeName }}
+                    <div class="header">
+                        <div class="header-welcome">
+                            Welcome,
+                        </div>
+                        <div class="header-user">
+                            {{ userName }}
+                        </div>
+                    </div>
+                    <div class="page-container">
+                        <div class="sidebar">
+                            <div class="category-box">
+                                <div class="category">카테고리</div>
+                                <div class="subcategory" :class="{active: category == '' || category == 'undefined'}"
+                                    @click="selectCategory('')">전체</div>
+                                <div v-for="p in parents" :key="p.typeNo" class="subcategory-wrapper"
+                                    @mouseenter="hoverParent = String(p.typeNo)" @mouseleave="hoverParent = null">
+                                    <div class="subcategory"
+                                        :class="{ active: String(p.typeNo).slice(0, 2) === String(category ?? '').slice(0, 2) }"
+                                        @click="selectCategory(p.typeNo)">
+                                        {{ p.typeName }}
                                     </div>
-                                    <div v-if="!childrenByParent[String(p.typeNo)] || childrenByParent[String(p.typeNo)].length === 0"
-                                        class="subcategory child empty">
-                                        하위 없음
+
+                                    <!-- 호버 시 depth=2 목록 -->
+                                    <div class="subcategory-children" v-if="hoverParent === String(p.typeNo)">
+                                        <div v-for="c in childrenByParent[String(p.typeNo)]" :key="c.typeNo"
+                                            class="subcategory child" @click="selectCategory(c.typeNo)">
+                                            {{ c.typeName }}
+                                        </div>
+                                        <div v-if="!childrenByParent[String(p.typeNo)] || childrenByParent[String(p.typeNo)].length === 0"
+                                            class="subcategory child empty">
+                                            하위 없음
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="main-container">
-                        <span v-for="item in list" class="product-box" @click="fnProductView(item.productNo)">
-                            <div><img :src="imgByProduct[String(item.productNo)] || '/img/no-image.png'"
-                                    class="small-img" :alt="item.productName"></div>
-                            <div>{{item.productName}}</div>
-                            <div>{{item.price}} 원</div>
-                            <div v-if="ratingByName[item.productName]" class="stars">
-                                <span v-for="n in 5" :key="n" class="star"
-                                    :class="{ filled: n <= ratingByName[item.productName].rounded }">★</span>
-                                <span class="avg"> {{ ratingByName[item.productName].avg.toFixed(1) }}</span>
-                                <span class="cnt"> ({{ ratingByName[item.productName].cnt }})</span>
+                        <main class="main-content">
+                            <div class="main-container">
+                                <span v-for="item in list" class="product-box" @click="fnProductView(item.productNo)">
+                                    <div><img :src="imgByProduct[String(item.productNo)] || '/img/no-image.png'"
+                                            class="small-img" :alt="item.productName"></div>
+                                    <div>{{item.productName}}</div>
+                                    <div>{{item.price}} 원</div>
+                                    <div v-if="ratingByName[item.productName]" class="stars">
+                                        <span v-for="n in 5" :key="n" class="star"
+                                            :class="{ filled: n <= ratingByName[item.productName].rounded }">★</span>
+                                        <span class="avg"> {{ ratingByName[item.productName].avg.toFixed(1) }}</span>
+                                        <span class="cnt"> ({{ ratingByName[item.productName].cnt }})</span>
+                                    </div>
+                                    <div v-else class="no-review">리뷰 없음</div>
+                                </span>
                             </div>
-                            <div v-else class="no-review">리뷰 없음</div>
-                        </span>
-                    </div>
-                    <div class="clear text-center">
-                        <span class="margin30 font30 cursor" :class="{bold: page == num}" v-for="num in totalPage"
-                            @click="fnPage(num)">{{num}}</span>
+                            <div class="clear text-center margin-right">
+                                <span class="margin30 font30 cursor" :class="{bold: page == num}" v-for="num in totalPage"
+                                    @click="fnPage(num)">{{num}}</span>
+                            </div>
+                        </main>
                     </div>
                 </main>
 
@@ -175,7 +188,8 @@
                     keyword: "${keyword}",
                     category: "${category}",
                     hoverParent: null,
-                    sessionId : "${sessionId}"
+                    sessionId: "${sessionId}",
+                    userName: ""
                 };
             },
             computed: {
@@ -279,18 +293,35 @@
                     let self = this;
                     self.category = typeNo;
                     console.log(" == > " + self.category);
-                    
+
                     self.fnList();
                 },
-                fnProductView(productNo, rating){
+                fnProductView(productNo, rating) {
                     let self = this;
-                    pageChange("/home/product-info.do", {productNo : productNo, sessionId : self.sessionId});
+                    pageChange("/home/product-info.do", { productNo: productNo, sessionId: self.sessionId });
                 },
-                fnProduct(){
+                fnProduct() {
                     let self = this;
-                    pageChange("/home/product.do", {category : "", sessionId : self.sessionId});
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId });
+                },
+                fnUserInfo() {
+                    let self = this;
+                    $.ajax({
+                        url: "/home/mypage/userInfo.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: { userId: self.sessionId },
+                        success: function (data) {
+                            console.log("사용자 이름:", data);
+                            self.userName = data;
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("사용자 정보 조회 실패:", error);
+                            self.userName = "Guest";
+                        }
+                    });
                 }
-                
+
             }, // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분
@@ -298,6 +329,7 @@
                 self.fnList();
                 self.fnImgList();
                 self.fnReviewList();
+                self.fnUserInfo();
             }
         });
 
