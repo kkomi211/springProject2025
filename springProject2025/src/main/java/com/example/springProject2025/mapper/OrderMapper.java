@@ -37,7 +37,14 @@ public interface OrderMapper {
 	//리뷰리스트
 	List<Order> selectReviewList(HashMap<String, Object> map);
 	
+	//리스트 인서트방식 (중단 상황)
+	int insertOrderList(List<HashMap<String, Object>> orderList);
 
+	//단일 인서트 방식
+	int insertOrderItem(HashMap<String, Object> item);
+	
+	// 신규 주문 완료 후, 해당 사용자의 가장 최근 주문 시간을 조회하여 주문하자마자 보여주기 목적
+	String selectRecentOrderDate(String userId);
 	
 
 }

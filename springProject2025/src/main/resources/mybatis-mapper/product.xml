@@ -320,4 +320,15 @@
 		VALUES (CART_SEQ.NEXTVAL, #{userId}, #{searchNo}, #{quantity}, SYSDATE)
 	</insert>
 	
+	
+	<update id="updateProductStockAndSellCount" parameterType="hashmap">
+    UPDATE PRODUCT
+    SET
+        SELL_COUNT = SELL_COUNT + #{quantity},  
+        QUANTITY = QUANTITY - #{quantity},      
+        UDATE = SYSDATE                         
+    WHERE
+        PRODUCT_NO = #{productNo}
+	</update>
+	
 </mapper>
