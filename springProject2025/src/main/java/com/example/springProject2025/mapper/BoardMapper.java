@@ -12,14 +12,18 @@ import com.example.springProject2025.model.Comment;
 public interface BoardMapper {
 	
 	// rally-board(대회정보) 목록
-		List<Board>selectRallyBoardList(HashMap<String, Object> map);
-	
+	List<Board>selectRallyBoardList(HashMap<String, Object> map);
 
- 
 	// 게시판 리스트
 	List <Board>boardList(HashMap<String, Object> map);
 	
-	// 게시글 전체 개수
+	// crew 게시판 list
+	List <Board>selectCrewBoardList(HashMap<String, Object> map);
+	
+	// 게시글 전체 개수(rally board)
+	int selectRallyBoardCnt(HashMap<String, Object> map);
+	
+	// 게시글 전체개수 (board)
 	int boardCnt(HashMap<String, Object> map);
 	
 	// 게시글 추가

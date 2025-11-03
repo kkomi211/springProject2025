@@ -146,6 +146,7 @@
                                             {{item.title}}
                                             <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
                                         </a>
+
                                     </td>
                                     <td>💬 {{item.commentCnt}} </td>
                                     <td>{{item.userId}}</td>
