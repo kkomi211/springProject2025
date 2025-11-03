@@ -61,26 +61,19 @@
                         <div>
                             <a href="javascript:;" @click="fnProduct">세일</a>
                         </div>
-                        <div>
+                        <div>   
                             <a href="/home/community/board.do">커뮤니티</a>
                         </div>
                     </div>
                 </header>
 
                 <main>
-                    <div class="content">
-                        <h1 class="margintop">제품</h1>
+                    <div class="newcontent">
+                        <!-- <h1 class="margintop">제품</h1> -->
                         <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword">
                         <button class="height40 bluebutton" @click="fnList">검색</button>
                     </div>
-                    <div class="header">
-                        <div class="header-welcome">
-                            Welcome,
-                        </div>
-                        <div class="header-user">
-                            {{ userName }}
-                        </div>
-                    </div>
+                   
                     <div class="side-bar">
                         <div class="category-box">
                             <div class="category">카테고리</div>
