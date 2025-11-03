@@ -407,13 +407,19 @@
                                 <input type="text" placeholder="검색어를 입력해 주세요.">
                             </div>
                             <div>
-                                <a href="/home/login.do">로그인</a>
+                                <template v-if="sessionId != ''">
+                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                                </template>
+                                <template v-else>
+                                    <a href="/home/login.do">로그인</a>
+                                </template>
                             </div>
-                            <div>
+                            <div v-if="sessionId == ''">
                                 <a href="/home/signup.do">가입하기</a>
                             </div>
-                            <div><a href="/home/mypage/inquiry.do">문의</a></div>
-                            <div><a href="/home/cart.do">장바구니</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
+
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -468,7 +474,7 @@
                                     <div class="delivery-request-section">
                                         <label>배송 요청 사항</label>
                                         <input type="text" v-model="orderRequest" placeholder="최대 50자까지 입력 가능합니다."
-                                                maxlength="50" class="delivery-request-input" style="width: 96%;">
+                                            maxlength="50" class="delivery-request-input" style="width: 96%;">
                                         <!--<textarea v-model="orderRequest" placeholder="최대 50자까지 입력 가능합니다." maxlength="50"
                                             class="delivery-request-input" style="width: 96%; resize: none;"></textarea>-->
                                     </div>
@@ -719,35 +725,88 @@
                             // 결제 성공 시
                             alert("결제는 성공");
                             console.log(rsp);
+                            alert("결제돌아온 data" + JSON.stringify(rsp));
                             // self.fnPayHistory(rsp.imp_uid, rsp.paid_amount); //order테이블 업데이트 예정
-                            self.fnPayOrderU(rsp.imp_uid, rsp.paid_amount);  //order테이블 업데이트 예정
+                            self.fnPayOrderI(rsp.imp_uid, rsp.paid_amount //order테이블 인서트 
+                                , self.deliveryInfo // 배송 정보 객체 전체
+                                , self.orderRequest  // 배송 요청 사항
+                            );
+                            // self.fnProductU(rsp.imp_uid, rsp.paid_amount //Product테이블 재고량 변경 XX 
+                            //     , self.deliveryInfo // 배송 정보 객체 전체
+                            //     , self.orderRequest  // 배송 요청 사항
+                            // );  
+                            // self.fnCartD(rsp.imp_uid, rsp.paid_amount //Cart테이블 인서트 재고량 변경 XX
+                            //     , self.deliveryInfo // 배송 정보 객체 전체
+                            //     , self.orderRequest  // 배송 요청 사항
+                            // );  
                         } else {
                             // 결제 실패 시
-                            alert("결제 실패");
+                            alert("결제 및 주문 실패");
                         }
                     });
                 },
-                fnPayOrderU: function (uid, amount) { //order테이블 업데이트 예정
+                fnPayOrderI: function (uid, amount, deliveryInfo, orderRequest) { //order테이블 업데이트 예정 amount는 카드사에서 돌아온값
+                    alert("fnPayOrderI 진입 " + uid + " " + amount + " " + deliveryInfo + " " + orderRequest);
                     let self = this;
+
+
+                    // **[추가]** 배송 주소(addr)를 deliveryInfo에서 추출합니다.
+                    let deliveryAddress = deliveryInfo.addr; // deliveryInfo의 주소 필드명에 맞게 사용
+                    let paymentMethod = "CARD"; // 결제 수단도 인수로 받거나 여기서 명시 가능 다 카드임,
+
+                    // 1. selectedItems를 복사하여 개별 상품의 paymentAmount를 계산합니다.
+                    let itemsToOrder = JSON.parse(JSON.stringify(self.selectedItems));
+
+                    // 2. 각 주문 항목에 paymentAmount 필드를 추가 (price * quantity)
+                    itemsToOrder.forEach(item => {
+                        let price = parseInt(item.price);
+                        let quantity = parseInt(item.quantity);
+
+                        // **개별 상품의 최종 결제 금액 (DB ORDERS 테이블에 한 건씩 들어갈 금액)**
+                        item.paymentAmount = price * quantity;
+
+                        // 전달받은 주소 정보와 요청 사항을 할당
+                        item.addr = deliveryAddress;
+                        item.paymentMethod = paymentMethod;
+                        item.orderRequest = orderRequest;
+                        item.userId = self.sessionId; // self에 남아있는 데이터는 그대로 사용
+                    });
+
+                    // 3. 수정된 리스트를 JSON 문자열로 변환합니다.
+                    let orderItemsJson = JSON.stringify(itemsToOrder);
+                    // alert("서버로 보내줄 orderItemsJson " + orderItemsJson);
+                    // alert("서버로 보내줄 값uid " + JSON.stringify(uid));
+                    // alert("서버로 보내줄 값amount " + JSON.stringify(amount));
+                    // alert("서버로 보내줄 값userId " + JSON.stringify(self.sessionId));
                     let param = {
+                        // 기존 카트 번호 리스트 (삭제 처리 등에 사용될 수 있음)
                         selectedCartNosJson: '${selectedCartNos != null ? selectedCartNos : ""}',
+
+                        // **새로 추가할 파라미터**: 주문할 상품들의 상세 정보
+                        orderItemsJson: orderItemsJson,
+
+                        // 4. 전체 결제 금액은 결제사에서 받은 'amount'를 사용 (별도의 파라미터 키로 서버에 전달)
+                        //    카드사 IMP 응답에서 받은 amount(총 결제 금액)가 param으로 사용의도.
                         uid: uid,
                         amount: amount,
                         userId: self.sessionId,
-                        deliveryInfo: self.deliveryInfo,
-                        orderRequest: self.orderRequest
+
                     };
-                   //console.log("서버에 결제 히스토리 저장(order테이블)을 위한 param: " + JSON.stringify(param));
+                    //console.log("서버에 결제 히스토리 저장(order테이블)을 위한 param: " + JSON.stringify(param));
                     $.ajax({
-                        url: "/home/payment/payOrderU.dox", //order테이블 업데이트 예정
+                        url: "/home/payment/payOrderI.dox", //order테이블 업데이트 예정
                         dataType: "json",
                         type: "POST",
+                        // jQuery는 기본적으로 객체를 'application/x-www-form-urlencoded'로 직렬화하여 보냅니다.
+                        // Vue 데이터 바인딩된 객체는 자동으로 폼 데이터처럼 전송되지만, 
+                        // 배열/객체를 문자열로 JSON.stringify() 했으므로 문제 없음?...
                         data: param,
                         success: function (data) {
                             //console.log("결제 히스토리 저장 결과: " + JSON.stringify(data));
                             if (data.result == "success") {
-                                
-                                alert("결제후 주문처리 success응답 옴");
+
+                                // alert("결제후 주문처리 success응답 옴");
+                                // alert("결제후 주문처리 success응답 data"+ JSON.stringify(data));
                                 // 주문 상품명 생성 (여러 상품인 경우 첫 번째 상품명 + 외 N건)
                                 let productName = "";
                                 if (self.selectedItems.length > 0) {
@@ -759,15 +818,16 @@
                                 } else {
                                     productName = "주문상품";
                                 }
-                                
-                                alert("결제후 주문처리 완료되었습니다.");
+
+                                // alert("결제후 주문처리 완료되었습니다.");
                                 // 주문 완료 페이지로 이동 - 주문 정보 전달
                                 if (typeof pageChange === 'function') {
                                     pageChange("/home/payment/payafter.do", {
                                         orderItems: JSON.stringify(self.selectedItems),
                                         totalAmount: self.totalPaymentAmount,
                                         paymentMethod: "신용카드",
-                                        productName: productName
+                                        productName: productName,
+                                        orderDate: data.orderDate
                                     });
                                 }
                             } else {

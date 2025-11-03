@@ -12,17 +12,33 @@
 			FROM RALLY R
 			INNER JOIN RALLY_IMG I ON R.RALLY_NO = I.RALLY_NO
 			WHERE 1=1
-			
 			<if test="keyword != null and keyword != ''">
-			    AND (RALLY_NAME LIKE '%' || #{keyword} || '%')
-			    OR (RALLY_DATE LIKE '%' || #{keyword} || '%')
-			    OR (APPLICATION_PERIOD LIKE '%' || #{keyword} || '%')
-			    OR (PRICE LIKE '%' || #{keyword} || '%')
-			    OR (PHONE LIKE '%' || #{keyword} || '%')
-			    OR (TYPE LIKE '%' || #{keyword} || '%')
-			    OR (HOST LIKE '%' || #{keyword} || '%')
+			    AND (
+			        R.RALLY_NAME LIKE '%' || #{keyword} || '%'
+			        OR R.RALLY_DATE LIKE '%' || #{keyword} || '%'
+			        OR R.APPLICATION_PERIOD LIKE '%' || #{keyword} || '%'
+			        OR R.PRICE LIKE '%' || #{keyword} || '%'
+			        OR R.PHONE LIKE '%' || #{keyword} || '%'
+			        OR R.TYPE LIKE '%' || #{keyword} || '%'
+			        OR R.HOST LIKE '%' || #{keyword} || '%'
+			    )
 			</if>
-			
+			ORDER BY R.RALLY_NO DESC
+			OFFSET ( (#{page} - 1) * #{pageSize} ) ROWS FETCH NEXT #{pageSize} ROWS ONLY
 		</select>
 		
+		<select id="selectRallyBoardCnt" parameterType="hashmap" resultType="int">
+		    SELECT COUNT(*) AS CNT
+		    FROM RALLY
+		    WHERE 1=1
+		    <if test="type != null and type != ''">
+		        AND TYPE = #{type}
+		    </if>
+		    <if test="keyword != null and keyword != ''">
+		        AND (
+		            RALLY_NO LIKE '%' || #{keyword} || '%'
+		            OR RALLY_NAME LIKE '%' || #{keyword} || '%'
+		        )
+		    </if>
+		</select>
 	</mapper>  

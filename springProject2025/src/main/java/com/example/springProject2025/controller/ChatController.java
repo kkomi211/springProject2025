@@ -106,7 +106,7 @@ public class ChatController {
 	@SendTo("/topic/public") // 메시지를 "/topic/public"을 구독하는 모든 사용자에게 전송
 	public String sendMessage(String message) {
 		System.out.println("Received message: " + message); // 로그 확인
-		return message;	
+		return message;		
 	}
 	
 }

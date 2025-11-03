@@ -52,13 +52,18 @@
                                 <input type="text" placeholder="검색어를 입력해 주세요.">
                             </div>
                             <div>
-                                <a href="/home/login.do">로그인</a>
+                                <template v-if="sessionId != ''">
+                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                                </template>
+                                <template v-else>
+                                    <a href="/home/login.do">로그인</a>
+                                </template>
                             </div>
-                            <div>
+                            <div v-if="sessionId == ''">
                                 <a href="/home/signup.do">가입하기</a>
                             </div>
-                            <div><a href="/home/mypage/inquiry.do">문의</a></div>
-                            <div><a href="/home/cart.do">장바구니</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -75,19 +80,18 @@
                 </header>
 
                 <main>
-                    <div class="content">
-                        <h1 class="margintop">제품</h1>
+                    <div class="newcontent">
                         <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword">
                         <button class="height40 bluebutton" @click="fnList">검색</button>
                     </div>
-                    <div class="header">
+                    <!-- <div class="header">
                         <div class="header-welcome">
                             Welcome,
                         </div>
                         <div class="header-user">
                             {{ userName }}
                         </div>
-                    </div>
+                    </div> -->
                     <div class="page-container">
                         <div class="sidebar">
                             <div class="category-box">
@@ -133,8 +137,8 @@
                                 </span>
                             </div>
                             <div class="clear text-center margin-right">
-                                <span class="margin30 font30 cursor" :class="{bold: page == num}" v-for="num in totalPage"
-                                    @click="fnPage(num)">{{num}}</span>
+                                <span class="margin30 font30 cursor" :class="{bold: page == num}"
+                                    v-for="num in totalPage" @click="fnPage(num)">{{num}}</span>
                             </div>
                         </main>
                     </div>

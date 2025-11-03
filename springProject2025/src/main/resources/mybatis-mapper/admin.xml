@@ -95,7 +95,7 @@
 	
 	
 	<!-- rally banner 추가 -->
-	<insert id="insertRallyBanner" parameterType="hashmap" keyColumn="RALLY_NO" keyProperty="rallyNo">
+	<insert id="insertRallyBanner" parameterType="hashmap" useGeneratedKeys="true" keyColumn="RALLY_NO" keyProperty="rallyNo">
 		INSERT INTO RALLY (
 	        RALLY_NO,
 	        RALLY_NAME,
@@ -132,16 +132,16 @@
         IMG_ORGNAME,
         IMG_SIZE,
         IMG_ETC
-    )
-    VALUES (
-        RALLY_IMG_SEQ.NEXTVAL,
-        #{rallyNo},
-        #{imgPath},
-        #{imgName},
-        #{orgName},
-        #{size},
-        #{ext}
-    )
+	    )
+	    VALUES (
+	        RALLY_IMG_SEQ.NEXTVAL,
+	        #{rallyNo},
+	        #{path},
+	        #{fileName},
+	        #{orgName},
+	        #{size},
+	        #{ext}
+	    )
 	</insert>
 
 

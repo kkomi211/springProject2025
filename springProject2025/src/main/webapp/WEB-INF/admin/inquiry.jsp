@@ -69,7 +69,7 @@
                         <option value="5">5개씩</option>
                         <option value="10">10개씩</option>
                         <option value="15">15개씩</option>
-                    </select>
+                    </select>   
                 </div>
             </div>
 		    <div>
@@ -156,7 +156,7 @@
         methods: {
             // 함수(메소드) - (key : function())
             fnLogout: function () {
-                pageChange("home.do", {sessionId : ""});
+                pageChange("/home.do", {sessionId : ""});
             },
             fnInquiryList : function(page) {
                 let self = this;
