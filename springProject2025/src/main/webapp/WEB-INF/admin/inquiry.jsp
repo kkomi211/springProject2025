@@ -69,7 +69,7 @@
                         <option value="5">5개씩</option>
                         <option value="10">10개씩</option>
                         <option value="15">15개씩</option>
-                    </select>
+                    </select>   
                 </div>
             </div>
 		    <div>
