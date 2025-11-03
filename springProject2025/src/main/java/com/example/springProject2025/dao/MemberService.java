@@ -44,6 +44,7 @@ public class MemberService {
 				result = "success";
 				session.setAttribute("sessionId", member.getUserId());
 				session.setAttribute("sessionName", member.getName());
+				resultMap.put("userType", member.getUsertype());
 			} else {
 				message = "아이디와 패스워드를 확인해주세요.";	
 				result = "fail";
