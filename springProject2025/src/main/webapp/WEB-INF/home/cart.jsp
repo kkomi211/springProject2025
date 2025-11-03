@@ -208,9 +208,10 @@
                                         <input type="checkbox" v-model="list.selected" @change="recomputeSummary"
                                             style="margin-right: 15px; width: 18px; height: 18px; flex-shrink: 0;">
 
-                                        <img v-if="list.imgPath && list.imgName"
-                                            :src="list.imgPath + '/' + list.imgName" :alt="list.productName"
-                                            style="width: 100px; height: 100px; object-fit: cover; margin-right: 20px; border: 1px solid #eee; flex-shrink: 0;">
+                                        <img v-if="list.imgPath"
+                                            :src="list.imgPath" :alt="list.productName"
+                                            style="width: 100px; height: 100px; object-fit: cover; margin-right: 20px; border: 1px solid #eee; flex-shrink: 0;"
+                                            onerror="this.src='/img/no-image.png'">
                                         <div v-else
                                             style="background: #f0f0f0; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; margin-right: 20px; flex-shrink: 0; font-size: 12px; color: #666;">
                                             이미지 없음</div>
