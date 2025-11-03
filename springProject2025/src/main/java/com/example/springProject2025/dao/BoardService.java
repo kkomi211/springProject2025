@@ -21,11 +21,25 @@ public class BoardService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		List<Board> list = boardMapper.selectRallyBoardList(map);
+		int cnt = boardMapper.selectRallyBoardCnt(map);
 		
 		resultMap.put("list", list);
-    resultMap.put("result", "success");
+		resultMap.put("cnt", cnt);
+		resultMap.put("result", "success");
 		return resultMap;
 	}
+	
+	// crew board list 목록
+		public HashMap<String, Object> getCrewBoardList(HashMap<String, Object> map) {
+			// TODO Auto-generated method stub
+			HashMap<String, Object> resultMap = new HashMap<String, Object>();
+			List<Board> list = boardMapper.selectCrewBoardList(map);
+
+			resultMap.put("list", list);
+			resultMap.put("result", "success");
+			return resultMap;
+		}
+	
 	public HashMap<String, Object> getBoardList(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
