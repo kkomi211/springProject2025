@@ -219,7 +219,7 @@
             .order-item-image {
                 width: 120px;
                 height: 120px;
-                object-fit: cover;
+                object-fit: contain;
                 margin-right: 20px;
                 border: 1px solid #eee;
                 flex-shrink: 0;

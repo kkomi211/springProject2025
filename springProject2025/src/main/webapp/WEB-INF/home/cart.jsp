@@ -210,7 +210,7 @@
 
                                         <img :src="getImagePath(list.imgPath)"
                                             :alt="list.productName"
-                                            style="width: 100px; height: 100px; object-fit: cover; margin-right: 20px; border: 1px solid #eee; flex-shrink: 0;"
+                                            style="width: 100px; height: 100px; object-fit: contain; margin-right: 20px; border: 1px solid #eee; flex-shrink: 0;"
                                             onerror="this.src='/img/no-image.png'">
 
                                         <div class="product-info" style="flex-grow: 1;">
