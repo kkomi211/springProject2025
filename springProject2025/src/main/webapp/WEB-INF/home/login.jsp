@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/user-style.css">
+    <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
     <link rel="stylesheet" href="/css/login-style.css">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -57,7 +58,7 @@
                         <h2>로그인</h2>
                         <div class="signup-form">
                             <div class="form-row">
-                                <input type="text" placeholder="아이디" v-model="userId" @keyup.enter="fnLogin">
+                                <input type="text" placeholder="아이디" v-model="userId" @keyup.enter="fnLogin" id="id">
                             </div>
                             <div class="form-row">
                                 <input type="password" placeholder="비밀번호" v-model="pwd" @keyup.enter="fnLogin">
@@ -115,11 +116,10 @@
                 </div>
                 <div class="footer-right">
                     <div class="other">
-                        <span>회사소개</span>
-                        <span>매장안내</span>
-                        <span>공지사항</span>
-                        <span>이용약관</span>
-                        <span>개인정보처리방침</span>
+                        <span><a href="/home/about.do">회사소개</a></span>
+                        <span><a @click="fnNotice">공지사항</a></span>
+                        <span><a href="/home/terms.do">이용약관</a></span>
+                        <span><a href="/home/privacy.do">개인정보처리방침</a></span>
                     </div>
                     <div class="socials">
                         <span>INSTAGRAM</span>
@@ -157,6 +157,7 @@
                 // 유효성 검사
                 if (!self.userId || !self.pwd) {
                     alert("아이디와 비밀번호를 입력하세요.");
+                    document.querySelector("#id").focus();
                     return;
                 }
                 let param = {
@@ -211,8 +212,11 @@
                     "KakaoLogin",
                     `width=${width},height=${height},left=${left},top=${top},resizable=no,scrollbars=yes`
                 );
+            },
+            fnNotice(){
+                let self = this;
+                pageChange("/home/community/board.do", {type : "B"});
             }
-
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분

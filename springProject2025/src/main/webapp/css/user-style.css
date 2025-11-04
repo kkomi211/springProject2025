@@ -95,6 +95,10 @@ body {
         }
         .socials span{
             margin-right: 20px;
+            cursor: pointer;
+        }
+        .socials span:first-child {
+            margin-left: 0;
         }
 /* 모달 팝업 스타일 */
 .modal-overlay {

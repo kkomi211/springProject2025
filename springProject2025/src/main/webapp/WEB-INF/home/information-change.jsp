@@ -81,7 +81,7 @@
                                         <span class="icon">📦</span>
                                         <a href="javascript:;" >반품•교환 내역</a>
                                     </li>
-                                    <li>
+                                    <li @click="moveToInquiry">
                                         <span class="icon">💬</span>
                                         <a href="#">문의 내역</a>
                                     </li>
@@ -89,7 +89,7 @@
                                         <span class="icon" >👤</span>
                                         <a href="">나의 정보</a>
                                     </li>
-                                    <li>
+                                    <li @click="moveToReview">
                                         <span class="icon">⭐️</span>
                                         <a href="#">상품 리뷰</a>
                                     </li>
@@ -351,6 +351,14 @@
                 // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장?)
                 pageChange("/home/mypage/orders.do", { sessionId: self.sessionId });
             },
+            moveToInquiry: function(){
+                let self = this;
+                pageChange("/home/mypage/my-inquiry.do", { sessionId: self.sessionId });
+            },
+            moveToReview: function(){
+                let self = this;
+                pageChange("/home/mypage/review.do", { sessionId: self.sessionId });
+            },
             fnAddr: function (){
                 let self = this;
                 window.open("/addr.do", "addr", "width=500, height = 500");
@@ -568,6 +576,7 @@
                         if(data.result == "success") {
                             self.confirmDelete = false;
                             self.accountDeleted = true;
+                            self.sessionId = "";
                         } else {
                             alert("오류가 발생했습니다.");
                         }

@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/user-style.css">
+    <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
     <link rel="stylesheet" href="/css/signup-style.css">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -49,7 +50,7 @@
             </div>
             </header>
 
-            <main>
+            <main>               
                  <div>
                     <div class="signup-container">
                         <h2>회원가입</h2>
@@ -100,13 +101,11 @@
                             <div class="form-row">
                                 <label>전화번호</label>
                                 <input type="text" placeholder="- 없이 전화번호를 입력하세요" v-model="phone" @keyup.enter="fnSignup" id="phone">
-                                
                             </div>
-                            <!-- 문자인증 일단 뺀다 -->
                              
-                            <!-- <div v-if="!joinFlg" class="form-row">
+                            <div v-if="!joinFlg" class="form-row">
                                 <label>문자인증</label>
-                                <input type="text" v-model="inputNum" :placeholder="timer" id="auth">
+                                <input type="text" v-model="inputNum" :placeholder="timer" id="auth" :disabled="authFlag">
                                 <template v-if="!smsFlg">
                                     <button @click="fnSms">인증번호 전송</button>
                                 </template> 
@@ -114,9 +113,15 @@
                                     <button @click="fnSmsAuth">인증</button>
                                 </template>
                             </div>
-                            <div v-else style="color : red">
-                                문자인증이 완료되었습니다.
-                            </div> -->
+
+                            <!-- 인증완료 popup -->
+                            <div v-else class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>문자인증이 완료되었습니다.</h2>
+                                    <button class="btn" @click="closeModal">확인</button>
+                                </div>
+                            </div>
+
                             <div class="form-submit">
                                 <button @click="fnSignup" class="submit-btn">회원 가입 완료</button>
                             </div>
@@ -140,11 +145,10 @@
                 </div>
                 <div class="footer-right">
                     <div class="other">
-                        <span>회사소개</span>
-                        <span>매장안내</span>
-                        <span>공지사항</span>
-                        <span>이용약관</span>
-                        <span>개인정보처리방침</span>
+                        <span><a href="/home/about.do">회사소개</a></span>
+                        <span><a @click="fnNotice">공지사항</a></span>
+                        <span><a href="/home/terms.do">이용약관</a></span>
+                        <span><a href="/home/privacy.do">개인정보처리방침</a></span>
                     </div>
                     <div class="socials">
                         <span>INSTAGRAM</span>
@@ -183,7 +187,9 @@
 
                 smsFlg : false,
                 joinFlg : false, // 문자 인증 유무
-                ranStr : "", // 문자 인증 번호 
+                authFlag : false,
+                
+                ranStr : "111", // 문자 인증 번호 
                 inputNum : "",
                 timer : "",
                 count : 180
@@ -309,6 +315,11 @@
                     document.querySelector("#phone").focus();
                     return;
                 }
+                if(self.inputNum == ""){
+                    alert("인증 절차를 먼저 완료해주세요.");
+                    document.querySelector("#auth").focus();
+                    return;
+                }
                 let param = {
                     userId : self.userId.trim(),
                     pwd : self.pwd1,
@@ -340,32 +351,42 @@
             fnSms: function(){
                 let self= this;
                 let param = {
+                    phone : self.phone
                 };
-                $.ajax({
-                    url: "/send-one",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    success: function (data) {
-                        console.log(data);
-                        if(data.res.statusCode == "2000"){
-                            alert("문자 전송 완료");
-                            self.ranStr = data.ranStr;
-                            self.smsFlg = true;
-                            self.fnTimer();
-                        } else {
-                            alert("잠시 후 다시 시도해주세요.");
-                        }
-                    }
-                });
+                self.smsFlg = true;
+                self.fnTimer();
+                // $.ajax({
+                //     url: "/send-one",
+                //     dataType: "json",
+                //     type: "POST",
+                //     data: param,
+                //     success: function (data) {
+                //         console.log(data);
+                //         if(data.res.statusCode == "2000"){
+                //             alert("문자 전송 완료");
+                //             self.ranStr = data.ranStr;
+                //             self.smsFlg = true;
+                //             self.fnTimer();
+                //         } else {
+                //             alert("잠시 후 다시 시도해주세요.");
+                //         }
+                //     }
+                // });
             },
             fnSmsAuth: function(){
                 let self = this;
+                if(self.inputNum == ""){
+                    alert("인증번호를 입력해주세요.");
+                    document.querySelector("#auth").focus();
+                    return;
+                }
                 if(self.ranStr == self.inputNum){
-                    alert("문자 인증 완료되았습니다");
+                    // alert("문자 인증 완료되았습니다");
                     self.joinFlg = true;
+                    self.authFlag = true;
                 } else {
                     alert("문자인증 실패했습니다.");
+                    self.joinFlg = false;
                 }
             },
             fnTimer: function(){
@@ -385,6 +406,14 @@
                         self.count--;
                     }
                 }, 1000);
+            },
+            closeModal : function(){
+                let self = this;
+                self.joinFlg = false;
+            },
+            fnNotice(){
+                let self = this;
+                pageChange("/home/community/board.do", {type : "B"});
             }
         }, // methods
         mounted() {

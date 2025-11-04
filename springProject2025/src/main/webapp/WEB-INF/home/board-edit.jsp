@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/user-style.css">
+    <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
     <link rel="stylesheet" href="/css/post-style.css">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -86,19 +87,19 @@
                                 <ul>
                                     <li class="active">
                                         <span class="icon">📝</span>
-                                        <a href="#">게시판</a>
+                                        <a href="/home/community/board.do">게시판</a>
                                     </li>
-                                    <li @click="moveToRefund">
+                                    <li>
                                         <span class="icon">📦</span>
-                                        <a href="javascript:;">크루 찾기</a>
+                                        <a href="/home/community/crew.do">크루 찾기</a>
                                     </li>
                                     <li>
                                         <span class="icon">💬</span>
-                                        <a href="#">대회정보</a>
+                                        <a href="/home/community/rally.do">대회정보</a>
                                     </li>
-                                    <li @click="moveToInfo">
+                                    <li>
                                         <span class="icon">👤</span>
-                                        <a href="#">채팅방</a>
+                                        <a href="/home/community/chat.do">채팅방</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -176,11 +177,10 @@
                 </div>
                 <div class="footer-right">
                     <div class="other">
-                        <span>회사소개</span>
-                        <span>매장안내</span>
-                        <span>공지사항</span>
-                        <span>이용약관</span>
-                        <span>개인정보처리방침</span>
+                        <span><a href="/home/about.do">회사소개</a></span>
+                        <span><a @click="fnNotice">공지사항</a></span>
+                        <span><a href="/home/terms.do">이용약관</a></span>
+                        <span><a href="/home/privacy.do">개인정보처리방침</a></span>
                     </div>
                     <div class="socials">
                         <span>INSTAGRAM</span>
@@ -317,6 +317,10 @@
                 let self = this;
                 self.isLoggedIn = true;
 
+            },
+            fnNotice(){
+                let self = this;
+                pageChange("/home/community/board.do", {type : "B"});
             }
         }, // methods
         mounted() {
