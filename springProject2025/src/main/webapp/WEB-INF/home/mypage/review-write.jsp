@@ -498,7 +498,7 @@
                     let orderNo = order.orderNo;   // 수정
                     let productNo = order.productNo; // 
                     // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장)
-                    alert('다른 페이지로 값 보냄' + JSON.stringify({ sessionId: sessionId, orderNo: orderNo, productNo: productNo }));
+                    // alert('다른 페이지로 값 보냄' + JSON.stringify({ sessionId: sessionId, orderNo: orderNo, productNo: productNo }));
                     pageChange("review-write.do", { sessionId: sessionId, orderNo: orderNo, productNo: productNo });
                 },
 

@@ -169,7 +169,7 @@ public class OrderController {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		System.out.println(map);
 		resultMap = orderService.getRefundList(map);
-
+		System.out.println("home/mypage/refund-return.dox에서 화면에 되돌려주기 직전 " + resultMap);
 		return new Gson().toJson(resultMap); // [{},{}]
 	}
 

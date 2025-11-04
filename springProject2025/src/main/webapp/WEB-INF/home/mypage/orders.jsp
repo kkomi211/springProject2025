@@ -112,10 +112,14 @@
                                         <span class="status-text">{{ order.status }}</span>
                                     </div>
                                     <div class="order-details">
-                                        <img v-if="order.imgPath && order.imgName"
+                                        <!-- <img v-if="order.imgPath && order.imgName"
                                             :src="order.imgPath + '/' + order.imgName" :alt="order.productName"
                                             class="product-image"
-                                            style="width: 150px; height: 150px; object-fit: cover;">
+                                            style="width: 150px; height: 150px; object-fit: cover;"> -->
+                                        <img v-if="order.imgPath"
+                                            :src="order.imgPath" :alt="order.productName"
+                                            class="product-image"
+                                            style="width: 150px; height: 150px; object-fit: contain;">
                                         <div v-else class="product-image"
                                             style="background: #f0f0f0; min-width: 150px; height: 150px; display: flex; align-items: center; justify-content: center;">
                                             이미지 없음
@@ -448,9 +452,9 @@
                         }
                     })
                 },
-                fnNotice(){
+                fnNotice() {
                     let self = this;
-                    pageChange("/home/community/board.do", {type : "B"});
+                    pageChange("/home/community/board.do", { type: "B" });
                 },
             }, // methods
             mounted() {
