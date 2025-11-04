@@ -620,7 +620,7 @@
         <header>
             <div class="top-header">
                 <div class="brand-name">
-                    <div><a href="/home.do">RUNNERS' HOUSE</a></div>
+                    <div><a href="/home.do" style="text-decoration: none;">RUNNERS' HOUSE</a></div>
                 </div>
                 <div id="right-items">
                     <div class="search-box">
@@ -739,11 +739,10 @@
             </div>
             <div class="footer-right">
                 <div class="other">
-                    <span>회사소개</span>
-                    <span>매장안내</span>
-                    <span>공지사항</span>
-                    <span>이용약관</span>
-                    <span>개인정보처리방침</span>
+                    <span><a href="/home/about.do">회사소개</a></span>
+                    <span><a @click="fnNotice">공지사항</a></span>
+                    <span><a href="/home/terms.do">이용약관</a></span>
+                    <span><a href="/home/privacy.do">개인정보처리방침</a></span>
                 </div>
                 <div class="socials">
                     <span>INSTAGRAM</span>
@@ -926,20 +925,25 @@
                     return value.toLocaleString('ko-KR') + ' 원';
                 },
                 fnLogout : function(){
-                let self = this;
-                let param = {};
-                $.ajax({
-                    url: "/member/logout.dox",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    success: function (data) {
-                        if(data.result == "success"){
-                            self.userName = data.userName;
-                        }
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if(data.result == "success"){
+                                self.userName = data.userName;
+                            }
 
-                    }
-                });
+                        }
+                    });
+                },
+                fnNotice(){
+                    let self = this;
+                    pageChange("/home/community/board.do", {type : "B"});
+                }
             },
             fnKakao: function(){
                 let self = this;

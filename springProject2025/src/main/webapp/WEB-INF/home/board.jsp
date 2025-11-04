@@ -231,7 +231,7 @@
                     boardList: [],
                     postInfo: {},
                     keyword: "",
-                    type: "",
+                    type: "${type}",
 
                     // pagination
                     cnt: 0,
