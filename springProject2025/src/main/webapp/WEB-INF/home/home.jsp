@@ -33,6 +33,7 @@
             padding: 0;
             font-family: Arial, sans-serif;
             color: #333;
+            line-height: 1.6;
         }
         #app { /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
             display: flex;
@@ -44,7 +45,7 @@
             color: inherit;
         }
         a:hover {
-            text-decoration: underline;
+            text-decoration: none;
         }
 
         /* --- Header Section (화면 전체 너비) --- */
@@ -132,337 +133,475 @@
 
 
         /* --- Main Content Section (콘텐츠 너비 제한) --- */
-        .container {
-            flex: 1;
-            max-width: 100%; /* 이 값은 유지하되, Swiper는 이 안에서 유연하게 작동해야 함 */
+        .container { /* 전체를 감싸는 컨테이너 */
+            /* max-width는 모든 페이지 콘텐츠가 중앙 정렬될 때 사용. 메인 배너는 뚫고 나옴 */
+            /* 현재로서는 모든 콘텐츠를 포함하는 div가 어떤 역할을 하는지 알기 어려워 이 컨테이너는
+            다른 곳에서 max-width가 적용되어 있을 수 있으므로 여기서는 초기화만. */
+            width: 100%;
             margin: 0 auto;
-            display: flex;
-            flex-direction: column;
+            position: relative; /* 자식 요소 포지셔닝 기준 */
         }
 
         main {
-            flex: 1; /* .container 내에서 남은 공간 차지 */
-            padding: 20px 0; /* 상하 패딩 */
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            /* max-width: 1440px; /* 이전에 제안했던 최대 너비 */
         }
 
         /* 각 섹션별 내부 패딩은 섹션 자체에서 관리하도록 조정 */
         main > section { /* main 바로 아래 섹션에만 적용 */
-            margin-bottom: 40px;
-            padding: 0 20px; /* 각 섹션에 좌우 패딩 적용 */
+            padding: 80px 0; /* 각 섹션 상하 여백 */
+            position: relative;
+            overflow: hidden; /* 섹션 내 오버플로우 방지 */
         }
         main > section h2 {
-            font-size: 2em;
+            font-size: 2.8em; /* 섹션 제목 크게 */
+            font-weight: 700;
             text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #007bff;
-            display: inline-block;
-            padding-bottom: 10px;
+            margin-bottom: 60px; /* 제목 아래 큰 여백 */
+            letter-spacing: -0.02em; /* ASICS는 약간 좁은 자간을 쓰는 경향 */
         }
 
         /* Main Hero Slider styles (메인 상단 배너) */
-        .main > section:not(.main-hero-slider), /* main-hero-slider가 아닌 다른 섹션들 */
-        .main > .main-hero-slider-area {       /* 메인 슬라이더 영역 wrapper */
-            margin-bottom: 40px;
-            padding: 0 20px; /* 각 섹션에 좌우 패딩 적용 */
-        }
-
-        /* 메인 슬라이더 영역 wrapper */
         .main-hero-slider-area {
-            position: relative; /* 커버 div의 absolute 포지셔닝 기준 */
-            /* 현재는 max-width가 .container에 적용되므로 width: 100%만 있으면 됩니다. */
+            /* 이 영역이 브라우저 너비 전체를 차지하도록 */
+            width: 100vw; /* 뷰포트 너비 전체 */
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw; /* 왼쪽으로 50vw 밀고 */
+            margin-right: -50vw; /* 오른쪽으로 50vw 밀어서 풀 너비 확장 */
+            overflow: hidden; /* 영역 밖으로 나가는 콘텐츠 숨김 */
+            background-color: #f8f8f8; /* 로드 전/후 배경색 */
+            height: 650px; /* 이미지 높이를 지정 */
         }
 
         .main-hero-slider {
+            /* 이 section은 풀 브라우저 너비를 차지하도록 만듭니다. */
             width: 100%;
-            height: 700px;
+            height: 100%; /* 부모와 동일한 높이 */
+            padding: 0; /* 상하 패딩 제거 */
             position: relative;
-            overflow: hidden; /* 슬라이더 자체의 오버플로우는 숨김 */
-            padding: 0; /* ★★★ 이제 이 섹션 자체에는 패딩을 주지 않습니다. ★★★ */
         }
+
         .main-hero-slider .swiper-container {
-            width: 100%;
-            height: 100%;
+            width: 100%; /* 부모 section의 너비를 꽉 채움 */
+            height: 100%; /* 부모 section의 높이를 꽉 채움 */
+            margin: 0; /* Swiper 기본 마진 제거 */
         }
+
         .main-hero-slider .swiper-slide {
-            width: 100%; /* ★★★ !important 제거, 이 값은 JavaScript에 의해 재설정될 수 있으나, 가리는 게 주 목적 ★★★ */
-            box-sizing: border-box;
-            text-align: center;
-            font-size: 18px;
-            background: #eee;
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative; /* 텍스트 오버레이를 위한 기준점 */
         }
-        .main-hero-slider .swiper-slide img {
-            display: block;
+
+        .main-hero-slider .swiper-slide a {
+            display: block; /* 링크 전체 클릭 가능 */
             width: 100%;
             height: 100%;
-            object-fit: cover;
         }
-        .swiper-slide-duplicate:not(.swiper-slide-active):not(.swiper-slide-next):not(.swiper-slide-prev) {
-            visibility: hidden;
+
+        .main-hero-slider .swiper-slide img {
+            width: 100%; /* 슬라이드 너비를 꽉 채움 */
+            height: 100%; /* 슬라이드 높이를 꽉 채움 */
+            object-fit: cover; /* 이미지가 잘려도 비율 유지하며 채움 */
+            object-position: center; /* 이미지의 중앙이 보이도록 */
+            display: block;
         }
-        .swiper-pagination-bullet {
-            background-color: #fff;
-            opacity: 0.8;
+
+        /* Swiper 페이지네이션 (하단 점 스타일) */
+        .main-hero-slider .swiper-pagination {
+            bottom: 30px !important; /* 이미지 위에 오도록 위치 조정 */
+            z-index: 10; /* 이미지 위에 표시되도록 z-index 부여 */
         }
-        .swiper-pagination-bullet-active {
-            background-color: #007bff;
+        .main-hero-slider .swiper-pagination-bullet {
+            background-color: #fff; /* 흰색 점 */
+            opacity: 0.7;
+            margin: 0 8px !important;
+            width: 12px; /* 점 크기 조절 */
+            height: 12px;
+            transition: opacity 0.3s ease, background-color 0.3s ease;
         }
-        .swiper-button-next, .swiper-button-prev {
-            color: #fff;
-            background-color: rgba(0,0,0,0.5);
-            border-radius: 50%;
-            padding: 20px;
-            width: 50px;
-            height: 50px;
+        .main-hero-slider .swiper-pagination-bullet-active {
+            background-color: #007bff; /* 활성 점은 ASICS스러운 블루 계열 */
+            opacity: 1;
         }
-        .swiper-button-next:hover, .swiper-button-prev:hover {
-            background-color: rgba(0,0,0,0.7);
+
+        /* ★★★ 양쪽 사이드를 가릴 div 처리 ★★★ */
+        /* 메인 슬라이더를 풀 너비로 확장했으므로, 이 div들은 이제 필요 없을 가능성이 높습니다. */
+        /* 만약 이 div들이 특정 배경색으로 사이드를 채우는 역할을 한다면 다음과 같이 처리할 수 있습니다. */
+        /* 하지만 메인 배너 이미지가 풀 너비라면 이 div들은 보이지 않습니다. */
+        .main-hero-slider-area .swiper-side-cover {
+            display: none; /* 현재는 풀 너비 배너이므로 숨김 */
+            /* 만약 swiper-container에 max-width를 주고 양 옆을 이 div로 채우는 디자인이라면,
+            main-hero-slider-area에 position: relative;를 주고,
+            left/right 커버에 position: absolute, top/bottom/left/right 0, z-index -1
+            같은 스타일을 주어 배경색을 채울 수 있습니다.
+            하지만 현재는 스위퍼 이미지 자체가 풀 너비이므로 display: none; 처리 */
         }
-        /* ★★★ 양쪽 사이드를 가리는 div 스타일 추가 ★★★ */
-        .swiper-side-cover {
+
+        /* 텍스트 오버레이 (선택 사항): ASICS JOG 100S처럼 이미지 위에 텍스트를 올리려면 */
+        /* home.jsp의 swiper-slide 내부에 다음 HTML 구조를 추가해주세요.
+        <div class="banner-text-overlay">
+            <p class="banner-subtitle">새로운 러닝의 시작</p>
+            <h3 class="banner-title">{{ slide.title }}</h3>
+            <p class="banner-description">가벼움과 안정성, 완벽한 조화를 경험하세요.</p>
+            <a :href="slide.LINK_URL" class="banner-button">자세히 보기</a>
+        </div>
+        */
+        .banner-text-overlay {
             position: absolute;
-            top: 0;
-            width: 110px; /* 가릴 영역의 너비 (양옆 이미지 크기에 따라 조정) */
-            height: 100%;
-            background-color: white; /* 페이지 배경색과 동일하게 설정 */
-            z-index: 9999; /* 슬라이더 위에 덮어씌워지도록 */
+            top: 50%;
+            left: 10%; /* 좌측 여백 */
+            transform: translateY(-50%);
+            color: #fff;
+            text-align: left;
+            max-width: 500px; /* 텍스트가 너무 길어지지 않도록 */
+            z-index: 5; /* 이미지 위에 텍스트가 보이도록 */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6); /* 어두운 이미지에서 가독성 확보 */
         }
-
-        .swiper-side-cover.left {
-            left: -360px; /* 왼쪽으로 가릴 너비만큼 이동시켜 슬라이더 바깥 영역을 덮습니다. */
-        }
-
-        .swiper-side-cover.right {
-            right: -360px; /* 오른쪽으로 가릴 너비만큼 이동시켜 슬라이더 바깥 영역을 덮습니다. */
-        }
-
-
-        /* Product Showcase styles (추천 상품 목록) */
-        .product-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            justify-content: center;
-        }
-
-        .product-card {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            text-align: center;
-            /* padding: 20px; <--- 이 패딩을 제거하여 이미지가 카드의 시작점에 붙도록 합니다. */
-            /* 텍스트 영역에만 패딩을 주고 싶다면, img 태그를 감싸는 div와 텍스트를 감싸는 div를 분리 후 각각 패딩을 주는 것을 고려. */
-            /* 지금은 이미지를 꽉 채우는 데 초점을 맞추므로 카드 자체의 padding을 제거 */
-            padding: 0; /* 카드의 패딩 제거 */
-            transition: transform 0.2s;
-            overflow: hidden; /* 자식 요소가 부모 영역을 넘어가지 않도록 */
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-        }
-
-        /* ★★★ 이미지 스타일 수정: 꽉 채우고 파란색 테두리 방지 ★★★ */
-        .product-card img {
-            display: block;     /* 이미지 아래 여백 제거 */
-            width: 100%;        /* 부모 (.product-card)의 너비를 꽉 채움 */
-            height: 200px;      /* 높이 고정 (기존과 동일), 필요시 조정 */
-            object-fit: cover;  /* 비율 유지하며 컨테이너를 꽉 채움 (일부 잘릴 수 있음) */
-            margin-top: 10px;
-            /* 혹시 모를 테두리나 외곽선 방지 */
-            border: none;
-            outline: none;
-            
-            /* 텍스트와 이미지 사이에 마진이 필요하다면 여기에 추가 */
-            /* margin-bottom: 15px; 는 텍스트 영역을 감싸는 div에 적용하는 것이 좋음 */
-        }
-
-        /* ★★★ 링크 스타일 수정: 이미지 주변 파란색 배경 제거 및 클릭 영역 설정 ★★★ */
-        .product-card a {
-            display: block; /* 링크 클릭 영역을 카드 전체로 확장 */
-            text-decoration: none;
-            color: inherit; /* 링크 텍스트 색상을 부모에서 상속 (기본 파란색 제거) */
-            
-            /* ★★★ 핵심: 링크의 파란색 배경을 투명하게 변경하거나 아예 제거 ★★★ */
-            background-color: transparent; /* 링크 자체의 배경을 투명하게 */
-            
-            outline: none; /* 포커스 시 생기는 외곽선 제거 */
-            padding: 20px; /* <--- 이미지 아래 텍스트 영역에 패딩을 다시 줍니다 */
-            /* padding-top은 이미지가 꽉 채워지므로 0, 좌우 20px, 아래 20px */
-            padding-top: 0;
-        }
-
-        /* product-card h3, p 스타일은 기존 유지하되, a 태그의 padding 안에 위치하도록. */
-        /* .product-card h3, .product-card p 는 a 태그의 자식이므로 a의 color를 상속받거나 개별 정의 */
-        .product-card h3 {
-            font-size: 1.3em;
+        .banner-text-overlay .banner-subtitle {
+            font-size: 1.1em;
+            font-weight: 300;
             margin-bottom: 10px;
-            color: #333; /* 텍스트 색상 명확히 지정 */
+            letter-spacing: 0.1em;
+        }
+        .banner-text-overlay .banner-title {
+            font-size: 3.2em; /* 메인 제목 크기 */
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            color: #fff;
+        }
+        .banner-text-overlay .banner-description {
+            font-size: 1em;
+            font-weight: 400;
+            margin-bottom: 30px;
+        }
+        .banner-text-overlay .banner-button {
+            display: inline-block;
+            background-color: #007bff; /* ASICS스러운 블루 */
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            text-shadow: none;
+        }
+        .banner-text-overlay .banner-button:hover {
+            background-color: #0056b3;
+        }
+
+
+        /* ====== 추천 상품 영역 ====== */
+        .products-showcase {
+            background-color: #fff; /* 섹션 배경색 */
+        }
+
+        .products-showcase .products-main-content-wrapper {
+            display: flex; /* Flexbox로 왼쪽/오른쪽 영역 배치 */
+            gap: 40px; /* 두 영역 사이의 간격 */
+            max-width: 1520px; /* 메인 컨테이너 너비에 맞춤 */
+            margin: 0 auto; /* 중앙 정렬 */
+            padding: 0 40px; /* 좌우 여백 */
+            align-items: stretch; /* 자식 요소들의 높이를 동일하게 */
+        }
+
+        /* 왼쪽 고정 이미지 영역 */
+        .products-showcase .fixed-image-area {
+            flex: 1.2; /* 왼쪽 영역이 오른쪽 영역보다 약간 더 넓게 */
+            position: relative;
+            overflow: hidden;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        .products-showcase .fixed-image-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 이미지가 잘려도 컨테이너를 꽉 채움 */
+            display: block;
+        }
+        .products-showcase .image-text-overlay {
+            position: absolute;
+            bottom: 30px; /* 하단에서부터 위치 */
+
+            right: 30px;
+            color: #fff;
+            text-align: left;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            z-index: 2; /* 이미지 위에 오도록 */
+        }
+        .products-showcase .image-text-overlay h3 {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.2;
+            color: #fff; /* 텍스트 흰색 */
+        }
+        .products-showcase .image-text-overlay p {
+            font-size: 1.1em;
+            font-weight: 400;
+            margin-bottom: 25px;
+        }
+        .products-showcase .image-text-overlay .cta-button {
+            display: inline-block;
+            background-color: #007bff; /* ASICS 블루 계열 */
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            text-shadow: none;
+            border: none;
+            cursor: pointer;
+        }
+        .products-showcase .image-text-overlay .cta-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 오른쪽 상품 4개 그리드 영역 */
+        .products-showcase .recommended-products-grid {
+            flex: 1; /* 오른쪽 영역이 왼쪽 영역과 남은 공간을 균등하게 */
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2열 그리드 */
+            gap: 30px; /* 상품 카드 사이 간격 */
+        }
+
+        /* 개별 상품 카드 스타일 */
+        .products-showcase .product-card {
+            background-color: #fff;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: left; /* 카드 내부 텍스트는 좌측 정렬 */
+        }
+        .products-showcase .product-card:hover {
+            transform: translateY(-5px); /* 호버 효과 */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .products-showcase .product-card a {
+            display: block; /* 링크 영역 확장 */
+        }
+
+        .products-showcase .product-image-container {
+            width: 100%;
+            height: 300px; /* 이미지 높이 고정 */
+            overflow: hidden;
+            position: relative;
+        }
+        .products-showcase .product-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 이미지가 잘려도 컨테이너를 꽉 채움 */
+            object-position: center;
+            display: block;
+        }
+
+        .products-showcase .product-info-text {
+            padding: 15px 0; /* 텍스트 정보의 내부 여백 */
+            text-align: center;
+        }
+        .products-showcase .product-card h3 {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #222;
             white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis;
-            margin-top: 15px; /* 이미지와 텍스트 사이에 마진 추가 */
-        }
-        .product-card p {
-            font-size: 1.1em;
-            color: black; /* 가격은 파란색 유지 */
-            font-weight: bold;
-            margin-bottom: 0; /* a 태그의 padding-bottom으로 충분 */
-        }
-
-
-        /* Rally Showcase (최신 대회 목록) */
-        .rally-showcase h2 {
-            border-bottom: 2px solid #28a745; /* 초록색 강조 */
-        }
-        .rally-showcase .swiper-container {
-            /* 이전에 제거했던 padding을 다시 추가합니다. */
-            padding: 0; /* 좌우 50px의 패딩을 주어 네비게이션 버튼 공간 확보 */
-            box-sizing: border-box; /* 패딩이 전체 너비에 포함되도록 함 */
-            width: 100%; /* 부모 너비를 꽉 채우도록 명시 */
-            margin: 0 auto; /* 중앙 정렬 */
-            overflow: hidden; /* 슬라이드 밖으로 나가는 요소는 숨김 */
-        }
-        .rally-showcase .swiper-slide {
+            text-overflow: ellipsis; /* 한 줄 텍스트 넘칠 때 ... */
             text-align: center;
-            background: #fff; /* 상품 카드와 통일성을 위해 흰색 배경 */
-            /* border: 1px solid #ddd; */
-            border-radius: 8px;
-            /* box-shadow: 0 2px 5px rgba(0,0,0,0.05); */
-            padding: 0; /* 슬라이드 카드의 패딩 제거 (이미지가 꽉 차도록) */
-            overflow: hidden; /* 이미지 오버플로우 방지 */
-            transition: transform 0.2s;
-            /* Swiper 내부 설정이 너비를 제어하므로, 여기에 width를 직접 주지 않습니다. */
+        }
+        .products-showcase .product-card p.product-price {
+            font-size: 1.05em;
+            color: black;
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .products-showcase .no-products-message {
+            grid-column: span 2; /* 2열 그리드 전체 차지 */
+            text-align: center;
+            color: #777;
+            font-size: 1.1em;
+            padding: 20px;
+        }
+
+
+        /* ====== 대회 영역 스타일 (SHOP BY SPORTS처럼) ====== */
+        .rally-showcase {
+            background-color: #fff; /* 섹션 배경색을 밝은 회색으로 변경 */
+            /* section{ padding: 80px 0; } - 이전에 정의된 전역 섹션 패딩 유지 */
+        }
+
+        .rally-showcase .swiper-container {
+            max-width: 1620px; /* 상품 영역과 동일하게 가로 폭 확장 */
+            margin: 0 auto;
+            padding: 0 60px; /* 네비게이션 버튼을 위한 좌우 여백 */
+            box-sizing: border-box;
+            position: relative; /* 네비게이션 버튼의 position 기준 */
+            overflow: hidden; /* 컨테이너 밖으로 나가는 콘텐츠 숨김 */
+        }
+
+        /* 개별 슬라이드 (대회 카드) 스타일 */
+        .rally-showcase .swiper-slide {
+            background: #fff; /* 카드 배경 흰색 */
+            border: none; /* 테두리 제거 */
+            border-radius: 0; /* 둥근 테두리 제거 */
+            box-shadow: none; /* 그림자 제거 */
+            overflow: hidden;
+            padding: 0; /* 내부 패딩 제거 */
+            text-align: center; /* 내부 텍스트 중앙 정렬 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* 호버 효과 */
         }
         .rally-showcase .swiper-slide:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px); /* 호버 시 살짝 위로 뜨는 효과 */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* 호버 시 은은한 그림자 */
         }
         .rally-showcase .swiper-slide a {
-            color: inherit;
-            text-decoration: none;
-            display: block;
-            outline: none;
-            background-color: transparent; /* 링크 배경색 투명하게 */
-            padding: 15px; /* 텍스트 영역에만 패딩 */
-            padding-top: 0; /* 이미지 위쪽 패딩은 없도록 */
+            display: block; /* 링크 영역 확장 */
         }
         .rally-showcase .swiper-slide img {
-            display: block;     /* 이미지 아래 여백 제거 */
-            width: 100%;        /* 부모 (.swiper-slide) 너비 꽉 채움 */
-            height: 300px;      /* ★ 높이를 상품 이미지보다 더 크게 (예: 300px) ★ */
-            object-fit: cover;  /* 비율 유지하며 컨테이너 꽉 채움 (포스터 이미지에 적합) */
-            border: none;       /* 혹시 모를 테두리 제거 */
-            outline: none;      /* 혹시 모를 외곽선 제거 */
+            width: 100%;
+            height: 700px; /* 이미지 높이 조절 (SHOP BY SPORTS와 유사하게) */
+
+            object-position: center;
+            display: block;
         }
-        .rally-showcase .swiper-slide h3 {
-            margin-top: 10px; /* 이미지와 텍스트 사이 간격 */
-            font-size: 1.2em;
-            margin-bottom: 5px;
-            color: #333;
-            white-space: nowrap;
+
+        /* 대회 정보 텍스트 영역 */
+        .rally-showcase .rally-info-text {
+            padding: 20px 15px 30px 15px; /* 내부 텍스트 여백 */
+            text-align: center; /* 중앙 정렬 */
+        }
+        .rally-showcase .rally-info-text h3 {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #222;
+            white-space: nowrap; /* 넘치는 텍스트는 한 줄로 처리 */
             overflow: hidden;
-            text-overflow: ellipsis;
+            text-overflow: ellipsis; /* ...으로 표시 */
         }
-        .rally-showcase .swiper-slide p {
-            font-size: 0.9em;
-            color: #666;
-            margin-bottom: 0; /* a 태그의 패딩으로 충분 */
+        .rally-showcase .rally-info-text p {
+            font-size: 0.95em;
+            color: #555;
+            font-weight: 400;
         }
+
+        /* Swiper 네비게이션 버튼 스타일 (SHOP BY SPORTS 처럼 미니멀하게) */
         .rallySwiper .swiper-button-next,
         .rallySwiper .swiper-button-prev {
-            /* 기존 스타일 유지 */
-            color: #007bff;
-            background-color: rgba(255,255,255,0.8);
-            border: 1px solid #007bff;
-            border-radius: 50%;
-            /* width: 40px;
-            height: 40px; */
-            transform: translateY(-50%);
+            color: #222; /* 검정색 화살표 */
+            border-radius: 50%; /* 둥근 모양 */
+            width: 45px;
+            height: 45px;
+            font-size: 0.9em; /* 화살표 아이콘 크기 */
             top: 50%;
-            font-size: 0.8em;
-            
-            /* 패딩 내에 위치하도록 left/right 값 조정 */
-            left: 10px; /* 왼쪽 버튼 */
-            right: 10px; /* 오른쪽 버튼 */
-            /* Swiper 기본 스타일에서는 버튼이 컨테이너 끝에 붙지만, 패딩 안쪽으로 10px 들여씁니다. */
-            /* 필요시 이 값(10px)을 조절하여 패딩 중앙이나 원하는 위치에 오도록 할 수 있습니다. */
+            transform: translateY(-50%); /* 정확한 수직 중앙 정렬 */
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            opacity: 0; /* 평소에는 숨김 */
+            z-index: 10;
         }
-        .rallySwiper .swiper-button-next {
-            right: 10px; /* next 버튼은 right 속성으로만 제어 */
-            left: auto;  /* 불필요한 left 속성 제거 */
-        }
-        .rallySwiper .swiper-button-prev {
-            left: 10px; /* prev 버튼은 left 속성으로만 제어 */
-            right: auto; /* 불필요한 right 속성 제거 */
+        .rallySwiper:hover .swiper-button-next, /* 스와이퍼 컨테이너에 호버 시 버튼 표시 */
+        .rallySwiper:hover .swiper-button-prev {
+            opacity: 1; /* 호버 시 불투명하게 (보이게) */
         }
         .rallySwiper .swiper-button-next:hover,
         .rallySwiper .swiper-button-prev:hover {
-            background-color: #007bff;
-            color: #fff;
+            background-color: #333; /* 호버 시 ASICS 액센트 색상 */
+            color: white;
+            border-color: white;
         }
+        .rallySwiper .swiper-button-prev { left: 10px; } /* 컨테이너 좌측 패딩 안쪽으로 */
+        .rallySwiper .swiper-button-next { right: 10px; } /* 컨테이너 우측 패딩 안쪽으로 */
 
-        /* Crew Join Section (크루 가입 배너) */
+        
+        /* ====== 크루 가입 영역 스타일 강화 ====== */
+
         .crew-join-section {
-            text-align: center; /* 전체 섹션을 가운데 정렬 */
-            padding: 0 20px; /* main section padding과 일치하도록 조정 */
-            margin-bottom: 40px; /* 아래쪽 마진 유지 */
+            padding: 0;
+            background-color: #fff; /* 섹션 자체의 배경색 */
+            margin-bottom: 70px;
         }
 
-        .crew-images-wrapper {
+        .crew-join-section .crew-images-wrapper {
             width: 100%;
-            position: relative; /* 오버레이 텍스트의 기준점 */
-            overflow: hidden; /* 자식 요소가 넘칠 경우 처리 */
-            border-radius: 0; /* 둥근 보더라인 제거 */
-            /* text-align: center; 내부 텍스트를 위한 정렬 */
-            display: flex; /* 내부 컨텐츠를 유연하게 배치하기 위해 */
-            justify-content: center; /* 중앙 정렬 */
-            align-items: center; /* 세로 중앙 정렬 */
+            max-width: 1520px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0;
+            background-color: #fff; /* ★★★ 래퍼 자체에 흰색 배경을 줘서 뒤쪽이 비치지 않게 ★★★ */
         }
 
-        .crew-image-container { /* 두 이미지를 담는 컨테이너 */
-            display: flex; /* 내부 이미지를 가로로 배치 */
-            flex-grow: 1; /* 가용한 공간을 모두 차지하도록 */
-            /* max-width는 이미지들이 너무 커지는 것을 방지 */
-            /* width: 100%;  부모의 100% */
+        .crew-join-section .crew-image-container {
+            display: flex;
+            width: 100%;
+            height: 400px; /* 컨테이너 높이 */
+            align-items: stretch;
+            justify-content: center;
+            gap: 0;
+            margin: 0; /* ★★★ 마진 초기화 ★★★ */
+            padding: 0; /* ★★★ 패딩 초기화 ★★★ */
+            line-height: 0; /* ★★★ 컨테이너 자체의 line-height 초기화 ★★★ */
+            font-size: 0; /* ★★★ Flex 아이템에 인라인 공백이 생기는 것을 방지 ★★★ */
+            background-color: #fff; /* ★★★ 이미지 컨테이너 자체에 흰색 배경을 줘서 비치지 않게 ★★★ */
         }
 
-        .crew-image-item {
-            flex: 1; /* 가로 공간을 동일하게 나눔 */
-            min-width: 0; /* flex item 내부 content overflow 방지 */
-            position: relative; /* 호버 시 이미지를 어둡게 만들기 위한 기준 */
+        .crew-join-section .crew-image-item {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            line-height: 0; /* ★★★ 인라인 요소로 인한 공백 제거 ★★★ */
+            margin: 0; /* ★★★ 마진 초기화 ★★★ */
+            padding: 0; /* ★★★ 패딩 초기화 ★★★ */
+            display: block; /* ★★★ 플렉스 아이템도 block으로 명시 ★★★ */
+            background-color: #fff; /* ★★★ 아이템 자체에 흰색 배경을 줘서 비치지 않게 ★★★ */
         }
-        .crew-image-item a { /* 각 이미지 링크 */
-            display: block; /* 링크가 이미지 전체 영역을 차지하도록 */
-            line-height: 0; /* 불필요한 라인 높이 제거 */
-            text-decoration: none;
-            color: inherit;
-        }
-        .crew-image-item img {
+
+        .crew-join-section .crew-image-item a {
             display: block;
             width: 100%;
-            height: 300px; /* 이미지 높이 고정 (조정 가능) */
-            object-fit: cover; /* 이미지가 영역을 채우도록 크롭 */
-            border-radius: 0; /* 둥근 모서리 제거 */
-            /*vertical-align: middle;  이미지 하단 여백 제거 */
-            transition: filter 0.3s ease; /* 호버 효과를 위해 */
+            height: 100%;
+            margin: 0; /* ★★★ 마진 초기화 ★★★ */
+            padding: 0; /* ★★★ 패딩 초기화 ★★★ */
+            line-height: 0; /* ★★★ 링크 내부의 line-height 초기화 ★★★ */
+            font-size: 0; /* ★★★ 링크 내부 폰트 사이즈도 0으로 ★★★ */
+            background-color: #fff; /* ★★★ 링크 자체에 흰색 배경을 줘서 비치지 않게 ★★★ */
         }
-        .crew-overlay-text {
+
+        .crew-join-section .crew-image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block; /* ★★★ 이미지 하단 공백 제거 ★★★ */
+            margin: 0; /* ★★★ 이미지 자체의 마진 초기화 ★★★ */
+            padding: 0; /* ★★★ 이미지 자체의 패딩 초기화 ★★★ */
+            border: none; /* ★★★ 혹시 모를 이미지 테두리 제거 ★★★ */
+        }
+
+        /* 오버레이 텍스트 스타일 (이전과 동일) */
+        .crew-join-section .crew-overlay-text {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%); /* 정확히 이미지 중앙에 위치 */
-            color: white; /* 텍스트 색상 흰색 */
-            font-size: 2.5em; /* 텍스트 크기 */
-            font-weight: bold;
+            transform: translate(-50%, -50%);
+            font-size: 4em;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+            letter-spacing: 0.1em;
             text-align: center;
-            padding: 5px 15px; /* 약간의 패딩 */
-            white-space: nowrap; /* 텍스트 줄바꿈 방지 */
-            z-index: 10; /* 이미지 위에 텍스트가 표시되도록 */
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7); /* 어두운 그림자로 가독성 향상 */
-            opacity: 1; /* 항상 보이도록 opacity 1 유지 */
+            white-space: nowrap;
+            z-index: 10;
         }
 
 
@@ -631,6 +770,19 @@
                 margin: 5px 10px;
                 display: inline-block;
             }
+            .crew-join-section .crew-image-container {
+                flex-direction: column; /* 세로로 쌓음 */
+                height: auto; /* 세로 쌓일 때는 높이 자동 */
+            }
+            .crew-join-section .crew-image-item {
+                height: 250px; /* 각 이미지의 높이 */
+            }
+            .crew-join-section .crew-overlay-text {
+                font-size: 2.5em;
+                white-space: normal;
+                max-width: 90%;
+                line-height: 1.2;
+            }
             .crew-images-wrapper {
                 flex-direction: column; /* 모바일에서는 이미지를 세로로 쌓음 */
             }
@@ -713,24 +865,38 @@
                             <div class="swiper-pagination"></div>
                         </div>
                     </section>
-                    <!-- ★★★ 양쪽 사이드를 가릴 div 추가 ★★★ -->
-                    <div class="swiper-side-cover left"></div>
-                    <div class="swiper-side-cover right"></div>
                 </div>
 
                 
                 <!-- 추천 상품 영역 -->
                 <section class="products-showcase">
                     <h2>추천 상품</h2>
-                    <div class="product-list">
-                        <div class="product-card" v-for="product in recommendedProducts" :key="product.productNo">
-                            <a :href="'/home/product-info.do?productNo=' + product.productNo">
-                                <img :src="product.imgPath" :alt="product.productName">
-                                <h3>{{ product.productName }}</h3>
-                                <p>{{ formatCurrency(product.productPrice) }}</p>
-                            </a>
+                    <div class="products-main-content-wrapper"> <!-- ASICS 스타일을 위한 새로운 래퍼 추가 -->
+                        
+                        <!-- 왼쪽 고정 이미지 및 소개 영역 -->
+                        <div class="fixed-image-area">
+                            <img src="/img/productmain.jpg">
+                            <div class="image-text-overlay">
+                                <h3>GEL-CUMULUS 16</h3>
+                                <p>혁신적인 쿠셔닝과 최적의 안정성을 자랑합니다. <br>매일의 러닝에 최적화된 편안함.</p>
+                            </div>
                         </div>
-                        <p v-if="recommendedProducts.length === 0">추천 상품이 없습니다.</p>
+
+                        <!-- 오른쪽에 상품 4개 그리드 -->
+                        <div class="recommended-products-grid">
+                            <div class="product-card" v-for="product in recommendedProducts" :key="product.productNo">
+                                <a :href="'/home/product-info.do?productNo=' + product.productNo">
+                                    <div class="product-image-container"> <!-- 이미지 컨테이너 추가 -->
+                                        <img :src="product.imgPath" :alt="product.productName">
+                                    </div>
+                                    <div class="product-info-text"> <!-- 텍스트 정보 컨테이너 추가 -->
+                                        <h3>{{ product.productName }}</h3>
+                                        <p class="product-price">{{ formatCurrency(product.productPrice) }}</p>
+                                    </div>
+                                </a>
+                            </div>
+                            <p v-if="recommendedProducts.length === 0" class="no-products-message">추천 상품이 없습니다.</p>
+                        </div>
                     </div>
                 </section>
               
@@ -740,13 +906,16 @@
                     <div class="swiper-container rallySwiper">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide" v-for="rally in latestRallies" :key="rally.rallyNo">
-                                <a :href="'/home/community/rally.do'"> <!-- TODO: 대회 상세 페이지 URL -->
+                                <a :href="'/home/community/rally.do'">
                                     <img :src="rally.imgPath" :alt="rally.rallyName">
-                                    <h3>{{ rally.rallyName }}</h3>
-                                    <p>대회 일자 : {{ formatDate(rally.rallyDate) }}</p>
+                                    <div class="rally-info-text"> <!-- 텍스트 정보를 감싸는 div 추가 -->
+                                        <h3>{{ rally.rallyName }}</h3>
+                                        <h3>대회 일자 : {{ formatDate(rally.rallyDate) }}</h3>
+                                    </div>
                                 </a>
                             </div>
                         </div>
+                        <!-- Swiper 페이지네이션은 ASICS Shop By Sports에서 잘 보이지 않으므로 주석 처리된 상태로 둡니다. -->
                         <!-- <div class="swiper-pagination"></div> -->
                         <div class="swiper-button-next"></div>
                         <div class="swiper-button-prev"></div>
@@ -875,59 +1044,19 @@
                 });
             },
             initMainSwiper() {
-                // 1. 이미지가 있을 때만 초기화
                 if (this.mainSlideImages.length > 0) {
-                    // 2. 기존 Swiper 인스턴스가 있다면 파괴 (메모리 누수 방지 및 재초기화)
                     if (this.mainSwiperInstance) {
                         this.mainSwiperInstance.destroy(true, true);
                     }
 
-                    // 3. Swiper 컨테이너 요소 찾기
                     const swiperEl = document.querySelector('.mySwiper');
                     if (!swiperEl) {
-                        console.error("Swiper container '.mySwiper' not found."); // 컨테이너 없으면 에러 로그만 남김
+                        console.error("Swiper container '.mySwiper' not found.");
                         return;
                     }
 
-                    // 4. 새로운 Swiper 인스턴스 생성
                     this.mainSwiperInstance = new Swiper(swiperEl, {
                         loop: true, // 무한 루프
-                        autoplay: { // 자동 재생 설정
-                            delay: 3000,
-                            disableOnInteraction: false,
-                        },
-                        pagination: { // 페이지네이션 설정 (하단 점)
-                            el: '.swiper-pagination',
-                            clickable: true,
-                        },
-                        slidesPerView: 1,           // 한 번에 하나의 슬라이드 표시
-                        spaceBetween: 0,            // 슬라이드 간 간격 없음
-                        centeredSlides: false,      // 슬라이드 중앙 정렬 안 함 (이전 설정 유지)
-                        slidesPerGroup: 1,          // 한 번에 한 개의 슬라이드 그룹 이동
-                        watchOverflow: true,        // 슬라이드가 부족하여 overflow가 발생하면 비활성화
-                        observer: true,             // Swiper 요소 또는 자식 요소의 변화를 감지하여 업데이트
-                        observeParents: true,       // Swiper 부모 요소의 변화를 감지하여 업데이트
-                        preventInteractionOnTransition: true, // 전환 중 상호작용 방지 (문제 방지)
-
-                        // 'on' 콜백은 대부분 디버깅 및 수동 너비 조정 코드였으므로 제거.
-                        // Swiper의 observer/observeParents 옵션이 레이아웃 변경을 처리할 것으로 기대.
-                    });
-                }
-            },
-            initRallySwiper() {
-                if (this.latestRallies.length > 0) {
-                    if (this.rallySwiperInstance) {
-                        this.rallySwiperInstance.destroy(true, true);
-                    }
-
-                    const swiperEl = document.querySelector('.rallySwiper');
-                    if (!swiperEl) {
-                        console.error("Rally Swiper container '.rallySwiper' not found.");
-                        return;
-                    }
-
-                    this.rallySwiperInstance = new Swiper(swiperEl, {
-                        loop: true,
                         autoplay: {
                             delay: 3000,
                             disableOnInteraction: false,
@@ -936,56 +1065,73 @@
                             el: '.swiper-pagination',
                             clickable: true,
                         },
-                        navigation: { // 네비게이션 버튼 추가
+                        slidesPerView: 1,           // 한 번에 하나의 슬라이드 표시
+                        spaceBetween: 0,
+                        centeredSlides: false,
+                        slidesPerGroup: 1,
+                        watchOverflow: true,
+                        observer: true,
+                        observeParents: true,
+                        preventInteractionOnTransition: true,
+                        // on: {} /* 디버깅 로그는 필요 시에만 추가 */
+                    });
+                }
+            },
+            initRallySwiper() {
+                if (this.latestRallies.length > 0) {
+                    // ... (기존 로그 및 인스턴스 파괴 로직 유지) ...
+
+                    const swiperEl = document.querySelector('.rallySwiper');
+                    if (!swiperEl) {
+                        console.error("Rally Swiper container '.rallySwiper' not found.");
+                        return;
+                    }
+
+                    this.rallySwiperInstance = new Swiper(swiperEl, {
+                        loop: true, // ASICS처럼 끊김 없는 슬라이딩을 위해 true로 변경
+                                // 5개 데이터와 slidesPerView: 4 라면, 이제 loop 경고가 사라지거나 덜해질 것입니다.
+                        autoplay: {
+                            delay: 3000,
+                            disableOnInteraction: false,
+                        },
+                        navigation: { // 네비게이션 활성화
                             nextEl: '.swiper-button-next',
                             prevEl: '.swiper-button-prev',
                         },
-                        // ★★★ 가장 중요한 부분: 슬라이드 개수와 간격 조정 ★★★
-                        slidesPerView: 4,           // 한 번에 4개 슬라이드 표시
-                        spaceBetween: 30,           // 슬라이드 간 간격 30px (product-list의 gap과 유사하게)
+                        
+                        // ★★★ 기본값 설정 (가장 큰 화면에서 3개 보임) ★★★
+                        slidesPerView: 3,      
+                        spaceBetween: 30,      // 슬라이드 간 간격
                         
                         centeredSlides: false,
-                        slidesPerGroup: 1, // 한 번에 한 개의 슬라이드 그룹 이동
+                        slidesPerGroup: 1,
                         watchOverflow: true,
                         observer: true,
                         observeParents: true,
                         preventInteractionOnTransition: true,
                         
-                        // 반응형 설정 추가 (선택 사항)
+                        // ★★★ 반응형 설정 (최소 화면 너비 기준) ★★★
                         breakpoints: {
-                            // 0px (모든 화면) 부터 적용되는 기본값은 위에 slidesPerView: 4로 명시
-                            // 480px 이상일 때 적용될 설정
-                            480: { 
-                                slidesPerView: 1, 
-                                spaceBetween: 10 
+                            0: { // 가장 작은 화면 (모바일)
+                                slidesPerView: 1,
+                                spaceBetween: 15,
                             },
-                            // 768px 이상일 때 적용될 설정
-                            768: { 
-                                slidesPerView: 2, 
-                                spaceBetween: 20 
+                            480: { // 스마트폰 가로
+                                slidesPerView: 2,
+                                spaceBetween: 20,
                             },
-                            // 1024px 이상일 때 적용될 설정 (선택적 추가)
-                            1024: { 
-                                slidesPerView: 3, 
-                                spaceBetween: 25 
+                            768: { // 태블릿
+                                slidesPerView: 2, // 태블릿에서는 2개 유지 (3개는 너무 작아질 수 있음)
+                                spaceBetween: 25,
                             },
-                            // 1200px 이상일 때 적용될 설정 (선택적 추가, 여기서는 4개 슬라이드가 목적)
-                            1200: { 
-                                slidesPerView: 4, 
-                                spaceBetween: 30 
+                            1024: { // 데스크탑 (1024px 이상일 때 3개 보임)
+                                slidesPerView: 3,
+                                spaceBetween: 30, // 1024px 이상에서는 spaceBetween 30px 적용
                             }
-                        },
-                        on: {
-                            init: function(swiper) { // ★★★ 이 부분이 이번엔 반드시 호출되어야 합니다 ★★★
-                                console.log("Rally Swiper: 'init' event fired.");
-                                console.log("Rally Swiper: Actual slidesPerView param:", swiper.params.slidesPerView);
-                                console.log("Rally Swiper: Actual spaceBetween param:", swiper.params.spaceBetween);
-                                if (swiper.slides.length > 0) {
-                                    console.log("Rally Swiper: First slide's offsetWidth:", swiper.slides[0].offsetWidth);
-                                }
-                            },
                         }
                     });
+                } else {
+                    console.warn("Rally Swiper: No rally data available to initialize Swiper.");
                 }
             },
             formatDate(dateString) { // 날짜 형식 포맷 함수
