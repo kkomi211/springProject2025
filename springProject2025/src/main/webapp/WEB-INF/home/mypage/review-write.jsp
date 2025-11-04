@@ -521,7 +521,7 @@
                         alert('리뷰 제목을 입력해 주세요.');
                         return;
                     }
-                    alert("self.reviewContent.trim().length는" + self.reviewContent.trim().length);
+                    //alert("self.reviewContent.trim().length는" + self.reviewContent.trim().length);
                     // if (self.reviewContent.trim().length < 10) {
                     //     alert('리뷰 내용을 10자 이상 입력해 주세요.');
                     //     return;
