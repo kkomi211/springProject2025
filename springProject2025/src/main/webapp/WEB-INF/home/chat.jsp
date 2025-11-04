@@ -102,12 +102,6 @@
                                 <h1 class="main-title">
                                     나의 채팅방
                                 </h1>
-                                <div class="search-bar">
-                                    <div class="search-wrapper">
-                                        <input type="text" placeholder="검색어" v-model="keyword">
-                                        <button class="search-btn">🔍</button>
-                                    </div>
-                                </div>
                             </div>
                             <table>
                                 <tr>
@@ -218,6 +212,22 @@
                         alert("로그인해주세요!");
                         location.href = "/home/login.do";
                     }
+                },
+                fnLogout : function(){
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if(data.result == "success"){
+                                location.href="/home.do";
+                            }
+
+                        }
+                    })
                 }
             }, // methods
             mounted() {
