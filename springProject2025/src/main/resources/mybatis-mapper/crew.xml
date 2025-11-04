@@ -25,4 +25,19 @@
 		    OFFSET ( (#{page} - 1) * #{pageSize} ) ROWS 
 		    FETCH NEXT #{pageSize} ROWS ONLY
 		</select>
+		
+		<select id="selectCrewBoardCnt" parameterType="hashmap" resultType="int">
+		    SELECT COUNT(*) AS CNT
+		    FROM CHAT
+		    WHERE 1=1
+		    <if test="type != null and type != ''">
+		        AND TYPE = #{type}
+		    </if>
+		    <if test="keyword != null and keyword != ''">
+		        AND (
+		            TITLE LIKE '%' || #{keyword} || '%'
+		            OR INTRO LIKE '%' || #{keyword} || '%'
+		        )
+		    </if>
+		</select>
 	</mapper>  
