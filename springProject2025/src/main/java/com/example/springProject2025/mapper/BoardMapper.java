@@ -23,6 +23,9 @@ public interface BoardMapper {
 	// 게시글 전체 개수(rally board)
 	int selectRallyBoardCnt(HashMap<String, Object> map);
 	
+	// 게시글 전체 개수(crew board)
+	int selectCrewBoardCnt(HashMap<String, Object> map);
+	
 	// 게시글 전체개수 (board)
 	int boardCnt(HashMap<String, Object> map);
 	

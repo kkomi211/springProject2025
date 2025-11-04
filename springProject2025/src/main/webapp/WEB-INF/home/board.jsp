@@ -270,10 +270,10 @@
                     let startRow = (self.page - 1) * self.pageSize + 1;
                     let endRow = self.page * self.pageSize;
                     let param = {
-                        type: self.type,
+                        type: self.type, 
                         keyword: self.keyword.trim(),
-                        page: (self.page - 1) * self.pageSize,
-                        pageSize: self.pageSize,
+                        page: (self.page - 1) * self.pageSize, 
+                        pageSize: self.pageSize, 
                         startRow: startRow,
                         endRow: endRow
                     };
@@ -368,8 +368,8 @@
             mounted() {
                 // 처음 시작할 때 실행되는 부분
                 let self = this;
-                self.fnBoardList();
-                self.fnGetUserInfo();
+                self.fnBoardList();   //보드리스트정보게시판정보 가져오기
+                self.fnGetUserInfo(); //유저정보가져오기
             }
         });
 

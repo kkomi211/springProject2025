@@ -98,7 +98,7 @@ main {
   display: block;
 }
 
-/* 정보 영역 */ 
+/* 정보 영역 */
 .rally-info {
   flex: 1;
   padding: 16px 20px;
@@ -182,10 +182,13 @@ main {
 
 /* 글쓰기 버튼 우측 하단 배치 */
 .write-btn-wrapper {
-  width: 1000px;             /* 리스트와 동일한 폭 */
+  width: 1000px;
+  /* 리스트와 동일한 폭 */
   display: flex;
-  justify-content: flex-end; /* 오른쪽 정렬 */
-  margin: 10px auto 40px;    /* 위/아래 여백 조절 */
+  justify-content: flex-end;
+  /* 오른쪽 정렬 */
+  margin: 10px auto 40px;
+  /* 위/아래 여백 조절 */
 }
 
 .write-btn-wrapper .btn {
@@ -202,7 +205,3 @@ main {
 .write-btn-wrapper .btn:hover {
   background-color: #444;
 }
-
-
-
-

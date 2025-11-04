@@ -21,173 +21,184 @@
         <div id="app">
             <div class="container">
                 <!--  상단 헤더 -->
-                <header>
-                    <div class="top-header">
-                        <div class="brand-name">
-                            <div><a href="/home.do">RUNNERS' HOUSE</a></div>
+                <div class="container">
+                    <header>
+                        <div class="top-header">
+                            <div class="brand-name">
+                                <div><a href="/home.do">RUNNERS' HOUSE</a></div>
+                            </div>
+                            <div id="right-items">
+                                <div>
+                                    <input type="text" placeholder="검색어를 입력해 주세요.">
+                                </div>
+                                <div>
+                                    <template v-if="sessionId != ''">
+                                        <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                                    </template>
+                                    <template v-else>
+                                        <a href="/home/login.do">로그인</a>
+                                    </template>
+                                </div>
+                                <div v-if="sessionId == ''">
+                                    <a href="/home/signup.do">가입하기</a>
+                                </div>
+                                <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                                <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
+                            </div>
                         </div>
-                        <div id="right-items">
-                            <div><input type="text" placeholder="검색어를 입력해 주세요."></div>
-                            <div><a href="/home/login.do">로그인</a></div>
-                            <div><a href="/home/signup.do">가입하기</a></div>
-                            <div><a href="/home/mypage/inquiry.do">문의</a></div>
-                            <div><a href="/home/cart.do">장바구니</a></div>
+
+                        <div class="bottom-header">
+                            <div><a href="/home/product.do">제품</a></div>
+                            <div><a href="/home/product.do">세일</a></div>
+                            <div><a href="/home/community/board.do">커뮤니티</a></div>
                         </div>
-                    </div>
+                    </header>
 
-                    <div class="bottom-header">
-                        <div><a href="/home/product.do">제품</a></div>
-                        <div><a href="/home/product.do">세일</a></div>
-                        <div><a href="/home/community/board.do">커뮤니티</a></div>
-                    </div>
-                </header>
+                    <!--  본문 -->
+                    <main>
+                        <div class="header">
+                            <div class="header-welcome">Welcome,</div>
+                            <div class="header-user">{{ userName }}</div>
+                        </div>
 
-                <!--  본문 -->
-                <main>
-                    <div class="header">
-                        <div class="header-welcome">Welcome,</div>
-                        <div class="header-user">{{ userName }}</div>
-                    </div>
+                        <div class="page-container">
+                            <!--  왼쪽 사이드바 -->
+                            <aside class="sidebar">
+                                <h2 class="sidebar-heading"> COMMUNITY ></h2>
+                                <nav class="mypage-menu">
+                                    <ul>
+                                        <li class="active">
+                                            <span class="icon">📝</span>
+                                            <a href="/home/community/board.do">게시판</a>
+                                        </li>
+                                        <li>
+                                            <span class="icon">📦</span>
+                                            <a href="/home/community/crew.do">크루 찾기</a>
+                                        </li>
+                                        <li>
+                                            <span class="icon">💬</span>
+                                            <a href="/home/community/rally.do">대회정보</a>
+                                        </li>
+                                        <li>
+                                            <span class="icon">👤</span>
+                                            <a href="/home/community/chat.do">채팅방</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </aside>
 
-                    <div class="page-container">
-                        <!--  왼쪽 사이드바 -->
-                        <aside class="sidebar">
-                            <h2 class="sidebar-heading"> COMMUNITY ></h2>
-                            <nav class="mypage-menu">
-                                <ul>
-                                    <li class="active">
-                                        <span class="icon">📝</span>
-                                        <a href="/home/community/board.do">게시판</a>
-                                    </li>
-                                    <li>
-                                        <span class="icon">📦</span>
-                                        <a href="/home/community/crew.do">크루 찾기</a>
-                                    </li>
-                                    <li>
-                                        <span class="icon">💬</span>
-                                        <a href="/home/community/rally.do">대회정보</a>
-                                    </li>
-                                    <li>
-                                        <span class="icon">👤</span>
-                                        <a href="/home/community/chat.do">채팅방</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </aside>
+                            <!--  게시판 영역 -->
+                            <main class="main-content">
+                                <div class="board-header">
+                                    <h1 class="main-title">
+                                        게시판 •
+                                        {{
+                                        type === '' ? '전체 게시판' :
+                                        type === 'B' ? '공지사항' :
+                                        type === 'Q' ? '문의게시판' :
+                                        type === 'F' ? '자유게시판' :
+                                        type === 'R' ? '대회게시판' : '게시판'
+                                        }}
+                                    </h1>
 
-                        <!--  게시판 영역 -->
-                        <section class="main-content">
-                            <div class="board-header">
-                                <h1 class="main-title">
-                                    게시판 •
-                                    {{
-                                    type === '' ? '전체 게시판' :
-                                    type === 'B' ? '공지사항' :
-                                    type === 'Q' ? '문의게시판' :
-                                    type === 'F' ? '자유게시판' :
-                                    type === 'R' ? '대회게시판' : '게시판'
-                                    }}
-                                </h1>
-
-                                <div class="search-bar">
-                                    <div class="search-wrapper">
-                                        <select v-model="type" @change="fnList">
-                                            <option value="">전체</option>
-                                            <option value="B">공지사항</option>
-                                            <option value="Q">문의게시판</option>
-                                            <option value="F">자유게시판</option>
-                                            <option value="R">대회게시판</option>
-                                        </select>
-                                        <input type="text" placeholder="검색어" v-model="keyword" @keyup.enter="fnList">
-                                        <button class="search-btn" @click="fnList">🔍</button>
+                                    <div class="search-bar">
+                                        <div class="search-wrapper">
+                                            <select v-model="type" @change="fnList">
+                                                <option value="">전체</option>
+                                                <option value="B">공지사항</option>
+                                                <option value="Q">문의게시판</option>
+                                                <option value="F">자유게시판</option>
+                                                <option value="R">대회게시판</option>
+                                            </select>
+                                            <input type="text" placeholder="검색어" v-model="keyword"
+                                                @keyup.enter="fnList">
+                                            <button class="search-btn" @click="fnList">🔍</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <table>
-                                <tr>
-                                    <th>No</th>
-                                    <th>제목</th>
-                                    <th>채팅방 소개</th>
-                                </tr>
-                                <tr v-for="item in list">
-                                    <td>{{item.chatroomNo}}</td>
-                                    <td>
-                                        <a href="javascript:;" @click="fnPostView(item.chatroomNo)">
-                                            {{item.title}}
-                                            <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
-                                        </a>
+                                <table>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>제목</th>
+                                        <th>채팅방 소개</th>
+                                        <th>채널</th>
+                                    </tr>
+                                    <tr v-for="item in list">
+                                        <td>{{item.chatroomNo}}</td>
+                                        <td>
+                                            <a href="javascript:;" @click="fnPostView(item.chatroomNo)">
+                                                {{item.title}}
+                                                <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
+                                            </a>
 
-                                    </td>
-                                    <td>{{item.intro}}</td>
-                                    <td class="entry-btn-cell">
-                                        <button class="entry-btn" @click="fnEnterChat(item.chatroomNo)">입장하기</button>
-                                    </td>
-                                </tr>
+                                        </td>
+                                        <td>{{item.intro}}</td>
+                                        <td class="entry-btn-cell">
+                                            <button class="entry-btn"
+                                                @click="fnEnterChat(item.chatroomNo)">입장하기</button>
+                                        </td>
+                                    </tr>
 
-                            </table>
-                            <div v-if="index > 0" class="pagination">
-                                <!-- <a v-if="page != 1" @click="fnMove(1)" href="javascript:void(0)">←</a> -->
-                                <a v-if="page != 1" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
-                                <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index"
-                                    :key="num">
-                                    <span :class="{ active: page == num }">{{ num }}</span>
-                                </a>
-                                <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
-                                <!-- <a v-if="page != index" @click="fnMove(index)" href="javascript:void(0)">→</a> -->
-                            </div>
+                                </table>
+                                <div v-if="index > 0" class="pagination">
+                                    <a v-if="page != 1" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
+                                    <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index"
+                                        :key="num">
+                                        <span :class="{ active: page == num }">{{ num }}</span>
+                                    </a>
+                                    <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
+                                </div>
 
-                            <!-- 글쓰기 버튼1111111111111111111111 -->
-                            <div class="write-btn-wrapper">
-                                <button @click="moveToPost" class="btn">글쓰기</button>
-                            </div>
+                                <!-- 글쓰기 버튼-->
+                                <div class="write-btn-wrapper">
+                                    <button @click="moveToPost" class="btn">글쓰기</button>
+                                </div>
 
-
-
-                            <!--  비밀번호 모달 -->
-                            <div v-if="pwdCorrect" class="modal-overlay">
-                                <div class="modal-content">
-                                    <h2>비밀글로 보호된 게시물입니다.</h2>
-                                    <p>비밀번호를 입력해야 내용을 확인할 수 있습니다.</p>
-                                    <input class="btn" type="password" v-model="inputPwd" @keyup.enter="fnKeylock"
-                                        placeholder="비밀번호 입력">
-                                    <div>
-                                        <button class="btn" @click="pwdCorrect = false">닫기</button>
+                                <!--  비밀번호 모달 -->
+                                <div v-if="pwdCorrect" class="modal-overlay">
+                                    <div class="modal-content">
+                                        <h2>비밀글로 보호된 게시물입니다.</h2>
+                                        <p>비밀번호를 입력해야 내용을 확인할 수 있습니다.</p>
+                                        <input class="btn" type="password" v-model="inputPwd" @keyup.enter="fnKeylock"
+                                            placeholder="비밀번호 입력">
+                                        <div>
+                                            <button class="btn" @click="pwdCorrect = false">닫기</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </section>
-                    </div>
-                </main>
+                            </main>
+                        </div>
+                    </main>
 
-                <!--  푸터 -->
-                <footer>
-                    <div class="footer-left">
-                        <div class="company-info">
-                            <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
-                            <div><strong>대표:</strong> 김재</div>
-                            <div><strong>사업자등록번호:</strong> 123-45-67890</div>
-                            <div><strong>통신판매업 신고번호:</strong> 2025-서울-00987</div>
-                            <div><strong>부가세 번호:</strong> KR123456789</div>
+                    <!--  푸터 -->
+                    <footer>
+                        <div class="footer-left">
+                            <div class="company-info">
+                                <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
+                                <div><strong>대표:</strong> 김재</div>
+                                <div><strong>사업자등록번호:</strong> 123-45-67890</div>
+                                <div><strong>통신판매업 신고번호:</strong> 2025-서울-00987</div>
+                                <div><strong>부가세 번호:</strong> KR123456789</div>
+                            </div>
+                            <div class="copyright">
+                                COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                            </div>
                         </div>
-                        <div class="copyright">
-                            COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                        <div class="footer-right">
+                            <div class="other">
+                                <span><a href="/home/about.do">회사소개</a></span>
+                                <span><a @click="fnNotice">공지사항</a></span>
+                                <span><a href="/home/terms.do">이용약관</a></span>
+                                <span><a href="/home/privacy.do">개인정보처리방침</a></span>
+                            </div>
+                            <div class="socials">
+                                <span>INSTAGRAM</span>
+                                <span>NAVER</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="footer-right">
-                        <div class="other">
-                            <span>회사소개</span>
-                            <span>매장안내</span>
-                            <span>공지사항</span>
-                            <span>이용약관</span>
-                            <span>개인정보처리방침</span>
-                        </div>
-                        <div class="socials">
-                            <span>INSTAGRAM</span>
-                            <span>NAVER</span>
-                        </div>
-                    </div>
-                </footer>
+                    </footer>
+                </div>
             </div>
         </div>
 
@@ -195,35 +206,31 @@
             const app = Vue.createApp({
                 data() {
                     return {
-                        sessionId: "${sessionId}",
+                        list: [],
                         userName: "",
-                        list: [], //  기존 boardList → list로 변경
                         keyword: "",
                         type: "",
-                        // pagination
+                        totalCount: 0,
+                        pageCount: 0,
+                        pwdCorrect: false,
+                        inputPwd: "",
+                        sessionId: "${sessionId}",
+                        status: "${sessionStatus}",
+
                         cnt: 0,
                         page: 1,
                         pageSize: 10,
-                        pageCount: 0,
                         index: 0,
-                        // modal
-                        pwdCorrect: false,
-                        inputPwd: "",
-                        selectedPost: null
                     };
                 },
                 methods: {
                     fnList() {
                         let self = this;
-                        const startRow = (self.page - 1) * self.pageSize + 1;
-                        const endRow = self.page * self.pageSize;
                         const param = {
-                            type: self.type,
-                            keyword: self.keyword.trim(),
+                            keyword: self.keyword,
+                            type: self.type, // 추가
                             page: self.page,
-                            pageSize: self.pageSize,
-                            startRow: startRow,
-                            endRow: endRow
+                            pageSize: self.pageSize
                         };
 
                         $.ajax({
@@ -233,52 +240,85 @@
                             data: param,
                             success(data) {
                                 console.log(data);
-                                if (data.result === "success") {
-                                    self.list = data.list || [];
-                                    self.cnt = data.cnt || 0;
-                                    self.pageCount = Math.ceil(self.cnt / self.pageSize);
-                                    self.index = [];
-                                    const start = Math.floor((self.page - 1) / 5) * 5 + 1;
-                                    const end = Math.min(start + 4, self.pageCount);
-                                    for (let i = start; i <= end; i++) {
-                                        self.index.push(i);
-                                    }
+                                if (data.result == "success") {
+                                    console.log(data);
+                                    self.list = data.list;
+                                    self.cnt = data.cnt;
+                                    self.index = Math.ceil(self.cnt / self.pageSize);
                                 } else {
-                                    alert("데이터를 불러오는 중 오류가 발생했습니다.");
+                                    console.log("오류");
                                 }
+                            }
+
+                        });
+                    },
+                    fnLogout: function () {
+                        let self = this;
+                        let param = {};
+                        $.ajax({
+                            url: "/member/logout.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success: function (data) {
+                                if (data.result == "success") {
+                                    location.href = "/home.do";
+                                }
+
+                            }
+                        })
+                    },
+
+                    fnGetUserInfo: function () {
+                        let self = this;
+                        $.ajax({
+                            url: "/home/mypage/userInfo.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: { userId: self.sessionId },
+                            success: function (data) {
+                                console.log("사용자 이름:", data);
+                                self.userName = data;
                             },
-                            error() {
-                                alert("서버 통신 오류가 발생했습니다.");
+                            error: function (xhr, status, error) {
+                                console.error("사용자 정보 조회 실패:", error);
+                                self.userName = "Guest";
                             }
                         });
                     },
-                    fnMove(num) {
-                        this.page = num;
-                        this.fnList();
+
+                    fnMove: function (num) {
+                        let self = this;
+                        self.page = num;
+                        self.fnList();
                     },
-                    fnKeylock() {
-                        if (this.inputPwd === "1234") {
-                            alert("비밀번호 확인 완료");
-                            this.pwdCorrect = false;
-                        } else {
-                            alert("비밀번호가 틀렸습니다.");
-                        }
+
+                    fnPage: function (num) {
+                        let self = this;
+                        self.page = num;
+                        self.fnList();
                     },
+
                     fnEnterChat(chatroomNo) {
                         alert("채팅방 번호 " + chatroomNo + "에 입장합니다.");
                         location.href = "/home/community/chat/show.do?chatroomNo=" + chatroomNo;
 
                     },
+
                     moveToPost() {
                         alert("글쓰기 페이지로 이동합니다.");
                         window.location.href = "/home/community/board/post.do?sessionId=" + this.sessionId;
                     },
 
-
-
+                    fnNotice() {
+                        let self = this;
+                        pageChange("/home/community/board.do", { type: "B" });
+                    },
                 },
                 mounted() {
-                    this.fnList();
+                    let self = this;
+                    self.fnList();
+                    self.fnGetUserInfo(); //유저정보가져오기
                 }
             });
 
