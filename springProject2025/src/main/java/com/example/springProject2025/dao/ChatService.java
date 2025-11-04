@@ -99,7 +99,7 @@ public class ChatService {
 		try {
 			Chat cnt = chatMapper.checkMemberChat(map);
 			System.out.println(map);
-			if(cnt.getCnt() == 0) {
+			if(cnt == null || cnt.getCnt() == 0) {
 				int chat = chatMapper.createMemberChat(map);
 				int chat2 = chatMapper.createMember(map);		
 				int chat3 = chatMapper.createMemberOwner(map);
@@ -111,6 +111,23 @@ public class ChatService {
 				resultMap.put("result", "이미 있음");
 				resultMap.put("chatroomNo", cnt.getChatroomNo());			
 			}
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+
+	public HashMap<String, Object> ChatroomDelete(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
+		try {
+			int cnt = chatMapper.deleteChatroom(map);
+			int cnt2 = chatMapper.deleteChatMember(map);
+			int cnt3 = chatMapper.deleteChatPair(map);
+			int cnt4 = chatMapper.deleteChatMessage(map);
+			int cnt5 = chatMapper.deleteChatImg(map);
+			resultMap.put("result", "success");
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");
