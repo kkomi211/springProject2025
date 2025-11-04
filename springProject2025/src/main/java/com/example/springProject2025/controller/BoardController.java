@@ -30,11 +30,11 @@ public class BoardController {
 	}
 	
 	// rally post board list
-		@RequestMapping("/home/community/rally/post.do")
+		@RequestMapping("/home/community/crew/post.do")
 		public String rallyPostBoardList(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
 			request.setAttribute("sessionId", map.get("sessionId"));
-			request.setAttribute("rallyNo", map.get("rallyNo"));
-			return "home/rllay-post"; // .jsp빠진형태
+			request.setAttribute("chatroomNo", map.get("chatroomNo"));
+			return "home/crew-post"; // .jsp빠진형태
 		}
 	
 	// crew board list
@@ -51,6 +51,7 @@ public class BoardController {
 		public String rallyBoardList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 			HashMap<String, Object> resultMap = new HashMap<String, Object>();
 			resultMap = boardService.getRallyBoardList(map);
+			System.out.println("/home/rally/board.dox에서 프론트로 주기직전 값" + map);
 			return new Gson().toJson(resultMap);
 		}
 			
@@ -62,6 +63,16 @@ public class BoardController {
 			resultMap = boardService.getCrewBoardList(map);
 			return new Gson().toJson(resultMap);
 		}
+	// crew board post (추가페이지)
+		@RequestMapping(value = "/crew/post.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+		@ResponseBody
+		public String crewinsertPost(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+			HashMap<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap = boardService.crewPostboard(map);
+			
+			return new Gson().toJson(resultMap);
+		}
+		
 		
 	
 	@RequestMapping("/home/community/board/post.do")

@@ -29,7 +29,8 @@
 		
 		<select id="selectRallyBoardCnt" parameterType="hashmap" resultType="int">
 		    SELECT COUNT(*) AS CNT
-		    FROM RALLY
+		    FROM RALLY R
+		    INNER JOIN RALLY_IMG I ON R.RALLY_NO = I.RALLY_NO
 		    WHERE 1=1
 		    <if test="type != null and type != ''">
 		        AND TYPE = #{type}
@@ -41,4 +42,5 @@
 		        )
 		    </if>
 		</select>
+		
 	</mapper>  
