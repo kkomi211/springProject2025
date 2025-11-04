@@ -517,12 +517,10 @@
                                 <template v-for="(item, index) in selectedItems"
                                     :key="item.cartNo || item.productNo || index">
                                     <section class="order-item">
-                                        <img v-if="item.imgPath"
-                                            :src="item.imgPath" :alt="item.productName"
+                                        <img :src="getImagePath(item.imgPath)"
+                                            :alt="item.productName"
                                             class="order-item-image"
                                             onerror="this.src='/img/no-image.png'">
-                                        <div v-else class="order-item-image-placeholder">
-                                            이미지 없음</div>
 
                                         <div class="product-info">
                                             <div>
@@ -651,6 +649,13 @@
                 }
             },
             methods: {
+                // 이미지 경로 정규화
+                getImagePath(imgPath) {
+                    if (!imgPath || imgPath.trim() === '') {
+                        return '/img/no-image.png';
+                    }
+                    return imgPath.startsWith('/') ? imgPath : '/' + imgPath;
+                },
                 formatCurrency: function (value) {
                     if (!value) return '0';
                     const numValue = typeof value === 'string' ? parseInt(value) : value;
