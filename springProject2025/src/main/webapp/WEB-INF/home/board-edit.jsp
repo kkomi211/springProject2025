@@ -125,11 +125,16 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <th>잠금설정</th>
+                                    <td>
+                                        <label for=""><input id="keylock" type="password" placeholder="잠금설정" v-model="boardInfo.pwd"></label>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <th>제목</th>
                                     <td>
                                         <div class="title-input">
                                             <label for=""><input id="title" type="text" v-model="boardInfo.title"></label>
-                                            <label for=""><input id="keylock" type="password" placeholder="잠금설정" v-model="boardInfo.pwd"></label>
                                         </div>
                                     </td>
                                 </tr>

@@ -83,7 +83,7 @@
                             <ul>
                                 <li class="active">
                                     <span class="icon">📝</span>
-                                    <a href="#">게시판</a>
+                                    <a href="/home/community/board.do">게시판</a>
                                 </li>
                                 <li>
                                     <span class="icon">📦</span>

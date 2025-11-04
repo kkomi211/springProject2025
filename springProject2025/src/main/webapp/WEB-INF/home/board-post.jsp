@@ -142,12 +142,54 @@
                                 <tr>
                                     <th>내용</th>
                                     <td>
-                                        <div id="editor-container">
+                                        <div >
                                             <div id="editor"></div>
                                         </div>
                                     </td>
                                 </tr>
                             </table>
+
+                            <!-- 글쓰기 다른 디자인 테스트 -->
+                             <div class="comments-section">
+                                <div class="sub-section">
+                                    <h3 class="comment-title">
+                                        아이디
+                                    </h3>
+                                    <div class="post-author">
+                                        <strong>{{ userName }}</strong>
+                                    </div>
+                                </div>
+                                <div class="sub-section">
+                                    <h3 class="comment-title">
+                                        카테고리
+                                    </h3>
+                                    <div class="post-type">
+                                        <input type="radio" value="B" v-model="type">공지
+                                        <input type="radio" value="Q" v-model="type">문의
+                                        <input type="radio" value="F" v-model="type">자유
+                                        <input type="radio" value="R" v-model="type">대회
+                                    </div>
+                                </div>
+                                <div class="sub-section">
+                                    <h3 class="comment-title">
+                                        제목
+                                    </h3>
+                                    <div class="post-author">
+                                        <label for="">
+                                                <input type="text" v-model="title" id="title">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="sub-section">
+                                    <h3 class="comment-title">
+                                        내용
+                                    </h3>
+                                    <div class="post-author">
+                                        <div id="editor"></div>
+                                    </div>
+                                </div>
+                             </div>
+
                             <div class="bottom-btn">
                                 <button @click="fnPost">등록</button>
                                 <button @click="fnMoveToBoard">목록</button>

@@ -443,9 +443,13 @@ button:hover {
   word-break: break-word;
 }
 
-.post-author {
+.post-author, .post-type {
   font-size: 0.95rem;
   color: #666;
+}
+
+.post-type {
+  display: flex;
 }
 
 .post-author input{
@@ -546,7 +550,7 @@ button:hover {
   font-size: 0.95rem;
 }
 #title {
-  width: 600px;
+  width: 100%;
 }
 #keylock{
   width: 100px;
@@ -564,6 +568,14 @@ button:hover {
   border:1px solid #ccc;
   padding:15px;
 }
+
+.sub-section{
+  border-bottom: solid rgb(158, 158, 158) 1px;
+}
+.sub-section div{
+  margin-bottom: 20px;
+}
+
 
 /* If your editor has an ID of #editor */
 #editor + .ql-toolbar .ql-formats button {
