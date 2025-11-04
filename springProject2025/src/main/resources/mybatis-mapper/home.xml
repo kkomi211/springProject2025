@@ -10,9 +10,9 @@
         ORDER BY DISPLAY_ORDER ASC, CDATE DESC
     </select>
 
-    <!-- 베스트셀러/추천 상품 (누적판매수 기준) - ROWNUM 및 인라인 뷰로 수정 -->
-    <select id="selectTopSellingProducts" parameterType="int" resultType="com.example.springProject2025.model.Home">
-        SELECT *
+    <!-- 베스트셀러/추천 상품 (누적판매수 기준) - ROWNUM 및 인라인 뷰로 수정 (Old-style) -->
+	<select id="selectTopSellingProducts" parameterType="int" resultType="com.example.springProject2025.model.Home">
+	    SELECT *
         FROM (
             SELECT
                 P.PRODUCT_NO,
@@ -21,13 +21,12 @@
                 P.BRAND,
                 P.SELL_COUNT,
                 (SELECT A.IMG_PATH FROM (SELECT IMG_PATH, PRODUCT_IMG_NO FROM PRODUCT_IMG WHERE PRODUCT_NO = P.PRODUCT_NO ORDER BY PRODUCT_IMG_NO ASC) A WHERE ROWNUM = 1) AS imgPath
-                -- 인라인 뷰로 감싸서 ORDER BY와 ROWNUM을 함께 사용
             FROM PRODUCT P
             WHERE P.QUANTITY > 0
             ORDER BY P.SELL_COUNT DESC, P.UDATE DESC
         )
         WHERE ROWNUM &lt;= #{limit}
-    </select>
+	</select>
 
     <!-- 최신 대회 정보 조회 (현재 날짜 기준 접수 기간 내인 것 우선) - ROWNUM 및 인라인 뷰로 수정 -->
     <select id="selectLatestRallies" parameterType="int" resultType="com.example.springProject2025.model.Home">
@@ -41,7 +40,6 @@
                 R.PRICE AS rallyPrice,
                 R.HOST,
                 (SELECT A.IMG_PATH FROM (SELECT IMG_PATH, RALLY_IMG_NO FROM RALLY_IMG WHERE RALLY_NO = R.RALLY_NO ORDER BY RALLY_IMG_NO ASC) A WHERE ROWNUM = 1) AS imgPath
-                -- 인라인 뷰로 감싸서 ORDER BY와 ROWNUM을 함께 사용
             FROM RALLY R
             WHERE TRUNC(SYSDATE) BETWEEN R.APPLICATION_PERIOD AND R.RALLY_DATE
             ORDER BY R.RALLY_DATE ASC, R.CDATE DESC

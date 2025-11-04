@@ -163,7 +163,7 @@ public class HomeController {
     public String getRecommendedProducts() {
         HashMap<String, Object> resultMap = new HashMap<>();
         try {
-            List<Home> products = homeService.getRecommendedProducts(8); // 8개 상품 가져오기
+            List<Home> products = homeService.getRecommendedProducts(4); // 8개 상품 가져오기
             resultMap.put("result", "success");
             resultMap.put("data", products);
         } catch (Exception e) {
@@ -182,7 +182,7 @@ public class HomeController {
     public String getLatestRallies() {
         HashMap<String, Object> resultMap = new HashMap<>();
         try {
-            List<Home> rallies = homeService.getLatestRallies(4); // 4개 대회 가져오기
+            List<Home> rallies = homeService.getLatestRallies(8); // 4개 대회 가져오기
             resultMap.put("result", "success");
             resultMap.put("data", rallies);
         } catch (Exception e) {
