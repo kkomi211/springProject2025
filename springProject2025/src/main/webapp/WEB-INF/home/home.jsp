@@ -134,7 +134,7 @@
         /* --- Main Content Section (콘텐츠 너비 제한) --- */
         .container {
             flex: 1;
-            max-width: 1200px; /* 이 값은 유지하되, Swiper는 이 안에서 유연하게 작동해야 함 */
+            max-width: 100%; /* 이 값은 유지하되, Swiper는 이 안에서 유연하게 작동해야 함 */
             margin: 0 auto;
             display: flex;
             flex-direction: column;
@@ -174,7 +174,7 @@
 
         .main-hero-slider {
             width: 100%;
-            height: 400px;
+            height: 700px;
             position: relative;
             overflow: hidden; /* 슬라이더 자체의 오버플로우는 숨김 */
             padding: 0; /* ★★★ 이제 이 섹션 자체에는 패딩을 주지 않습니다. ★★★ */
@@ -231,11 +231,11 @@
         }
 
         .swiper-side-cover.left {
-            left: -370px; /* 왼쪽으로 가릴 너비만큼 이동시켜 슬라이더 바깥 영역을 덮습니다. */
+            left: -360px; /* 왼쪽으로 가릴 너비만큼 이동시켜 슬라이더 바깥 영역을 덮습니다. */
         }
 
         .swiper-side-cover.right {
-            right: -370px; /* 오른쪽으로 가릴 너비만큼 이동시켜 슬라이더 바깥 영역을 덮습니다. */
+            right: -360px; /* 오른쪽으로 가릴 너비만큼 이동시켜 슬라이더 바깥 영역을 덮습니다. */
         }
 
 
@@ -246,51 +246,71 @@
             gap: 30px;
             justify-content: center;
         }
+
         .product-card {
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             text-align: center;
-            padding: 20px;
+            /* padding: 20px; <--- 이 패딩을 제거하여 이미지가 카드의 시작점에 붙도록 합니다. */
+            /* 텍스트 영역에만 패딩을 주고 싶다면, img 태그를 감싸는 div와 텍스트를 감싸는 div를 분리 후 각각 패딩을 주는 것을 고려. */
+            /* 지금은 이미지를 꽉 채우는 데 초점을 맞추므로 카드 자체의 padding을 제거 */
+            padding: 0; /* 카드의 패딩 제거 */
             transition: transform 0.2s;
+            overflow: hidden; /* 자식 요소가 부모 영역을 넘어가지 않도록 */
         }
+
         .product-card:hover {
             transform: translateY(-5px);
         }
+
+        /* ★★★ 이미지 스타일 수정: 꽉 채우고 파란색 테두리 방지 ★★★ */
         .product-card img {
-            display: block;
-            max-width: 100%;
-            height: 200px;
-            object-fit: contain;
-            border-radius: 4px;
-            margin-bottom: 15px;
+            display: block;     /* 이미지 아래 여백 제거 */
+            width: 100%;        /* 부모 (.product-card)의 너비를 꽉 채움 */
+            height: 200px;      /* 높이 고정 (기존과 동일), 필요시 조정 */
+            object-fit: cover;  /* 비율 유지하며 컨테이너를 꽉 채움 (일부 잘릴 수 있음) */
+            margin-top: 10px;
+            /* 혹시 모를 테두리나 외곽선 방지 */
+            border: none;
+            outline: none;
+            
+            /* 텍스트와 이미지 사이에 마진이 필요하다면 여기에 추가 */
+            /* margin-bottom: 15px; 는 텍스트 영역을 감싸는 div에 적용하는 것이 좋음 */
         }
+
+        /* ★★★ 링크 스타일 수정: 이미지 주변 파란색 배경 제거 및 클릭 영역 설정 ★★★ */
+        .product-card a {
+            display: block; /* 링크 클릭 영역을 카드 전체로 확장 */
+            text-decoration: none;
+            color: inherit; /* 링크 텍스트 색상을 부모에서 상속 (기본 파란색 제거) */
+            
+            /* ★★★ 핵심: 링크의 파란색 배경을 투명하게 변경하거나 아예 제거 ★★★ */
+            background-color: transparent; /* 링크 자체의 배경을 투명하게 */
+            
+            outline: none; /* 포커스 시 생기는 외곽선 제거 */
+            padding: 20px; /* <--- 이미지 아래 텍스트 영역에 패딩을 다시 줍니다 */
+            /* padding-top은 이미지가 꽉 채워지므로 0, 좌우 20px, 아래 20px */
+            padding-top: 0;
+        }
+
+        /* product-card h3, p 스타일은 기존 유지하되, a 태그의 padding 안에 위치하도록. */
+        /* .product-card h3, .product-card p 는 a 태그의 자식이므로 a의 color를 상속받거나 개별 정의 */
         .product-card h3 {
             font-size: 1.3em;
             margin-bottom: 10px;
-            color: #333;
+            color: #333; /* 텍스트 색상 명확히 지정 */
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            margin-top: 15px; /* 이미지와 텍스트 사이에 마진 추가 */
         }
         .product-card p {
             font-size: 1.1em;
-            color: #007bff;
+            color: black; /* 가격은 파란색 유지 */
             font-weight: bold;
-            margin-bottom: 15px;
-        }
-        .product-card a {
-            display: inline-block;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 0.9em;
-        }
-        .product-card a:hover {
-            background-color: #0056b3;
+            margin-bottom: 0; /* a 태그의 padding-bottom으로 충분 */
         }
 
 
@@ -299,16 +319,23 @@
             border-bottom: 2px solid #28a745; /* 초록색 강조 */
         }
         .rally-showcase .swiper-container {
-            padding: 0 50px;
+            /* 이전에 제거했던 padding을 다시 추가합니다. */
+            padding: 0; /* 좌우 50px의 패딩을 주어 네비게이션 버튼 공간 확보 */
+            box-sizing: border-box; /* 패딩이 전체 너비에 포함되도록 함 */
+            width: 100%; /* 부모 너비를 꽉 채우도록 명시 */
+            margin: 0 auto; /* 중앙 정렬 */
+            overflow: hidden; /* 슬라이드 밖으로 나가는 요소는 숨김 */
         }
         .rally-showcase .swiper-slide {
             text-align: center;
-            background: #f9f9f9;
-            border: 1px solid #ddd;
+            background: #fff; /* 상품 카드와 통일성을 위해 흰색 배경 */
+            /* border: 1px solid #ddd; */
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            padding: 15px;
+            /* box-shadow: 0 2px 5px rgba(0,0,0,0.05); */
+            padding: 0; /* 슬라이드 카드의 패딩 제거 (이미지가 꽉 차도록) */
+            overflow: hidden; /* 이미지 오버플로우 방지 */
             transition: transform 0.2s;
+            /* Swiper 내부 설정이 너비를 제어하므로, 여기에 width를 직접 주지 않습니다. */
         }
         .rally-showcase .swiper-slide:hover {
             transform: translateY(-5px);
@@ -316,16 +343,22 @@
         .rally-showcase .swiper-slide a {
             color: inherit;
             text-decoration: none;
+            display: block;
+            outline: none;
+            background-color: transparent; /* 링크 배경색 투명하게 */
+            padding: 15px; /* 텍스트 영역에만 패딩 */
+            padding-top: 0; /* 이미지 위쪽 패딩은 없도록 */
         }
         .rally-showcase .swiper-slide img {
-            display: block;
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 4px;
-            margin-bottom: 10px;
+            display: block;     /* 이미지 아래 여백 제거 */
+            width: 100%;        /* 부모 (.swiper-slide) 너비 꽉 채움 */
+            height: 300px;      /* ★ 높이를 상품 이미지보다 더 크게 (예: 300px) ★ */
+            object-fit: cover;  /* 비율 유지하며 컨테이너 꽉 채움 (포스터 이미지에 적합) */
+            border: none;       /* 혹시 모를 테두리 제거 */
+            outline: none;      /* 혹시 모를 외곽선 제거 */
         }
         .rally-showcase .swiper-slide h3 {
+            margin-top: 10px; /* 이미지와 텍스트 사이 간격 */
             font-size: 1.2em;
             margin-bottom: 5px;
             color: #333;
@@ -336,18 +369,34 @@
         .rally-showcase .swiper-slide p {
             font-size: 0.9em;
             color: #666;
+            margin-bottom: 0; /* a 태그의 패딩으로 충분 */
         }
         .rallySwiper .swiper-button-next,
         .rallySwiper .swiper-button-prev {
+            /* 기존 스타일 유지 */
             color: #007bff;
             background-color: rgba(255,255,255,0.8);
             border: 1px solid #007bff;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            /* width: 40px;
+            height: 40px; */
             transform: translateY(-50%);
             top: 50%;
             font-size: 0.8em;
+            
+            /* 패딩 내에 위치하도록 left/right 값 조정 */
+            left: 10px; /* 왼쪽 버튼 */
+            right: 10px; /* 오른쪽 버튼 */
+            /* Swiper 기본 스타일에서는 버튼이 컨테이너 끝에 붙지만, 패딩 안쪽으로 10px 들여씁니다. */
+            /* 필요시 이 값(10px)을 조절하여 패딩 중앙이나 원하는 위치에 오도록 할 수 있습니다. */
+        }
+        .rallySwiper .swiper-button-next {
+            right: 10px; /* next 버튼은 right 속성으로만 제어 */
+            left: auto;  /* 불필요한 left 속성 제거 */
+        }
+        .rallySwiper .swiper-button-prev {
+            left: 10px; /* prev 버튼은 left 속성으로만 제어 */
+            right: auto; /* 불필요한 right 속성 제거 */
         }
         .rallySwiper .swiper-button-next:hover,
         .rallySwiper .swiper-button-prev:hover {
@@ -620,7 +669,7 @@
         <header>
             <div class="top-header">
                 <div class="brand-name">
-                    <div><a href="/home.do">RUNNERS' HOUSE</a></div>
+                    <div><a href="/home.do" style="text-decoration: none;">RUNNERS' HOUSE</a></div>
                 </div>
                 <div id="right-items">
                     <div class="search-box">
@@ -678,7 +727,7 @@
                             <a :href="'/home/product-info.do?productNo=' + product.productNo">
                                 <img :src="product.imgPath" :alt="product.productName">
                                 <h3>{{ product.productName }}</h3>
-                                <p>{{ formatCurrency(product.productPrice) }}</p> <%-- formatCurrency 적용 --%>
+                                <p>{{ formatCurrency(product.productPrice) }}</p>
                             </a>
                         </div>
                         <p v-if="recommendedProducts.length === 0">추천 상품이 없습니다.</p>
@@ -687,18 +736,18 @@
               
                 <!-- 최신 대회 영역 -->
                 <section class="rally-showcase">
-                    <h2>진행중인 대회</h2>
+                    <h2>대회 정보</h2>
                     <div class="swiper-container rallySwiper">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide" v-for="rally in latestRallies" :key="rally.rallyNo">
-                                <a :href="'#'"> <!-- TODO: 대회 상세 페이지 URL -->
+                                <a :href="'/home/community/rally.do'"> <!-- TODO: 대회 상세 페이지 URL -->
                                     <img :src="rally.imgPath" :alt="rally.rallyName">
                                     <h3>{{ rally.rallyName }}</h3>
-                                    <p>{{ formatDate(rally.rallyDate) }}</p>
+                                    <p>대회 일자 : {{ formatDate(rally.rallyDate) }}</p>
                                 </a>
                             </div>
                         </div>
-                        <div class="swiper-pagination"></div>
+                        <!-- <div class="swiper-pagination"></div> -->
                         <div class="swiper-button-next"></div>
                         <div class="swiper-button-prev"></div>
                     </div>
@@ -739,11 +788,10 @@
             </div>
             <div class="footer-right">
                 <div class="other">
-                    <span>회사소개</span>
-                    <span>매장안내</span>
-                    <span>공지사항</span>
-                    <span>이용약관</span>
-                    <span>개인정보처리방침</span>
+                    <span><a href="/home/about.do">회사소개</a></span>
+                    <span><a @click="fnNotice">공지사항</a></span>
+                    <span><a href="/home/terms.do">이용약관</a></span>
+                    <span><a href="/home/privacy.do">개인정보처리방침</a></span>
                 </div>
                 <div class="socials">
                     <span>INSTAGRAM</span>
@@ -757,175 +805,199 @@
 
 
 
-    <script>
-        const app = Vue.createApp({
-            data() {
-                return {
-                    mainSlideImages: [],
-                    recommendedProducts: [],
-                    latestRallies: [],
-                    sessionId: '${sessionId}',
-                    isLoggedOut : false,
-                    userType: "${userType}"
-                };
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                mainSlideImages: [],
+                recommendedProducts: [],
+                latestRallies: [],
+                sessionId: '${sessionId}',
+                isLoggedOut : false,
+                userType : '${userType}'
+            };
+        },
+        methods: {
+            // (이전과 동일한 fetchMainSlideImages, fetchRecommendedProducts, fetchLatestRallies, initMainSwiper, initRallySwiper)
+            fetchMainSlideImages() {
+                let self = this;
+                $.ajax({
+                    url: '/api/mainSlideImages.dox',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: (response) => {
+                        if (response.result === 'success') {
+                            self.mainSlideImages = response.data;
+                            self.$nextTick(() => { self.initMainSwiper(); });
+                        } else { console.error("메인 슬라이드 이미지 로드 실패:", response.message); }
+                    },
+                    error: (error) => { console.error("메인 슬라이드 AJAX 오류:", error); }
+                });
             },
-            methods: {
-                // (이전과 동일한 fetchMainSlideImages, fetchRecommendedProducts, fetchLatestRallies, initMainSwiper, initRallySwiper)
-                fetchMainSlideImages() {
-                    let self = this;
-                    $.ajax({
-                        url: '/api/mainSlideImages.dox',
-                        method: 'GET',
-                        dataType: 'json',
-                        success: (response) => {
-                            if (response.result === 'success') {
-                                self.mainSlideImages = response.data;
-                                self.$nextTick(() => { self.initMainSwiper(); });
-                            } else { console.error("메인 슬라이드 이미지 로드 실패:", response.message); }
-                        },
-                        error: (error) => { console.error("메인 슬라이드 AJAX 오류:", error); }
-                    });
-                },
-                fetchRecommendedProducts() {
-                    let self = this;
-                    $.ajax({
-                        url: '/api/recommendedProducts.dox',
-                        method: 'GET',
-                        dataType: 'json',
-                        success: (response) => {
-                            console.log(response.data);
-                            if (response.result === 'success') {
-                                self.recommendedProducts = response.data;
-                            } else { console.error("추천 상품 로드 실패:", response.message); }
-                        },
-                        error: (error) => { console.error("추천 상품 AJAX 오류:", error); }
-                    });
-                },
-                fetchLatestRallies() {
-                    let self = this;
-                    $.ajax({
-                        url: '/api/latestRallies.dox',
-                        method: 'GET',
-                        dataType: 'json',
-                        success: (response) => {
-                            if (response.result === 'success') {
-                                self.latestRallies = response.data;
-                                self.$nextTick(() => { self.initRallySwiper(); });
-                            } else { console.error("최신 대회 로드 실패:", response.message); }
-                        },
-                        error: (error) => { console.error("최신 대회 AJAX 오류:", error); }
-                    });
-                },
-                initMainSwiper() {
-                    if (this.mainSlideImages.length > 0) {
-                        console.log('Number of main slide images:', this.mainSlideImages.length);
-
-                        // 기존 swiper 인스턴스가 있다면 파괴 (메모리 누수 방지 및 재초기화)
-                        if (this.mainSwiperInstance) {
-                            this.mainSwiperInstance.destroy(true, true); // true: DOM 삭제, true: 이벤트 제거
+            fetchRecommendedProducts() {
+                let self = this;
+                $.ajax({
+                    url: '/api/recommendedProducts.dox',
+                    method: 'GET',
+                    dataType: 'json',
+                    data: { limit: 4 },
+                    success: (response) => {
+                        console.log("Recommended Products Data (from backend):", response.data);
+                        if (response.result === 'success') {
+                            self.recommendedProducts = response.data.slice(0, 4);
+                            console.log("Recommended Products Data (after slice, assigned to Vue):", self.recommendedProducts);
+                        } else { console.error("추천 상품 로드 실패:", response.message); }
+                    },
+                    error: (error) => { console.error("추천 상품 AJAX 오류:", error); }
+                });
+            },
+            fetchLatestRallies() {
+                let self = this;
+                $.ajax({
+                    url: '/api/latestRallies.dox',
+                    method: 'GET',
+                    dataType: 'json',
+                    data: { limit: 8 },
+                    success: (response) => {
+                        console.log("Latest Rallies Data:", response.data);
+                        if (response.result === 'success') {
+                            self.latestRallies = response.data;
+                            this.$nextTick(() => {
+                                self.initRallySwiper();
+                            });
+                        } else {
+                            console.error("최신 대회 로드 실패:", response.message);
                         }
+                    },
+                    error: (error) => {
+                        console.error("최신 대회 AJAX 오류:", error);
+                    }
+                });
+            },
+            initMainSwiper() {
+                // 1. 이미지가 있을 때만 초기화
+                if (this.mainSlideImages.length > 0) {
+                    // 2. 기존 Swiper 인스턴스가 있다면 파괴 (메모리 누수 방지 및 재초기화)
+                    if (this.mainSwiperInstance) {
+                        this.mainSwiperInstance.destroy(true, true);
+                    }
 
-                        const swiperEl = document.querySelector('.mySwiper');
-                        if (!swiperEl) { // Swiper 컨테이너가 없으면 종료
-                            console.error("Swiper container '.mySwiper' not found.");
-                            return;
-                        }
+                    // 3. Swiper 컨테이너 요소 찾기
+                    const swiperEl = document.querySelector('.mySwiper');
+                    if (!swiperEl) {
+                        console.error("Swiper container '.mySwiper' not found."); // 컨테이너 없으면 에러 로그만 남김
+                        return;
+                    }
 
-                        // Swiper 컨테이너의 실제 너비 확인 (최종 참조 너비)
-                        const currentContainerWidth = swiperEl.offsetWidth;
-                        console.log("Swiper container current width:", currentContainerWidth);
+                    // 4. 새로운 Swiper 인스턴스 생성
+                    this.mainSwiperInstance = new Swiper(swiperEl, {
+                        loop: true, // 무한 루프
+                        autoplay: { // 자동 재생 설정
+                            delay: 3000,
+                            disableOnInteraction: false,
+                        },
+                        pagination: { // 페이지네이션 설정 (하단 점)
+                            el: '.swiper-pagination',
+                            clickable: true,
+                        },
+                        slidesPerView: 1,           // 한 번에 하나의 슬라이드 표시
+                        spaceBetween: 0,            // 슬라이드 간 간격 없음
+                        centeredSlides: false,      // 슬라이드 중앙 정렬 안 함 (이전 설정 유지)
+                        slidesPerGroup: 1,          // 한 번에 한 개의 슬라이드 그룹 이동
+                        watchOverflow: true,        // 슬라이드가 부족하여 overflow가 발생하면 비활성화
+                        observer: true,             // Swiper 요소 또는 자식 요소의 변화를 감지하여 업데이트
+                        observeParents: true,       // Swiper 부모 요소의 변화를 감지하여 업데이트
+                        preventInteractionOnTransition: true, // 전환 중 상호작용 방지 (문제 방지)
 
-                        this.mainSwiperInstance = new Swiper(swiperEl, { // this.mainSwiperInstance에 저장
-                            loop: true,
-                            autoplay: {
-                                delay: 3000,
-                                disableOnInteraction: false,
+                        // 'on' 콜백은 대부분 디버깅 및 수동 너비 조정 코드였으므로 제거.
+                        // Swiper의 observer/observeParents 옵션이 레이아웃 변경을 처리할 것으로 기대.
+                    });
+                }
+            },
+            initRallySwiper() {
+                if (this.latestRallies.length > 0) {
+                    if (this.rallySwiperInstance) {
+                        this.rallySwiperInstance.destroy(true, true);
+                    }
+
+                    const swiperEl = document.querySelector('.rallySwiper');
+                    if (!swiperEl) {
+                        console.error("Rally Swiper container '.rallySwiper' not found.");
+                        return;
+                    }
+
+                    this.rallySwiperInstance = new Swiper(swiperEl, {
+                        loop: true,
+                        autoplay: {
+                            delay: 3000,
+                            disableOnInteraction: false,
+                        },
+                        pagination: {
+                            el: '.swiper-pagination',
+                            clickable: true,
+                        },
+                        navigation: { // 네비게이션 버튼 추가
+                            nextEl: '.swiper-button-next',
+                            prevEl: '.swiper-button-prev',
+                        },
+                        // ★★★ 가장 중요한 부분: 슬라이드 개수와 간격 조정 ★★★
+                        slidesPerView: 4,           // 한 번에 4개 슬라이드 표시
+                        spaceBetween: 30,           // 슬라이드 간 간격 30px (product-list의 gap과 유사하게)
+                        
+                        centeredSlides: false,
+                        slidesPerGroup: 1, // 한 번에 한 개의 슬라이드 그룹 이동
+                        watchOverflow: true,
+                        observer: true,
+                        observeParents: true,
+                        preventInteractionOnTransition: true,
+                        
+                        // 반응형 설정 추가 (선택 사항)
+                        breakpoints: {
+                            // 0px (모든 화면) 부터 적용되는 기본값은 위에 slidesPerView: 4로 명시
+                            // 480px 이상일 때 적용될 설정
+                            480: { 
+                                slidesPerView: 1, 
+                                spaceBetween: 10 
                             },
-                            pagination: {
-                                el: '.swiper-pagination',
-                                clickable: true,
+                            // 768px 이상일 때 적용될 설정
+                            768: { 
+                                slidesPerView: 2, 
+                                spaceBetween: 20 
                             },
-                            slidesPerView: 1,
-                            spaceBetween: 0,
-                            centeredSlides: false, // 여전히 false 유지 (정확한 정렬 우선)
-                            slidesPerGroup: 1,
-                            watchOverflow: true,
-                            observer: true,
-                            observeParents: true,
-                            preventInteractionOnTransition: true,
-
-                            on: {
-                                init: function (swiper) { // Swiper 인스턴스를 직접 받음
-                                    console.log("Swiper init. Forcing width update...");
-                                    // 모든 슬라이드의 인라인 width 강제 초기화
-                                    swiper.slides.forEach(slide => {
-                                        slide.style.width = currentContainerWidth + 'px'; // 초기 컨테이너 너비로 강제 설정
-                                    });
-                                    // swiper-wrapper의 너비도 강제 설정 (슬라이드 너비 * 슬라이드 개수)
-                                    swiper.wrapperEl.style.width = (currentContainerWidth * swiper.slides.length) + 'px';
-                                    swiper.update();
-                                    swiper.autoplay.start();
-                                },
-                                resize: function (swiper) { // Swiper 인스턴스를 직접 받음
-                                    console.log("Swiper resize. Forcing width update...");
-                                    const newContainerWidth = swiper.el.offsetWidth;
-                                    swiper.slides.forEach(slide => {
-                                        slide.style.width = newContainerWidth + 'px';
-                                    });
-                                    swiper.wrapperEl.style.width = (newContainerWidth * swiper.slides.length) + 'px';
-                                    swiper.update();
-                                    swiper.autoplay.start();
-                                },
-                                // 더블 체크를 위해 100ms 후에 다시 update
-                                afterInit: function(swiper) {
-                                    setTimeout(() => {
-                                        console.log("Swiper afterInit timeout. Final width update...");
-                                        const finalContainerWidth = swiper.el.offsetWidth;
-                                        swiper.slides.forEach(slide => {
-                                            slide.style.width = finalContainerWidth + 'px';
-                                        });
-                                        swiper.wrapperEl.style.width = (finalContainerWidth * swiper.slides.length) + 'px';
-                                        swiper.update();
-                                    }, 100);
-                                },
-                                // 모든 슬라이더 관련 이벤트 이후에 인라인 width 검사 및 재설정
-                                // 이 부분은 디버깅 및 극단적인 오버라이드 목적이므로 문제 해결 시 삭제 권장
-                                transitionEnd: function(swiper) {
-                                    const currentWidth = swiper.el.offsetWidth;
-                                    const isMismatched = Array.from(swiper.slides).some(slide => slide.offsetWidth !== currentWidth);
-                                    if (isMismatched) {
-                                        console.log("TransitionEnd detected slide width mismatch. Recalculating...");
-                                        swiper.slides.forEach(slide => {
-                                            slide.style.width = currentWidth + 'px';
-                                        });
-                                        swiper.wrapperEl.style.width = (currentWidth * swiper.slides.length) + 'px';
-                                        swiper.update();
-                                    }
-                                }
+                            // 1024px 이상일 때 적용될 설정 (선택적 추가)
+                            1024: { 
+                                slidesPerView: 3, 
+                                spaceBetween: 25 
+                            },
+                            // 1200px 이상일 때 적용될 설정 (선택적 추가, 여기서는 4개 슬라이드가 목적)
+                            1200: { 
+                                slidesPerView: 4, 
+                                spaceBetween: 30 
                             }
-                        });
-                    }
-                },
-                initRallySwiper() {
-                    if (this.latestRallies.length > 0) {
-                        console.log('Number of rally slides:', this.latestRallies.length);
-                        new Swiper('.rallySwiper', {
-                            slidesPerView: 1, spaceBetween: 10, loop: false, slidesPerGroup: 1,
-                            navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev', },
-                            breakpoints: { 640: { slidesPerView: 2, spaceBetween: 20, slidesPerGroup: 2, }, 1024: { slidesPerView: 3, spaceBetween: 30, slidesPerGroup: 3, }, },
-                        });
-                    }
-                },
-                formatDate(dateString) { // 날짜 형식 포맷 함수
-                    if (!dateString) return '';
-                    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-                    return new Date(dateString).toLocaleDateString('ko-KR', options);
-                },
-                formatCurrency(value) { // 통화 형식 포맷 함수
-                    if (value === null || value === undefined) return '0 원';
-                    return value.toLocaleString('ko-KR') + ' 원';
-                },
-                fnLogout : function(){
+                        },
+                        on: {
+                            init: function(swiper) { // ★★★ 이 부분이 이번엔 반드시 호출되어야 합니다 ★★★
+                                console.log("Rally Swiper: 'init' event fired.");
+                                console.log("Rally Swiper: Actual slidesPerView param:", swiper.params.slidesPerView);
+                                console.log("Rally Swiper: Actual spaceBetween param:", swiper.params.spaceBetween);
+                                if (swiper.slides.length > 0) {
+                                    console.log("Rally Swiper: First slide's offsetWidth:", swiper.slides[0].offsetWidth);
+                                }
+                            },
+                        }
+                    });
+                }
+            },
+            formatDate(dateString) { // 날짜 형식 포맷 함수
+                if (!dateString) return '';
+                const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+                return new Date(dateString).toLocaleDateString('ko-KR', options);
+            },
+            formatCurrency(value) { // 통화 형식 포맷 함수
+                if (value === null || value === undefined) return '0 원';
+                return value.toLocaleString('ko-KR') + ' 원';
+            },
+            fnLogout : function(){
                 let self = this;
                 let param = {};
                 $.ajax({
@@ -935,12 +1007,30 @@
                     data: param,
                     success: function (data) {
                         if(data.result == "success"){
-                            self.userName = data.userName;
+                            location.href = "home.do";
                         }
-
-                    }
+                    }  
                 });
+            
             },
+            initRallySwiper() {
+                if (this.latestRallies.length > 0) {
+                    console.log('Number of rally slides:', this.latestRallies.length);
+                    new Swiper('.rallySwiper', {
+                        slidesPerView: 1, spaceBetween: 10, loop: false, slidesPerGroup: 1,
+                        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev', },
+                        breakpoints: { 640: { slidesPerView: 2, spaceBetween: 20, slidesPerGroup: 2, }, 1024: { slidesPerView: 3, spaceBetween: 30, slidesPerGroup: 3, }, },
+                    });
+                }
+            },
+                
+           
+
+            fnNotice(){
+                let self = this;
+                pageChange("/home/community/board.do", {type : "B"});
+            },
+            
             fnKakao: function(){
                 let self = this;
                 let param = {
@@ -963,8 +1053,12 @@
                         location.reload();
                     }
                 });
+            },
+            fnNotice(){
+                let self = this;
+                pageChange("/home/community/board.do", {type : "B"});
             }
-        }, // methods
+        },
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
@@ -979,7 +1073,5 @@
         }
     });
 
-        app.mount('#app');
-    </script>
-</body>
-</html>
+    app.mount('#app');
+</script>

@@ -48,9 +48,25 @@ public class HomeController {
 		return "home/chat"; // .jsp빠진형태
 	}
 	
+	@RequestMapping("home/privacy.do")
+	public String privacyPolicy(Model model) throws Exception {
+		return "home/policy/privacy-policy"; // .jsp빠진형태
+	}
+	
+	@RequestMapping("home/terms.do")
+	public String terms(Model model) throws Exception {
+		return "home/policy/terms"; // .jsp빠진형태
+	}
+	
+	@RequestMapping("home/about.do")
+	public String about(Model model) throws Exception {
+		return "home/policy/about"; // .jsp빠진형태
+	}
+	
 	@RequestMapping("home/community/board.do")
 	public String board(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
 		request.setAttribute("sessionId", map.get("sessionId"));
+		request.setAttribute("type", map.get("type"));
 		return "home/board"; // .jsp빠진형태
 	}
 	
@@ -160,7 +176,7 @@ public class HomeController {
     public String getRecommendedProducts() {
         HashMap<String, Object> resultMap = new HashMap<>();
         try {
-            List<Home> products = homeService.getRecommendedProducts(8); // 8개 상품 가져오기
+            List<Home> products = homeService.getRecommendedProducts(4); // 8개 상품 가져오기
             resultMap.put("result", "success");
             resultMap.put("data", products);
         } catch (Exception e) {
@@ -179,7 +195,7 @@ public class HomeController {
     public String getLatestRallies() {
         HashMap<String, Object> resultMap = new HashMap<>();
         try {
-            List<Home> rallies = homeService.getLatestRallies(4); // 4개 대회 가져오기
+            List<Home> rallies = homeService.getLatestRallies(8); // 4개 대회 가져오기
             resultMap.put("result", "success");
             resultMap.put("data", rallies);
         } catch (Exception e) {
