@@ -104,6 +104,7 @@
                                 <h1 class="main-title">
                                     {{chatInfo.name}} 채팅방
                                 </h1>
+                                <button v-if="ownerId == sessionId" class="redbutton" @click="fnDeleteChatRoom">채팅방 삭제</button>
                             </div>
                             <div id="chatBox">
                                 <div v-for="item in messageList" class="margin30">
@@ -113,12 +114,34 @@
                                         @click="fndeleteMessage(item.chatId)">삭제</button>
                                     <div class="text-right">{{item.cdate}}</div>
                                 </div>
+                                <div v-if="chatbotFlg" class="margin30">
+                                    <button @click="fnRunRoute('서울')">서울</button>
+                                    <button @click="fnRunRoute('인천')">인천</button>
+                                    <button @click="fnRunRoute('부산')">부산</button>
+                                    <button @click="fnRunRoute('대구')">대구</button>
+                                    <button @click="fnRunRoute('대전')">대전</button>
+                                    <button @click="fnRunRoute('광주')">광주</button>
+                                    <button @click="fnRunRoute('울산')">울산</button>
+                                    <button @click="fnRunRoute('경기도')">경기도</button>
+                                    <button @click="fnRunRoute('충청도')">충청도</button>
+                                    <button @click="fnRunRoute('경상도')">경상도</button>
+                                    <button @click="fnRunRoute('전라도')">전라도</button>
+                                    <button @click="fnRunRoute('강원도')">강원도</button>
+                                    <button @click="fnRunRoute('제주도')">제주도</button>
+                                    <div v-for="msg in messages" :class="['message', msg.type]" class="margin30">
+                                        <a class="bold" v-if="msg.type == 'user'">사용자 : </a> 
+                                        <a class="bold" v-if="msg.type == 'bot'">코스추천봇 : </a> 
+                                        <a>{{ msg.text }}</a>
+                                    </div>
+                                </div>
                             </div>
-                            <input type="text" id="message" placeholder="메시지를 입력하세요..." @keyup.enter="sendMessage">
-                            <button @click="sendMessage">전송</button>
-                            <div>
+                            <div class="button-box">
+                                <input type="text" id="message" placeholder="메시지를 입력하세요..." @keyup.enter="sendMessage" class="chatInput">
+                                <button @click="sendMessage">전송</button>
+                            </div>
+                            <div class="button-box">
                                 <button class="margin30" @click="fnChat">돌아가기</button>
-                                <button class="margin30" @click="fnDeleteMember(sessionId)">탈퇴하기</button>
+                                <button class="margin30 redbutton" @click="fnDeleteMember(sessionId)">탈퇴하기</button>
                             </div>
                         </main>
                         <aside class="sidebar" v-if="!directFlg">
@@ -184,7 +207,10 @@
                     messageList: [],
                     memberList: [],
                     ownerId: "",
-                    directFlg: false
+                    directFlg: false,
+                    chatbotFlg: false,
+                    userInput: "",
+                    messages: []
                 };
             },
             methods: {
@@ -268,6 +294,18 @@
                     let self = this;
                     let chatBox = document.getElementById("chatBox");
                     let messageContent = document.getElementById("message").value;
+                    if (messageContent == "/코스추천") {
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                        self.chatbotFlg = true;
+                        document.getElementById("message").value = "";
+                        return;
+                    }
+                    if(messageContent == "/종료") {
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                        self.chatbotFlg = false;
+                        document.getElementById("message").value = "";
+                        return;
+                    }
                     // if (self.stompClient && messageContent.trim() !== "") {
                     //     let chatMessage = { content: messageContent };
                     //     self.stompClient.send('/app/sendMessage', {}, JSON.stringify(chatMessage));
@@ -352,6 +390,9 @@
                             console.log(data);
                             alert("삭제되었습니다!");
                             self.fnMemberList();
+                            if(userId == self.sessionId){
+                                self.fnChat();
+                            }
                         }
                     });
                 },
@@ -361,7 +402,7 @@
                         return;
                     }
                     if (!confirm("1ㄷ1 채팅을 하시겠습니까?")) {
-                        return
+                        return;
                     }
                     let param = {
                         userId: userId,
@@ -379,6 +420,67 @@
                             }
                         }
                     });
+                },
+                sendMessageChatbot() {
+                    let chatBox = document.getElementById("chatBox");
+                    this.messages.push({ text: this.userInput, type: 'user' });
+                    let inputText = this.userInput;
+                    this.userInput = "";
+                    chatBox.scrollTop = chatBox.scrollHeight;
+
+                    $.ajax({
+                        url: "/gemini/chat",
+                        type: "GET",
+                        data: { input: inputText },
+                        success: (response) => {
+                            this.messages.push({ text: response, type: 'bot' });
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                        },
+                        error: (xhr) => {
+                            this.messages.push({ text: "오류 발생: " + xhr.responseText, type: 'bot' });
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                        }
+                    });
+                },
+                fnRunRoute(local) {
+                    let self = this;
+                    self.userInput = local + "지역의 러닝코스 알려줘";
+                    self.sendMessageChatbot();
+                },
+                fnLogout : function(){
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if(data.result == "success"){
+                                location.href="/home.do";
+                            }
+
+                        }
+                    })
+                },
+                fnDeleteChatRoom(){
+                    let self = this;
+                    if(!confirm("정말 삭제하시겠습니까?")){
+                        return;
+                    }
+                    let param = {
+                        chatroomNo : self.chatroomNo
+                    };
+                    $.ajax({
+                        url: "/home/mypage/chat/delete.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            self.fnChat();
+                        }
+                    })
                 }
             }, // methods
             mounted() {

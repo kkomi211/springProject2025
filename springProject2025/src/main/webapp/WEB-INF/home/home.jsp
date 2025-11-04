@@ -21,6 +21,8 @@
     <!-- Google Fonts (Fugaz One) -->
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
 
+    <script src="/js/page-change.js"></script>
+
     <style>
         /* style.css */
 
@@ -666,13 +668,7 @@
                     <div class="swiper-side-cover right"></div>
                 </div>
 
-                 <!-- Logout popup -->
-                <div v-if="isLoggedOut" class="modal-overlay">
-                    <div class="modal-content">
-                        <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
-                        <a href="/home.do"><button>메인 화면으로 가기</button></a>
-                    </div>
-                </div>
+                
                 <!-- 추천 상품 영역 -->
                 <section class="products-showcase">
                     <h2>추천 상품</h2>
@@ -767,7 +763,7 @@
                     mainSlideImages: [],
                     recommendedProducts: [],
                     latestRallies: [],
-                    sessionId: '${sessionId}'
+                    sessionId: '${sessionId}',
                 };
             },
             methods: {
@@ -937,7 +933,6 @@
                     success: function (data) {
                         if(data.result == "success"){
                             self.userName = data.userName;
-                            self.isLoggedOut = true;
                         }
 
                     }

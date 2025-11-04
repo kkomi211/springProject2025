@@ -73,7 +73,7 @@
 	<insert id="createMemberChat" parameterType="hashmap" useGeneratedKeys="true" keyColumn="CHATROOM_NO" keyProperty="chatroomNo">
 		INSERT INTO CHAT
 		VALUES (CHAT_SEQ.NEXTVAL, 'DIRECT', #{sessionId} || ' ' || #{userId} || '의채팅방', #{sessionId}, SYSDATE, 
-		 #{sessionId} || ' ' || #{userId}', NULL, SYSDATE)
+		 #{sessionId} || ' ' || #{userId}, NULL, SYSDATE)
 	</insert>
 	
 	<insert id="createMemberPair" parameterType="hashmap">
@@ -90,4 +90,29 @@
 		INSERT INTO CHAT_MEMBER
 		VALUES (CHAT_MEMBER_SEQ.NEXTVAL, SYSDATE, 'O', #{sessionId}, #{chatroomNo})
 	</insert>
+	
+	<delete id="deleteChatroom" parameterType="hashmap">
+		DELETE CHAT
+		WHERE CHATROOM_NO = #{chatroomNo}
+	</delete>
+	
+	<delete id="deleteChatMember" parameterType="hashmap">
+		DELETE CHAT_MEMBER
+		WHERE CHATROOM_NO = #{chatroomNo}
+	</delete>
+	
+	<delete id="deleteChatPair" parameterType="hashmap">
+		DELETE CHATROOM_DIRECT_PAIR
+		WHERE DIRECT_CHATROOM_NO = #{chatroomNo}
+	</delete>
+	
+	<delete id="deleteChatMessage" parameterType="hashmap">
+		DELETE CHAT_MESSAGE
+		WHERE CHATROOM_NO = #{chatroomNo}
+	</delete>
+	
+	<delete id="deleteChatImg" parameterType="hashmap">
+		DELETE CHATROOM_IMG
+		WHERE CHATROOM_NO = #{chatroomNo}
+	</delete>
 </mapper>

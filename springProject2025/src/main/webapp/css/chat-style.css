@@ -322,3 +322,22 @@ tr:hover {
 .red{
   color: red;
 }
+
+.chatInput{
+  height: 32px;       /* unify height for alignment */
+  font-size: 14px;
+  
+  outline: none;
+  padding: 0 10px;
+  width: 75%;
+}
+
+.redbutton{
+  background-color: red;
+  color: white;
+}
+
+.button-box{
+  display: flex;
+  justify-content: space-between;
+}
