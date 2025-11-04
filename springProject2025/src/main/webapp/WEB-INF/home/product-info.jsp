@@ -617,8 +617,9 @@
                         }
                     });
                 },
-                fnPayment(){
+                fnPayment() {
                     let self = this;
+<<<<<<< HEAD
                     // 제품 상세에서 직접 구매 - 제품번호, 사용자, 수량, 사이즈를 전달
                     if (typeof pageChange === 'function') {
                         pageChange("/home/payment/paybefore.do", {
@@ -629,6 +630,24 @@
                             //sessionId: self.sessionId
                         });
                     }
+=======
+                },
+                fnLogout : function(){
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if(data.result == "success"){
+                                location.href="/home.do";
+                            }
+
+                        }
+                    })
+>>>>>>> branch 'develop' of https://github.com/kkomi211/springProject2025.git
                 }
 
 

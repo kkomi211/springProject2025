@@ -12,6 +12,9 @@ public interface MemberMapper {
 	// 로그인
 	User userLogin(HashMap<String, Object> map);
 	
+	// 카카오 회원 추가
+	int addUser(User user);
+	
 	// 회원가입
 	int userSignup(HashMap<String, Object> map);
 	
