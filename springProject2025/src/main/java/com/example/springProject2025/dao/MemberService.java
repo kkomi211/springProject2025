@@ -68,7 +68,8 @@ public class MemberService {
 		resultMap.put("userName", userName);
 		resultMap.put("result", "success");
 		
-		session.removeAttribute("sessionId"); // 1개씩 삭제
+		session.removeAttribute("sessionId");
+		session.removeAttribute("userType");// 1개씩 삭제
 		
 		return resultMap;
 	}
@@ -164,5 +165,62 @@ public class MemberService {
 
 	    return resultMap;
 	}
+	
+	public HashMap<String, Object> memberKakaoLogin(Map<String, Object> kakaoUser) {
+	    HashMap<String, Object> resultMap = new HashMap<>();
+
+	    String kakaoId = "kakao_" + kakaoUser.get("id");
+
+	    // Safely extract kakao_account (may be null)
+	    Map<String, Object> kakaoAccount = null;
+	    if (kakaoUser.get("kakao_account") instanceof Map) {
+	        kakaoAccount = (Map<String, Object>) kakaoUser.get("kakao_account");
+	    }
+
+	    // Try nickname from kakao_account.profile, or fallback to properties.nickname
+	    String nickname = "KakaoUser";
+	    if (kakaoAccount != null && kakaoAccount.get("profile") instanceof Map) {
+	        nickname = (String) ((Map) kakaoAccount.get("profile")).get("nickname");
+	    } else if (kakaoUser.get("properties") instanceof Map) {
+	        nickname = (String) ((Map) kakaoUser.get("properties")).get("nickname");
+	    }
+
+	    // Try email, but handle missing kakao_account safely
+	    String email = (kakaoAccount != null && kakaoAccount.get("email") != null)
+	            ? (String) kakaoAccount.get("email")
+	            : "noemail@kakao.com";
+
+	    HashMap<String, Object> checkMap = new HashMap<>();
+	    checkMap.put("userId", kakaoId);
+	    User existingUser = memberMapper.userLogin(checkMap);
+
+	    if (existingUser == null) {
+	        User newUser = new User();
+	        newUser.setUserId(kakaoId);
+	        newUser.setPwd("KAKAO_PWD");
+	        newUser.setName(nickname);
+	        newUser.setNickname(nickname);
+	        newUser.setGender("M");
+	        newUser.setEmail(email);
+	        newUser.setAddr("미입력");
+	        newUser.setPhone("000-0000-0000");
+	        newUser.setUsertype("K");
+	        newUser.setBirth("");
+
+	        memberMapper.addUser(newUser);
+	        resultMap.put("message", "New Kakao user created");
+	    } else {
+	        resultMap.put("message", "Existing user logged in");
+	    }
+
+	    session.setAttribute("sessionId", kakaoId);	
+	    session.setAttribute("sessionName", nickname);
+
+	    resultMap.put("result", "success");
+	    resultMap.put("userName", nickname);
+
+	    return resultMap;
+	}
+
 
 }

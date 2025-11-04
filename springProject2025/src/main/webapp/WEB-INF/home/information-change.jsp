@@ -31,7 +31,13 @@
                     <input type="text" placeholder="검색어를 입력해 주세요.">
                     </div>
                     <div>
-                        <a href="/home/login.do">로그인</a></div>
+                        <template v-if="sessionId != ''">
+                            <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                        </template>
+                        <template v-else>
+                            <a href="/home/login.do">로그인</a>
+                        </template>
+                    </div>
                     <div>
                         <a href="/home/signup.do">가입하기</a></div>
                     <div><a href="/home/mypage/inquery.do">문의</a></div>
@@ -138,7 +144,7 @@
                                             <button class="btn" v-if="phoneFlg" @click="fnPhoneSave">저장</button>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr v-if="userType != 'K' ">
                                         <th>비밀번호 변경</th>
                                         <td>
                                             <template v-if="!pwdFlg">
@@ -202,6 +208,14 @@
                                 </div>
                             </div>
 
+                            <!-- Logout popup -->
+                            <div v-if="isLoggedOut" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
+                                    <a href="/home.do"><button>메인 화면으로 가기</button></a>
+                                </div>
+                            </div>
+
                         </main>
             </main>
 
@@ -250,6 +264,7 @@
                 // 변수 - (key : value)
                 pwd : "",
                 sessionId : "${sessionId}",
+                userType : "${userType}",   
                 info : {},
                 email : "",
                 addr : "",
@@ -267,7 +282,8 @@
 
                 // Popup Modal
                 confirmDelete : false,
-                accountDeleted : false
+                accountDeleted : false,
+                isLoggedOut : false
 
             };
         },
@@ -566,6 +582,23 @@
             closeModal() {
                 let self = this;
                 self.confirmDelete = false;
+            },
+            fnLogout : function(){
+                let self = this;
+                let param = {};
+                $.ajax({
+                    url: "/member/logout.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if(data.result == "success"){
+                            self.userName = data.userName;
+                            self.isLoggedOut = true;
+                        }
+
+                    }
+                });
             }
         }, // methods
         mounted() {

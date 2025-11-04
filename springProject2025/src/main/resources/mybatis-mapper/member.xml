@@ -58,4 +58,25 @@
 		WHERE USER_ID = #{userId}
 	</update>
 	
+	<insert id="addUser" parameterType="com.example.springProject2025.model.User">
+	    INSERT INTO USERS (
+	        USER_ID, PWD, NAME, NICKNAME, GENDER, EMAIL, ADDR, PHONE, CDATE, UDATE, USERTYPE, BIRTH
+	    ) 
+	    VALUES (
+	        #{userId},
+	        #{pwd},
+	        #{name},
+	        #{nickname},
+	        #{gender},
+	        #{email},
+	        #{addr},
+	        #{phone},
+	        SYSDATE,
+	        SYSDATE,
+	        #{usertype},
+	        #{birth}
+	    )
+	</insert>
+
+	
 </mapper>
