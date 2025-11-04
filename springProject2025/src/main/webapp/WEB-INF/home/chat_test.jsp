@@ -94,8 +94,10 @@
             </div>
         </div>
         <div class="chat-input">
-            <textarea v-model="userInput" placeholder="메시지를 입력하세요..."></textarea>
-            <button @click="sendMessage">전송</button>
+            <button @click="fnRunRoute('서울')">서울</button>
+            <button @click="fnRunRoute('경기')">경기</button>
+            <button @click="fnRunRoute('인천')">인천</button>
+            <button @click="fnRunRoute('부산')">부산</button>
         </div>
     </div>
 </body>
@@ -135,6 +137,11 @@
                     const chatBox = this.$refs.chatBox;
                     chatBox.scrollTop = chatBox.scrollHeight;
                 });
+            },
+            fnRunRoute(local){
+                let self = this;
+                self.userInput = local + "지역의 러닝코스 짧게 요약해서 알려줘";
+                self.sendMessage();
             }
         }
     });

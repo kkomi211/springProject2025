@@ -21,6 +21,8 @@
     <!-- Google Fonts (Fugaz One) -->
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
 
+    <script src="/js/page-change.js"></script>
+
     <style>
         /* style.css */
 
@@ -667,7 +669,7 @@
         <header>
             <div class="top-header">
                 <div class="brand-name">
-                    <div><a href="/home.do">RUNNERS' HOUSE</a></div>
+                    <div><a href="/home.do" style="text-decoration: none;">RUNNERS' HOUSE</a></div>
                 </div>
                 <div id="right-items">
                     <div class="search-box">
@@ -684,7 +686,8 @@
                     <div v-if="sessionId == ''">
                         <a href="/home/signup.do">가입하기</a>
                     </div>
-                    <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                    <div v-if="sessionId != '' && userType != 'K'"><a href="/home/mypage/information.do">마이페이지</a></div>
+                    <div v-else-if="sessionId != '' && userType == 'K'"><a href="home/mypage/information/change.do">마이페이지</a></div>
                     <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
                 </div>
             </div>
@@ -715,13 +718,7 @@
                     <div class="swiper-side-cover right"></div>
                 </div>
 
-                 <!-- Logout popup -->
-                <div v-if="isLoggedOut" class="modal-overlay">
-                    <div class="modal-content">
-                        <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
-                        <a href="/home.do"><button>메인 화면으로 가기</button></a>
-                    </div>
-                </div>
+                
                 <!-- 추천 상품 영역 -->
                 <section class="products-showcase">
                     <h2>추천 상품</h2>
@@ -1012,10 +1009,28 @@
                         if(data.result == "success"){
                             location.href = "home.do";
                         }
-
-                    }
+                    }  
                 });
+            
             },
+            initRallySwiper() {
+                if (this.latestRallies.length > 0) {
+                    console.log('Number of rally slides:', this.latestRallies.length);
+                    new Swiper('.rallySwiper', {
+                        slidesPerView: 1, spaceBetween: 10, loop: false, slidesPerGroup: 1,
+                        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev', },
+                        breakpoints: { 640: { slidesPerView: 2, spaceBetween: 20, slidesPerGroup: 2, }, 1024: { slidesPerView: 3, spaceBetween: 30, slidesPerGroup: 3, }, },
+                    });
+                }
+            },
+                
+           
+
+            fnNotice(){
+                let self = this;
+                pageChange("/home/community/board.do", {type : "B"});
+            },
+            
             fnKakao: function(){
                 let self = this;
                 let param = {
@@ -1028,9 +1043,14 @@
                     data: param,
                     success: function (data) {
                         console.log(data);
-                        self.sessionName = data.properties.nickname;
+                        if (data.properties && data.properties.nickname) {
+                            self.sessionName = data.properties.nickname;
+                        }
+
                         // ✅ Remove the ?code=... from the URL (no reload)
                         window.history.replaceState({}, document.title, '/home.do');
+                        // ✅ Then reload the page so Vue picks up the session
+                        location.reload();
                     }
                 });
             },
