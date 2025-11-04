@@ -517,10 +517,8 @@
                                 <template v-for="(item, index) in selectedItems"
                                     :key="item.cartNo || item.productNo || index">
                                     <section class="order-item">
-                                        <img :src="getImagePath(item.imgPath)"
-                                            :alt="item.productName"
-                                            class="order-item-image"
-                                            onerror="this.src='/img/no-image.png'">
+                                        <img :src="getImagePath(item.imgPath)" :alt="item.productName"
+                                            class="order-item-image" onerror="this.src='/img/no-image.png'">
 
                                         <div class="product-info">
                                             <div>
@@ -563,11 +561,10 @@
                     </div>
                     <div class="footer-right">
                         <div class="other">
-                            <span>회사소개</span>
-                            <span>매장안내</span>
-                            <span>공지사항</span>
-                            <span>이용약관</span>
-                            <span>개인정보처리방침</span>
+                            <span><a href="/home/about.do">회사소개</a></span>
+                            <span><a @click="fnNotice">공지사항</a></span>
+                            <span><a href="/home/terms.do">이용약관</a></span>
+                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
                         </div>
                         <div class="socials">
                             <span>INSTAGRAM</span>
@@ -881,7 +878,7 @@
                     // 서버에서 전달받은 cartNo 목록 가져오기 (장바구니에서 온 경우)
                     // pageChange가 JSON.stringify한 문자열이 파라미터로 전달됨
                     let selectedCartNosJson = '${selectedCartNos != null ? selectedCartNos : ""}';
-                    
+
                     // 제품 상세에서 직접 구매로 넘어온 경우 (제품번호, 수량, 사이즈가 있는 경우)
                     let directProductNo = '${directProductNo != null ? directProductNo : ""}';
                     let directQuantity = '${directQuantity != null ? directQuantity : ""}';
@@ -954,10 +951,10 @@
                                 // 제품 정보를 결제 페이지 형식에 맞게 변환
                                 const productInfo = data.info;
                                 const sizeInfo = data.sizeList || [];
-                                
+
                                 // 선택한 사이즈에 맞는 정보 찾기
                                 const selectedSizeInfo = sizeInfo.find(s => String(s.productSize) === String(productSize)) || sizeInfo[0];
-                                
+
                                 // 이미지 정보 조회
                                 $.ajax({
                                     url: "/product/img/list.dox",
@@ -967,12 +964,12 @@
                                     success: function (imgData) {
                                         console.log("이미지 정보 응답:", imgData);
                                         // 해당 제품의 이미지만 필터링
-                                        const productImgs = (imgData.imgList && imgData.imgList.length > 0) 
+                                        const productImgs = (imgData.imgList && imgData.imgList.length > 0)
                                             ? imgData.imgList.filter(img => String(img.productNo) === String(productNo))
                                             : [];
                                         // 첫 번째 이미지 사용
                                         const firstImg = productImgs.length > 0 ? productImgs[0] : null;
-                                        
+
                                         // selectedItems에 추가
                                         self.selectedItems = [{
                                             productNo: productNo,
@@ -982,7 +979,7 @@
                                             productSize: productSize || (selectedSizeInfo ? selectedSizeInfo.productSize : ""),
                                             imgPath: firstImg ? firstImg.imgPath : null
                                         }];
-                                        
+
                                         console.log("선택된 아이템:", self.selectedItems);
                                         self.fnCalculateTotals();
                                     },
@@ -1003,8 +1000,8 @@
                             } else {
                                 alert("제품 정보를 불러올 수 없습니다.");
                                 if (typeof pageChange === 'function') {
-                                    pageChange("/home/product-info.do", { 
-                                        productNo: productNo, 
+                                    pageChange("/home/product-info.do", {
+                                        productNo: productNo,
                                         // sessionId: self.sessionId 
                                     });
                                 }
@@ -1014,8 +1011,8 @@
                             console.error("제품 정보 조회 실패:", error);
                             alert("제품 정보를 불러오는 중 오류가 발생했습니다.");
                             if (typeof pageChange === 'function') {
-                                pageChange("/home/product-info.do", { 
-                                    productNo: productNo, 
+                                pageChange("/home/product-info.do", {
+                                    productNo: productNo,
                                     // sessionId: self.sessionId 
                                 });
                             }
@@ -1033,7 +1030,27 @@
                     self.totalProductPrice = total;
                     self.totalDiscount = 0;
                     self.deliveryFee = total >= 50000 || total === 0 ? 0 : 3000;
-                }
+                },
+                fnLogout: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+
+                        }
+                    })
+                },
+                fnNotice() {
+                    let self = this;
+                    pageChange("/home/community/board.do", { type: "B" });
+                },
             },
             mounted() {
                 // 처음 시작할 때 실행되는 부분
