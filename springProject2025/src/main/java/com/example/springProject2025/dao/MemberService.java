@@ -1,8 +1,7 @@
 package com.example.springProject2025.dao;
 
 import java.util.HashMap;
-
-
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,7 +56,8 @@ public class MemberService {
 	    resultMap.put("message", message);
 		return resultMap;
 	}
-	
+
+
 	public HashMap<String, Object> memberLogout(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();

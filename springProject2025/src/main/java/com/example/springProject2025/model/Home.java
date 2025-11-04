@@ -29,9 +29,5 @@ public class Home {
     private String applicationPeriod;
     private int rallyPrice; // 매퍼의 'AS rallyPrice'에 맞춰 int 타입으로
     private String host;
-
-    // ★★★ 모든 이미지 경로를 담을 이 필드가 꼭 있어야 합니다! ★★★
-    // 상품 이미지 경로, 대회 이미지 경로 등 이 imgPath 필드로 매핑됩니다.
     
-
 }
