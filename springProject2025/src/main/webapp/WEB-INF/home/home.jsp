@@ -637,7 +637,8 @@
                     <div v-if="sessionId == ''">
                         <a href="/home/signup.do">가입하기</a>
                     </div>
-                    <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                    <div v-if="sessionId != '' && userType != 'K'"><a href="/home/mypage/information.do">마이페이지</a></div>
+                    <div v-else-if="sessionId != '' && userType == 'K'"><a href="home/mypage/information/change.do">마이페이지</a></div>
                     <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
                 </div>
             </div>
@@ -764,6 +765,8 @@
                     recommendedProducts: [],
                     latestRallies: [],
                     sessionId: '${sessionId}',
+                    isLoggedOut : false,
+                    userType: "${userType}"
                 };
             },
             methods: {
@@ -950,7 +953,14 @@
                     data: param,
                     success: function (data) {
                         console.log(data);
-                        self.sessionName = data.properties.nickname;
+                        if (data.properties && data.properties.nickname) {
+                            self.sessionName = data.properties.nickname;
+                        }
+
+                        // ✅ Remove the ?code=... from the URL (no reload)
+                        window.history.replaceState({}, document.title, '/home.do');
+                        // ✅ Then reload the page so Vue picks up the session
+                        location.reload();
                     }
                 });
             }

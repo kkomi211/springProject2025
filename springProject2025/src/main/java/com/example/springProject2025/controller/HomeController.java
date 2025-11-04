@@ -35,6 +35,7 @@ public class HomeController {
 	@RequestMapping("home.do")
 	public String userList(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
 		request.setAttribute("sessionId", map.get("sessionId"));
+		request.setAttribute("userType", map.get("userType"));
 		return "home/home"; // .jsp빠진형태
 	}
 	
@@ -69,6 +70,7 @@ public class HomeController {
 	@RequestMapping("home/mypage/information/change.do")
 	public String informationChange(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
 		request.setAttribute("sessionId", map.get("sessionId"));
+		request.setAttribute("userType", map.get("userType"));
 		return "home/information-change"; // .jsp빠진형태
 	}
 	
