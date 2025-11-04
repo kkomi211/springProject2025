@@ -1,6 +1,7 @@
 package com.example.springProject2025.controller;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,11 +14,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.springProject2025.dao.MemberService;
 import com.google.gson.Gson;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class MemberController {
 	
 	@Autowired
 	MemberService memberService;
+	
+	
+	@Autowired
+	HttpSession session;
 	
 	@RequestMapping(value = "/home/login.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
@@ -25,6 +32,17 @@ public class MemberController {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		System.out.println(map);
 		resultMap = memberService.memberLogin(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	
+	@RequestMapping(value = "/member/logout.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String logout(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
+		resultMap = memberService.memberLogout(map);
 		
 		return new Gson().toJson(resultMap);
 	}

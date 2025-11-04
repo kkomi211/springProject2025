@@ -37,13 +37,18 @@
                                 <input type="text" placeholder="검색어를 입력해 주세요.">
                             </div>
                             <div>
-                                <a href="/home/login.do">로그인</a>
+                                <template v-if="sessionId != ''">
+                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                                </template>
+                                <template v-else>
+                                    <a href="/home/login.do">로그인</a>
+                                </template>
                             </div>
-                            <div>
+                            <div v-if="sessionId == ''">
                                 <a href="/home/signup.do">가입하기</a>
                             </div>
-                            <div><a href="/home/mypage/inquiry.do">문의</a></div>
-                            <div><a href="/home/cart.do">장바구니</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -60,11 +65,9 @@
                 </header>
 
                 <main>
-                    <div class="content">
-                        <h1 class="margintop">제품 문의 작성 </h1>
+                    <div class="newcontent">
                         <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword">
                         <button class="height40 bluebutton" @click="fnProductSearch(keyword)">검색</button>
-                        <hr>
                     </div>
                     <div class="side-bar">
                         <div class="category-box">
@@ -170,7 +173,7 @@
                     title: "",
                     content: "",
                     pwd: "",
-                    sessionId : "${sessionId}"
+                    sessionId: "${sessionId}"
                 };
             },
             computed: {
@@ -260,36 +263,36 @@
                 },
                 fnCategoryProduct(category) {
                     let self = this;
-                    pageChange("/home/product.do", { keyword: "", category: category, sessionId : self.sessionId });
+                    pageChange("/home/product.do", { keyword: "", category: category, sessionId: self.sessionId });
                 },
                 fnProduct() {
                     let self = this;
-                    pageChange("/home/product.do", { keyword: "", category: "", sessionId : self.sessionId });
+                    pageChange("/home/product.do", { keyword: "", category: "", sessionId: self.sessionId });
                 },
                 fnProductSearch(key) {
                     let self = this;
-                    pageChange("/home/product.do", { keyword: key, category: "", sessionId : self.sessionId });
+                    pageChange("/home/product.do", { keyword: key, category: "", sessionId: self.sessionId });
                 },
-                fnBack(){
+                fnBack() {
                     let self = this;
-                    pageChange("/home/product-info.do", {productNo : self.productNo, sessionId : self.sessionId});
+                    pageChange("/home/product-info.do", { productNo: self.productNo, sessionId: self.sessionId });
                 },
-                fnAddInquiry(){
+                fnAddInquiry() {
                     let self = this;
-                    if(self.title == ""){
+                    if (self.title == "") {
                         alert("제목이 비어있습니다!");
                         return;
                     }
-                    if(self.content == ""){
+                    if (self.content == "") {
                         alert("내용이 비어있습니다!");
                         return;
                     }
                     let param = {
-                        productNo : self.productNo,
-                        title : self.title,
-                        content : self.content,
-                        userId : self.sessionId,
-                        pwd : self.pwd
+                        productNo: self.productNo,
+                        title: self.title,
+                        content: self.content,
+                        userId: self.sessionId,
+                        pwd: self.pwd
                     };
                     $.ajax({
                         url: "/product/inquiry/add.dox",
@@ -302,6 +305,22 @@
                             self.fnBack();
                         }
                     });
+                },
+                fnLogout : function(){
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if(data.result == "success"){
+                                location.href="/home.do";
+                            }
+
+                        }
+                    })
                 }
 
 

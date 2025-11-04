@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+	<mapper namespace="com.example.springProject2025.mapper.BoardMapper">
+		
+		<!-- rally board.xml(대회 게시판) list-->
+		<select id="selectCrewBoardList" parameterType="hashmap" resultType="com.example.springProject2025.model.Chat">
+			SELECT *
+		    FROM
+		        CHAT  
+		    <where>
+		        ROOM_TYPE = 'GROUP'  
+		        <if test="keyword != null and keyword.trim() != ''">
+		            AND (
+		                TITLE LIKE '%' || #{keyword} || '%'
+		                OR NAME LIKE '%' || #{keyword} || '%'
+		                OR INTRO LIKE '%' || #{keyword} || '%'
+		                OR OWNER_ID LIKE '%' || #{keyword} || '%' 
+		            )
+		        </if>
+		    </where>
+		    ORDER BY CDATE DESC
+		    
+		    OFFSET ( (#{page} - 1) * #{pageSize} ) ROWS 
+		    FETCH NEXT #{pageSize} ROWS ONLY
+		</select>
+	</mapper>  

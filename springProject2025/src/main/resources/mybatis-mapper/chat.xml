@@ -7,11 +7,112 @@
 	<select id="selectChatroomList" parameterType="hashmap" resultType="com.example.springProject2025.model.Chat">
 		SELECT *
 		FROM CHAT
-		WHERE CHATROOM_NO IN (
-		    SELECT CHATROOM_NO
-		    FROM CHAT_MEMBER
-		    WHERE USER_ID = #{userId}
-		)
+		WHERE 1=1
+		<if test="userId != '' and userId != 'undefined' and userId != null">
+			AND CHATROOM_NO IN (
+			    SELECT CHATROOM_NO
+			    FROM CHAT_MEMBER
+			    WHERE USER_ID = #{userId}
+			)
+		</if>
+		<if test="chatroomNo != '' and chatroomNo != 'undefined' and chatroomNo != null">
+			AND CHATROOM_NO = #{chatroomNo}
+		</if>
 	</select>
 	
+	<insert id="insertMessage" parameterType="hashmap">
+		INSERT INTO CHAT_MESSAGE
+		VALUES (CHAT_MESSAGE_SEQ.NEXTVAL, SYSDATE, #{message}, #{senderId}, #{chatroomNo})
+	</insert>
+	
+	<select id="selectMessageList" parameterType="hashmap" resultType="com.example.springProject2025.model.Chat">
+	   	SELECT *
+		FROM CHAT_MESSAGE M
+		INNER JOIN USERS U ON U.USER_ID = M.SENDER_ID
+		WHERE CHATROOM_NO = #{chatroomNo}
+		ORDER BY M.CDATE ASC
+  	</select>
+  	
+  	<delete id="deleteMessage" parameterType="hashmap">
+  		DELETE CHAT_MESSAGE
+  		WHERE CHAT_ID = #{chatId}
+  	</delete>
+  	
+	<select id="selectMemberList" parameterType="hashmap" resultType="com.example.springProject2025.model.Chat">
+		SELECT *
+		FROM CHAT_MEMBER M
+		INNER JOIN USERS U ON U.USER_ID = M.USER_ID
+		WHERE CHATROOM_NO = #{chatroomNo}
+	</select>
+	
+	<select id="selectOwner" parameterType="hashmap" resultType="com.example.springProject2025.model.Chat">
+		SELECT *
+		FROM CHAT_MEMBER M
+		INNER JOIN USERS U ON U.USER_ID = M.USER_ID
+		WHERE 
+			CHATROOM_NO = #{chatroomNo}
+			AND ROLE = 'O'
+	</select>
+	
+	<delete id="deleteMember" parameterType="hashmap">
+		DELETE CHAT_MEMBER
+		WHERE 
+			USER_ID = #{userId}
+			AND CHATROOM_NO = #{chatroomNo}
+	</delete>
+	
+	<select id="checkMemberChat" parameterType="hashmap" resultType="com.example.springProject2025.model.Chat">
+		SELECT COUNT(*) AS CNT, DIRECT_CHATROOM_NO AS CHATROOM_NO
+		FROM CHATROOM_DIRECT_PAIR
+		WHERE 1=1
+			AND ((USER_ID_A = #{userId} AND USER_ID_B = #{sessionId}) 
+			OR (USER_ID_A = #{sessionId} AND USER_ID_B = #{userId}))
+		GROUP BY DIRECT_CHATROOM_NO
+	</select>
+	
+	<insert id="createMemberChat" parameterType="hashmap" useGeneratedKeys="true" keyColumn="CHATROOM_NO" keyProperty="chatroomNo">
+		INSERT INTO CHAT
+		VALUES (CHAT_SEQ.NEXTVAL, 'DIRECT', #{sessionId} || ' ' || #{userId} || '의채팅방', #{sessionId}, SYSDATE, 
+		 #{sessionId} || ' ' || #{userId}, NULL, SYSDATE)
+	</insert>
+	
+	<insert id="createMemberPair" parameterType="hashmap">
+		INSERT INTO CHATROOM_DIRECT_PAIR
+		VALUES (#{chatroomNo}, #{sessionId}, #{userId})
+	</insert>
+	
+	<insert id="createMember" parameterType="hashmap">
+		INSERT INTO CHAT_MEMBER
+		VALUES (CHAT_MEMBER_SEQ.NEXTVAL, SYSDATE, 'M', #{userId}, #{chatroomNo})
+	</insert>
+	
+	<insert id="createMemberOwner" parameterType="hashmap">
+		INSERT INTO CHAT_MEMBER
+		VALUES (CHAT_MEMBER_SEQ.NEXTVAL, SYSDATE, 'O', #{sessionId}, #{chatroomNo})
+	</insert>
+	
+	<delete id="deleteChatroom" parameterType="hashmap">
+		DELETE CHAT
+		WHERE CHATROOM_NO = #{chatroomNo}
+	</delete>
+	
+	<delete id="deleteChatMember" parameterType="hashmap">
+		DELETE CHAT_MEMBER
+		WHERE CHATROOM_NO = #{chatroomNo}
+	</delete>
+	
+	<delete id="deleteChatPair" parameterType="hashmap">
+		DELETE CHATROOM_DIRECT_PAIR
+		WHERE DIRECT_CHATROOM_NO = #{chatroomNo}
+	</delete>
+	
+	<delete id="deleteChatMessage" parameterType="hashmap">
+		DELETE CHAT_MESSAGE
+		WHERE CHATROOM_NO = #{chatroomNo}
+	</delete>
+	
+	<delete id="deleteChatImg" parameterType="hashmap">
+		DELETE CHATROOM_IMG
+		WHERE CHATROOM_NO = #{chatroomNo}
+	</delete>
 </mapper>
