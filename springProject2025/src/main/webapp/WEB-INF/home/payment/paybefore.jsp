@@ -45,8 +45,9 @@
             }
 
             .delivery-info {
-                flex: 2;
-                min-width: 50%;
+                /* flex: 2; */
+                min-width: 62%;
+                 /* width: 58%; */
             }
 
             .delivery-info-box {
@@ -189,7 +190,7 @@
                 border: 1px solid #ccc;
                 padding: 25px;
                 background: #fff;
-                width: 60%;
+                width: 58%;
             }
 
             .ordered-items-title {
@@ -726,9 +727,9 @@
                     }, function (rsp) { // callback
                         if (rsp.success) {
                             // 결제 성공 시
-                            alert("결제는 성공");
+                            // alert("결제는 성공");
                             console.log(rsp);
-                            alert("결제돌아온 data" + JSON.stringify(rsp));
+                            // alert("결제돌아온 data" + JSON.stringify(rsp));
                             // self.fnPayHistory(rsp.imp_uid, rsp.paid_amount); //order테이블 업데이트 예정
                             self.fnPayOrderI(rsp.imp_uid, rsp.paid_amount //order테이블 인서트 
                                 , self.deliveryInfo // 배송 정보 객체 전체
@@ -749,7 +750,7 @@
                     });
                 },
                 fnPayOrderI: function (uid, amount, deliveryInfo, orderRequest) { //order테이블 업데이트 예정 amount는 카드사에서 돌아온값
-                    alert("fnPayOrderI 진입 " + uid + " " + amount + " " + deliveryInfo + " " + orderRequest);
+                    // alert("fnPayOrderI 진입 " + uid + " " + amount + " " + deliveryInfo + " " + orderRequest);
                     let self = this;
 
 
