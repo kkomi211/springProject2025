@@ -637,7 +637,8 @@
                     <div v-if="sessionId == ''">
                         <a href="/home/signup.do">가입하기</a>
                     </div>
-                    <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                    <div v-if="sessionId != '' && userType != 'K'"><a href="/home/mypage/information.do">마이페이지</a></div>
+                    <div v-else-if="sessionId != '' && userType == 'K'"><a href="home/mypage/information/change.do">마이페이지</a></div>
                     <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
                 </div>
             </div>
@@ -763,6 +764,8 @@
                     recommendedProducts: [],
                     latestRallies: [],
                     sessionId: '${sessionId}',
+                    isLoggedOut : false,
+                    userType: "${userType}"
                 };
             },
             methods: {
@@ -942,12 +945,43 @@
                     pageChange("/home/community/board.do", {type : "B"});
                 }
             },
-            mounted() {
-                this.fetchMainSlideImages();
-                this.fetchRecommendedProducts();
-                this.fetchLatestRallies();
+            fnKakao: function(){
+                let self = this;
+                let param = {
+                    code : self.code
+                };
+                $.ajax({
+                    url: "/kakao.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        console.log(data);
+                        if (data.properties && data.properties.nickname) {
+                            self.sessionName = data.properties.nickname;
+                        }
+
+                        // ✅ Remove the ?code=... from the URL (no reload)
+                        window.history.replaceState({}, document.title, '/home.do');
+                        // ✅ Then reload the page so Vue picks up the session
+                        location.reload();
+                    }
+                });
             }
-        });
+        }, // methods
+        mounted() {
+            // 처음 시작할 때 실행되는 부분
+            let self = this;
+            const queryParams = new URLSearchParams(window.location.search);
+            self.code = queryParams.get('code') || '';
+            if(self.code != ""){
+                self.fnKakao();
+            }
+            this.fetchMainSlideImages();
+            this.fetchRecommendedProducts();
+            this.fetchLatestRallies();
+        }
+    });
 
         app.mount('#app');
     </script>
