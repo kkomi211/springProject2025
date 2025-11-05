@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +30,16 @@ public class HomeController {
 
     @Value("${redirect_uri}")
     private String redirect_uri;
-	@Autowired
+	
+    @Autowired
 	HomeService homeService;
+	
+	
 	
 	@RequestMapping("home.do")
 	public String userList(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
 		request.setAttribute("sessionId", map.get("sessionId"));
+		request.setAttribute("userType", map.get("userType"));
 		return "home/home"; // .jsp빠진형태
 	}
 	
@@ -43,9 +48,25 @@ public class HomeController {
 		return "home/chat"; // .jsp빠진형태
 	}
 	
+	@RequestMapping("home/privacy.do")
+	public String privacyPolicy(Model model) throws Exception {
+		return "home/policy/privacy-policy"; // .jsp빠진형태
+	}
+	
+	@RequestMapping("home/terms.do")
+	public String terms(Model model) throws Exception {
+		return "home/policy/terms"; // .jsp빠진형태
+	}
+	
+	@RequestMapping("home/about.do")
+	public String about(Model model) throws Exception {
+		return "home/policy/about"; // .jsp빠진형태
+	}
+	
 	@RequestMapping("home/community/board.do")
 	public String board(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
 		request.setAttribute("sessionId", map.get("sessionId"));
+		request.setAttribute("type", map.get("type"));
 		return "home/board"; // .jsp빠진형태
 	}
 	
@@ -69,6 +90,7 @@ public class HomeController {
 	@RequestMapping("home/mypage/information/change.do")
 	public String informationChange(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
 		request.setAttribute("sessionId", map.get("sessionId"));
+		request.setAttribute("userType", map.get("userType"));
 		return "home/information-change"; // .jsp빠진형태
 	}
 	
@@ -80,6 +102,15 @@ public class HomeController {
 //		model.addAttribute("client_id", client_id);
 //	    model.addAttribute("redirect_uri", redirect_uri);
 		return "home/login"; // .jsp빠진형태
+	}
+	
+	@RequestMapping("home/testjghlogin.do")
+	public String testjghlogin(Model model) throws Exception {
+		String location = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + client_id
+				+ "&redirect_uri=" + redirect_uri;
+		model.addAttribute("location", location);
+		System.out.println("home/testjghlogin.do 테스트중");
+		return "home/testjghlogin"; // .jsp빠진형태
 	}
 	
 //	@RequestMapping("home/cart.do")
@@ -97,6 +128,7 @@ public class HomeController {
 		request.setAttribute("sessionId", map.get("sessionId"));
 		request.setAttribute("category", map.get("category"));
 		request.setAttribute("keyword", map.get("keyword"));
+		request.setAttribute("saleYN", map.get("saleYN"));
 		System.out.println(map);
 		return "home/product"; // .jsp빠진형태
 	}
@@ -145,7 +177,7 @@ public class HomeController {
     public String getRecommendedProducts() {
         HashMap<String, Object> resultMap = new HashMap<>();
         try {
-            List<Home> products = homeService.getRecommendedProducts(8); // 8개 상품 가져오기
+            List<Home> products = homeService.getRecommendedProducts(4); // 4개 상품 가져오기
             resultMap.put("result", "success");
             resultMap.put("data", products);
         } catch (Exception e) {
@@ -164,7 +196,7 @@ public class HomeController {
     public String getLatestRallies() {
         HashMap<String, Object> resultMap = new HashMap<>();
         try {
-            List<Home> rallies = homeService.getLatestRallies(4); // 4개 대회 가져오기
+            List<Home> rallies = homeService.getLatestRallies(8); // 8개 대회 가져오기
             resultMap.put("result", "success");
             resultMap.put("data", rallies);
         } catch (Exception e) {

@@ -15,29 +15,93 @@
 
 		</select>
 		
-		<!-- 나의 카트 안 물건 리스트 불러오기 -->
-		<select id="selectCartList" parameterType="hashmap" resultType="com.example.springProject2025.model.Cart">
-		select *
-		from CART C
-		INNER JOIN PRODUCT P ON C.PRODUCT_NO = P.PRODUCT_NO
-		LEFT JOIN product_img I ON P.PRODUCT_NO = I.PRODUCT_NO
-		where C.user_id = #{sessionId}
-		</select>
+	<!-- 나의 카트 안 물건 리스트 불러오기 -->
+	<select id="selectCartList" parameterType="hashmap" resultType="com.example.springProject2025.model.Cart">
+	SELECT 
+		C.CART_NO,
+		C.USER_ID AS userId,
+		C.PRODUCT_NO AS productNo,
+		C.QUANTITY AS quantity,
+		C.CDATE AS cdate,
+		P.BRAND AS brand,
+		P.PRODUCT_NAME AS productName,
+		P.PRICE AS price,
+		P.PRODUCT_SIZE AS productSize,
+		P.PRODUCT_DETAIL AS productDetail,
+		P.SELL_COUNT AS sellCount,
+		P.GENDER AS gender,
+		P.TYPE_NO AS typeNo,
+		P.UDATE AS udate,
+		P.QUANTITY AS productStock,
+		P.GENDER AS productGender,
+		PI.IMG_PATH AS imgPath,
+		PI.IMG_NAME AS imgName,
+		PI.IMG_ORGNAME AS imgOrgname,
+		PI.IMG_SIZE AS imgSize,
+		PI.IMG_ETC AS imgEtc,
+		PI.PRODUCT_IMG_NO AS productImgNo,
+		P.SALE_YN,
+		P.SALE_PRICE
+	FROM CART C
+	INNER JOIN PRODUCT P ON C.PRODUCT_NO = P.PRODUCT_NO
+	LEFT JOIN (
+		SELECT PRODUCT_NO, IMG_PATH, IMG_NAME, IMG_ORGNAME, IMG_SIZE, IMG_ETC, PRODUCT_IMG_NO
+		FROM (
+			SELECT PRODUCT_NO, IMG_PATH, IMG_NAME, IMG_ORGNAME, IMG_SIZE, IMG_ETC, PRODUCT_IMG_NO,
+				ROW_NUMBER() OVER (PARTITION BY PRODUCT_NO ORDER BY PRODUCT_IMG_NO) as rn
+			FROM PRODUCT_IMG
+		)
+		WHERE rn = 1
+	) PI ON P.PRODUCT_NO = PI.PRODUCT_NO
+	WHERE C.USER_ID = #{sessionId}
+	</select>
 		
-		<!-- 선택된 cartNo 목록으로 상품 정보 조회 (주문서용) -->
-		<select id="selectSelectedCartItems" parameterType="hashmap" resultType="com.example.springProject2025.model.Cart">
-		select *
-		from CART C
-		INNER JOIN PRODUCT P ON C.PRODUCT_NO = P.PRODUCT_NO
-		LEFT JOIN product_img I ON P.PRODUCT_NO = I.PRODUCT_NO
-		where C.user_id = #{sessionId}
-		<if test="list != null and list.size() > 0">
-		AND C.CART_NO IN
-		<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
-			#{item}
-		</foreach>
-		</if>
-		</select>
+	<!-- 선택된 cartNo 목록으로 상품 정보 조회 (주문서용) -->
+	<select id="selectSelectedCartItems" parameterType="hashmap" resultType="com.example.springProject2025.model.Cart">
+	SELECT 
+		C.CART_NO,
+		C.USER_ID AS userId,
+		C.PRODUCT_NO AS productNo,
+		C.QUANTITY AS quantity,
+		C.CDATE AS cdate,
+		P.BRAND AS brand,
+		P.PRODUCT_NAME AS productName,
+		P.PRICE AS price,
+		P.PRODUCT_SIZE AS productSize,
+		P.PRODUCT_DETAIL AS productDetail,
+		P.SELL_COUNT AS sellCount,
+		P.GENDER AS gender,
+		P.TYPE_NO AS typeNo,
+		P.UDATE AS udate,
+		P.QUANTITY AS productStock,
+		P.GENDER AS productGender,
+		PI.IMG_PATH AS imgPath,
+		PI.IMG_NAME AS imgName,
+		PI.IMG_ORGNAME AS imgOrgname,
+		PI.IMG_SIZE AS imgSize,
+		PI.IMG_ETC AS imgEtc,
+		PI.PRODUCT_IMG_NO AS productImgNo,
+		P.SALE_YN,
+		P.SALE_PRICE
+	FROM CART C
+	INNER JOIN PRODUCT P ON C.PRODUCT_NO = P.PRODUCT_NO
+	LEFT JOIN (
+		SELECT PRODUCT_NO, IMG_PATH, IMG_NAME, IMG_ORGNAME, IMG_SIZE, IMG_ETC, PRODUCT_IMG_NO
+		FROM (
+			SELECT PRODUCT_NO, IMG_PATH, IMG_NAME, IMG_ORGNAME, IMG_SIZE, IMG_ETC, PRODUCT_IMG_NO,
+				ROW_NUMBER() OVER (PARTITION BY PRODUCT_NO ORDER BY PRODUCT_IMG_NO) as rn
+			FROM PRODUCT_IMG
+		)
+		WHERE rn = 1
+	) PI ON P.PRODUCT_NO = PI.PRODUCT_NO
+	WHERE C.USER_ID = #{sessionId}
+	<if test="list != null and list.size() > 0">
+	AND C.CART_NO IN
+	<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+		#{item}
+	</foreach>
+	</if>
+	</select>
 	
 	
 		<delete id="deleteCartItemList" parameterType="hashmap">

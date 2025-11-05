@@ -68,4 +68,6 @@ public interface ProductMapper {
 
 	int updateProductStockAndSellCount(HashMap<String, Object> item);
 
+	int UpdateQuantity(HashMap<String, Object> map);
+
 }

@@ -22,7 +22,7 @@ public interface OrderMapper {
 	// 주문취소 요청
 	int updateOrderCancel(HashMap<String, Object> map);
 
-	// 교환환불목록
+	// 교환환불목록 총 개수
 	int selectRefundListCount(HashMap<String, Object> map);
 
 	// 교환환불목록

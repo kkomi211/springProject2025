@@ -78,6 +78,16 @@
                 color: #333;
             }
         }
+
+
+
+        /* 답변완료 상태에 사용할 초록색 스타일 */
+        .status-completed {
+            color: #4CAF50;
+            /* 초록색 (Green) */
+            font-weight: bold;
+            /* 선택적으로 강조 */
+        }
     </style>
 
     <body>
@@ -182,9 +192,12 @@
                                             @click="onRowClick(item)">
                                             <td>{{ item.inquiryNo }}</td>
                                             <!-- <td> class="title-cell">{{ item.title || item.productName }}</td> -->
-                                            <td><a href="javascript:;" @click="fnView(item.inquiryNo)">{{item.title}}</a></td>
+                                            <td><a href="javascript:;"
+                                                    @click="fnView(item.inquiryNo)">{{item.title}}</a></td>
                                             <td>{{ item.udate }}</td>
-                                            <td>{{ item.status === 'Y' ? '답변완료' : '답변대기' }}</td>
+                                            <td :class="{'status-completed': item.status === 'Y'}">
+                                                {{ item.status === 'Y' ? '답변완료' : '답변대기' }}
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -199,7 +212,8 @@
                                         </header>
                                         <div class="card-body">
                                             <!-- <h3 class="card-title">{{ item.title || item.productName }}</h3> -->
-                                             <h3 class="card-title"><a href="javascript:;" @click="fnView(item.inquiryNo)">{{item.title}}</a></h3>
+                                            <h3 class="card-title"><a href="javascript:;"
+                                                    @click="fnView(item.inquiryNo)">{{item.title}}</a></h3>
                                             <p class="card-status">{{ item.status }}</p>
                                         </div>
                                     </article>
@@ -214,14 +228,14 @@
 
                             <!--기존페이징코드 주석처리 251030-->
                             <!-- <div v-if="index > 0" class="pagination"> -->
-                                <!-- <a v-if="page != 1" @click="fnMove(1)" href="javascript:void(0)">←</a> -->
-                                <!-- <a v-if="page >= 2" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a> -->
-                                <!-- <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index" -->
-                                    <!-- :key="num"> -->
-                                    <!-- <span :class="{ active: page == num }">{{ num }}</span> -->
-                                <!-- </a> -->
-                                <!-- <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a> -->
-                                <!-- <a v-if="page != index" @click="fnMove(index)" href="javascript:void(0)">→</a> -->
+                            <!-- <a v-if="page != 1" @click="fnMove(1)" href="javascript:void(0)">←</a> -->
+                            <!-- <a v-if="page >= 2" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a> -->
+                            <!-- <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index" -->
+                            <!-- :key="num"> -->
+                            <!-- <span :class="{ active: page == num }">{{ num }}</span> -->
+                            <!-- </a> -->
+                            <!-- <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a> -->
+                            <!-- <a v-if="page != index" @click="fnMove(index)" href="javascript:void(0)">→</a> -->
                             <!-- </div> -->
 
                             <!--페이징처리코드 수정 251030-->
@@ -254,11 +268,10 @@
                     </div>
                     <div class="footer-right">
                         <div class="other">
-                            <span>회사소개</span>
-                            <span>매장안내</span>
-                            <span>공지사항</span>
-                            <span>이용약관</span>
-                            <span>개인정보처리방침</span>
+                            <span><a href="/home/about.do">회사소개</a></span>
+                            <span><a @click="fnNotice">공지사항</a></span>
+                            <span><a href="/home/terms.do">이용약관</a></span>
+                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
                         </div>
                         <div class="socials">
                             <span>INSTAGRAM</span>
@@ -408,7 +421,7 @@
                     // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장?)
                     pageChange("orders.do", { sessionId: sessionId });
                 },
-                
+
                 fnView: function (inquiryNo) {
                     // console.log(boardNo);
                     let self = this;
@@ -426,8 +439,33 @@
                     // let sessionId = self.sessionId;
 
                     // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장?)
-                    pageChange("/home/mypage/information.do",{});
+                    pageChange("/home/mypage/information.do", {});
                 },
+                fnLogout: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+
+                        }
+                    })
+                },
+                fnNotice() {
+                    let self = this;
+                    pageChange("/home/community/board.do", { type: "B" });
+                },
+                fnSale(){
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                }
             }, // methods
             mounted() {
                 let self = this;

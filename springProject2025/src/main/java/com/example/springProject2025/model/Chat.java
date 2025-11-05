@@ -27,5 +27,5 @@ public class Chat {
 	private Long roomNo;     // 방 번호
 	private String content;  // 내용
 
-
+ 
 }

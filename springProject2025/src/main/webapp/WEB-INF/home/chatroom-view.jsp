@@ -18,9 +18,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
         <style>
-
-
-
+            button:hover {
+                background-color: rgb(53, 54, 54);
+            }
         </style>
     </head>
 
@@ -57,7 +57,7 @@
                             <a href="/home/product.do">제품</a>
                         </div>
                         <div>
-                            <a href="/home/product.do">세일</a>
+                            <a href="javascript:;" @click="fnSale">세일</a>
                         </div>
                         <div>
                             <a href="/home/community/board.do">커뮤니티</a>
@@ -104,7 +104,8 @@
                                 <h1 class="main-title">
                                     {{chatInfo.name}} 채팅방
                                 </h1>
-                                <button v-if="ownerId == sessionId" class="redbutton" @click="fnDeleteChatRoom">채팅방 삭제</button>
+                                <button v-if="ownerId == sessionId" class="redbutton" @click="fnDeleteChatRoom">채팅방
+                                    삭제</button>
                             </div>
                             <div id="chatBox">
                                 <div v-for="item in messageList" class="margin30">
@@ -129,14 +130,15 @@
                                     <button @click="fnRunRoute('강원도')">강원도</button>
                                     <button @click="fnRunRoute('제주도')">제주도</button>
                                     <div v-for="msg in messages" :class="['message', msg.type]" class="margin30">
-                                        <a class="bold" v-if="msg.type == 'user'">사용자 : </a> 
-                                        <a class="bold" v-if="msg.type == 'bot'">코스추천봇 : </a> 
+                                        <a class="bold" v-if="msg.type == 'user'">사용자 : </a>
+                                        <a class="bold" v-if="msg.type == 'bot'">코스추천봇 : </a>
                                         <a>{{ msg.text }}</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="button-box">
-                                <input type="text" id="message" placeholder="메시지를 입력하세요..." @keyup.enter="sendMessage" class="chatInput">
+                                <input type="text" id="message" placeholder="/코스추천을 입력하면 코스추천봇이 나오고 /종료를 누르면 종료됩니다."
+                                    @keyup.enter="sendMessage" class="chatInput">
                                 <button @click="sendMessage">전송</button>
                             </div>
                             <div class="button-box">
@@ -300,7 +302,7 @@
                         document.getElementById("message").value = "";
                         return;
                     }
-                    if(messageContent == "/종료") {
+                    if (messageContent == "/종료") {
                         chatBox.scrollTop = chatBox.scrollHeight;
                         self.chatbotFlg = false;
                         document.getElementById("message").value = "";
@@ -390,7 +392,7 @@
                             console.log(data);
                             alert("삭제되었습니다!");
                             self.fnMemberList();
-                            if(userId == self.sessionId){
+                            if (userId == self.sessionId) {
                                 self.fnChat();
                             }
                         }
@@ -447,7 +449,7 @@
                     self.userInput = local + "지역의 러닝코스 알려줘";
                     self.sendMessageChatbot();
                 },
-                fnLogout : function(){
+                fnLogout: function () {
                     let self = this;
                     let param = {};
                     $.ajax({
@@ -456,20 +458,20 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            if(data.result == "success"){
-                                location.href="/home.do";
+                            if (data.result == "success") {
+                                location.href = "/home.do";
                             }
 
                         }
                     })
                 },
-                fnDeleteChatRoom(){
+                fnDeleteChatRoom() {
                     let self = this;
-                    if(!confirm("정말 삭제하시겠습니까?")){
+                    if (!confirm("정말 삭제하시겠습니까?")) {
                         return;
                     }
                     let param = {
-                        chatroomNo : self.chatroomNo
+                        chatroomNo: self.chatroomNo
                     };
                     $.ajax({
                         url: "/home/mypage/chat/delete.dox",
@@ -481,6 +483,11 @@
                             self.fnChat();
                         }
                     })
+                },
+                fnSale() {
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                 }
             }, // methods
             mounted() {

@@ -23,13 +23,32 @@ public class BoardController {
 	 
 	// rally board list
 	@RequestMapping("/home/community/rally.do")
-	public String rallyList(Model model) throws Exception {
+	public String rallyList(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
+		request.setAttribute("sessionId", map.get("sessionId"));
+		request.setAttribute("rallyNo", map.get("rallyNo"));
 		return "home/rally-board"; // .jsp빠진형태
+	}
+	
+	// crew post board list
+		@RequestMapping("/home/community/crew/post.do")
+		public String crewPostBoardList(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
+			request.setAttribute("sessionId", map.get("sessionId"));
+			request.setAttribute("chatroomNo", map.get("chatroomNo"));
+			return "home/crew-post"; // .jsp빠진형태
+		}
+	// crew view board list
+		@RequestMapping("/home/community/crew/view.do")
+		public String crewViewBoardList(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
+			request.setAttribute("sessionId", map.get("sessionId"));
+			request.setAttribute("chatroomNo", map.get("chatroomNo"));
+			return "home/crew-view"; // .jsp빠진형태
 	}
 	
 	// crew board list
 	@RequestMapping("/home/community/crewBoard.do")
-	public String crewBoardList(Model model) throws Exception {
+	public String crewBoardList(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
+		request.setAttribute("sessionId", map.get("sessionId"));
+		request.setAttribute("chatroomNo", map.get("chatroomNo"));
 		return "home/crew"; // .jsp빠진형태
 	}
 	
@@ -39,9 +58,10 @@ public class BoardController {
 		public String rallyBoardList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 			HashMap<String, Object> resultMap = new HashMap<String, Object>();
 			resultMap = boardService.getRallyBoardList(map);
+			System.out.println("/home/rally/board.dox에서 프론트로 주기직전 값" + map);
 			return new Gson().toJson(resultMap);
 		}
-		
+			
 	// crew board list(목록) 
 		@RequestMapping(value = "/home/crew/board.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 		@ResponseBody
@@ -50,8 +70,16 @@ public class BoardController {
 			resultMap = boardService.getCrewBoardList(map);
 			return new Gson().toJson(resultMap);
 		}
+	// crew insert board post (추가 채티방이동)
+		@RequestMapping(value = "/home/crew/chatMove.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+		@ResponseBody
+		public String crewinsertPost(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+			HashMap<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap = boardService.crewCaInsert(map);
+			
+			return new Gson().toJson(resultMap);
+		}
 		
-	
 	@RequestMapping("/home/community/board/post.do")
 	public String boardPost(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
 		request.setAttribute("sessionId", map.get("sessionId"));
@@ -76,7 +104,7 @@ public class BoardController {
 	@ResponseBody
 	public String list(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		System.out.println(map);
+		System.out.println("보드/리스트에 들어온값 "+map);
 		resultMap = boardService.getBoardList(map);
 		
 		return new Gson().toJson(resultMap);
@@ -145,6 +173,15 @@ public class BoardController {
 	public String deletePost(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap = boardService.deletePost(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/board/report.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String reportBoard(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = boardService.reportBoard(map);
 		
 		return new Gson().toJson(resultMap);
 	}

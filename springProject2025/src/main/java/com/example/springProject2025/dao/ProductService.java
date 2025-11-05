@@ -143,6 +143,7 @@ public class ProductService {
 		try {
 			Product info = productmapper.selectProductInfoUser(map);
 			List<Product> sizeList = productmapper.selectSizeAndQuantity(map);
+			System.out.println("sizeList은" + sizeList);
 			resultMap.put("info", info);
 			resultMap.put("sizeList", sizeList);
 			
@@ -239,6 +240,18 @@ public class ProductService {
 			Product product = productmapper.selectProductNoBySize(map);
 			map.put("searchNo", product.getProductNo());
 			int cnt = productmapper.InsertCart(map);
+			resultMap.put("result", "success");
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+
+	public HashMap<String, Object> updateQuantity(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			int cnt = productmapper.UpdateQuantity(map);
 			resultMap.put("result", "success");
 		} catch(Exception e) {
 			System.out.println(e.getMessage());

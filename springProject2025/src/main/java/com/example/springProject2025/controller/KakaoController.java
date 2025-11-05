@@ -1,4 +1,4 @@
-package com.example.springProject2025.controller;
+package com.example.springProject2025.controller;	
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,16 +21,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.springProject2025.dao.MemberService;
+import com.example.springProject2025.mapper.MemberMapper;
+import com.example.springProject2025.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class KakaoController {
 	
 	@Autowired
 	MemberService memberService;
+	
+	@Autowired
+	private MemberMapper memberMapper;
+	
+	@Autowired
+	HttpSession session;
 	
 	@Value("${client_id}") // the name should be the same as the one in application.properties
 	private String client_id;
@@ -39,47 +48,61 @@ public class KakaoController {
     private String redirect_uri;
 
     @RequestMapping(value = "/kakao.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-   	@ResponseBody
-   	public String boardDelete(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
-   		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-   		String tokenUrl = "https://kauth.kakao.com/oauth/token";
+    @ResponseBody
+    public String kakaoLogin(@RequestParam HashMap<String, Object> map) throws Exception {
+        String tokenUrl = "https://kauth.kakao.com/oauth/token";
 
-           RestTemplate restTemplate = new RestTemplate();
-           MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-           params.add("grant_type", "authorization_code");
-           params.add("client_id", client_id);
-           params.add("redirect_uri", redirect_uri);
-           params.add("code", (String)map.get("code"));
+        RestTemplate restTemplate = new RestTemplate();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type", "authorization_code");
+        params.add("client_id", client_id);
+        params.add("redirect_uri", redirect_uri);
+        params.add("code", (String) map.get("code"));
 
-           HttpHeaders headers = new HttpHeaders();
-           headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-           HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-           ResponseEntity<Map> response = restTemplate.postForEntity(tokenUrl, request, Map.class);
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+        ResponseEntity<Map> response = restTemplate.postForEntity(tokenUrl, request, Map.class);
 
-           Map<String, Object> responseBody = response.getBody();
-           System.out.println(responseBody);
-           resultMap = (HashMap<String, Object>)getUserInfo((String)responseBody.get("access_token"));
-           System.out.println(resultMap);
-   		return new Gson().toJson(resultMap);
-   	}
-       
-       private Map<String, Object> getUserInfo(String accessToken) {
-   	    String userInfoUrl = "https://kapi.kakao.com/v2/user/me";
+        Map<String, Object> kakaoUser = getUserInfo((String) response.getBody().get("access_token"));
 
-   	    RestTemplate restTemplate = new RestTemplate();
-   	    HttpHeaders headers = new HttpHeaders();
-   	    headers.setBearerAuth(accessToken);
-   	    HttpEntity<String> entity = new HttpEntity<>(headers);
+        HashMap<String, Object> resultMap = memberService.memberKakaoLogin(kakaoUser);
+        
+     // 3️⃣ Retrieve the Kakao user from DB to set session info
+        String kakaoId = "kakao_" + kakaoUser.get("id");
+        HashMap<String, Object> userMap = new HashMap<>();
+        userMap.put("userId", kakaoId);
 
-   	    ResponseEntity<String> response = restTemplate.exchange(userInfoUrl, HttpMethod.GET, entity, String.class);
+        User user = memberMapper.userLogin(userMap); // 🔹 Directly fetch from DB
 
-   	    try {
-   	        ObjectMapper objectMapper = new ObjectMapper();
-   	        return objectMapper.readValue(response.getBody(), Map.class);
-   	    } catch (Exception e) {
-   	        e.printStackTrace();
-   	        return null; // 예외 발생 시 null 반환
-   	    }
-   	}
+        // 4️⃣ Store DB user data in the session
+        if (user != null) {
+            session.setAttribute("sessionId", user.getUserId());
+            session.setAttribute("sessionName", user.getName());
+            session.setAttribute("userType", user.getUsertype());
+            session.setAttribute("nickname", user.getNickname());
+        }
+        
+        return new Gson().toJson(resultMap);
+    }
+
+    private Map<String, Object> getUserInfo(String accessToken) {
+        String userInfoUrl = "https://kapi.kakao.com/v2/user/me";
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(userInfoUrl, HttpMethod.GET, entity, String.class);
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(response.getBody(), Map.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

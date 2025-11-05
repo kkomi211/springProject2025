@@ -20,9 +20,39 @@
 		            )
 		        </if>
 		    </where>
-		    ORDER BY CDATE DESC
-		    
+		    ORDER BY CDATE DESC	    
 		    OFFSET ( (#{page} - 1) * #{pageSize} ) ROWS 
 		    FETCH NEXT #{pageSize} ROWS ONLY
 		</select>
+		
+		<select id="selectCrewBoardCnt" parameterType="hashmap" resultType="int">
+		    SELECT COUNT(*) AS CNT
+		    FROM CHAT
+		    WHERE 1=1
+		  	AND ROOM_TYPE = 'GROUP'  
+		    <if test="type != null and type != ''">
+		        AND TYPE = #{type}
+		    </if>
+		    <if test="keyword != null and keyword != ''">
+		        AND (
+		            TITLE LIKE '%' || #{keyword} || '%'
+		            OR INTRO LIKE '%' || #{keyword} || '%'
+		        )
+		    </if>
+		</select>
+			
+		<insert id="crewCatInsertMember" parameterType="hashmap">
+		   INSERT INTO CHAT_MEMBER
+		    VALUES (
+		        CHAT_MEMBER_SEQ.NEXTVAL,
+		        SYSDATE, <!-- jdbcType=VARCHAR 추가 -->
+		        'M',
+		        #{userId},
+		        #{chatroomNo}
+		    )
+		</insert>
+
+
+		
+			
 	</mapper>  

@@ -39,6 +39,7 @@ body {
         .bottom-header {
             display: flex;
             justify-content: center;
+            align-items: center;
             font-size: 30px;
         }
 
@@ -46,6 +47,7 @@ body {
             display: inline-block;
             margin-right: 100px;
             margin-top: 20px;
+            margin-bottom: 20px;
             text-align: center;
         }
         .bottom-header a{
@@ -87,11 +89,18 @@ body {
         .other span{
             margin-right: 20px;
         }
+        .other a{
+            margin-right: 20px;
+        }
         .socials {
             margin-top: 15px;
         }
         .socials span{
             margin-right: 20px;
+            cursor: pointer;
+        }
+        .socials span:first-child {
+            margin-left: 0;
         }
 /* 모달 팝업 스타일 */
 .modal-overlay {

@@ -71,13 +71,25 @@ public class OrderController {
 			System.out.println("세션에 없음. 파라미터에서 가져온 sessionId: " + map.get("sessionId"));
 		}
 
-		// 선택된 cartNo 목록 전달 (기존 프로젝트 스타일)
+		// 선택된 cartNo 목록 전달 (장바구니에서 온 경우)
 		// pageChange가 JSON.stringify로 변환한 문자열이 selectedCartNos 파라미터로 전달됨
 		Object selectedCartNos = map.get("selectedCartNos");
 		if (selectedCartNos != null) {
 			// 배열이거나 문자열 모두 그대로 전달 (JSP에서 사용)
 			request.setAttribute("selectedCartNos", selectedCartNos.toString());
 		}
+
+		// 제품 상세에서 직접 구매로 넘어온 경우 (제품번호, 수량, 사이즈가 있는 경우)
+		Object productNo = map.get("productNo");
+		Object quantity = map.get("quantity");
+		Object productSize = map.get("productSize");
+		if (productNo != null && quantity != null && productSize != null) {
+			request.setAttribute("directProductNo", productNo.toString());
+			request.setAttribute("directQuantity", quantity.toString());
+			request.setAttribute("directProductSize", productSize.toString());
+			System.out.println("제품 상세에서 직접 구매: productNo=" + productNo + ", quantity=" + quantity + ", size=" + productSize);
+		}
+
 		return "home/payment/paybefore"; // .jsp빠진형태
 	}
 
@@ -157,7 +169,7 @@ public class OrderController {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		System.out.println(map);
 		resultMap = orderService.getRefundList(map);
-
+		System.out.println("home/mypage/refund-return.dox에서 화면에 되돌려주기 직전 " + resultMap);
 		return new Gson().toJson(resultMap); // [{},{}]
 	}
 

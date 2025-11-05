@@ -5,7 +5,8 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/css/user-style.css">
+        <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
+        <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/board-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,7 +56,7 @@
                             <a href="/home/product.do">제품</a>
                         </div>
                         <div>
-                            <a href="/home/product.do">세일</a>
+                            <a href="javascript:;" @click="fnSale">세일</a>
                         </div>
                         <div>
                             <a href="/home/community/board.do">커뮤니티</a>
@@ -63,7 +64,7 @@
                     </div>
                 </header>
 
-                <main>
+                <main class="below-header">
 
                     <div class="header">
                         <div class="header-welcome">
@@ -97,6 +98,7 @@
                                 </ul>
                             </nav>
                         </aside>
+
                         <main class="main-content">
                             <div class="board-header">
                                 <h1 class="main-title">
@@ -164,6 +166,7 @@
                                 <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
                                 <!-- <a v-if="page != index" @click="fnMove(index)" href="javascript:void(0)">→</a> -->
                             </div>
+
                             <div class="write-btn-wrapper">
                                 <button @click="moveToPost" class="btn">글쓰기</button>
                             </div>
@@ -181,6 +184,14 @@
                                             @click="pwdCorrect = false">닫기</button>
                                         <button class="btn" @click="fnKeylock">확인</button>
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Logout popup -->
+                            <div v-if="isLoggedOut" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
+                                    <a href="/home.do"><button class="btn">메인 화면으로 가기</button></a>
                                 </div>
                             </div>
 
@@ -203,11 +214,10 @@
                     </div>
                     <div class="footer-right">
                         <div class="other">
-                            <span>회사소개</span>
-                            <span>매장안내</span>
-                            <span>공지사항</span>
-                            <span>이용약관</span>
-                            <span>개인정보처리방침</span>
+                            <span><a href="/home/about.do">회사소개</a></span>
+                            <span><a @click="fnNotice">공지사항</a></span>
+                            <span><a href="/home/terms.do">이용약관</a></span>
+                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
                         </div>
                         <div class="socials">
                             <span>INSTAGRAM</span>
@@ -231,7 +241,7 @@
                     boardList: [],
                     postInfo: {},
                     keyword: "",
-                    type: "",
+                    type: "${type}",
 
                     // pagination
                     cnt: 0,
@@ -240,6 +250,7 @@
                     index: 0,
 
                     // modal popup 
+                    isLoggedOut : false, // logout popup 
                     pwdCorrect: false,
                     selectedPost: null,  // store the post object being clicked
                     keylock: ""
@@ -362,13 +373,42 @@
                 fnChat() {
                     let self = this;
                     pageChange("/home/community/chat.do", { sessionId: self.sessionId });
+                },
+                fnNotice(){
+                let self = this;
+                pageChange("/home/community/board.do", {type : "B"});
+                },
+                fnLogout: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+
+                        }
+                    })
+                },
+                fnNotice() {
+                    let self = this;
+                    pageChange("/home/community/board.do", { type: "B" });
+                },
+                fnSale() {
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                 }
             }, // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분
                 let self = this;
-                self.fnBoardList();
-                self.fnGetUserInfo();
+                self.fnBoardList();   //보드리스트정보게시판정보 가져오기
+                self.fnGetUserInfo(); //유저정보가져오기
             }
         });
 

@@ -24,6 +24,10 @@ public class Product {
 	private String typePart;
 	private String depth;
 	
+	private String salePrice;
+	private String saleYN;
+	
+	
 //	REVIEW 테이블 용
 	private String reviewNo;
 	private int rating;
