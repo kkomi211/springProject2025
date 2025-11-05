@@ -110,9 +110,9 @@
                                 </select>
                             </div>
                             <div>
-                                <button class="bluebutton height40" @click="fnQuantity(-1)">-</button>
-                                <input class="height40" v-model="quantity" disabled>
-                                <button class="bluebutton height40" @click="fnQuantity(1)">+</button>
+                                <button class="bluebutton height40 marginbutton small-input" @click="fnQuantity(-1)">-</button>
+                                <input class="height40 small-input" v-model="quantity" disabled>
+                                <button class="bluebutton height40 marginbutton small-input" @click="fnQuantity(1)">+</button>
                             </div>
 
                             <div class="margin30">
@@ -120,7 +120,7 @@
                                 <button class="bluebutton margin30 height40" @click="fnPayment">결제하기</button>
                             </div>
                         </div>
-                        <div class="detail-box">{{info.productDetail}}</div>
+                        <div class="detail-box margin200">{{info.productDetail}}</div>
                         <div class="container-foot">
                             <div class="foot-box cursor" @click="status = 1" :class="{active: status == 1} ">상품문의</div>
                             <div class="foot-box cursor" @click="status = 2" :class="{active: status == 2} ">상품리뷰</div>
@@ -190,7 +190,7 @@
                                         </tr>
                                         <tr>
                                             <th>내용</th>
-                                            <td>{{item.content}}</td>
+                                            <td v-html="item.content"></td>
                                         </tr>
                                     </table>
                                 </div>

@@ -110,15 +110,16 @@
                                 <span v-for="item in list" class="product-box" @click="fnProductView(item.productNo)">
                                     <div><img :src="imgByProduct[String(item.productNo)] || '/img/no-image.png'"
                                             class="small-img" :alt="item.productName"></div>
-                                    <div>{{item.productName}}</div>
-                                    <div>{{item.price}} 원</div>
-                                    <div v-if="ratingByName[item.productName]" class="stars">
+                                    <div class="brandText product-margin">{{item.brand}}</div>
+                                    <div class="product-margin">{{item.productName}}</div>
+                                    <div class="price product-margin">{{item.price}} 원</div>
+                                    <div v-if="ratingByName[item.productName]" class="stars product-margin">
                                         <span v-for="n in 5" :key="n" class="star"
                                             :class="{ filled: n <= ratingByName[item.productName].rounded }">★</span>
                                         <span class="avg"> {{ ratingByName[item.productName].avg.toFixed(1) }}</span>
                                         <span class="cnt"> ({{ ratingByName[item.productName].cnt }})</span>
                                     </div>
-                                    <div v-else class="no-review">리뷰 없음</div>
+                                    <div v-else class="no-review product-margin">리뷰 없음</div>
                                 </span>
                             </div>
                             <div class="clear text-center margin-right">
