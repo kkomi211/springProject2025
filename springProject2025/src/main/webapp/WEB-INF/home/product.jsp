@@ -15,6 +15,7 @@
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <!-- <link rel="stylesheet" href="/css/jes.css"> -->
         <script src="/js/page-change.js"></script>
+        <link rel="stylesheet" href="/css/home_product_category-style.css">
         <style>
             
         </style>
