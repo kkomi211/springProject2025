@@ -584,7 +584,7 @@ td input {
 
 .detail-box {
     clear: both;
-    margin: 200px auto;
+    margin: 200px 30px;
     font-size: 40px;
 }
 

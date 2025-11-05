@@ -56,7 +56,7 @@
                             <a href="javascript:;" @click="fnProduct">제품</a>
                         </div>
                         <div>
-                            <a href="javascript:;" @click="fnProduct">세일</a>
+                            <a href="javascript:;" @click="fnSale">세일</a>
                         </div>
                         <div>
                             <a href="/home/community/board.do">커뮤니티</a>
@@ -112,7 +112,8 @@
                                             class="small-img" :alt="item.productName"></div>
                                     <div class="brandText product-margin">{{item.brand}}</div>
                                     <div class="product-margin">{{item.productName}}</div>
-                                    <div class="price product-margin">{{item.price}} 원</div>
+                                    <div class="price product-margin" v-if="item.saleYN == 'N'">{{item.price}} 원</div>
+                                    <div class="price product-margin" v-else><del>{{item.price}}</del> {{item.salePrice}} 원</div>
                                     <div v-if="ratingByName[item.productName]" class="stars product-margin">
                                         <span v-for="n in 5" :key="n" class="star"
                                             :class="{ filled: n <= ratingByName[item.productName].rounded }">★</span>
@@ -179,7 +180,8 @@
                     category: "${category}",
                     hoverParent: null,
                     sessionId: "${sessionId}",
-                    userName: ""
+                    userName: "",
+                    saleYN : "${saleYN}"
                 };
             },
             computed: {
@@ -231,7 +233,8 @@
                         pageSize: 9,
                         keyword: self.keyword,
                         keytype: "name",
-                        category: self.category
+                        category: self.category,
+                        saleYN : self.saleYN
                     };
                     $.ajax({
                         url: "/product/user/list.dox",
@@ -292,7 +295,7 @@
                 },
                 fnProduct() {
                     let self = this;
-                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId });
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: "" });
                 },
                 fnUserInfo() {
                     let self = this;
@@ -326,6 +329,11 @@
 
                         }
                     })
+                },
+                fnSale(){
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                 }
 
             }, // methods

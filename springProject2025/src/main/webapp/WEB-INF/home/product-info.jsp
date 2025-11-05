@@ -16,6 +16,7 @@
         <link rel="stylesheet" href="/css/jes.css">
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
         <script src="/js/page-change.js"></script>
+
         <style>
 
         </style>
@@ -54,7 +55,7 @@
                             <a href="javascript:;" @click="fnProduct">제품</a>
                         </div>
                         <div>
-                            <a href="javascript:;" @click="fnProduct">세일</a>
+                            <a href="javascript:;" @click="fnSale">세일</a>
                         </div>
                         <div>
                             <a href="/home/community/board.do">커뮤니티</a>
@@ -100,7 +101,8 @@
                                 class="big-img" :alt="info.productName"></div>
                         <div class="infoText-box">
                             <div class="margin80">{{info.productName}}</div>
-                            <div class="margin80 font30">{{info.price}} 원</div>
+                            <div class="margin80 font30" v-if="info.saleYN == 'N'">{{info.price}} 원</div>
+                            <div class="margin80 font30" v-else><del>{{info.price}}</del> {{info.salePrice}} 원</div>
                             <div class="font30 margin30">
                                 <!-- 사이즈 -->
                                 <select class="select-box" v-model="size" @change="fnMaxQuantityChange">
@@ -120,7 +122,7 @@
                                 <button class="bluebutton margin30 height40" @click="fnPayment">결제하기</button>
                             </div>
                         </div>
-                        <div class="detail-box margin200">{{info.productDetail}}</div>
+                        <div class="detail-box">{{info.productDetail}}</div>
                         <div class="container-foot">
                             <div class="foot-box cursor" @click="status = 1" :class="{active: status == 1} ">상품문의</div>
                             <div class="foot-box cursor" @click="status = 2" :class="{active: status == 2} ">상품리뷰</div>
@@ -533,6 +535,10 @@
                 },
                 fnHeartUp(reviewNo) {
                     let self = this;
+                    if(!self.fnLoginCheck()){
+                        alert("로그인후 시도해주세요!")
+                        location.href="/home/login.do";
+                    }
                     let param = {
                         reviewNo: reviewNo
                     };
@@ -561,10 +567,18 @@
                 },
                 fnProductInquiryAdd(proNo) {
                     let self = this;
+                    if(!self.fnLoginCheck()){
+                        alert("로그인후 시도해주세요!")
+                        location.href="/home/login.do";
+                    }
                     pageChange("/home/product/inquiry/add.do", { productNo: proNo, sessionId: self.sessionId });
                 },
                 fnCart() {
                     let self = this;
+                    if(!self.fnLoginCheck()){
+                        alert("로그인후 시도해주세요!")
+                        location.href="/home/login.do";
+                    }   
                     let param = {
                         productNo: self.productNo,
                         size: self.size,
@@ -619,6 +633,10 @@
                 },
                 fnPayment() {
                     let self = this;
+                    if(!self.fnLoginCheck()){
+                        alert("로그인후 시도해주세요!")
+                        location.href="/home/login.do";
+                    }
                     pageChange("/home/payment/paybefore.do", {
                         productNo: self.productNo,
                         quantity: self.quantity,
@@ -640,6 +658,18 @@
 
                         }
                     })
+                },
+                fnLoginCheck(){
+                    let self = this;
+                    if(self.sessionId == '' || self.sessionId == 'undefined' || self.sessionId == null){
+                        return false;
+                    }
+                    return true;
+                },
+                fnSale(){
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                 }
 
 

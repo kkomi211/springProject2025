@@ -71,7 +71,13 @@
                             <td>{{item.productNo}}</td>
                             <td><a href="javascript:;" @click="fnInfoProduct(item.productNo)">{{item.productName}}</a>
                             </td>
-                            <td>{{item.price}}</td>
+                            <td>
+                                <span v-if="item.saleYN == 'N'">{{item.price}}</span>
+                                <span v-else>
+                                    <del>{{item.price}}</del>
+                                    {{item.salePrice}}
+                                </span>
+                            </td>
                             <td>{{item.quantity}}</td>
                             <td>{{item.productSize}}</td>
                             <td>{{item.udate}}</td>
