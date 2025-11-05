@@ -222,7 +222,7 @@
                                                 list.brand }}</p>
                                             <p style="font-size: 16px; font-weight: bold;">상품가격 :
                                                 {{formatCurrency(list.price) }}원</p>
-                                            <p v-if="list.saleYn === 'Y'"
+                                            <p v-if="list.saleYN === 'Y'"
                                                 style="font-size: 16px; font-weight: bold; color: #e74c3c;">
                                                 할인된 가격 : {{list.salePrice}}원
                                             </p>
@@ -488,7 +488,7 @@
                             // 1. 카트 항목이 할인 상품(saleYn='Y')이면 salePrice를 사용합니다.
                             // 2. 아니면 옵션 목록의 첫 번째 가격을 사용합니다.
                             // 3. 그것도 없으면 카트 항목의 price를 사용합니다.
-                            if (cartItem && cartItem.saleYn === 'Y' && cartItem.salePrice != null) {
+                            if (cartItem && cartItem.saleYN === 'Y' && cartItem.salePrice != null) {
                                 self.unitPrice = parseInt(cartItem.salePrice);
                             } else if (firstOptWithPrice) {
                                 self.unitPrice = firstOptWithPrice.price;
@@ -613,7 +613,7 @@
                     this.cartList.forEach(item => {
                         if (item.selected) {
                             const price = parseInt(item.price);
-                            const salePrice = item.saleYn === 'Y' ? parseInt(item.salePrice) : price; // 할인 가격 적용
+                            const salePrice = item.saleYN === 'Y' ? parseInt(item.salePrice) : price; // 할인 가격 적용
                             const quantity = parseInt(item.quantity || 1);
 
                             if (!isNaN(price) && !isNaN(quantity)) {
@@ -621,7 +621,7 @@
                                 total += price * quantity;
 
                                 // 2. 총 할인 금액 (정가 - 할인 가격)
-                                if (item.saleYn === 'Y' && !isNaN(salePrice) && salePrice < price) {
+                                if (item.saleYN === 'Y' && !isNaN(salePrice) && salePrice < price) {
                                     totalDisc += (price - salePrice) * quantity;
                                 }
 
@@ -800,7 +800,7 @@
                     // pageChange 함수를 사용하여 paybefore.jsp로 이동
                     // sessionId는 브라우저 세션에서 자동으로 가져오므로 파라미터로 전달할 필요 없음
                     if (typeof pageChange === 'function') {
-                        alert("결제직전페이지로 넘기는 데이터 확인 " + JSON.stringify(selectedCartNos) ); 
+                        // alert("결제직전페이지로 넘기는 데이터 확인 " + JSON.stringify(selectedCartNos) ); 
                         pageChange("payment/paybefore.do", {
                             selectedCartNos: selectedCartNos
                         });
