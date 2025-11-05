@@ -16,7 +16,11 @@ public class MyInquiry {
 	private String status;
 	private String answer;
 	private String answerDate;
-
+	
+	private String brand;
+	private String productName;
+	private String productSize;
+	private String price;
 	
 }
 

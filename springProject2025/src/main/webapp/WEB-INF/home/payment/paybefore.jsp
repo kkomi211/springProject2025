@@ -47,7 +47,7 @@
             .delivery-info {
                 /* flex: 2; */
                 min-width: 62%;
-                 /* width: 58%; */
+                /* width: 58%; */
             }
 
             .delivery-info-box {
@@ -488,10 +488,12 @@
                                 <div class="summary-item">
                                     <span>상품 금액</span>
                                     <span>{{ formatCurrency(totalProductPrice) }}원</span>
+                                    <!-- <span>할인된 금액</span>
+                                    <span>{{ formatCurrency(totalFinalProductPrice) }}원</span> -->
                                 </div>
                                 <div class="summary-item">
                                     <span>할인 금액</span>
-                                    <span class="summary-discount">{{ formatCurrency(totalDiscount) }}원</span>
+                                    <span class="summary-discount">{{ formatCurrency(totalDiscountAmount) }}원</span>
                                 </div>
                                 <div class="summary-item-border">
                                     <span>배송비</span>
@@ -528,8 +530,14 @@
                                                     item.productSize || 'FREE' }}</p>
                                                 <p class="product-detail">주문번호: {{ fnGenerateOrderNumber(item, index) }}
                                                 </p>
-                                                <p class="product-price">상품가격 : {{ formatCurrency(parseInt(item.price) *
+                                                <p class="product-price">상품 총가격 : {{ formatCurrency(parseInt(item.price)
+                                                    *
                                                     parseInt(item.quantity || 1)) }}원</p>
+                                                <p v-if="item.saleYn === 'Y'"
+                                                    style="font-size: 16px; font-weight: bold; color: #e74c3c;">
+                                                    할인된 상품 총가격 : {{ formatCurrency(parseInt(item.salePrice) *
+                                                    parseInt(item.quantity || 1)) }}원
+                                                </p>
                                             </div>
 
                                             <button @click="fnUseCoupon(item)" class="btn-coupon">
@@ -642,9 +650,31 @@
                 };
             },
             computed: {
+                // 총 상품 금액 (할인 전)
+                totalOriginalPrice() {
+                    return this.selectedItems.reduce((sum, item) => {
+                        return sum + (parseInt(item.price) * parseInt(item.quantity || 1));
+                    }, 0);
+                },
+                // 총 할인 금액
+                totalDiscountAmount() {
+                    return this.selectedItems.reduce((sum, item) => {
+                        if (item.saleYn === 'Y' && item.salePrice) {
+                            let originalTotal = parseInt(item.price) * parseInt(item.quantity || 1);
+                            let discountedTotal = parseInt(item.salePrice) * parseInt(item.quantity || 1);
+                            return sum + (originalTotal - discountedTotal);
+                        }
+                        return sum;
+                    }, 0);
+                },
                 totalPaymentAmount() {
-                    return this.totalProductPrice - this.totalDiscount + this.deliveryFee;
-                }
+                    // 실제 결제 금액 = 상품 금액(할인된 최종가) + 배송비
+                    const finalProductTotal = this.totalOriginalPrice - this.totalDiscountAmount;
+                    return finalProductTotal + this.deliveryFee;
+                },
+                totalFinalProductPrice() {
+                    return this.totalOriginalPrice - this.totalDiscountAmount;
+                },
             },
             methods: {
                 // 이미지 경로 정규화
@@ -763,11 +793,21 @@
 
                     // 2. 각 주문 항목에 paymentAmount 필드를 추가 (price * quantity)
                     itemsToOrder.forEach(item => {
-                        let price = parseInt(item.price);
-                        let quantity = parseInt(item.quantity);
+                        // let price = parseInt(item.price);
+                        let finalPricePerItem;
+
+                        // **할인 여부('saleYn')를 확인하여 최종 가격을 결정합니다.**
+                        if (item.saleYn === 'Y' && item.salePrice) {
+                            finalPricePerItem = parseInt(item.salePrice);
+                        } else {
+                            finalPricePerItem = parseInt(item.price);
+                        }
+                        let quantity = parseInt(item.quantity || 1);
 
                         // **개별 상품의 최종 결제 금액 (DB ORDERS 테이블에 한 건씩 들어갈 금액)**
-                        item.paymentAmount = price * quantity;
+                        // item.paymentAmount = price * quantity;
+                        item.paymentAmount = finalPricePerItem * quantity;
+
 
                         // 전달받은 주소 정보와 요청 사항을 할당
                         item.addr = deliveryAddress;
@@ -935,6 +975,7 @@
 
                 // 제품 상세에서 직접 구매인 경우 따로 함수
                 fnInitDirectPurchase: function (productNo, quantity, productSize) {
+                    alert("바로구매 감지");
                     let self = this;
                     // 제품 상세 정보 조회
                     let param = {
@@ -950,12 +991,12 @@
                             console.log("제품 상세 정보 응답:", data);
                             if (data && data.info) {
                                 // 제품 정보를 결제 페이지 형식에 맞게 변환
-                                const productInfo = data.info;
-                                const sizeInfo = data.sizeList || [];
-
+                                let productInfo = data.info;
+                                let sizeInfo = data.sizeList || [];
+                                console.log("sizeInfo " + JSON.stringify(sizeInfo) );
                                 // 선택한 사이즈에 맞는 정보 찾기
-                                const selectedSizeInfo = sizeInfo.find(s => String(s.productSize) === String(productSize)) || sizeInfo[0];
-
+                                let selectedSizeInfo = sizeInfo.find(s => String(s.productSize) === String(productSize)) || sizeInfo[0];
+                                console.log("selectedSizeInfo "+ JSON.stringify(selectedSizeInfo));
                                 // 이미지 정보 조회
                                 $.ajax({
                                     url: "/product/img/list.dox",
@@ -971,32 +1012,45 @@
                                         // 첫 번째 이미지 사용
                                         const firstImg = productImgs.length > 0 ? productImgs[0] : null;
 
+                                        // 🚨 [핵심 수정] 필요한 모든 가격 및 할인 정보를 가져옵니다.
+                                        let originalPrice = selectedSizeInfo.price;
+                                        let salePrice = selectedSizeInfo.salePrice || originalPrice; // 할인 가격이 없으면 원가와 동일하게
+                                        let saleYn = selectedSizeInfo.saleYn;
+
+                                        console.log("originalPrice는 " +originalPrice);
+                                        console.log("salePrice는 " +salePrice);
+                                        console.log("saleYn는 " +saleYn);
+
                                         // selectedItems에 추가
                                         self.selectedItems = [{
                                             productNo: productNo,
                                             productName: productInfo.productName || "",
-                                            price: productInfo.price || 0,
+                                            price: originalPrice, // 정가 (PRICE)
+                                            salePrice: salePrice, // 할인된 가격 (SALE_PRICE)
+                                            saleYn: saleYn,       // 할인 여부 (SALE_YN)
                                             quantity: parseInt(quantity) || 1,
                                             productSize: productSize || (selectedSizeInfo ? selectedSizeInfo.productSize : ""),
                                             imgPath: firstImg ? firstImg.imgPath : null
                                         }];
 
                                         console.log("선택된 아이템:", self.selectedItems);
+                                        // self.fnCalculateTotals();
                                         self.fnCalculateTotals();
+                                        // self.totalFinalProductPrice(); 일단제거
                                     },
-                                    error: function (xhr, status, error) {
-                                        console.error("이미지 정보 조회 실패:", error);
-                                        // 이미지 없이 진행하지 뭐...
-                                        self.selectedItems = [{
-                                            productNo: productNo,
-                                            productName: productInfo.productName || "",
-                                            price: productInfo.price || 0,
-                                            quantity: parseInt(quantity) || 1,
-                                            productSize: productSize || (selectedSizeInfo ? selectedSizeInfo.productSize : ""),
-                                            imgPath: null
-                                        }];
-                                        self.fnCalculateTotals();
-                                    }
+                                    // error: function (xhr, status, error) {
+                                    //     console.error("이미지 정보 조회 실패:", error);
+                                    //     // 이미지 없이 진행하지 뭐...
+                                    //     self.selectedItems = [{
+                                    //         productNo: productNo,
+                                    //         productName: productInfo.productName || "",
+                                    //         price: productInfo.price || 0,
+                                    //         quantity: parseInt(quantity) || 1,
+                                    //         productSize: productSize || (selectedSizeInfo ? selectedSizeInfo.productSize : ""),
+                                    //         imgPath: null
+                                    //     }];
+                                    //     self.fnCalculateTotals();
+                                    // }
                                 });
                             } else {
                                 alert("제품 정보를 불러올 수 없습니다.");
@@ -1008,30 +1062,67 @@
                                 }
                             }
                         },
-                        error: function (xhr, status, error) {
-                            console.error("제품 정보 조회 실패:", error);
-                            alert("제품 정보를 불러오는 중 오류가 발생했습니다.");
-                            if (typeof pageChange === 'function') {
-                                pageChange("/home/product-info.do", {
-                                    productNo: productNo,
-                                    // sessionId: self.sessionId 
-                                });
-                            }
-                        }
+                        // error: function (xhr, status, error) {
+                        //     console.error("제품 정보 조회 실패:", error);
+                        //     alert("제품 정보를 불러오는 중 오류가 발생했습니다.");
+                        //     if (typeof pageChange === 'function') {
+                        //         pageChange("/home/product-info.do", {
+                        //             productNo: productNo,
+                        //             // sessionId: self.sessionId 
+                        //         });
+                        //     }
+                        // }
                     });
                 },
+                // fnCalculateTotals: function () {
+                //     let self = this;
+                //     let total = 0;
+                //     self.selectedItems.forEach(item => {
+                //         const price = parseInt(item.price) || 0;
+                //         const quantity = parseInt(item.quantity || 1);
+                //         total += price * quantity;
+                //     });
+                //     self.totalProductPrice = total;
+                //     self.totalDiscount = 0;
+                //     self.deliveryFee = total >= 50000 || total === 0 ? 0 : 3000;
+                // },
+
                 fnCalculateTotals: function () {
                     let self = this;
-                    let total = 0;
+                    alert("fnCalculateTotals함수동작");
+                    console.log("selectedItems는 " + JSON.stringify(self.selectedItems));
+                    
+                    let totalOriginalPrice = 0;
+                    let totalDiscountAmount = 0;
+
                     self.selectedItems.forEach(item => {
-                        const price = parseInt(item.price) || 0;
+                        const originalPrice = parseInt(item.price) || 0; // 원가 (PRICE)
+                        const salePrice = parseInt(item.salePrice) || originalPrice; // 할인된 가격 (SALE_PRICE)
                         const quantity = parseInt(item.quantity || 1);
-                        total += price * quantity;
+                        const saleYn = item.saleYn === 'Y'; // 'Y'일 경우 true
+
+                        // 1. 총 원가 계산 (할인 여부와 관계없이 원가 기준)
+                        totalOriginalPrice += originalPrice * quantity;
+
+                        // 2. 총 할인 금액 계산
+                        if (saleYn && originalPrice > salePrice) {
+                            // 할인 중이고, 원가와 할인 가격이 다를 경우에만 할인액을 계산
+                            const discountPerItem = originalPrice - salePrice;
+                            totalDiscountAmount += discountPerItem * quantity;
+                        }
                     });
-                    self.totalProductPrice = total;
-                    self.totalDiscount = 0;
-                    self.deliveryFee = total >= 50000 || total === 0 ? 0 : 3000;
+
+                    self.totalProductPrice = totalOriginalPrice;       // 템플릿에 보여줄 **총 원가**
+                    self.totalDiscount = totalDiscountAmount;         // 템플릿에 보여줄 **총 할인 금액**
+
+                    // 최종 결제 금액 = 총 원가 - 총 할인 금액
+                    const finalPaymentAmount = totalOriginalPrice - totalDiscountAmount;
+
+                    // 배송비 계산 (최종 결제 금액 기준으로 5만원 이상 무료배송)
+                    self.deliveryFee = finalPaymentAmount >= 50000 || finalPaymentAmount <= 0 ? 0 : 3000;
                 },
+
+
                 fnLogout: function () {
                     let self = this;
                     let param = {};
@@ -1052,12 +1143,39 @@
                     let self = this;
                     pageChange("/home/community/board.do", { type: "B" });
                 },
+                fnSale() {
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                },
+                // 초기 로딩 시 데이터 설정 및 가격 계산
+                fnLoadOrderData() {
+                    // [TODO] 서버에서 주문할 상품 목록 (selectedItems)과 배송지 정보 (deliveryInfo)를 가져오는 AJAX 호출 로직 필요
+
+                    // 예시: 서버에서 데이터를 가져온 후 Vue data에 반영
+                    // this.selectedItems = response.items; 
+                    // this.deliveryInfo = response.userInfo;
+
+                    // computed 속성을 사용하면 data 필드를 수동으로 업데이트할 필요가 없습니다.
+                    // 하지만 기존 템플릿의 `totalProductPrice`, `totalDiscount`를 사용하기 때문에, 
+                    // 로딩 완료 후 이렇게 할당해야 템플릿에 반영되나..>?
+                    this.totalProductPrice = this.totalOriginalPrice; // 이 값을 상품 금액(할인 전)으로 사용
+                    this.totalDiscount = this.totalDiscountAmount;
+
+                    // 무료 배송 조건 설정 (예: 5만원 이상 무료)
+                    if (this.totalProductPrice - this.totalDiscount >= 50000) {
+                        this.deliveryFee = 0;
+                    } else {
+                        this.deliveryFee = 3000;
+                    }
+                },
             },
             mounted() {
                 // 처음 시작할 때 실행되는 부분
                 let self = this;
                 self.fnGetUserInfo(); // 사용자 이름과 배송 정보를 함께 가져옴
                 self.fnInitSelectedItems();
+                self.fnLoadOrderData();
                 // 전역 변수로 Vue 앱 설정 (주소 검색 콜백에서 접근하기 위함)
                 window.paybeforeApp = this;
             }
