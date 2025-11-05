@@ -55,7 +55,7 @@
 			)
 			VALUES (
 			    CHAT_SEQ.NEXTVAL,
-			    'GROUP',                 -- 항상 GROUP으로 고정
+			    'GROUP',              
 			    #{title, jdbcType=VARCHAR},
 			    #{ownerId, jdbcType=VARCHAR},
 			    SYSDATE,
