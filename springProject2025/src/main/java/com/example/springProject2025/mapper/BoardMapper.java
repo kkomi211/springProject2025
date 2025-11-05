@@ -52,6 +52,9 @@ public interface BoardMapper {
 	
 	// 조회수 증가
 	int viewCnt (HashMap<String, Object> map);
+	
+	// 게시글 신고
+	int reportBoard (HashMap<String, Object> map);
 }
 
 

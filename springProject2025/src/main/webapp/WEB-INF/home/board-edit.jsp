@@ -47,14 +47,21 @@
                 </div>
                 <div id="right-items">
                     <div>
-                    <input type="text" placeholder="검색어를 입력해 주세요.">
+                        <input type="text" placeholder="검색어를 입력해 주세요.">
                     </div>
                     <div>
-                        <a href="/home/login.do">로그인</a></div>
-                    <div>
-                        <a href="/home/signup.do">가입하기</a></div>
-                    <div><a href="/home/mypage/inquiry.do">문의</a></div>
-                    <div><a href="/home/cart.do">장바구니</a></div>
+                        <template v-if="sessionId != ''">
+                            <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                        </template>
+                        <template v-else>
+                            <a href="/home/login.do">로그인</a>
+                        </template>
+                    </div>
+                    <div v-if="sessionId == ''">
+                        <a href="/home/signup.do">가입하기</a>
+                    </div>
+                    <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                    <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
                 </div>
             </div>
             <div class="bottom-header">
@@ -173,7 +180,7 @@
                                     </h3>
                                     <div class="title-input">
                                         <label for="">
-                                            <input type="text" v-model="title" id="title">
+                                            <input type="text" v-model="boardInfo.title" id="title">
                                         </label>
                                         <label for="">
                                             <input type="password" placeholder="잠금설정" v-model="keylock" id="keylock">
@@ -203,6 +210,14 @@
                                         <button @click="fnMoveToLogin">로그인</button>
                                         <button @click="fnCloseModal">닫기</button>
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Logout popup -->
+                            <div v-if="isLoggedOut" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
+                                    <a href="/home.do"><button class="btn">메인 화면으로 가기</button></a>
                                 </div>
                             </div>
 
@@ -265,7 +280,8 @@
                 index: 0,
 
                 // popup modal
-                isLoggedIn : true
+                isLoggedIn : true,
+                isLoggedOut : false
 
             };
         },
@@ -370,6 +386,23 @@
             fnNotice(){
                 let self = this;
                 pageChange("/home/community/board.do", {type : "B"});
+            },
+            fnLogout : function(){
+                let self = this;
+                let param = {};
+                $.ajax({
+                    url: "/member/logout.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if(data.result == "success"){
+                            self.userName = data.userName;
+                            self.isLoggedOut = true;
+                        }
+
+                    }
+                });
             }
         }, // methods
         mounted() {

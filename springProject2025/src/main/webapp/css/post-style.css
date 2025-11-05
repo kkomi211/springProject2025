@@ -364,6 +364,7 @@ button:hover {
   padding: 20px;
   margin-top: 40px;
   margin-bottom: 20px;
+  height: 110px;
 }
 
 .comment-header {
@@ -381,7 +382,7 @@ button:hover {
 
 .comment-input textarea {
   flex: 1;
-  height: 80px;
+  height: 70px;
   resize: none;
   border: none;
   border-radius: 8px;

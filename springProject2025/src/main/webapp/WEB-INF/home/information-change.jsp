@@ -212,7 +212,18 @@
                             <div v-if="isLoggedOut" class="modal-overlay">
                                 <div class="modal-content">
                                     <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
-                                    <a href="/home.do"><button>메인 화면으로 가기</button></a>
+                                    <a href="/home.do"><button class="btn">메인 화면으로 가기</button></a>
+                                </div>
+                            </div>
+
+                            <!-- If the user is not logged in -->
+
+                            <div v-if="!isLoggedIn" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>로그인 후 이용해주세요.</h2>
+                                    <div class="modal-btn">
+                                        <button @click="moveToLogin">로그인</button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -283,7 +294,8 @@
                 // Popup Modal
                 confirmDelete : false,
                 accountDeleted : false,
-                isLoggedOut : false
+                isLoggedOut : false,
+                isLoggedIn: true
 
             };
         },
@@ -537,6 +549,10 @@
             },
             fnAddrSave:function(){
                 let self = this;
+                if(self.addr == ""){
+                    alert("주소를 입력해주세요.");
+                    return;
+                }
                 let param = {
                     userId : self.sessionId,
                     addr : self.addr
@@ -608,13 +624,23 @@
 
                     }
                 });
-            }
+            },
+            moveToLogin: function () {
+                let self = this;
+                location.href = "/home/login.do";
+            },
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
             window.vueObj = this;
             self.fnInfo();
+            console.log("User ID : " + self.userId);
+            if (self.sessionId == "") {
+                self.isLoggedIn = false;
+            } else {
+                self.isLoggedIn = true;
+            }
         }
     });
 

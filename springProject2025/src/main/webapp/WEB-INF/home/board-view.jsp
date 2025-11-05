@@ -44,11 +44,18 @@
                     <input type="text" placeholder="검색어를 입력해 주세요.">
                     </div>
                     <div>
-                        <a href="/home/login.do">로그인</a></div>
-                    <div>
-                        <a href="/home/signup.do">가입하기</a></div>
-                    <div><a href="/home/mypage/inquiry.do">문의</a></div>
-                    <div><a href="/home/cart.do">장바구니</a></div>
+                        <template v-if="sessionId != ''">
+                            <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                        </template>
+                        <template v-else>
+                            <a href="/home/login.do">로그인</a>
+                        </template>
+                    </div>
+                    <div v-if="sessionId == ''">
+                        <a href="/home/signup.do">가입하기</a>
+                    </div>
+                    <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                    <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
                 </div>
             </div>
             <div class="bottom-header">
@@ -135,6 +142,7 @@
                             <div class="bottom-btn">
                                 <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn" @click="fnMoveToEdit">✏️ 수정</button>
                                 <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn" @click="fnConfirmDelete">🗑️ 삭제</button>
+                                <button v-if="sessionId != boardInfo.userId" class="edit-inline-btn" @click="fnConfirmReport">🚨 신고</button>
                             </div>
                         </div>
 
@@ -195,6 +203,31 @@
                                 </div>
                             </div>
 
+                        </div>
+
+                        <!-- Logout popup -->
+                            <div v-if="isLoggedOut" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
+                                    <a href="/home.do"><button class="btn">메인 화면으로 가기</button></a>
+                                </div>
+                            </div>
+                        
+                        <!-- Report popup -->
+                        <div v-if="confirmReport" class="modal-overlay">
+                            <div class="modal-content">
+                                
+                                <template v-if="!wasReported">
+                                    <h2>이 게시글을 신고하시겠습니까?</h2>
+                                    <button class="btn" @click="fnCloseModal">닫기</button>
+                                    <button class="btn" @click="fnReportPost">확인</button>
+                                </template>
+                                <template v-else>
+                                    <h2>신고가 성공적으로 접수되었습니다.</h2>
+                                    <button class="btn" @click="fnCloseModal">닫기</button>
+                                </template>
+                                
+                            </div>
                         </div>
 
                     </main>
@@ -259,8 +292,11 @@
 
                 // popup modal
                 isLoggedIn : true,
+                isLoggedOut : false,
                 confirmDelete : false,
                 deleted : false,
+                confirmReport : false,
+                wasReported : false,
 
                 // post comment
                 commentContent : ""
@@ -406,9 +442,60 @@
                     }
                 });
             },
+            fnConfirmReport: function(){
+                let self = this;
+                // if(!confirm("이 게시글을 신고하시겠습니까?")){
+                //     return;
+                // }
+                self.confirmReport = true;
+            },
+            fnReportPost: function(){
+                let self = this;
+                let param = {
+                    boardNo : self.boardNo,
+                    reporterId : self.sessionId
+                };
+                $.ajax({
+                    url: "/board/report.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if(data.result == "success"){
+                            // alert("신고가 성공적으로 접수되었습니다.");
+                            self.wasReported = true;
+                            // self.confirmReport = false;
+                        } else {
+                            alert("error");
+                        }
+
+                    }
+                });
+            },
             fnNotice(){
                 let self = this;
                 pageChange("/home/community/board.do", {type : "B"});
+            },
+            fnLogout : function(){
+                let self = this;
+                let param = {};
+                $.ajax({
+                    url: "/member/logout.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if(data.result == "success"){
+                            self.userName = data.userName;
+                            self.isLoggedOut = true;
+                        }
+
+                    }
+                });
+            },
+            fnCloseModal: function(){
+                let self = this;
+                self.confirmReport = false;
             }
         }, // methods
         mounted() {
