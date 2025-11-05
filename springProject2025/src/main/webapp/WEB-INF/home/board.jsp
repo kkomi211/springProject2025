@@ -6,7 +6,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
-         <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/board-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,7 +56,7 @@
                             <a href="/home/product.do">제품</a>
                         </div>
                         <div>
-                            <a href="/home/product.do">세일</a>
+                            <a href="javascript:;" @click="fnSale">세일</a>
                         </div>
                         <div>
                             <a href="/home/community/board.do">커뮤니티</a>
@@ -64,7 +64,7 @@
                     </div>
                 </header>
 
-                <main>
+                <main class="below-header">
 
                     <div class="header">
                         <div class="header-welcome">
@@ -98,6 +98,7 @@
                                 </ul>
                             </nav>
                         </aside>
+
                         <main class="main-content">
                             <div class="board-header">
                                 <h1 class="main-title">
@@ -165,7 +166,7 @@
                                 <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
                                 <!-- <a v-if="page != index" @click="fnMove(index)" href="javascript:void(0)">→</a> -->
                             </div>
-                            
+
                             <div class="write-btn-wrapper">
                                 <button @click="moveToPost" class="btn">글쓰기</button>
                             </div>
@@ -183,6 +184,14 @@
                                             @click="pwdCorrect = false">닫기</button>
                                         <button class="btn" @click="fnKeylock">확인</button>
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Logout popup -->
+                            <div v-if="isLoggedOut" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
+                                    <a href="/home.do"><button class="btn">메인 화면으로 가기</button></a>
                                 </div>
                             </div>
 
@@ -241,6 +250,7 @@
                     index: 0,
 
                     // modal popup 
+                    isLoggedOut : false, // logout popup 
                     pwdCorrect: false,
                     selectedPost: null,  // store the post object being clicked
                     keylock: ""
@@ -270,10 +280,10 @@
                     let startRow = (self.page - 1) * self.pageSize + 1;
                     let endRow = self.page * self.pageSize;
                     let param = {
-                        type: self.type, 
+                        type: self.type,
                         keyword: self.keyword.trim(),
-                        page: (self.page - 1) * self.pageSize, 
-                        pageSize: self.pageSize, 
+                        page: (self.page - 1) * self.pageSize,
+                        pageSize: self.pageSize,
                         startRow: startRow,
                         endRow: endRow
                     };
@@ -367,7 +377,33 @@
                 fnNotice(){
                 let self = this;
                 pageChange("/home/community/board.do", {type : "B"});
-            }
+                },
+                fnLogout : function(){
+                let self = this;
+                let param = {};
+                $.ajax({
+                    url: "/member/logout.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if(data.result == "success"){
+                            self.userName = data.userName;
+                            self.isLoggedOut = true;
+                        }
+
+                    }
+                });
+            },
+                fnNotice() {
+                    let self = this;
+                    pageChange("/home/community/board.do", { type: "B" });
+                },
+                fnSale() {
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                }
             }, // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분

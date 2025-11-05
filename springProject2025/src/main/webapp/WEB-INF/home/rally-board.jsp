@@ -5,7 +5,8 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/css/user-style.css">
+        <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
+        <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/board-style.css">
         <link rel="stylesheet" href="/css/rally-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,7 +51,7 @@
                             <a href="/home/product.do">제품</a>
                         </div>
                         <div>
-                            <a href="/home/product.do">세일</a>
+                            <a href="javascript:;" @click="fnSale">세일</a>
                         </div>
                         <div>
                             <a href="/home/community/board.do">커뮤니티</a>
@@ -59,114 +60,120 @@
                 </header>
 
                 <main>
-                    <div id="app">
-                        <div class="header">
-                            <div class="header-welcome">Welcome,</div>
-                            <div class="header-user">{{ userName }}</div>
+                    <div class="header">
+                        <div class="header-welcome">
+                            Welcome,
                         </div>
-
-                        <div class="page-container">
-                            <aside class="sidebar">
-                                <h2 class="sidebar-heading"> COMMUNITY ></h2>
-                                <nav class="mypage-menu">
-                                    <ul>
-                                        <li class="active">
-                                            <span class="icon">📝</span>
-                                            <a href="/home/community/board.do">게시판</a>
-                                        </li>
-                                        <li>
-                                            <span class="icon">📦</span>
-                                            <a href="/home/community/crew.do">크루 찾기</a>
-                                        </li>
-                                        <li>
-                                            <span class="icon">💬</span>
-                                            <a href="/home/community/rally.do">대회정보</a>
-                                        </li>
-                                        <li>
-                                            <span class="icon">👤</span>
-                                            <a href="/home/community/chat.do">채팅방</a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </aside>
-
-                            <main class="main-content">
-                                <div class="board-header">
-                                    <h1 class="main-title">
-                                        게시판 •
-                                        {{
-                                        type === '' ? '전체 게시판' :
-                                        type === 'B' ? '공지사항' :
-                                        type === 'Q' ? '문의게시판' :
-                                        type === 'F' ? '자유게시판' :
-                                        type === 'R' ? '대회게시판' : '게시판'
-                                        }}
-                                    </h1>
-
-                                    <div class="search-bar">
-                                        <div class="search-wrapper">
-                                            <select v-model="type" @change="fnList">
-                                                <option value="">전체</option>
-                                                <option value="B">공지사항</option>
-                                                <option value="Q">문의게시판</option>
-                                                <option value="F">자유게시판</option>
-                                                <option value="R">대회게시판</option>
-                                            </select>
-                                            <input type="text" placeholder="검색어" v-model="keyword"
-                                                @keyup.enter="fnList">
-                                            <button class="search-btn" @click="fnList">🔍</button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <select class="btn" v-model="pageSize" @change="fnList">
-                                    <option value="5">5개씩</option>
-                                    <option value="10">10개씩</option>
-                                    <option value="20">20개씩</option>
-                                </select>
-
-                                <div class="rally-list">
-                                    <div class="rally-item" v-for="item in list" :key="item.rallyNo">
-                                        <div class="rally-img">
-                                            <img :src="item.imgPath || '/images/default.jpg'" alt="대회 포스터">
-                                        </div>
-                                        <div class="rally-info">
-                                            <h3 class="rally-title">{{ item.rallyName }}</h3>
-                                            <p><strong>일시:</strong> {{ item.rallyDate }}</p>
-                                            <p><strong>접수기간:</strong> {{ item.applicationPeriod }}</p>
-                                            <p><strong>참가비:</strong> {{ item.price }}</p>
-                                            <p><strong>문의 번호:</strong> {{ item.phone }}</p>
-                                            <p><strong>참가부문:</strong> {{ item.type }}</p>
-                                            <p><strong>주최:</strong> {{ item.host }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- 페이지네이션 -->
-                                <div v-if="index > 0" class="pagination">
-                                    <a v-if="page != 1" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
-                                    <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index"
-                                        :key="num">
-                                        <span :class="{ active: page == num }">{{ num }}</span>
-                                    </a>
-                                    <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
-                                </div>
-
-                                <!-- 비밀번호 확인 모달 -->
-                                <div v-if="pwdCorrect" class="modal-overlay">
-                                    <div class="modal-content">
-                                        <h2>비밀글로 보호된 게시물입니다.</h2>
-                                        <p>비밀번호를 입력해야 내용을 확인할 수 있습니다.</p>
-                                        <input class="btn" type="password" v-model="inputPwd" @keyup.enter="fnKeylock"
-                                            placeholder="비밀번호 입력">
-                                        <div>
-                                            <button class="btn" @click="pwdCorrect = false">닫기</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </main>
+                        <div class="header-user">
+                            {{ userName }}
                         </div>
                     </div>
+                    <div class="page-container">
+                        <aside class="sidebar">
+                            <h2 class="sidebar-heading"> COMMUNITY ></h2>
+                            <nav class="mypage-menu">
+                                <ul>
+                                    <li>
+                                        <span class="icon">📝</span>
+                                        <a href="/home/community/board.do">게시판</a>
+                                    </li>
+                                    <li>
+                                        <span class="icon">📦</span>
+                                        <a href="/home/community/crew.do">크루 찾기</a>
+                                    </li>
+                                    <li class="active">
+                                        <span  class="icon">💬</span>
+                                        <a href="/home/community/rally.do">대회정보</a>
+                                    </li>
+                                    <li>
+                                        <span class="icon">👤</span>
+                                        <a href="/home/community/chat.do">채팅방</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </aside>
+
+                        <main class="main-content">
+                            <div class="board-header">
+                                <h1 class="main-title">
+                                    대회정보 •
+                                    {{
+                                    type === '' ? '전체 게시판' :
+                                    type === 'B' ? '공지사항' :
+                                    type === 'Q' ? '문의게시판' :
+                                    type === 'F' ? '자유게시판' :
+                                    type === 'R' ? '대회게시판' : '게시판'
+                                    }}
+                                </h1>
+
+                                <div class="search-bar">
+                                    <div class="search-wrapper">
+                                        <select v-model="type" @change="fnList">
+                                            <option value="">전체</option>
+                                            <option value="B">공지사항</option>
+                                            <option value="Q">문의게시판</option>
+                                            <option value="F">자유게시판</option>
+                                            <option value="R">대회게시판</option>
+                                        </select>
+                                        <input type="text" placeholder="검색어" v-model="keyword"
+                                            @keyup.enter="fnList">
+                                        <button class="search-btn" @click="fnList">🔍</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <select class="btn" v-model="pageSize" @change="fnList">
+                                <option value="5">5개씩</option>
+                                <option value="10">10개씩</option>
+                                <option value="20">20개씩</option>
+                            </select>
+
+                            <div class="rally-list">
+                                <div class="rally-item" v-for="item in list" :key="item.rallyNo">
+                                    <div class="rally-img">
+                                        <img :src="item.imgPath || '/images/default.jpg'" alt="대회 포스터">
+                                    </div>
+                                    <div class="rally-info">
+                                        <h3 class="rally-title">{{ item.rallyName }}</h3>
+                                        <p><strong>일시:</strong> {{ item.rallyDate }}</p>
+                                        <p><strong>접수기간:</strong> {{ item.applicationPeriod }}</p>
+                                        <p><strong>참가비:</strong> {{ item.price }}</p>
+                                        <p><strong>문의 번호:</strong> {{ item.phone }}</p>
+                                        <p><strong>참가부문:</strong> {{ item.type }}</p>
+                                        <p><strong>주최:</strong> {{ item.host }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 페이지네이션 -->
+                            <div v-if="index > 0" class="pagination">
+                                <a v-if="page != 1" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
+                                <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index"
+                                    :key="num">
+                                    <span :class="{ active: page == num }">{{ num }}</span>
+                                </a>
+                                <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
+                            </div>
+
+                            <!-- 비밀번호 확인 모달 -->
+                            <div v-if="pwdCorrect" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>비밀글로 보호된 게시물입니다.</h2>
+                                    <p>비밀번호를 입력해야 내용을 확인할 수 있습니다.</p>
+                                    <input class="btn" type="password" v-model="inputPwd" @keyup.enter="fnKeylock"
+                                        placeholder="비밀번호 입력">
+                                    <div>
+                                        <button class="btn" @click="pwdCorrect = false">닫기</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </main>
+
+                    </div>
+
+                        
+                    </div>
+                    
                 </main>
 
                 <footer>
@@ -197,6 +204,7 @@
                 </footer>
             </div>
         </div>
+    </body>
 
         <script>
             const app = Vue.createApp({
@@ -309,6 +317,11 @@
                     fnNotice() {
                         let self = this;
                         pageChange("/home/community/board.do", { type: "B" });
+                    },
+                    fnSale() {
+                        let self = this;
+                        self.saleYN = 'Y';
+                        pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                     }
 
                 },

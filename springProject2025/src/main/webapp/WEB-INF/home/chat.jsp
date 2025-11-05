@@ -55,7 +55,7 @@
                             <a href="/home/product.do">제품</a>
                         </div>
                         <div>
-                            <a href="/home/product.do">세일</a>
+                            <a href="javascript:;" @click="fnSale">세일</a>
                         </div>
                         <div>
                             <a href="/home/community/board.do">커뮤니티</a>
@@ -78,7 +78,7 @@
                             <h2 class="sidebar-heading"> COMMUNITY ></h2>
                             <nav class="mypage-menu">
                                 <ul>
-                                   <li>
+                                    <li>
                                         <span class="icon">📝</span>
                                         <a href="/home/community/board.do">게시판</a>
                                     </li>
@@ -213,7 +213,7 @@
                         location.href = "/home/login.do";
                     }
                 },
-                fnLogout : function(){
+                fnLogout: function () {
                     let self = this;
                     let param = {};
                     $.ajax({
@@ -222,12 +222,17 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            if(data.result == "success"){
-                                location.href="/home.do";
+                            if (data.result == "success") {
+                                location.href = "/home.do";
                             }
 
                         }
                     })
+                },
+                fnSale() {
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                 }
             }, // methods
             mounted() {

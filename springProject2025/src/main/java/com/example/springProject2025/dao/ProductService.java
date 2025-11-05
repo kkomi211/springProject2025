@@ -248,5 +248,17 @@ public class ProductService {
 		return resultMap;
 	}
 
+	public HashMap<String, Object> updateQuantity(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			int cnt = productmapper.UpdateQuantity(map);
+			resultMap.put("result", "success");
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+
 	
 }

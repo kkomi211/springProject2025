@@ -133,23 +133,29 @@
 	#inquiry-list-table th:nth-child(1), #inquiry-list-table td:nth-child(1) { /* 문의번호 */
 	    width: 10%;
 	}
-	#inquiry-list-table th:nth-child(2), #inquiry-list-table td:nth-child(2) { /* ID */
+	#inquiry-list-table th:nth-child(2), #inquiry-list-table td:nth-child(2) { /* 상품명 */
 	    width: 15%;
 	}
-	#inquiry-list-table th:nth-child(3), #inquiry-list-table td:nth-child(3) { /* 이름 */
-	    width: 10%;
-	}
-	#inquiry-list-table th:nth-child(4), #inquiry-list-table td:nth-child(4) { /* 문의제목 */
-	    width: 40%;
-	    text-align: left; /* 문의제목만 왼쪽 정렬 */
+	#inquiry-list-table th:nth-child(3), #inquiry-list-table td:nth-child(3) { /* 문의제목 */
+	    width: 35%;
+		text-align: left; /* 문의제목만 왼쪽 정렬 */
 	    white-space: nowrap; /* 줄바꿈 방지 */
 	    overflow: hidden; /* 넘치는 텍스트 숨김 */
 	    text-overflow: ellipsis; /* 넘치는 텍스트에 ... 표시 */
 	}
-	#inquiry-list-table th:nth-child(5), #inquiry-list-table td:nth-child(5) { /* 등록일 */
-	    width: 15%;
+	#inquiry-list-table th:nth-child(3) {
+		text-align: center;
 	}
-	#inquiry-list-table th:nth-child(6), #inquiry-list-table td:nth-child(6) { /* 상태 */
+	#inquiry-list-table th:nth-child(4), #inquiry-list-table td:nth-child(4) { /* ID */
+	    width: 10%;
+	}
+	#inquiry-list-table th:nth-child(5), #inquiry-list-table td:nth-child(5) { /* 이름 */
+	    width: 10%;
+	}
+	#inquiry-list-table th:nth-child(6), #inquiry-list-table td:nth-child(6) { /* 등록일 */
+	    width: 10%;
+	}
+	#inquiry-list-table th:nth-child(7), #inquiry-list-table td:nth-child(7) { /* 상태 */
 	    width: 10%;
 	}
 

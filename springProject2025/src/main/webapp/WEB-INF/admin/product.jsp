@@ -21,7 +21,7 @@
             <!-- 상단 검은색 바 -->
             <div class="topbar">
                 <div><strong>관리자 메인화면</strong></div>
-                <div>관리자 test123 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
+                <div>관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
                         @click="fnLogout">로그오프</a></div>
             </div>
 
@@ -71,7 +71,13 @@
                             <td>{{item.productNo}}</td>
                             <td><a href="javascript:;" @click="fnInfoProduct(item.productNo)">{{item.productName}}</a>
                             </td>
-                            <td>{{item.price}}</td>
+                            <td>
+                                <span v-if="item.saleYN == 'N'">{{item.price}}</span>
+                                <span v-else>
+                                    <del>{{item.price}}</del>
+                                    {{item.salePrice}}
+                                </span>
+                            </td>
                             <td>{{item.quantity}}</td>
                             <td>{{item.productSize}}</td>
                             <td>{{item.udate}}</td>
@@ -104,13 +110,26 @@
                     pageSize: 15,
                     page: "1",
                     totalPage: "",
-                    orderBy : "down"
+                    orderBy: "down"
                 };
             },
             methods: {
                 // 함수(메소드) - (key : function())
                 fnLogout: function () {
-                    pageChange("/home.do", { sessionId: "" });
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+                        }
+                    });
+
                 },
                 fnList() {
                     let self = this;
@@ -119,7 +138,7 @@
                         keytype: self.keytype,
                         page: (self.page - 1) * 15,
                         pageSize: self.pageSize,
-                        orderBy : self.orderBy
+                        orderBy: self.orderBy
                     };
                     $.ajax({
                         url: "/product/list.dox",
@@ -145,7 +164,7 @@
                 fnInfoProduct(productNo) {
                     pageChange("/admin/product-info.do", { productNo: productNo });
                 },
-                fnOrderBy(status){
+                fnOrderBy(status) {
                     let self = this;
                     self.orderBy = status;
                     self.fnList();
