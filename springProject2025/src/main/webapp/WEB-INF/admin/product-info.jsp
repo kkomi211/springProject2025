@@ -21,7 +21,7 @@
             <!-- 상단 검은색 바 -->
             <div class="topbar">
                 <div><strong>관리자 메인화면</strong></div>
-                <div>관리자 test123 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
+                <div>관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
                         @click="fnLogout">로그오프</a></div>
             </div>
 
@@ -118,7 +118,7 @@
             methods: {
                 // 함수(메소드) - (key : function())
                 fnLogout: function () {
-                    pageChange("home.do", { sessionId: "" });
+                    pageChange("/home.do", { sessionId: "" });
                 },
                 fnInfo() {
                     let self = this;
