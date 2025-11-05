@@ -150,11 +150,13 @@
 		    SELECT COUNT(*)
 		    FROM PRODUCT_INQUIRY I
 		    INNER JOIN USERS U ON I.USER_ID = U.USER_ID
+		    INNER JOIN PRODUCT P ON I.PRODUCT_NO = P.PRODUCT_NO <!-- ★★★ PRODUCT 테이블 JOIN ★★★ -->
 		    <where>
 		        <if test="keyword != null and keyword != ''">
-		            AND (I.TITLE LIKE '%' || #{keyword} || '%' 
+		            AND (I.TITLE LIKE '%' || #{keyword} || '%'
 		            OR U.NAME LIKE '%' || #{keyword} || '%'
-		            OR I.USER_ID LIKE '%' || #{keyword} || '%')
+		            OR I.USER_ID LIKE '%' || #{keyword} || '%'
+		            OR P.PRODUCT_NAME LIKE '%' || #{keyword} || '%') <!-- ★★★ 상품명으로 검색 조건 추가 ★★★ -->
 		        </if>
 		        <if test="statusOption != null and statusOption != ''">
 		            AND I.STATUS = #{statusOption}
@@ -174,14 +176,19 @@
 		    FROM (
 		        SELECT SUB.*, ROWNUM AS RN
 		        FROM (
-		            SELECT I.*, U.NAME
+		            SELECT
+		                I.*,
+		                U.NAME,
+		                P.PRODUCT_NAME <!-- ★★★ PRODUCT 테이블에서 상품명 가져오기 ★★★ -->
 		            FROM PRODUCT_INQUIRY I
 		            INNER JOIN USERS U ON I.USER_ID = U.USER_ID
+		            INNER JOIN PRODUCT P ON I.PRODUCT_NO = P.PRODUCT_NO <!-- ★★★ PRODUCT 테이블 JOIN ★★★ -->
 		            <where>
 		                <if test="keyword != null and keyword != ''">
-		                    AND (I.TITLE LIKE '%' || #{keyword} || '%' 
+		                    AND (I.TITLE LIKE '%' || #{keyword} || '%'
 		                    OR U.NAME LIKE '%' || #{keyword} || '%'
-		                    OR I.USER_ID LIKE '%' || #{keyword} || '%')
+		                    OR I.USER_ID LIKE '%' || #{keyword} || '%'
+		                    OR P.PRODUCT_NAME LIKE '%' || #{keyword} || '%') <!-- ★★★ 상품명으로 검색 조건 추가 ★★★ -->
 		                </if>
 		                <if test="statusOption != null and statusOption != ''">
 		                    AND I.STATUS = #{statusOption}
@@ -195,16 +202,20 @@
 		            </where>
 		            ORDER BY I.CDATE DESC
 		        ) SUB
-		    ) 
+		    )
 		    WHERE RN > #{startIndex} AND RN &lt;= #{startIndex} + #{pageSize}
 		</select>
 		
 		<!-- 상품 문의내역 상세보기 -->
 		<select id="selectInquiry" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
-			SELECT I.*, U.NAME
-			FROM PRODUCT_INQUIRY I
-			INNER JOIN USERS U ON I.USER_ID = U.USER_ID
-			WHERE INQUIRY_NO = #{inquiryNo}
+			SELECT
+		        I.*,
+		        U.NAME,
+		        P.PRODUCT_NAME <!-- ★★★ PRODUCT 테이블에서 상품명 가져오기 ★★★ -->
+		    FROM PRODUCT_INQUIRY I
+		    INNER JOIN USERS U ON I.USER_ID = U.USER_ID
+		    INNER JOIN PRODUCT P ON I.PRODUCT_NO = P.PRODUCT_NO <!-- ★★★ PRODUCT 테이블 JOIN ★★★ -->
+		    WHERE INQUIRY_NO = #{inquiryNo}
 		</select>
 		
 		<!-- 상품 문의내역 관리자 답변 등록/수정 -->

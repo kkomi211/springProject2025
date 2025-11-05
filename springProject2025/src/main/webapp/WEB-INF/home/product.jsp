@@ -56,7 +56,7 @@
                             <a href="javascript:;" @click="fnProduct">제품</a>
                         </div>
                         <div>
-                            <a href="javascript:;" @click="fnProduct">세일</a>
+                            <a href="javascript:;" @click="fnSale">세일</a>
                         </div>
                         <div>
                             <a href="/home/community/board.do">커뮤니티</a>
@@ -110,15 +110,17 @@
                                 <span v-for="item in list" class="product-box" @click="fnProductView(item.productNo)">
                                     <div><img :src="imgByProduct[String(item.productNo)] || '/img/no-image.png'"
                                             class="small-img" :alt="item.productName"></div>
-                                    <div>{{item.productName}}</div>
-                                    <div>{{item.price}} 원</div>
-                                    <div v-if="ratingByName[item.productName]" class="stars">
+                                    <div class="brandText product-margin">{{item.brand}}</div>
+                                    <div class="product-margin">{{item.productName}}</div>
+                                    <div class="price product-margin" v-if="item.saleYN == 'N'">{{item.price}} 원</div>
+                                    <div class="price product-margin" v-else><del>{{item.price}}</del> {{item.salePrice}} 원</div>
+                                    <div v-if="ratingByName[item.productName]" class="stars product-margin">
                                         <span v-for="n in 5" :key="n" class="star"
                                             :class="{ filled: n <= ratingByName[item.productName].rounded }">★</span>
                                         <span class="avg"> {{ ratingByName[item.productName].avg.toFixed(1) }}</span>
                                         <span class="cnt"> ({{ ratingByName[item.productName].cnt }})</span>
                                     </div>
-                                    <div v-else class="no-review">리뷰 없음</div>
+                                    <div v-else class="no-review product-margin">리뷰 없음</div>
                                 </span>
                             </div>
                             <div class="clear text-center margin-right">
@@ -178,7 +180,8 @@
                     category: "${category}",
                     hoverParent: null,
                     sessionId: "${sessionId}",
-                    userName: ""
+                    userName: "",
+                    saleYN : "${saleYN}"
                 };
             },
             computed: {
@@ -230,7 +233,8 @@
                         pageSize: 9,
                         keyword: self.keyword,
                         keytype: "name",
-                        category: self.category
+                        category: self.category,
+                        saleYN : self.saleYN
                     };
                     $.ajax({
                         url: "/product/user/list.dox",
@@ -291,7 +295,7 @@
                 },
                 fnProduct() {
                     let self = this;
-                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId });
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: "" });
                 },
                 fnUserInfo() {
                     let self = this;
@@ -325,6 +329,11 @@
 
                         }
                     })
+                },
+                fnSale(){
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                 }
 
             }, // methods

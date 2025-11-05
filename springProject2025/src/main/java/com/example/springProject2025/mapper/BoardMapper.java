@@ -29,6 +29,12 @@ public interface BoardMapper {
 	// 게시글 전체개수 (board)
 	int boardCnt(HashMap<String, Object> map);
 	
+	// 게시글 전체개수 (board)
+	int insertCrew(HashMap<String, Object> map);
+		
+	// crew 채팅방 입장하기(insert)
+	int crewCatInsertMember(HashMap<String, Object> map);
+	
 	// 게시글 추가
 	int boardAdd (HashMap<String, Object> map);
 	

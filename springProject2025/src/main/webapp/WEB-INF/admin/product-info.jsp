@@ -21,7 +21,7 @@
             <!-- 상단 검은색 바 -->
             <div class="topbar">
                 <div><strong>관리자 메인화면</strong></div>
-                <div>관리자 test123 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
+                <div>관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
                         @click="fnLogout">로그오프</a></div>
             </div>
 
@@ -54,7 +54,10 @@
                         </tr>
                         <tr>
                             <th>가격</th>
-                            <td><input v-model="info.price"></td>
+                            <td>
+                                <input style="width: 30%; margin-right: 50px;" v-model="info.price">
+                                할인 : <input style="width: 30%;" v-model="info.salePrice">
+                            </td>
                         </tr>
                         <tr>
                             <th>사이즈</th>
@@ -65,7 +68,14 @@
                         <tr>
                             <th>재고</th>
                             <td>
-                                <input v-model="info.quantity" class="smallInput">
+                                <a v-if="!quantityFlg">
+                                    <input v-model="info.quantity" class="smallInput" disabled>
+                                    <button @click="quantityFlg = true">재고 변경</button>
+                                </a>
+                                <a v-else>
+                                    <input v-model="info.quantity" class="smallInput">
+                                    <button @click="fnQuantity">변경 하기</button>
+                                </a>
                             </td>
                         </tr>
                         <tr>
@@ -111,14 +121,29 @@
                     sessionId: "",
                     productNo: "${productNo}",
                     info: {},
-                    img: {}
+                    img: {},
+                    salePrice: "",
+                    quantityFlg: false
 
                 };
             },
             methods: {
                 // 함수(메소드) - (key : function())
                 fnLogout: function () {
-                    pageChange("home.do", { sessionId: "" });
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+                        }
+                    });
+
                 },
                 fnInfo() {
                     let self = this;
@@ -140,6 +165,12 @@
                 },
                 fnEditProduct() {
                     let self = this;
+                    if (self.info.salePrice != 0) {
+                        self.info.saleYN = "Y";
+                    }
+                    if (self.info.salePrice == 0) {
+                        self.info.saleYN = "N";
+                    }
                     $.ajax({
                         url: "/product/edit.dox",
                         dataType: "json",
@@ -169,6 +200,23 @@
                 },
                 fnBack() {
                     location.href = "/admin/product.do";
+                },
+                fnQuantity() {
+                    let self = this;
+                    let param = {
+                        productNo: self.productNo,
+                        quantity: self.info.quantity
+                    }
+                    $.ajax({
+                        url: "/product/quantity/update.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            alert("수정되었습니다!");
+                            self.fnBack();
+                        }
+                    });
                 }
             }, // methods
             mounted() {

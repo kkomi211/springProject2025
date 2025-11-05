@@ -70,7 +70,7 @@
                             <a href="/home/product.do">제품</a>
                         </div>
                         <div>
-                            <a href="/home/product.do">세일</a>
+                            <a href="javascript:;" @click="fnSale">세일</a>
                         </div>
                         <div>
                             <a href="/home/community/board.do">커뮤니티</a>
@@ -154,7 +154,7 @@
                             </table> -->
 
                             <!-- 글쓰기 다른 디자인 테스트 -->
-                             <div class="comments-section">
+                            <div class="comments-section">
                                 <div class="sub-section">
                                     <h3 class="comment-title">
                                         아이디
@@ -163,7 +163,7 @@
                                         <strong>{{ userName }}</strong>
                                     </div>
                                 </div>
-                                
+
                                 <div class="sub-section">
                                     <h3 class="comment-title">
                                         카테고리
@@ -196,7 +196,7 @@
                                         <div id="editor"></div>
                                     </div>
                                 </div>
-                             </div>
+                            </div>
 
                             <div class="bottom-btn">
                                 <button @click="fnPost">등록</button>
@@ -417,6 +417,11 @@
 
                         }
                     });
+                },
+                fnSale() {
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                 }
             }, // methods
             mounted() {

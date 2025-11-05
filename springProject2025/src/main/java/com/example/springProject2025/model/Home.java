@@ -21,6 +21,8 @@ public class Home {
     private String brand;
     private int sellCount;
     private String imgPath;
+    private String saleYN;
+    private int salePrice;
 
     // === 대회 관련 필드 (selectLatestRallies에서 사용) ===
     private String rallyNo;

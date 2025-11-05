@@ -50,7 +50,9 @@
 		</if>
 		<if test="category != '' and category != null and category != 'undefined'">
 			AND TYPE_NO LIKE '%' || #{category} || '%'
-			
+		</if>
+		<if test="saleYN != '' and saleYN != null and saleYN != 'undefined'">
+			AND SALE_YN = 'Y'
 		</if>
 		
 		<if test="pageSize != null and pageSize != ''">
@@ -99,7 +101,9 @@
 		</if>
 		<if test="category != '' and category != null and category != 'undefined'">
 			AND TYPE_NO LIKE '%' || #{category} || '%'
-			
+		</if>
+		<if test="saleYN != '' and saleYN != null and saleYN != 'undefined'">
+			AND SALE_YN = 'Y'
 		</if>
 	</select>
 	
@@ -174,7 +178,21 @@
 	<update id="editProduct" parameterType="hashmap">
 		UPDATE PRODUCT
 		SET PRODUCT_NAME = #{productName}, PRICE = #{price}, PRODUCT_DETAIL = #{productDetail}, QUANTITY = #{quantity},
-		GENDER = #{gender}, TYPE_NO = #{typeNo}, UDATE = SYSDATE
+		GENDER = #{gender}, TYPE_NO = #{typeNo}, UDATE = SYSDATE, SALE_YN = #{saleYN}, SALE_PRICE = #{salePrice}
+		WHERE PRODUCT_NO IN (
+			SELECT PRODUCT_NO
+			FROM PRODUCT
+			WHERE PRODUCT_NAME IN(
+			    SELECT PRODUCT_NAME
+			    FROM PRODUCT
+			    WHERE PRODUCT_NO = #{productNo}
+			)
+		)
+	</update>
+	
+	<update id="UpdateQuantity" parameterType="hashmap">
+		UPDATE PRODUCT
+		SET QUANTITY = #{quantity}
 		WHERE PRODUCT_NO = #{productNo}
 	</update>
 	
@@ -217,12 +235,7 @@
 	</select>
 	
 	<select id="selectProductInfoUser" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
-		SELECT
-		  PRODUCT_NO,
-		  PRODUCT_NAME,
-		  PRICE,
-		  PRODUCT_DETAIL,
-		  CDATE, UDATE, TYPE_NO, BRAND
+		SELECT *
 		FROM PRODUCT
 		WHERE PRODUCT_NO = #{productNo}
 	</select>

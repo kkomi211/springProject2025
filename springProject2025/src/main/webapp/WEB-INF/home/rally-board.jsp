@@ -51,7 +51,7 @@
                             <a href="/home/product.do">제품</a>
                         </div>
                         <div>
-                            <a href="/home/product.do">세일</a>
+                            <a href="javascript:;" @click="fnSale">세일</a>
                         </div>
                         <div>
                             <a href="/home/community/board.do">커뮤니티</a>
@@ -317,6 +317,11 @@
                     fnNotice() {
                         let self = this;
                         pageChange("/home/community/board.do", { type: "B" });
+                    },
+                    fnSale() {
+                        let self = this;
+                        self.saleYN = 'Y';
+                        pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                     }
 
                 },
