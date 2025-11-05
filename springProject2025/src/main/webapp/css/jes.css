@@ -16,14 +16,16 @@ h1 {
     margin: 30px;
     border-color: #757575;
 }
-.small-input{
+
+.small-input {
     width: 50px;
 }
+
 .margin30 {
     margin: 10px;
 }
 
-.marginbutton{
+.marginbutton {
     margin-right: 10px;
     margin-left: 10px;
 }
@@ -350,10 +352,10 @@ td input {
 
 .side-bar {
     width: 20%;
-    margin-bottom: 30px;
+    margin-left: 30px;
     float: left;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* border: 1px solid #ccc; */
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
 }
 
 .sidebar {
@@ -373,24 +375,23 @@ td input {
     cursor: pointer;
 }
 
-.category-box .category {
-    width: 100%;
-    text-align: center;
-    padding: 20px 20px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.category-box {
+    margin-bottom: 20px;
+    padding-top: 15px;
+    /* 카테고리 박스 상단 패딩 추가 */
 }
 
-.category-box .subcategory {
-    width: 100%;
-    text-align: center;
-    padding: 10px 20px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.category-box .category {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #222;
+    padding: 15px 0 15px 5px;
+    /* 좌측 패딩 추가 */
+    border-bottom: 2px solid #222;
+    margin-bottom: 15px;
 }
+
+
 
 .main-container {
     width: 80%;
@@ -414,10 +415,9 @@ td input {
 .infoMain-container {
     width: 60%;
     padding: 0px;
-    border: 1px solid black;
     margin-bottom: 30px;
     float: left;
-    border: 1px solid #ccc;
+    /* border: 1px solid #ccc; */
     padding: 20px;
     background-color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -519,27 +519,31 @@ td input {
 
 
 .subcategory {
-    padding: 6px 10px;
+    font-size: 1.1em;
+    padding: 10px 5px;
+    /* 모든 서브카테고리 아이템의 좌우 여백 */
     cursor: pointer;
-    border: 1px solid #ddd;
-    border-right: none;
-    /* 오른쪽 보더 제거 → 붙어 보이게 */
-    background-color: white;
-    color: black;
+    color: #555;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.subcategory:hover {
+    background-color: #f0f0f0;
+    color: #222;
+    font-weight: bold;
 }
 
 .subcategory-children {
-    position: absolute;
-    top: 0;
-    left: 100%;
-    /* 바로 오른쪽에 붙이기 */
-    margin-left: 0;
-    /* 여백 제거 */
-    background: #fff;
-    border: 1px solid #ddd;
-    min-width: 160px;
-    z-index: 10;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+    position: static;
+    /* 부모 카테고리 아래로 위치 */
+    width: 100%;
+    background-color: #fff;
+    border: none;
+    box-shadow: none;
+    z-index: 15;
+    border-radius: 0;
+    padding: 0;
+    margin-top: -5px;
 }
 
 .subcategory.child {
@@ -732,7 +736,7 @@ td input {
 #editor {
     width: 100%;
     height: 500px;
-    
+
 }
 
 .header {

@@ -480,10 +480,10 @@
                             // }
 
                             // unitPrice: 가능한 경우 첫 옵션의 가격 사용, 없으면 cart에 있던 가격
-                            const firstOptWithPrice = unique.find(o => o.price);
+                            const firstOptWithPrice = unique.find(o => o.price);
                             // 초기 선택값: 만약 cartItem이 있고 그 상품의 productSize가 있으면 그 사이즈에 해당하는 option을 찾아 선택 
-                            const cartItem = self.cartList.find(i => i.productNo === productNo || i.cartNo === productNo); // 장바구니 항목
-                            
+                            const cartItem = self.cartList.find(i => i.productNo === productNo || i.cartNo === productNo); // 장바구니 항목
+
                             // [수정] 옵션 가격 결정 로직: 
                             // 1. 카트 항목이 할인 상품(saleYn='Y')이면 salePrice를 사용합니다.
                             // 2. 아니면 옵션 목록의 첫 번째 가격을 사용합니다.
@@ -630,12 +630,12 @@
                         }
                     });
                     this.totalProductPrice = total; // 총 상품 금액 (할인 전 합산)
-                    this.totalDiscount = totalDisc; // 총 할인 금액
-                    // 총 금액 - 총 할인 금액으로 배송비 기준을 잡아야 정확합니다.
-                    const finalProductTotal = total - totalDisc;
-                    this.deliveryFee = finalProductTotal >= 50000 || finalProductTotal === 0 ? 0 : 3000;
-                    this.selectedCount = count;
-                    this.isAllSelected = this.cartList.length > 0 && this.cartList.every(i => !!i.selected);
+                    this.totalDiscount = totalDisc; // 총 할인 금액
+                    // 총 금액 - 총 할인 금액으로 배송비 기준을 잡아야 정확합니다.
+                    const finalProductTotal = total - totalDisc;
+                    this.deliveryFee = finalProductTotal >= 50000 || finalProductTotal === 0 ? 0 : 3000;
+                    this.selectedCount = count;
+                    this.isAllSelected = this.cartList.length > 0 && this.cartList.every(i => !!i.selected);
                 },
                 fnList: function () {
                     let self = this;
@@ -816,6 +816,22 @@
                     let self = this;
                     self.saleYN = 'Y';
                     pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                },
+                fnLogout: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+
+                        }
+                    })
                 }
 
             }, // methods

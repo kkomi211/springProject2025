@@ -32,17 +32,25 @@
                             <div><a href="/home.do">RUNNERS' HOUSE</a></div>
                         </div>
                         <div id="right-items">
-                            <div>
+                            <div class="search-box">
                                 <input type="text" placeholder="검색어를 입력해 주세요.">
                             </div>
                             <div>
-                                <a href="/home/login.do">로그인</a>
+                                <template v-if="sessionId != ''">
+                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                                </template>
+                                <template v-else>
+                                    <a href="/home/login.do">로그인</a>
+                                </template>
                             </div>
-                            <div>
+                            <div v-if="sessionId == ''">
                                 <a href="/home/signup.do">가입하기</a>
                             </div>
-                            <div><a href="/home/mypage/inquiry.do">문의</a></div>
-                            <div><a href="/home/cart.do">장바구니</a></div>
+                            <div v-if="sessionId != '' && userType != 'K'"><a
+                                    href="/home/mypage/information.do">마이페이지</a></div>
+                            <div v-else-if="sessionId != '' && userType == 'K'"><a
+                                    href="home/mypage/information/change.do">마이페이지</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -402,54 +410,54 @@
                     self.newPwd1 = "";
                     self.newPwd2 = "";
                 },
-               
-               
-                
-            
-            fnSms: function(){
-                let self= this;
-                let param = {
-                    phone : self.pwd_phone
-                };
-                // self.smsFlg = true;
-                // self.fnTimer();
-                $.ajax({
-                    url: "/send-one",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    success: function (data) {
-                        console.log(data);
-                        if(data.res.statusCode == "2000"){
-                            alert("문자 전송 완료");
-                            self.ranStr = data.ranStr;
-                            self.smsFlg = true;
-                            self.fnTimer();
-                        } else {
-                            alert("잠시 후 다시 시도해주세요.");
+
+
+
+
+                fnSms: function () {
+                    let self = this;
+                    let param = {
+                        phone: self.pwd_phone
+                    };
+                    // self.smsFlg = true;
+                    // self.fnTimer();
+                    $.ajax({
+                        url: "/send-one",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            if (data.res.statusCode == "2000") {
+                                alert("문자 전송 완료");
+                                self.ranStr = data.ranStr;
+                                self.smsFlg = true;
+                                self.fnTimer();
+                            } else {
+                                alert("잠시 후 다시 시도해주세요.");
+                            }
                         }
+                    });
+                },
+                fnSmsAuth: function () {
+                    let self = this;
+                    if (self.inputNum == "") {
+                        alert("인증번호를 입력해주세요.");
+                        document.querySelector("#auth").focus();
+                        return;
                     }
-                });
-            },
-            fnSmsAuth: function(){
-                let self = this;
-                if(self.inputNum == ""){
-                    alert("인증번호를 입력해주세요.");
-                    document.querySelector("#auth").focus();
-                    return;
-                }
-                if(self.ranStr == self.inputNum){
-                    // alert("문자 인증 완료되았습니다");
-                    self.joinFlg = true;
-                    self.authFlag = true;
-                } else {
-                    alert("문자인증 실패했습니다.");
-                    self.joinFlg = false;
-                }
-            },
-           
-                   
-                
+                    if (self.ranStr == self.inputNum) {
+                        // alert("문자 인증 완료되았습니다");
+                        self.joinFlg = true;
+                        self.authFlag = true;
+                    } else {
+                        alert("문자인증 실패했습니다.");
+                        self.joinFlg = false;
+                    }
+                },
+
+
+
                 fnTimer: function () {
                     let self = this;
                     let interval = setInterval(function () {
@@ -480,6 +488,22 @@
                     let self = this;
                     self.saleYN = 'Y';
                     pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                },
+                fnLogout: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+
+                        }
+                    })
                 }
             }, // methods
             mounted() {
