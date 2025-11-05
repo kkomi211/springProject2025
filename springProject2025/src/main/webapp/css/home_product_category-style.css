@@ -1,0 +1,424 @@
+/* ====== 폰트 및 기본 스타일 (전체 적용) ====== */
+            body {
+                /* font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; */
+                margin: 0;
+                background-color: #f7f8fa;
+                color: #333; /* 기본 텍스트 색상 */
+                line-height: 1.5;
+            }
+
+            h1, h2, h3, h4, h5, h6 {
+                /* font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; */
+                color: #222;
+                margin: 0;
+                padding: 0;
+                line-height: 1.2;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+            .bottom-header a:hover {
+                color: #007bff; /* 링크 호버 색상 */
+            }
+
+            /* 메인 컨테이너 설정 - 헤더/푸터를 제외한 페이지 내용 */
+            #app .container {
+                max-width: 100%;
+                margin: 0 auto;
+                padding: 0 20px; /* 좌우 여백 */
+                background-color: #fff; /* 컨텐츠 영역 배경은 흰색 */
+                min-height: calc(100vh - 120px); /* 푸터 고려, 최소 높이 */
+            }
+
+            main {
+                max-width: 1400px; /* <main> 태그에 최대 너비 적용 */
+                margin: 0 auto; /* <main> 태그 중앙 정렬 */
+                background-color: #fff; /* 메인 콘텐츠의 배경색 */
+
+                padding: 0 20px; /* 메인 콘텐츠 내부의 좌우 여백 */
+            }
+
+            /* 기존 newcontent 및 검색바 스타일 */
+            .newcontent {
+                display: flex;
+                justify-content: flex-end; /* 검색바를 오른쪽으로 정렬 */
+                align-items: center;
+                padding: 0 20px;
+                border-bottom: 1px solid #eee;
+            }
+            .newcontent .search {
+                border: 1px solid #ddd;
+                padding: 10px 15px;
+                border-radius: 5px;
+                font-size: 1em;
+                width: 250px;
+                margin-right: 10px;
+            }
+            .newcontent .search:focus {
+                outline: none;
+                border-color: #007bff;
+            }
+            .newcontent .height40.bluebutton {
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                padding: 10px 20px;
+                cursor: pointer;
+                font-size: 1em;
+                transition: background-color 0.2s ease;
+            }
+            .newcontent .height40.bluebutton:hover {
+                background-color: #0056b3;
+            }
+
+
+            /* ====== 카테고리 영역 (Sidebar) 스타일 ====== */
+            .page-container {
+                display: flex; /* 사이드바와 메인 컨텐츠를 옆으로 나란히 배치 */
+                gap: 30px; /* 사이드바와 메인 컨텐츠 사이 간격 */
+            }
+
+            .sidebar {
+                flex: 0 0 250px; /* 사이드바 너비를 고정 */
+                background-color: #fff;
+                border-right: 1px solid #eee;
+                padding-right: 20px;
+                position: relative; /* 자식 요소인 드롭다운이 sidebar 내에서 오버레이될 수 있도록 */
+                z-index: 10; /* 다른 콘텐츠 위에 오도록 */
+                font-weight: bold;
+            }
+
+            .category-box {
+                margin-bottom: 20px;
+                padding-top: 15px; /* 카테고리 박스 상단 패딩 추가 */
+            }
+            .category-box .category {
+                font-size: 1.5em;
+                font-weight: bold;
+                color: #222;
+                padding: 15px 0 15px 5px; /* 좌측 패딩 추가 */
+                border-bottom: 2px solid #222;
+                margin-bottom: 15px;
+            }
+
+            .subcategory {
+                font-size: 1.1em;
+                padding: 10px 5px; /* 모든 서브카테고리 아이템의 좌우 여백 */
+                cursor: pointer;
+                color: #555;
+                transition: background-color 0.2s ease, color 0.2s ease;
+            }
+
+            /* ★★★ .subcategory 호버 시 스타일 (모든 .subcategory에 적용) ★★★ */
+            .subcategory:hover {
+                background-color: #f0f0f0;
+                color: #222;
+                font-weight: bold;
+            }
+
+            /* ★★★ .subcategory 활성 상태 스타일 (모든 .subcategory에 적용) ★★★ */
+            .subcategory.active {
+                background-color: black;
+                color: white;
+                font-weight: 700;
+            }
+
+
+            /* ★★★ .subcategory-wrapper 관련 스타일 (v-for로 반복되는 부모 카테고리만) ★★★ */
+            .subcategory-wrapper {
+                position: relative; /* 2차 카테고리 위치의 기준점 */
+                margin-bottom: 5px;
+            }
+
+            /* 2차 카테고리 드롭다운 (subcategory-children) 스타일 */
+            .subcategory-children {
+                position: static; /* 부모 카테고리 아래로 위치 */
+                width: 100%;
+                background-color: #fff;
+                border: none;
+                box-shadow: none;
+                z-index: 15;
+                border-radius: 0;
+                padding: 0;
+                margin-top: -5px;
+            }
+            .subcategory-wrapper:hover .subcategory-children {
+                display: block; /* 호버 시 표시 (v-if로 제어되므로 이 CSS는 보조적인 역할) */
+            }
+
+            /* 2차 카테고리 아이템 (.subcategory.child) 스타일 */
+            .subcategory-children .subcategory.child {
+                font-size: 1em;
+                padding: 8px 15px; /* 2차 카테고리 좌우 여백 */
+                cursor: pointer;
+                color: #666;
+                transition: background-color 0.2s ease, color 0.2s ease;
+                width: auto;
+                display: block; /* 배경을 꽉 채우도록 */
+            }
+            /* .subcategory-children .subcategory.child:hover, .subcategory-children .subcategory.child.active 스타일은 위에 정의된 .subcategory:hover, .subcategory.active에 의해 처리됨 */
+
+            .subcategory-children .subcategory.child.empty {
+                font-style: italic;
+                color: #999;
+                padding: 8px 15px;
+                display: block;
+            }
+
+            .subcategory-children .subcategory.child.active {
+                background-color: #f0f0f0;
+                color: #222;
+                font-weight: bold;
+            }
+
+
+            /* ====== 상품 리스트 영역 (Main Content) 스타일 ====== */
+            .main-content {
+                flex: 1; /* 남은 공간을 모두 차지 */
+                padding-left: 20px; /* 사이드바와 분리 */
+                background-color: #fff; /* 메인 콘텐츠 배경색 */
+            }
+
+            .main-container {
+                display: grid; /* Grid 레이아웃 적용 */
+                grid-template-columns: repeat(3, 1fr); /* 한 줄에 3개의 상품 (한샘몰과 ASICS 모두 유사) */
+                gap: 30px; /* 상품 박스 간의 간격 */
+                padding: 20px 0; /* 컨테이너 상하 여백 */
+            }
+
+            /* 개별 상품 박스 스타일 (ASICS GEL-CUMULUS 오른쪽 그리드 스타일 반영) */
+            .product-box {
+                display: flex;
+                flex-direction: column;
+                background-color: #fff;
+                border-radius: 0; /* ★★★ 둥근 모서리 제거 ★★★ */
+                overflow: hidden;
+                cursor: pointer;
+                transition: transform 0.2s ease-in-out; /* 호버 효과는 유지 */
+                padding: 15px; /* 내부 여백 */
+                box-shadow: none; /* ★★★ 그림자 제거 ★★★ */
+                border: none; /* 테두리 제거 (이미 적용되어 있음) */
+            }
+            .product-box:hover {
+                transform: translateY(-5px); /* 호버 시 살짝 위로 뜨는 효과 */
+                box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* 그림자 강화 */
+            }
+
+            .product-box a {
+                display: block;
+                text-decoration: none;
+                color: inherit;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+
+            .product-image-container {
+                width: 100%;
+                height: 0; /* ★★★ 고정 높이 제거 ★★★ */
+                padding-bottom: 100%; /* ★★★ 너비에 비례하여 1:1 비율 (정사각형) ★★★ */
+                position: relative; /* ★★★ 자식 이미지를 절대 위치로 배치하기 위함 ★★★ */
+                overflow: hidden;
+                background-color: #f7f7f7;
+                margin-bottom: 10px;
+                flex-shrink: 0;
+            }
+            .product-image-container img {
+                position: absolute; /* ★★★ 부모 컨테이너 내에서 절대 위치 ★★★ */
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover; /* ★★★ 이미지 비율 유지하며 컨테이너 꽉 채움 (잘릴 수 있음) ★★★ */
+                object-position: center;
+                display: block;
+            }
+
+            .product-info-text {
+                padding: 0; /* 내부 여백은 개별 요소에서 관리 */
+                text-align: left; /* 텍스트는 좌측 정렬 */
+                flex-grow: 1; /* 남은 공간을 텍스트 정보가 채우도록 */
+                display: flex;
+                flex-direction: column;
+            }
+
+            .brandText { /* .product-box 내부라서 바로 선택 */
+                font-size: 0.9em;
+                color: #888;
+                margin-bottom: 5px;
+                margin-top: 5px; /* 브랜드 위 여백 */
+            }
+
+            .product-box .product-margin { /* 여백 클래스 통일 */
+                margin-bottom: 5px;
+                text-align: left; /* 텍스트 좌측 정렬 */
+            }
+
+            .product-box .product-info-text div:nth-child(2) { /* 상품명 div */
+                font-size: 1.1em;
+                font-weight: 500;
+                color: #222;
+                line-height: 1.2em; /* 텍스트 한 줄의 높이를 명확히 지정 */
+                
+                /* -webkit-line-clamp 대신 max-height와 overflow: hidden 사용 */
+                overflow: hidden; /* 영역을 넘어가면 숨김 */
+                max-height: calc(1.2em * 2); /* line-height의 두 배로 최대 높이 설정 (2줄) */
+                text-overflow: ellipsis; /* 넘치는 텍스트에 말줄임표 (주로 한 줄에만 효과) */
+
+                flex-grow: 1; /* 상품명이 공간을 최대한 차지하도록 */
+                margin-bottom: 5px;
+                /* white-space: normal; */ /* 기본값이 normal 이므로 명시하지 않아도 됨 */
+            }
+
+            .product-box .price { /* 가격 p 태그 */
+                font-size: 1.2em;
+                font-weight: 700;
+                color: #333;
+                margin-top: auto; /* 가격이 아래로 붙도록 */
+                margin-bottom: 0; /* 하단 여백 제거 */
+                white-space: nowrap; /* 줄바꿈 방지 */
+                text-align: left; /* 좌측 정렬 */
+            }
+            .product-box .price del {
+                color: #888;
+                font-size: 0.9em;
+                font-weight: 400;
+                margin-right: 5px;
+            }
+
+            /* 별점 및 리뷰 (ASICS 스타일에서는 좀 더 깔끔하게) */
+            .stars-review-area { /* 새로운 클래스 */
+                display: flex;
+                align-items: center;
+                font-size: 1.1em;
+                color: #ffc107; /* 채워진 별 색상 */
+                margin-top: 10px;
+                flex-shrink: 0; /* 줄어들지 않음 */
+                padding-top: 5px; /* 위쪽 패딩 */
+                border-top: 1px solid #f0f0f0; /* 얇은 위쪽 라인 */
+            }
+            .stars-review-area .star {
+                font-size: 0.9em; /* 별 크기 조정 */
+            }
+            .stars-review-area .avg {
+                font-size: 0.8em;
+                color: #555;
+                margin-left: 5px;
+                font-weight: 600;
+            }
+            .stars-review-area .cnt {
+                font-size: 0.75em;
+                color: #888;
+                margin-left: 3px;
+            }
+            .no-review { /* 클래스명 변경 */
+                font-size: 0.9em;
+                color: #999;
+                margin-top: 10px;
+                flex-shrink: 0;
+                padding-top: 5px;
+                border-top: 1px solid #f0f0f0;
+            }
+
+            /* 페이징 */
+            .clear.text-center.margin-right {
+                clear: both; /* float 사용하지 않으므로 불필요할 수 있지만 안전하게 유지 */
+                margin-right: 0; /* 중앙 정렬이므로 margin-right 제거 */
+            }
+            .text-center {
+                text-align: center;
+                margin-top: 40px; /* 페이징 상단 여백 */
+                margin-bottom: 40px; /* 페이징 하단 여백 */
+            }
+            .clear { /* clear float 속성 필요시 */
+                clear: both;
+            }
+            .font30 {
+                font-size: 1.2em; /* 숫자 크기 */
+                margin: 0 8px; /* 페이지 숫자 사이 간격 */
+                color: #888;
+            }
+            .cursor {
+                cursor: pointer;
+            }
+            .bold {
+                font-weight: 700;
+                color: #007bff; /* 활성 페이지 색상 */
+            }
+
+            /* 반응형 디자인 */
+            @media (max-width: 1024px) {
+                #app .container {
+                    padding: 0 15px;
+                }
+                .page-container {
+                    flex-direction: column; /* 사이드바를 위로 올림 */
+                    gap: 20px;
+                }
+                .sidebar {
+                    flex: auto; /* 너비 고정 해제 */
+                    width: 100%; /* 풀 너비 */
+                    border-right: none;
+                    border-bottom: 1px solid #eee;
+                    padding-right: 0;
+                    padding-bottom: 20px;
+                    z-index: 1; /* 메인 콘텐츠 아래로 */
+                }
+                .main-content {
+                    padding-left: 0; /* 패딩 제거 */
+                }
+                .main-container {
+                    grid-template-columns: repeat(2, 1fr); /* 태블릿에서 2개씩 */
+                    gap: 20px;
+                }
+                .category-box .category {
+                    text-align: left; /* 제목 왼쪽 정렬 */
+                    padding: 15px 0 15px 0;
+                }
+                /* 작은 화면에서는 2차 카테고리 드롭다운을 다른 방식으로 처리 */
+                .subcategory-wrapper {
+                    margin-bottom: 0; /* 불필요한 마진 제거 */
+                }
+                .subcategory-wrapper .subcategory {
+                    padding: 10px 0;
+                    text-align: left; /* 1차 카테고리도 왼쪽 정렬 */
+                }
+                .subcategory-children {
+                    position: static;
+                    left: auto;
+                    top: auto;
+                    width: 100%;
+                    min-width: unset;
+                    box-shadow: none;
+                    border: none;
+                    border-top: 1px solid #eee;
+                    border-radius: 0;
+                    background-color: #fafafa;
+                    padding: 0;
+                    margin-bottom: 10px;
+                }
+                .subcategory-children .subcategory.child {
+                    padding: 8px 25px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .main-container {
+                    grid-template-columns: 1fr; /* 모바일에서 1개씩 */
+                    gap: 15px;
+                }
+                .newcontent {
+                    justify-content: center;
+                }
+                .newcontent .search {
+                    width: 100%;
+                    margin-right: 0;
+                    margin-bottom: 10px;
+                }
+                .newcontent .height40.bluebutton {
+                    width: 100%;
+                }
+            }

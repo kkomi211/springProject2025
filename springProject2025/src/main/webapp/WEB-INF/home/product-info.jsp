@@ -25,44 +25,43 @@
     <body>
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
+            <header>
+                <div class="top-header">
+                    <div class="brand-name">
+                        <div><a href="/home.do">RUNNERS' HOUSE</a></div>
+                    </div>
+                    <div id="right-items">
+                        <div>
+                            <input type="text" placeholder="검색어를 입력해 주세요.">
+                        </div>
+                        <div>
+                            <template v-if="sessionId != ''">
+                                <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                            </template>
+                            <template v-else>
+                                <a href="/home/login.do">로그인</a>
+                            </template>
+                        </div>
+                        <div v-if="sessionId == ''">
+                            <a href="/home/signup.do">가입하기</a>
+                        </div>
+                        <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                        <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
+                    </div>
+                </div>
+                <div class="bottom-header">
+                    <div>
+                        <a href="javascript:;" @click="fnProduct">제품</a>
+                    </div>
+                    <div>
+                        <a href="javascript:;" @click="fnSale">세일</a>
+                    </div>
+                    <div>
+                        <a href="/home/community/board.do">커뮤니티</a>
+                    </div>
+                </div>
+            </header>
             <div class="container">
-                <header>
-                    <div class="top-header">
-                        <div class="brand-name">
-                            <div><a href="/home.do">RUNNERS' HOUSE</a></div>
-                        </div>
-                        <div id="right-items">
-                            <div>
-                                <input type="text" placeholder="검색어를 입력해 주세요.">
-                            </div>
-                            <div>
-                                <template v-if="sessionId != ''">
-                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
-                                </template>
-                                <template v-else>
-                                    <a href="/home/login.do">로그인</a>
-                                </template>
-                            </div>
-                            <div v-if="sessionId == ''">
-                                <a href="/home/signup.do">가입하기</a>
-                            </div>
-                            <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
-                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
-                        </div>
-                    </div>
-                    <div class="bottom-header">
-                        <div>
-                            <a href="javascript:;" @click="fnProduct">제품</a>
-                        </div>
-                        <div>
-                            <a href="javascript:;" @click="fnSale">세일</a>
-                        </div>
-                        <div>
-                            <a href="/home/community/board.do">커뮤니티</a>
-                        </div>
-                    </div>
-                </header>
-
                 <main>
                     <div class="newcontent">
                         <!-- <h1 class="margintop">제품</h1> -->
@@ -244,35 +243,34 @@
                     </div>
 
                 </main>
-
-                <footer>
-                    <div class="footer-left">
-                        <div class="company-info">
-                            <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
-                            <div><strong>대표:</strong> 김재</div>
-                            <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
-                            <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
-                            <div><strong>부가세 번호:</strong> KR123456789</div>
-                        </div>
-                        <div class="copyright">
-                            COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
-                        </div>
-                    </div>
-                    <div class="footer-right">
-                        <div class="other">
-                            <span>회사소개</span>
-                            <span>매장안내</span>
-                            <span>공지사항</span>
-                            <span>이용약관</span>
-                            <span>개인정보처리방침</span>
-                        </div>
-                        <div class="socials">
-                            <span>INSTAGRAM</span>
-                            <span>NAVER</span>
-                        </div>
-                    </div>
-                </footer>
             </div>
+            <footer>
+                <div class="footer-left">
+                    <div class="company-info">
+                        <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
+                        <div><strong>대표:</strong> 김재</div>
+                        <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
+                        <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
+                        <div><strong>부가세 번호:</strong> KR123456789</div>
+                    </div>
+                    <div class="copyright">
+                        COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                    </div>
+                </div>
+                <div class="footer-right">
+                    <div class="other">
+                        <span>회사소개</span>
+                        <span>매장안내</span>
+                        <span>공지사항</span>
+                        <span>이용약관</span>
+                        <span>개인정보처리방침</span>
+                    </div>
+                    <div class="socials">
+                        <span>INSTAGRAM</span>
+                        <span>NAVER</span>
+                    </div>
+                </div>
+            </footer>
         </div>
     </body>
 
