@@ -113,7 +113,7 @@
                                     게시판 • 글쓰기
                                 </h1>
                             </div>
-                            <table>
+                            <!-- <table>
                                 <tr>
                                     <th>아이디</th>
                                     <td>{{sessionId}}</td>
@@ -134,8 +134,7 @@
                                             <label for="">
                                                 <input type="text" v-model="title" id="title">
                                             </label>
-                                            <label for=""><input type="password" placeholder="잠금설정" v-model="keylock"
-                                                    id="keylock"></label>
+                                            <label for=""><input type="password" placeholder="잠금설정" v-model="keylock" id="keylock"></label>
                                         </div>
                                     </td>
                                 </tr>
@@ -147,7 +146,7 @@
                                         </div>
                                     </td>
                                 </tr>
-                            </table>
+                            </table> -->
 
                             <!-- 글쓰기 다른 디자인 테스트 -->
                              <div class="comments-section">
@@ -159,6 +158,7 @@
                                         <strong>{{ userName }}</strong>
                                     </div>
                                 </div>
+                                
                                 <div class="sub-section">
                                     <h3 class="comment-title">
                                         카테고리
@@ -174,9 +174,12 @@
                                     <h3 class="comment-title">
                                         제목
                                     </h3>
-                                    <div class="post-author">
+                                    <div class="title-input">
                                         <label for="">
-                                                <input type="text" v-model="title" id="title">
+                                            <input type="text" v-model="title" id="title">
+                                        </label>
+                                        <label for="">
+                                            <input type="password" placeholder="잠금설정" v-model="keylock" id="keylock">
                                         </label>
                                     </div>
                                 </div>
@@ -184,7 +187,7 @@
                                     <h3 class="comment-title">
                                         내용
                                     </h3>
-                                    <div class="post-author">
+                                    <div>
                                         <div id="editor"></div>
                                     </div>
                                 </div>
