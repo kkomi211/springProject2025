@@ -215,7 +215,7 @@
                                 </div>
                             </div>
 
-                             <!-- Logout popup -->
+                            <!-- Logout popup -->
                             <div v-if="isLoggedOut" class="modal-overlay">
                                 <div class="modal-content">
                                     <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
@@ -281,7 +281,7 @@
 
                     // popup modal
                     isLoggedIn: true,
-                    isLoggedOut : false
+                    isLoggedOut: false
 
                 };
             },
@@ -397,11 +397,11 @@
                     let self = this;
                     location.href = "/home/community/board.do";
                 },
-                fnNotice(){
-                let self = this;
-                pageChange("/home/community/board.do", {type : "B"});
+                fnNotice() {
+                    let self = this;
+                    pageChange("/home/community/board.do", { type: "B" });
                 },
-                fnLogout : function(){
+                fnLogout: function () {
                     let self = this;
                     let param = {};
                     $.ajax({
@@ -410,7 +410,7 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            if(data.result == "success"){
+                            if (data.result == "success") {
                                 self.userName = data.userName;
                                 self.isLoggedOut = true;
                             }
