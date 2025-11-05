@@ -18,7 +18,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
         <style>
-
+            button:hover{
+                background-color: rgb(53, 54, 54);
+            }
 
 
         </style>
@@ -136,7 +138,7 @@
                                 </div>
                             </div>
                             <div class="button-box">
-                                <input type="text" id="message" placeholder="메시지를 입력하세요..." @keyup.enter="sendMessage" class="chatInput">
+                                <input type="text" id="message" placeholder="/코스추천을 입력하면 코스추천봇이 나오고 /종료를 누르면 종료됩니다." @keyup.enter="sendMessage" class="chatInput">
                                 <button @click="sendMessage">전송</button>
                             </div>
                             <div class="button-box">
