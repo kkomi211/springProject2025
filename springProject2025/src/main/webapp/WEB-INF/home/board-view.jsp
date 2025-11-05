@@ -56,7 +56,22 @@
                             <div><a href="/home/cart.do">장바구니</a></div>
                         </div>
                     </div>
-                    <div class="bottom-header">
+                    <div>
+                        <template v-if="sessionId != ''">
+                            <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                        </template>
+                        <template v-else>
+                            <a href="/home/login.do">로그인</a>
+                        </template>
+                    </div>
+                    <div v-if="sessionId == ''">
+                        <a href="/home/signup.do">가입하기</a>
+                    </div>
+                    <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                    <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
+                </div>
+            </div>
+            <div class="bottom-header">
                         <div>
                             <a href="/home/product.do">제품</a>
                         </div>
@@ -67,7 +82,7 @@
                             <a href="/home/community/board.do">커뮤니티</a>
                         </div>
                     </div>
-                </header>
+            </header>
 
                 <main>
 
@@ -80,7 +95,13 @@
                         </div>
                     </div>
 
-                    <div class="page-container">
+                            <div class="post-content" v-html="boardInfo.contents"></div>
+                            <div class="bottom-btn">
+                                <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn" @click="fnMoveToEdit">✏️ 수정</button>
+                                <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn" @click="fnConfirmDelete">🗑️ 삭제</button>
+                                <button v-if="sessionId != boardInfo.userId" class="edit-inline-btn" @click="fnConfirmReport">🚨 신고</button>
+                            </div>
+                        </div>
 
                         <aside class="sidebar">
                             <h2 class="sidebar-heading"> COMMUNITY ></h2>
@@ -185,6 +206,26 @@
                                 <button @click="fnMoveToBoard">목록</button>
                             </div>
 
+                        
+                        
+                        <!-- Report popup -->
+                        <div v-if="confirmReport" class="modal-overlay">
+                            <div class="modal-content">
+                                
+                                <template v-if="!wasReported">
+                                    <h2>이 게시글을 신고하시겠습니까?</h2>
+                                    <button class="btn" @click="fnCloseModal">닫기</button>
+                                    <button class="btn" @click="fnReportPost">확인</button>
+                                </template>
+                                <template v-else>
+                                    <h2>신고가 성공적으로 접수되었습니다.</h2>
+                                    <button class="btn" @click="fnCloseModal">닫기</button>
+                                </template>
+                                
+                            </div>
+                        </div>
+
+                    
                             <!-- Modal Popup -->
                             <!-- v-if="confirmDelete"  -->
                             <div v-if="confirmDelete" class="modal-overlay">
@@ -236,49 +277,52 @@
                             <span>NAVER</span>
                         </div>
                     </div>
-                </footer>
-            </div>
-        </div>
-    </body>
+                </div>
+            </footer>
+         </div>
+    </div>
+</body>
+</html>
 
-    </html>
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                // 변수 - (key : value)
+                sessionId : "${sessionId}",
+                userName : "",
+                boardInfo : {},
+                boardNo : "${boardNo}",
+                commentList : [],
 
-    <script>
-        const app = Vue.createApp({
-            data() {
-                return {
-                    // 변수 - (key : value)
-                    sessionId: "${sessionId}",
-                    userName: "",
-                    boardInfo: {},
-                    boardNo: "${boardNo}",
-                    commentList: [],
+                keyword : "",
+                type : "B",
+                title : "",
+                keylock : "",
+                content : "",
 
-                    keyword: "",
-                    type: "B",
-                    title: "",
-                    keylock: "",
-                    content: "",
+                // pagination
+                cnt: 0,
+                page: 1,
+                pageSize: 10,
+                index: 0,
 
-                    // pagination
-                    cnt: 0,
-                    page: 1,
-                    pageSize: 10,
-                    index: 0,
+                // popup modal
+                isLoggedIn : true,
+                isLoggedOut : false,
+                confirmDelete : false,
+                deleted : false,
+                confirmReport : false,
+                wasReported : false,
 
-                    // popup modal
-                    isLoggedIn: true,
-                    confirmDelete: false,
-                    deleted: false,
+                // post comment
+                commentContent : ""
 
-                    // post comment
-                    commentContent: ""
-
-                };
-            },
-            methods: {
-                // 함수(메소드) - (key : function())
-                fnGetUserInfo: function () {
+            };
+        },
+        methods: {
+            // 함수(메소드) - (key : function())
+            fnGetUserInfo: function () {
                     let self = this;
                     $.ajax({
                         url: "/home/mypage/userInfo.dox",
@@ -412,8 +456,64 @@
                                 alert("error");
                             }
 
+                    }
+                });
+            },
+            fnConfirmReport: function(){
+                let self = this;
+                // if(!confirm("이 게시글을 신고하시겠습니까?")){
+                //     return;
+                // }
+                self.confirmReport = true;
+            },
+            fnReportPost: function(){
+                let self = this;
+                let param = {
+                    boardNo : self.boardNo,
+                    reporterId : self.sessionId
+                };
+                $.ajax({
+                    url: "/board/report.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if(data.result == "success"){
+                            // alert("신고가 성공적으로 접수되었습니다.");
+                            self.wasReported = true;
+                            // self.confirmReport = false;
+                        } else {
+                            alert("error");
                         }
-                    });
+
+                    }
+                });
+            },
+            fnNotice(){
+                let self = this;
+                pageChange("/home/community/board.do", {type : "B"});
+            },
+            fnLogout : function(){
+                let self = this;
+                let param = {};
+                $.ajax({
+                    url: "/member/logout.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if(data.result == "success"){
+                            self.userName = data.userName;
+                            self.isLoggedOut = true;
+                        }
+
+                    }
+                });
+            },
+            fnCloseModal: function(){
+                let self = this;
+                self.confirmReport = false;
+
                 },
                 fnNotice() {
                     let self = this;

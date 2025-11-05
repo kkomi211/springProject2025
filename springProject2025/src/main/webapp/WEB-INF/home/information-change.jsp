@@ -221,14 +221,18 @@
                                     </div>
                                 </div>
 
-                                <!-- Logout popup -->
-                                <div v-if="isLoggedOut" class="modal-overlay">
-                                    <div class="modal-content">
-                                        <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
-                                        <a href="/home.do"><button>메인 화면으로 가기</button></a>
+                            
+
+                            <!-- If the user is not logged in -->
+
+                            <div v-if="!isLoggedIn" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>로그인 후 이용해주세요.</h2>
+                                    <div class="modal-btn">
+                                        <button @click="moveToLogin">로그인</button>
                                     </div>
                                 </div>
-
+                            </div>
                             </main>
                     </main>
 
@@ -294,10 +298,11 @@
                     pwdFlg: false,
                     addrFlg: false,
 
-                    // Popup Modal
-                    confirmDelete: false,
-                    accountDeleted: false,
-                    isLoggedOut: false
+                // Popup Modal
+                confirmDelete : false,
+                accountDeleted : false,
+                isLoggedOut : false,
+                isLoggedIn: true
 
                 };
             },
@@ -518,6 +523,32 @@
                         document.querySelector("#newPwd1").focus();
                         return;
                     }
+                
+            },
+            fnAddrSave:function(){
+                let self = this;
+                if(self.addr == ""){
+                    alert("주소를 입력해주세요.");
+                    return;
+                }
+                let param = {
+                    userId : self.sessionId,
+                    addr : self.addr
+                };
+                // GOTTA CHECK IF THE ENCODED PASSWORD IS MATCHING
+                $.ajax({
+                    url: "/home/mypage/addrSave.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if(data.result == "success") {
+                            alert("주소가 수정되었습니다.");
+                            self.addrFlg = false;
+                            self.fnInfo();
+                        } else {
+                            alert("오류가 발생했습니다.");
+                        }
                     if (self.newPwd1.length < 6 || !speChar.test(self.newPwd1)) {
                         alert("비밀번호는 공백 없이 6자 이상의 영문자, 숫자, 특수문자 조합으로 지정해주세요.");
                         document.querySelector("#newPwd1").focus();
@@ -597,7 +628,14 @@
                         }
                     });
 
-                },
+                 
+            },
+            moveToLogin: function () {
+                let self = this;
+                location.href = "/home/login.do";
+            },
+        
+              
                 moveMainPage: function () {
                     let self = this;
                     location.href = "/home.do";
@@ -634,6 +672,12 @@
                 let self = this;
                 window.vueObj = this;
                 self.fnInfo();
+              console.log("User ID : " + self.userId);
+            if (self.sessionId == "") {
+                self.isLoggedIn = false;
+            } else {
+                self.isLoggedIn = true;
+            }
             }
         });
 

@@ -177,7 +177,7 @@
                                     </h3>
                                     <div class="title-input">
                                         <label for="">
-                                            <input type="text" v-model="title" id="title">
+                                            <input type="text" v-model="boardInfo.title" id="title">
                                         </label>
                                         <label for="">
                                             <input type="password" placeholder="잠금설정" v-model="keylock" id="keylock">
@@ -210,9 +210,11 @@
                                 </div>
                             </div>
 
-                    </div>
-                </main>
-            </div>
+                            
+
+                            </div>
+                        </main>
+                </div>
             </main>
 
             <footer>
@@ -381,11 +383,35 @@
                     self.saleYN = 'Y';
                     pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                 }
-            }, // methods
-            mounted() {
-                let self = this;
+            
 
-                self.fnGetUserInfo();
+            },
+            fnNotice(){
+                let self = this;
+                pageChange("/home/community/board.do", {type : "B"});
+            },
+            fnLogout : function(){
+                let self = this;
+                let param = {};
+                $.ajax({
+                    url: "/member/logout.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if(data.result == "success"){
+                            self.userName = data.userName;
+                            self.isLoggedOut = true;
+                        }
+
+                    }
+                });
+            }
+        }, // methods
+        mounted() {
+            let self = this;
+            
+            self.fnGetUserInfo();
 
                 if (self.sessionId == "") {
                     self.isLoggedIn = false;

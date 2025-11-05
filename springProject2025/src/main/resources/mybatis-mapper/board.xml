@@ -99,6 +99,11 @@
 		WHERE BOARD_NO = #{boardNo} 
 	</update>
 	
+	<insert id="reportBoard" parameterType="hashmap" useGeneratedKeys="true" keyColumn="BOARD_NO" keyProperty="boardNo" >
+		INSERT INTO REPORT_BOARD
+		VALUES(REPORT_BOARD_SEQ.NEXTVAL, #{boardNo}, #{reporterId}, SYSDATE, 'N')
+	</insert>
+	
 </mapper>
 
 

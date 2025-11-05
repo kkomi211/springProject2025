@@ -51,13 +51,18 @@
                                 <input type="text" placeholder="검색어를 입력해 주세요.">
                             </div>
                             <div>
-                                <a href="/home/login.do">로그인</a>
+                                <template v-if="sessionId != ''">
+                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                                </template>
+                                <template v-else>
+                                    <a href="/home/login.do">로그인</a>
+                                </template>
                             </div>
-                            <div>
+                            <div v-if="sessionId == ''">
                                 <a href="/home/signup.do">가입하기</a>
                             </div>
-                            <div><a href="/home/mypage/inquiry.do">문의</a></div>
-                            <div><a href="/home/cart.do">장바구니</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -210,6 +215,13 @@
                                 </div>
                             </div>
 
+                             <!-- Logout popup -->
+                            <div v-if="isLoggedOut" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
+                                    <a href="/home.do"><button class="btn">메인 화면으로 가기</button></a>
+                                </div>
+                            </div>
                     </div>
                 </main>
             </div>
@@ -268,7 +280,8 @@
                     index: 0,
 
                     // popup modal
-                    isLoggedIn: true
+                    isLoggedIn: true,
+                    isLoggedOut : false
 
                 };
             },
@@ -384,9 +397,26 @@
                     let self = this;
                     location.href = "/home/community/board.do";
                 },
-                fnNotice() {
+                fnNotice(){
+                let self = this;
+                pageChange("/home/community/board.do", {type : "B"});
+                },
+                fnLogout : function(){
                     let self = this;
-                    pageChange("/home/community/board.do", { type: "B" });
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if(data.result == "success"){
+                                self.userName = data.userName;
+                                self.isLoggedOut = true;
+                            }
+
+                        }
+                    });
                 },
                 fnSale() {
                     let self = this;

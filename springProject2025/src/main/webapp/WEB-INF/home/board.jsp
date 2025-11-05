@@ -64,7 +64,7 @@
                     </div>
                 </header>
 
-                <main>
+                <main class="below-header">
 
                     <div class="header">
                         <div class="header-welcome">
@@ -98,6 +98,7 @@
                                 </ul>
                             </nav>
                         </aside>
+
                         <main class="main-content">
                             <div class="board-header">
                                 <h1 class="main-title">
@@ -186,6 +187,14 @@
                                 </div>
                             </div>
 
+                            <!-- Logout popup -->
+                            <div v-if="isLoggedOut" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
+                                    <a href="/home.do"><button class="btn">메인 화면으로 가기</button></a>
+                                </div>
+                            </div>
+
                         </main>
                     </div>
                 </main>
@@ -241,6 +250,7 @@
                     index: 0,
 
                     // modal popup 
+                    isLoggedOut : false, // logout popup 
                     pwdCorrect: false,
                     selectedPost: null,  // store the post object being clicked
                     keylock: ""
@@ -364,6 +374,27 @@
                     let self = this;
                     pageChange("/home/community/chat.do", { sessionId: self.sessionId });
                 },
+                fnNotice(){
+                let self = this;
+                pageChange("/home/community/board.do", {type : "B"});
+                },
+                fnLogout : function(){
+                let self = this;
+                let param = {};
+                $.ajax({
+                    url: "/member/logout.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if(data.result == "success"){
+                            self.userName = data.userName;
+                            self.isLoggedOut = true;
+                        }
+
+                    }
+                });
+            },
                 fnNotice() {
                     let self = this;
                     pageChange("/home/community/board.do", { type: "B" });
