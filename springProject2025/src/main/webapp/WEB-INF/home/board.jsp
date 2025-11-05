@@ -378,23 +378,22 @@
                 let self = this;
                 pageChange("/home/community/board.do", {type : "B"});
                 },
-                fnLogout : function(){
-                let self = this;
-                let param = {};
-                $.ajax({
-                    url: "/member/logout.dox",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    success: function (data) {
-                        if(data.result == "success"){
-                            self.userName = data.userName;
-                            self.isLoggedOut = true;
-                        }
+                fnLogout: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
 
-                    }
-                });
-            },
+                        }
+                    })
+                },
                 fnNotice() {
                     let self = this;
                     pageChange("/home/community/board.do", { type: "B" });
