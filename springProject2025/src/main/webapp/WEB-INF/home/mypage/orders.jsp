@@ -112,10 +112,14 @@
                                         <span class="status-text">{{ order.status }}</span>
                                     </div>
                                     <div class="order-details">
-                                        <img v-if="order.imgPath && order.imgName"
+                                        <!-- <img v-if="order.imgPath && order.imgName"
                                             :src="order.imgPath + '/' + order.imgName" :alt="order.productName"
                                             class="product-image"
-                                            style="width: 150px; height: 150px; object-fit: cover;">
+                                            style="width: 150px; height: 150px; object-fit: cover;"> -->
+                                        <img v-if="order.imgPath"
+                                            :src="order.imgPath" :alt="order.productName"
+                                            class="product-image"
+                                            style="width: 150px; height: 150px; object-fit: contain;">
                                         <div v-else class="product-image"
                                             style="background: #f0f0f0; min-width: 150px; height: 150px; display: flex; align-items: center; justify-content: center;">
                                             이미지 없음
@@ -202,11 +206,10 @@
                     </div>
                     <div class="footer-right">
                         <div class="other">
-                            <span>회사소개</span>
-                            <span>매장안내</span>
-                            <span>공지사항</span>
-                            <span>이용약관</span>
-                            <span>개인정보처리방침</span>
+                            <span><a href="/home/about.do">회사소개</a></span>
+                            <span><a @click="fnNotice">공지사항</a></span>
+                            <span><a href="/home/terms.do">이용약관</a></span>
+                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
                         </div>
                         <div class="socials">
                             <span>INSTAGRAM</span>
@@ -406,9 +409,9 @@
                     let sessionId = self.sessionId;
 
                     // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장)
-                    pageChange("refund-return.do", { sessionId: sessionId});
-                    },
-                moveToInfo : function(){
+                    pageChange("refund-return.do", { sessionId: sessionId });
+                },
+                moveToInfo: function () {
                     let self = this;
                     console.log("나의 정보 메뉴 클릭. pageChange 호출");
 
@@ -421,17 +424,37 @@
                 },
                 moveToReview: function () {
                     let self = this;
-                   
+
                     let sessionId = self.sessionId;
 
                     pageChange("review.do", { sessionId: sessionId });
                 },
                 moveToMyinquiry: function () {
                     let self = this;
-                   
+
                     let sessionId = self.sessionId;
 
                     pageChange("my-inquiry.do", { sessionId: sessionId });
+                },
+                fnLogout: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+
+                        }
+                    })
+                },
+                fnNotice() {
+                    let self = this;
+                    pageChange("/home/community/board.do", { type: "B" });
                 },
             }, // methods
             mounted() {

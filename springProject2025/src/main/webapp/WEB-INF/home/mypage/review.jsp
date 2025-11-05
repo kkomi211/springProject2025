@@ -301,11 +301,10 @@
                     </div>
                     <div class="footer-right">
                         <div class="other">
-                            <span>회사소개</span>
-                            <span>매장안내</span>
-                            <span>공지사항</span>
-                            <span>이용약관</span>
-                            <span>개인정보처리방침</span>
+                            <span><a href="/home/about.do">회사소개</a></span>
+                            <span><a @click="fnNotice">공지사항</a></span>
+                            <span><a href="/home/terms.do">이용약관</a></span>
+                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
                         </div>
                         <div class="socials">
                             <span>INSTAGRAM</span>
@@ -601,6 +600,26 @@
                     // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장)
                     window.pageChange("refund-return.do", { sessionId: sessionId });
                 },
+                fnLogout: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+
+                        }
+                    })
+                },
+                fnNotice() {
+                    let self = this;
+                    pageChange("/home/community/board.do", { type: "B" });
+                }
             }, // methods
             mounted() {
                 let self = this;

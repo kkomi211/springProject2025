@@ -208,12 +208,10 @@
                                         <input type="checkbox" v-model="list.selected" @change="recomputeSummary"
                                             style="margin-right: 15px; width: 18px; height: 18px; flex-shrink: 0;">
 
-                                        <img v-if="list.imgPath && list.imgName"
-                                            :src="list.imgPath + '/' + list.imgName" :alt="list.productName"
-                                            style="width: 100px; height: 100px; object-fit: cover; margin-right: 20px; border: 1px solid #eee; flex-shrink: 0;">
-                                        <div v-else
-                                            style="background: #f0f0f0; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; margin-right: 20px; flex-shrink: 0; font-size: 12px; color: #666;">
-                                            이미지 없음</div>
+                                        <img :src="getImagePath(list.imgPath)"
+                                            :alt="list.productName"
+                                            style="width: 100px; height: 100px; object-fit: contain; margin-right: 20px; border: 1px solid #eee; flex-shrink: 0;"
+                                            onerror="this.src='/img/no-image.png'">
 
                                         <div class="product-info" style="flex-grow: 1;">
                                             <p class="product-name"
@@ -390,6 +388,16 @@
                 }
             },
             methods: {
+                // 이미지 경로 정규화
+                getImagePath(imgPath) {
+                    // null, undefined, 빈 문자열 체크
+                    if (!imgPath || (typeof imgPath === 'string' && imgPath.trim() === '')) {
+                        return '/img/no-image.png';
+                    }
+                    // 문자열로 변환 후 경로 정규화
+                    const path = String(imgPath);
+                    return path.startsWith('/') ? path : '/' + path;
+                },
 
                 openOptionChangeModal: function (productNo, cartNo) {
                     const self = this;
@@ -611,6 +619,10 @@
                             // alert("어쩃든 서버로 돌아옴" + JSON.stringify(data));
                             console.log("어쩃든 서버로 돌아옴 " + JSON.stringify(data))
                             const list = (data && data.list) ? data.list : [];
+                            // 이미지 경로 디버깅
+                            list.forEach(item => {
+                                console.log("상품명:", item.productName, "이미지경로:", item.imgPath);
+                            });
                             self.cartList = list.map(item => Object.assign({}, item, { selected: true }));
                             self.$nextTick(() => self.recomputeSummary());
                         }

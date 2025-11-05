@@ -161,9 +161,12 @@
 
                                 <section class="order-item">
 
-                                    <div class="order-status-header" :class="getStatusClass(order.status)" :style="isRefundOrExchangeRequested(order.status) ? 'color: red;' : ''">
+                                    <div class="order-status-header" :class="getStatusClass(order.status)"
+                                        :style="isRefundOrExchangeRequested(order.status) ? 'color: red;' : ''">
                                         ORDER STATUS :
-                                        <span class="status-text" :style="isRefundOrExchangeRequested(order.status) ? 'color: red; font-weight: bold;' : ''">{{ order.status }}</span>
+                                        <span class="status-text"
+                                            :style="isRefundOrExchangeRequested(order.status) ? 'color: red; font-weight: bold;' : ''">{{
+                                            order.status }}</span>
                                     </div>
 
                                     <div class="order-details" style="display: flex; align-items: center;">
@@ -172,10 +175,10 @@
                                             <input type="checkbox" v-model="order.isChecked"
                                                 style="transform: scale(1.5); margin-right: 10px; transform-origin: left center;">
                                         </div>
-                                        <img v-if="order.imgPath && order.imgName"
-                                            :src="order.imgPath + '/' + order.imgName" :alt="order.productName"
+                                        <img v-if="order.imgPath"
+                                            :src="order.imgPath" :alt="order.productName"
                                             class="product-image"
-                                            style="width: 150px; height: 150px; object-fit: cover;">
+                                            style="width: 150px; height: 150px; object-fit: contain;">
                                         <div v-else class="product-image"
                                             style="background: #f0f0f0; min-width: 150px; height: 150px; display: flex; align-items: center; justify-content: center;">
                                             이미지 없음
@@ -262,11 +265,10 @@
                     </div>
                     <div class="footer-right">
                         <div class="other">
-                            <span>회사소개</span>
-                            <span>매장안내</span>
-                            <span>공지사항</span>
-                            <span>이용약관</span>
-                            <span>개인정보처리방침</span>
+                            <span><a href="/home/about.do">회사소개</a></span>
+                            <span><a @click="fnNotice">공지사항</a></span>
+                            <span><a href="/home/terms.do">이용약관</a></span>
+                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
                         </div>
                         <div class="socials">
                             <span>INSTAGRAM</span>
@@ -427,7 +429,7 @@
 
                 /** 반품요청 또는 교환요청 상태인지 확인 */
                 isRefundOrExchangeRequested: function (status) {
-                    return status === '반품요청' || status === '교환요청' ||  status === '취소요청';
+                    return status === '반품요청' || status === '교환요청' || status === '취소요청';
                 },
 
                 /** 교환/반품 또는 리뷰 버튼 클릭 시 처리 */
@@ -474,12 +476,12 @@
 
                 moveToReview: function () {
                     let self = this;
-                   
+
                     let sessionId = self.sessionId;
 
                     pageChange("review.do", { sessionId: sessionId });
                 },
-                moveToInfo : function(){
+                moveToInfo: function () {
                     let self = this;
                     console.log("나의 정보 메뉴 클릭. pageChange 호출");
 
@@ -512,12 +514,12 @@
                 submitReturnExchange: function () {
                     const self = this;
                     const selected = (self.orderList || []).filter(o => o.isChecked);
-                    
+
                     if (!selected || selected.length === 0) {
                         alert("반품/교환 신청할 주문을 하나 이상 선택해주세요.");
                         return;
                     }
-                    
+
                     // 상세사유 체크 로직 (기존 유지)
                     const missingReasonItems = selected.filter(o => !o.reason || o.reason.trim() === "");
                     if (missingReasonItems.length > 0) {
@@ -536,15 +538,15 @@
                         sessionId: self.sessionId,
                         orders: ordersData
                     };
-                    
+
 
                     let param = {
-                            sessionId: self.sessionId,
-                            ordersJson: JSON.stringify(ordersData)
-                        }
+                        sessionId: self.sessionId,
+                        ordersJson: JSON.stringify(ordersData)
+                    }
 
                     console.log("--- 서버로 전송할 데이터 ---");
-                    console.log(param); 
+                    console.log(param);
                     console.log("-----------------------------------------");
                     $.ajax({
                         url: "/home/mypage/refund-return-appli.dox",
@@ -556,7 +558,7 @@
                         //     sessionId: self.sessionId,
                         //     ordersJson: JSON.stringify(ordersData)
                         // }, 
-                        data : param,
+                        data: param,
                         success: function (res) {
                             if (res && (res.result === "success" || res.success === true)) {
                                 alert("정상적으로 신청이 접수되었습니다.");
@@ -574,10 +576,30 @@
                 }, // submitReturnExchange
                 moveToMyinquiry: function () {
                     let self = this;
-                   
+
                     let sessionId = self.sessionId;
 
                     pageChange("my-inquiry.do", { sessionId: sessionId });
+                },
+                fnLogout: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+
+                        }
+                    })
+                },
+                fnNotice() {
+                    let self = this;
+                    pageChange("/home/community/board.do", { type: "B" });
                 },
 
             }, // methods

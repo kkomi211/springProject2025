@@ -619,6 +619,11 @@
                 },
                 fnPayment() {
                     let self = this;
+                    pageChange("/home/payment/paybefore.do", {
+                        productNo: self.productNo,
+                        quantity: self.quantity,
+                        productSize: self.size
+                    });
                 },
                 fnLogout : function(){
                     let self = this;

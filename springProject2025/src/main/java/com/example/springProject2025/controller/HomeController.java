@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,8 +30,11 @@ public class HomeController {
 
     @Value("${redirect_uri}")
     private String redirect_uri;
-	@Autowired
+	
+    @Autowired
 	HomeService homeService;
+	
+	
 	
 	@RequestMapping("home.do")
 	public String userList(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
@@ -98,6 +102,15 @@ public class HomeController {
 //		model.addAttribute("client_id", client_id);
 //	    model.addAttribute("redirect_uri", redirect_uri);
 		return "home/login"; // .jsp빠진형태
+	}
+	
+	@RequestMapping("home/testjghlogin.do")
+	public String testjghlogin(Model model) throws Exception {
+		String location = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + client_id
+				+ "&redirect_uri=" + redirect_uri;
+		model.addAttribute("location", location);
+		System.out.println("home/testjghlogin.do 테스트중");
+		return "home/testjghlogin"; // .jsp빠진형태
 	}
 	
 //	@RequestMapping("home/cart.do")

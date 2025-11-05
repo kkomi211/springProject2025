@@ -45,8 +45,9 @@
             }
 
             .delivery-info {
-                flex: 2;
-                min-width: 50%;
+                /* flex: 2; */
+                min-width: 62%;
+                 /* width: 58%; */
             }
 
             .delivery-info-box {
@@ -189,7 +190,7 @@
                 border: 1px solid #ccc;
                 padding: 25px;
                 background: #fff;
-                width: 60%;
+                width: 58%;
             }
 
             .ordered-items-title {
@@ -219,7 +220,7 @@
             .order-item-image {
                 width: 120px;
                 height: 120px;
-                object-fit: cover;
+                object-fit: contain;
                 margin-right: 20px;
                 border: 1px solid #eee;
                 flex-shrink: 0;
@@ -517,11 +518,8 @@
                                 <template v-for="(item, index) in selectedItems"
                                     :key="item.cartNo || item.productNo || index">
                                     <section class="order-item">
-                                        <img v-if="item.imgPath && item.imgName"
-                                            :src="item.imgPath + '/' + item.imgName" :alt="item.productName"
-                                            class="order-item-image">
-                                        <div v-else class="order-item-image-placeholder">
-                                            이미지 없음</div>
+                                        <img :src="getImagePath(item.imgPath)" :alt="item.productName"
+                                            class="order-item-image" onerror="this.src='/img/no-image.png'">
 
                                         <div class="product-info">
                                             <div>
@@ -564,11 +562,10 @@
                     </div>
                     <div class="footer-right">
                         <div class="other">
-                            <span>회사소개</span>
-                            <span>매장안내</span>
-                            <span>공지사항</span>
-                            <span>이용약관</span>
-                            <span>개인정보처리방침</span>
+                            <span><a href="/home/about.do">회사소개</a></span>
+                            <span><a @click="fnNotice">공지사항</a></span>
+                            <span><a href="/home/terms.do">이용약관</a></span>
+                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
                         </div>
                         <div class="socials">
                             <span>INSTAGRAM</span>
@@ -650,6 +647,13 @@
                 }
             },
             methods: {
+                // 이미지 경로 정규화
+                getImagePath(imgPath) {
+                    if (!imgPath || imgPath.trim() === '') {
+                        return '/img/no-image.png';
+                    }
+                    return imgPath.startsWith('/') ? imgPath : '/' + imgPath;
+                },
                 formatCurrency: function (value) {
                     if (!value) return '0';
                     const numValue = typeof value === 'string' ? parseInt(value) : value;
@@ -723,9 +727,9 @@
                     }, function (rsp) { // callback
                         if (rsp.success) {
                             // 결제 성공 시
-                            alert("결제는 성공");
+                            // alert("결제는 성공");
                             console.log(rsp);
-                            alert("결제돌아온 data" + JSON.stringify(rsp));
+                            // alert("결제돌아온 data" + JSON.stringify(rsp));
                             // self.fnPayHistory(rsp.imp_uid, rsp.paid_amount); //order테이블 업데이트 예정
                             self.fnPayOrderI(rsp.imp_uid, rsp.paid_amount //order테이블 인서트 
                                 , self.deliveryInfo // 배송 정보 객체 전체
@@ -746,7 +750,7 @@
                     });
                 },
                 fnPayOrderI: function (uid, amount, deliveryInfo, orderRequest) { //order테이블 업데이트 예정 amount는 카드사에서 돌아온값
-                    alert("fnPayOrderI 진입 " + uid + " " + amount + " " + deliveryInfo + " " + orderRequest);
+                    // alert("fnPayOrderI 진입 " + uid + " " + amount + " " + deliveryInfo + " " + orderRequest);
                     let self = this;
 
 
@@ -872,17 +876,29 @@
                 },
                 fnInitSelectedItems: function () {
                     let self = this;
-                    // 서버에서 전달받은 cartNo 목록 가져오기 (기존 프로젝트 스타일)
+                    // 서버에서 전달받은 cartNo 목록 가져오기 (장바구니에서 온 경우)
                     // pageChange가 JSON.stringify한 문자열이 파라미터로 전달됨
-                    const selectedCartNosJson = '${selectedCartNos != null ? selectedCartNos : ""}';
+                    let selectedCartNosJson = '${selectedCartNos != null ? selectedCartNos : ""}';
 
-                    if (!selectedCartNosJson || selectedCartNosJson.trim() === "") {
-                        alert("주문할 상품이 없습니다. 장바구니로 이동합니다.");
-                        if (typeof pageChange === 'function') {
-                            pageChange("/home/cart.do", { sessionId: self.sessionId });
-                        }
+                    // 제품 상세에서 직접 구매로 넘어온 경우 (제품번호, 수량, 사이즈가 있는 경우)
+                    let directProductNo = '${directProductNo != null ? directProductNo : ""}';
+                    let directQuantity = '${directQuantity != null ? directQuantity : ""}';
+                    let directProductSize = '${directProductSize != null ? directProductSize : ""}';
+
+                    // 제품 상세에서 직접 구매인 경우 따로 함수 호출
+                    if (directProductNo && directProductNo.trim() !== "") {
+                        self.fnInitDirectPurchase(directProductNo, directQuantity, directProductSize);
                         return;
                     }
+
+                    // 혹시 장바구니에서 온 경우아 문제가 있을 수도 있어서... 필요없을것 같음 주석처리
+                    // if (!selectedCartNosJson || selectedCartNosJson.trim() === "") {
+                    //     alert("주문할 상품이 없습니다. 장바구니로 이동합니다.");
+                    //     if (typeof pageChange === 'function') {
+                    //         pageChange("/home/cart.do", { sessionId: self.sessionId });
+                    //     }
+                    //     return;
+                    // }
 
                     // AJAX로 선택된 상품 정보 조회 (기존 프로젝트 스타일 - cartItemDelete와 동일)
                     let param = {
@@ -916,6 +932,94 @@
                         }
                     });
                 },
+
+                // 제품 상세에서 직접 구매인 경우 따로 함수
+                fnInitDirectPurchase: function (productNo, quantity, productSize) {
+                    let self = this;
+                    // 제품 상세 정보 조회
+                    let param = {
+                        productNo: productNo
+                    };
+
+                    $.ajax({
+                        url: "/product/user/info.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log("제품 상세 정보 응답:", data);
+                            if (data && data.info) {
+                                // 제품 정보를 결제 페이지 형식에 맞게 변환
+                                const productInfo = data.info;
+                                const sizeInfo = data.sizeList || [];
+
+                                // 선택한 사이즈에 맞는 정보 찾기
+                                const selectedSizeInfo = sizeInfo.find(s => String(s.productSize) === String(productSize)) || sizeInfo[0];
+
+                                // 이미지 정보 조회
+                                $.ajax({
+                                    url: "/product/img/list.dox",
+                                    dataType: "json",
+                                    type: "POST",
+                                    data: {},
+                                    success: function (imgData) {
+                                        console.log("이미지 정보 응답:", imgData);
+                                        // 해당 제품의 이미지만 필터링
+                                        const productImgs = (imgData.imgList && imgData.imgList.length > 0)
+                                            ? imgData.imgList.filter(img => String(img.productNo) === String(productNo))
+                                            : [];
+                                        // 첫 번째 이미지 사용
+                                        const firstImg = productImgs.length > 0 ? productImgs[0] : null;
+
+                                        // selectedItems에 추가
+                                        self.selectedItems = [{
+                                            productNo: productNo,
+                                            productName: productInfo.productName || "",
+                                            price: productInfo.price || 0,
+                                            quantity: parseInt(quantity) || 1,
+                                            productSize: productSize || (selectedSizeInfo ? selectedSizeInfo.productSize : ""),
+                                            imgPath: firstImg ? firstImg.imgPath : null
+                                        }];
+
+                                        console.log("선택된 아이템:", self.selectedItems);
+                                        self.fnCalculateTotals();
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error("이미지 정보 조회 실패:", error);
+                                        // 이미지 없이 진행하지 뭐...
+                                        self.selectedItems = [{
+                                            productNo: productNo,
+                                            productName: productInfo.productName || "",
+                                            price: productInfo.price || 0,
+                                            quantity: parseInt(quantity) || 1,
+                                            productSize: productSize || (selectedSizeInfo ? selectedSizeInfo.productSize : ""),
+                                            imgPath: null
+                                        }];
+                                        self.fnCalculateTotals();
+                                    }
+                                });
+                            } else {
+                                alert("제품 정보를 불러올 수 없습니다.");
+                                if (typeof pageChange === 'function') {
+                                    pageChange("/home/product-info.do", {
+                                        productNo: productNo,
+                                        // sessionId: self.sessionId 
+                                    });
+                                }
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("제품 정보 조회 실패:", error);
+                            alert("제품 정보를 불러오는 중 오류가 발생했습니다.");
+                            if (typeof pageChange === 'function') {
+                                pageChange("/home/product-info.do", {
+                                    productNo: productNo,
+                                    // sessionId: self.sessionId 
+                                });
+                            }
+                        }
+                    });
+                },
                 fnCalculateTotals: function () {
                     let self = this;
                     let total = 0;
@@ -927,7 +1031,27 @@
                     self.totalProductPrice = total;
                     self.totalDiscount = 0;
                     self.deliveryFee = total >= 50000 || total === 0 ? 0 : 3000;
-                }
+                },
+                fnLogout: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+
+                        }
+                    })
+                },
+                fnNotice() {
+                    let self = this;
+                    pageChange("/home/community/board.do", { type: "B" });
+                },
             },
             mounted() {
                 // 처음 시작할 때 실행되는 부분

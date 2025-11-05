@@ -159,7 +159,7 @@
                                         <span class="icon">👤</span>
                                         <a href="#">나의 정보</a>
                                     </li>
-                                    <li @click="moveToReview"  class="active">
+                                    <li @click="moveToReview" class="active">
                                         <span class="icon">⭐️</span>
                                         <a href="#">상품 리뷰</a>
                                     </li>
@@ -282,11 +282,10 @@
                     </div>
                     <div class="footer-right">
                         <div class="other">
-                            <span>회사소개</span>
-                            <span>매장안내</span>
-                            <span>공지사항</span>
-                            <span>이용약관</span>
-                            <span>개인정보처리방침</span>
+                            <span><a href="/home/about.do">회사소개</a></span>
+                            <span><a @click="fnNotice">공지사항</a></span>
+                            <span><a href="/home/terms.do">이용약관</a></span>
+                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
                         </div>
                         <div class="socials">
                             <span>INSTAGRAM</span>
@@ -499,7 +498,7 @@
                     let orderNo = order.orderNo;   // 수정
                     let productNo = order.productNo; // 
                     // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장)
-                    alert('다른 페이지로 값 보냄' + JSON.stringify({ sessionId: sessionId, orderNo: orderNo, productNo: productNo }));
+                    // alert('다른 페이지로 값 보냄' + JSON.stringify({ sessionId: sessionId, orderNo: orderNo, productNo: productNo }));
                     pageChange("review-write.do", { sessionId: sessionId, orderNo: orderNo, productNo: productNo });
                 },
 
@@ -521,7 +520,7 @@
                         alert('리뷰 제목을 입력해 주세요.');
                         return;
                     }
-                    alert("self.reviewContent.trim().length는" + self.reviewContent.trim().length);
+                    //alert("self.reviewContent.trim().length는" + self.reviewContent.trim().length);
                     // if (self.reviewContent.trim().length < 10) {
                     //     alert('리뷰 내용을 10자 이상 입력해 주세요.');
                     //     return;
@@ -617,6 +616,26 @@
                     // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장)
                     window.pageChange("refund-return.do", { sessionId: sessionId });
                 },
+                fnLogout: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+
+                        }
+                    })
+                },
+                fnNotice() {
+                    let self = this;
+                    pageChange("/home/community/board.do", { type: "B" });
+                }
 
 
 
