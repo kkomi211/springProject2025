@@ -70,7 +70,7 @@
                                 <h2 class="sidebar-heading"> COMMUNITY ></h2>
                                 <nav class="mypage-menu">
                                     <ul>
-                                        <li class="active">
+                                        <li>
                                             <span class="icon">📝</span>
                                             <a href="/home/community/board.do">게시판</a>
                                         </li>
@@ -78,7 +78,7 @@
                                             <span class="icon">📦</span>
                                             <a href="/home/community/crew.do">크루 찾기</a>
                                         </li>
-                                        <li>
+                                        <li class="active">
                                             <span class="icon">💬</span>
                                             <a href="/home/community/rally.do">대회정보</a>
                                         </li>
