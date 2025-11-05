@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/css/user-style.css">
+        <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -154,11 +154,10 @@
                     </div>
                     <div class="footer-right">
                         <div class="other">
-                            <span>회사소개</span>
-                            <span>매장안내</span>
-                            <span>공지사항</span>
-                            <span>이용약관</span>
-                            <span>개인정보처리방침</span>
+                            <span><a href="/home/about.do">회사소개</a></span>
+                            <span><a @click="fnNotice">공지사항</a></span>
+                            <span><a href="/home/terms.do">이용약관</a></span>
+                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
                         </div>
                         <div class="socials">
                             <span>INSTAGRAM</span>
@@ -373,6 +372,10 @@
                     self.saleYN = 'Y';
                     pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                 },
+                fnNotice(){
+                    let self = this;
+                    pageChange("/home/community/board.do", {type : "B"});
+                },
                 formatCurrency(value) {
                     if (value === null || value === undefined || value === '') {
                         return '0 원';
@@ -383,7 +386,6 @@
                     }
                     return numberValue.toLocaleString('ko-KR') + ' 원';
                 }
-
             }, // methods
             watch: {
                 category(newVal, oldVal) {

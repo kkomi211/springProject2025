@@ -112,6 +112,17 @@ ul {
   margin-bottom: 10px;
 }
 
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #fff;
+}
+
+main {
+  flex: 1; /* makes main take up all remaining vertical space */
+}
+
 /* ------------------------------
    게시판 헤더 + 검색바 수정
 ------------------------------ */
@@ -340,4 +351,20 @@ tr:hover {
 .button-box{
   display: flex;
   justify-content: space-between;
+}
+
+button {
+  padding: 10px 20px;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgb(233, 233, 233);
+  font-size: 0.95rem;
+  cursor: pointer;
+  font-size: 14px;
+  color: black;
+  transition: all 0.2s;
+  min-width: 100px;
+  margin-right: 10px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
