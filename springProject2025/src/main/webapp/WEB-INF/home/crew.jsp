@@ -128,6 +128,7 @@
                                     </tr>
 
                                 </table>
+
                                 <div v-if="index > 0" class="pagination">
                                     <a v-if="page != 1" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
                                     <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index"
@@ -140,6 +141,7 @@
                                 <div class="write-btn-wrapper">
                                     <button @click="moveToPost" class="btn">크루 생성</button>
                                 </div>
+
 
                                 <!--  비밀번호 모달 -->
                                 <div v-if="pwdCorrect" class="modal-overlay">
@@ -155,6 +157,7 @@
                                 </div>
                             </main>
                         </div>
+
                     </main>
 
                     <!--  푸터 -->
