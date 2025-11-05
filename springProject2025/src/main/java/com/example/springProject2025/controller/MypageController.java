@@ -23,6 +23,7 @@ import com.example.springProject2025.dao.MemberService;
 import java.lang.reflect.Type;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class MypageController {
@@ -32,6 +33,9 @@ public class MypageController {
   
   @Autowired
 	MypageService mypageService;
+  
+  @Autowired
+	HttpSession session;
 		
 	@RequestMapping("home/mypage/my-inquiry.do")  
 	public String mypageMyInquiry(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
@@ -162,6 +166,8 @@ public class MypageController {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		System.out.println(map);
 		resultMap = mypageService.deleteAccount(map);
+		
+		session.invalidate();
 		
 		return new Gson().toJson(resultMap);
 	}

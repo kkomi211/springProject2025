@@ -5,8 +5,9 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/css/user-style.css">
+        <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="stylesheet" href="/css/post-style.css">
+        <link rel="stylesheet" href="/css/style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -141,12 +142,54 @@
                                 <tr>
                                     <th>내용</th>
                                     <td>
-                                        <div id="editor-container">
+                                        <div >
                                             <div id="editor"></div>
                                         </div>
                                     </td>
                                 </tr>
                             </table>
+
+                            <!-- 글쓰기 다른 디자인 테스트 -->
+                             <div class="comments-section">
+                                <div class="sub-section">
+                                    <h3 class="comment-title">
+                                        아이디
+                                    </h3>
+                                    <div class="post-author">
+                                        <strong>{{ userName }}</strong>
+                                    </div>
+                                </div>
+                                <div class="sub-section">
+                                    <h3 class="comment-title">
+                                        카테고리
+                                    </h3>
+                                    <div class="post-type">
+                                        <input type="radio" value="B" v-model="type">공지
+                                        <input type="radio" value="Q" v-model="type">문의
+                                        <input type="radio" value="F" v-model="type">자유
+                                        <input type="radio" value="R" v-model="type">대회
+                                    </div>
+                                </div>
+                                <div class="sub-section">
+                                    <h3 class="comment-title">
+                                        제목
+                                    </h3>
+                                    <div class="post-author">
+                                        <label for="">
+                                                <input type="text" v-model="title" id="title">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="sub-section">
+                                    <h3 class="comment-title">
+                                        내용
+                                    </h3>
+                                    <div class="post-author">
+                                        <div id="editor"></div>
+                                    </div>
+                                </div>
+                             </div>
+
                             <div class="bottom-btn">
                                 <button @click="fnPost">등록</button>
                                 <button @click="fnMoveToBoard">목록</button>
@@ -184,11 +227,10 @@
                 </div>
                 <div class="footer-right">
                     <div class="other">
-                        <span>회사소개</span>
-                        <span>매장안내</span>
-                        <span>공지사항</span>
-                        <span>이용약관</span>
-                        <span>개인정보처리방침</span>
+                        <span><a href="/home/about.do">회사소개</a></span>
+                        <span><a @click="fnNotice">공지사항</a></span>
+                        <span><a href="/home/terms.do">이용약관</a></span>
+                        <span><a href="/home/privacy.do">개인정보처리방침</a></span>
                     </div>
                     <div class="socials">
                         <span>INSTAGRAM</span>
@@ -338,7 +380,11 @@
                 moveToBoard: function () {
                     let self = this;
                     location.href = "/home/community/board.do";
-                }
+                },
+                fnNotice(){
+                let self = this;
+                pageChange("/home/community/board.do", {type : "B"});
+            }
             }, // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분
