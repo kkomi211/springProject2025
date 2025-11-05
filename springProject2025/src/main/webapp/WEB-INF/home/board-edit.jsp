@@ -210,11 +210,11 @@
                                 </div>
                             </div>
 
-                            
 
-                            </div>
-                        </main>
-                </div>
+
+                    </div>
+                </main>
+            </div>
             </main>
 
             <footer>
@@ -382,36 +382,36 @@
                     let self = this;
                     self.saleYN = 'Y';
                     pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
-                }
-            
+                },
 
-            },
-            fnNotice(){
-                let self = this;
-                pageChange("/home/community/board.do", {type : "B"});
-            },
-            fnLogout : function(){
-                let self = this;
-                let param = {};
-                $.ajax({
-                    url: "/member/logout.dox",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    success: function (data) {
-                        if(data.result == "success"){
-                            self.userName = data.userName;
-                            self.isLoggedOut = true;
+
+
+                fnNotice() {
+                    let self = this;
+                    pageChange("/home/community/board.do", { type: "B" });
+                },
+                fnLogout: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                self.userName = data.userName;
+                                self.isLoggedOut = true;
+                            }
+
                         }
+                    });
+                }
+            }, // methods
+            mounted() {
+                let self = this;
 
-                    }
-                });
-            }
-        }, // methods
-        mounted() {
-            let self = this;
-            
-            self.fnGetUserInfo();
+                self.fnGetUserInfo();
 
                 if (self.sessionId == "") {
                     self.isLoggedIn = false;

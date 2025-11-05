@@ -221,18 +221,18 @@
                                     </div>
                                 </div>
 
-                            
 
-                            <!-- If the user is not logged in -->
 
-                            <div v-if="!isLoggedIn" class="modal-overlay">
-                                <div class="modal-content">
-                                    <h2>로그인 후 이용해주세요.</h2>
-                                    <div class="modal-btn">
-                                        <button @click="moveToLogin">로그인</button>
+                                <!-- If the user is not logged in -->
+
+                                <div v-if="!isLoggedIn" class="modal-overlay">
+                                    <div class="modal-content">
+                                        <h2>로그인 후 이용해주세요.</h2>
+                                        <div class="modal-btn">
+                                            <button @click="moveToLogin">로그인</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             </main>
                     </main>
 
@@ -298,11 +298,11 @@
                     pwdFlg: false,
                     addrFlg: false,
 
-                // Popup Modal
-                confirmDelete : false,
-                accountDeleted : false,
-                isLoggedOut : false,
-                isLoggedIn: true
+                    // Popup Modal
+                    confirmDelete: false,
+                    accountDeleted: false,
+                    isLoggedOut: false,
+                    isLoggedIn: true
 
                 };
             },
@@ -522,34 +522,7 @@
                         alert("새 비밀번호를 입력하세요.");
                         document.querySelector("#newPwd1").focus();
                         return;
-                    }
-                
-            },
-            fnAddrSave:function(){
-                let self = this;
-                if(self.addr == ""){
-                    alert("주소를 입력해주세요.");
-                    return;
-                }
-                let param = {
-                    userId : self.sessionId,
-                    addr : self.addr
-                };
-                // GOTTA CHECK IF THE ENCODED PASSWORD IS MATCHING
-                $.ajax({
-                    url: "/home/mypage/addrSave.dox",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    success: function (data) {
-                        if(data.result == "success") {
-                            alert("주소가 수정되었습니다.");
-                            self.addrFlg = false;
-                            self.fnInfo();
-                        } else {
-                            alert("오류가 발생했습니다.");
-                        }
-                    if (self.newPwd1.length < 6 || !speChar.test(self.newPwd1)) {
+                    } if (self.newPwd1.length < 6 || !speChar.test(self.newPwd1)) {
                         alert("비밀번호는 공백 없이 6자 이상의 영문자, 숫자, 특수문자 조합으로 지정해주세요.");
                         document.querySelector("#newPwd1").focus();
                         return;
@@ -603,81 +576,113 @@
                         }
                     });
                 },
-                fnConfirmDelete: function () {
-                    let self = this;
-                    self.confirmDelete = true; // Modal Popup
-                },
-                fnDeleteAccount: function () {
-                    let self = this;
-                    let param = {
-                        userId: self.sessionId
-                    };
-                    $.ajax({
-                        url: "/home/mypage/deleteAccount.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-                            if (data.result == "success") {
-                                self.confirmDelete = false;
-                                self.accountDeleted = true;
-                                self.sessionId = "";
-                            } else {
-                                alert("오류가 발생했습니다.");
-                            }
-                        }
-                    });
 
-                 
+            
+            fnAddrSave: function () {
+                let self = this;
+                if (self.addr == "") {
+                    alert("주소를 입력해주세요.");
+                    return;
+                }
+                let param = {
+                    userId: self.sessionId,
+                    addr: self.addr
+                };
+                // GOTTA CHECK IF THE ENCODED PASSWORD IS MATCHING
+                $.ajax({
+                    url: "/home/mypage/addrSave.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if (data.result == "success") {
+                            alert("주소가 수정되었습니다.");
+                            self.addrFlg = false;
+                            self.fnInfo();
+                        } else {
+                            alert("오류가 발생했습니다.");
+                        }
+                    }
+                });
+            },
+
+
+            fnConfirmDelete: function () {
+                let self = this;
+                self.confirmDelete = true; // Modal Popup
+            },
+            fnDeleteAccount: function () {
+                let self = this;
+                let param = {
+                    userId: self.sessionId
+                };
+                $.ajax({
+                    url: "/home/mypage/deleteAccount.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if (data.result == "success") {
+                            self.confirmDelete = false;
+                            self.accountDeleted = true;
+                            self.sessionId = "";
+                        } else {
+                            alert("오류가 발생했습니다.");
+                        }
+                    }
+                });
+
+
             },
             moveToLogin: function () {
                 let self = this;
                 location.href = "/home/login.do";
             },
-        
-              
-                moveMainPage: function () {
-                    let self = this;
-                    location.href = "/home.do";
-                },
-                closeModal() {
-                    let self = this;
-                    self.confirmDelete = false;
-                },
-                fnLogout: function () {
-                    let self = this;
-                    let param = {};
-                    $.ajax({
-                        url: "/member/logout.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-                            if (data.result == "success") {
-                                self.userName = data.userName;
-                                self.isLoggedOut = true;
-                            }
 
-                        }
-                    });
-                },
-                fnSale() {
-                    let self = this;
-                    self.saleYN = 'Y';
-                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
-                }
-            }, // methods
-            mounted() {
-                // 처음 시작할 때 실행되는 부분
+
+            moveMainPage: function () {
                 let self = this;
-                window.vueObj = this;
-                self.fnInfo();
-              console.log("User ID : " + self.userId);
-            if (self.sessionId == "") {
+                location.href = "/home.do";
+            },
+            closeModal() {
+                let self = this;
+                self.confirmDelete = false;
+            },
+            fnLogout: function () {
+                let self = this;
+                let param = {};
+                $.ajax({
+                    url: "/member/logout.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        if (data.result == "success") {
+                            self.userName = data.userName;
+                            self.isLoggedOut = true;
+                        }
+
+                    }
+                });
+            },
+            fnSale() {
+                let self = this;
+                self.saleYN = 'Y';
+                pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+            }
+        },
+            // methods
+            mounted() {
+            // 처음 시작할 때 실행되는 부분
+            let self = this;
+            window.vueObj = this;
+            self.fnInfo();
+            console.log("User ID : " + self.userId);
+            if(self.sessionId == "") {
                 self.isLoggedIn = false;
             } else {
-                self.isLoggedIn = true;
-            }
+            self.isLoggedIn = true;
+        }
             }
         });
 

@@ -81,8 +81,10 @@
 		    TYPE = #{type}, 
 		    TITLE = #{title},
 		    CONTENTS = #{contents},
-		    UDATE = SYSDATE,
-		    PWD = #{keylock}
+		    UDATE = SYSDATE
+		    <if test="keylock != null and keylock != '' and keylock != 'undefined'">
+		    	,PWD = #{keylock}
+		    </if>
 		WHERE BOARD_NO = #{boardNo}
 		AND USER_ID = #{userId}
 	</update>

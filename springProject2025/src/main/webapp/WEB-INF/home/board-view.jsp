@@ -47,31 +47,24 @@
                                 <input type="text" placeholder="검색어를 입력해 주세요.">
                             </div>
                             <div>
-                                <a href="/home/login.do">로그인</a>
+                                <template v-if="sessionId != ''">
+                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                                </template>
+                                <template v-else>
+                                    <a href="/home/login.do">로그인</a>
+                                </template>
                             </div>
-                            <div>
+                            <div v-if="sessionId == ''">
                                 <a href="/home/signup.do">가입하기</a>
                             </div>
-                            <div><a href="/home/mypage/inquiry.do">문의</a></div>
-                            <div><a href="/home/cart.do">장바구니</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
                         </div>
                     </div>
-                    <div>
-                        <template v-if="sessionId != ''">
-                            <a href="javascript:;" @click="fnLogout">로그아웃</a>
-                        </template>
-                        <template v-else>
-                            <a href="/home/login.do">로그인</a>
-                        </template>
-                    </div>
-                    <div v-if="sessionId == ''">
-                        <a href="/home/signup.do">가입하기</a>
-                    </div>
-                    <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
-                    <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
-                </div>
-            </div>
-            <div class="bottom-header">
+
+
+
+                    <div class="bottom-header">
                         <div>
                             <a href="/home/product.do">제품</a>
                         </div>
@@ -82,7 +75,7 @@
                             <a href="/home/community/board.do">커뮤니티</a>
                         </div>
                     </div>
-            </header>
+                </header>
 
                 <main>
 
@@ -95,123 +88,123 @@
                         </div>
                     </div>
 
+
+
+                    <div class="page-container">
+                    <aside class="sidebar">
+                        <h2 class="sidebar-heading"> COMMUNITY ></h2>
+                        <nav class="mypage-menu">
+                            <ul>
+                                <li class="active">
+                                    <span class="icon">📝</span>
+                                    <a href="/home/community/board.do">게시판</a>
+                                </li>
+                                <li>
+                                    <span class="icon">📦</span>
+                                    <a href="/home/community/crew.do">크루 찾기</a>
+                                </li>
+                                <li>
+                                    <span class="icon">💬</span>
+                                    <a href="/home/community/rally.do">대회정보</a>
+                                </li>
+                                <li>
+                                    <span class="icon">👤</span>
+                                    <a href="/home/community/chat.do">채팅방</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </aside>
+
+                    <main class="main-content">
+                        <div class="board-header">
+                            <h1 class="main-title">
+                                게시판 • 상세보기
+                            </h1>
+                        </div>
+
+                        <!-- 게시글 보기 -->
+                        <div class="post-container">
+                            <div class="post-header">
+                                <div class="post-meta">
+                                    <span class="post-category">
+                                        {{
+                                        type === 'B' ? '공지사항' :
+                                        type === 'Q' ? '문의게시판' :
+                                        type === 'F' ? '자유게시판' :
+                                        type === 'R' ? '대회게시판' :
+                                        '게시판'
+                                        }}
+                                    </span>
+                                    <span class="post-date">{{ boardInfo.chardate }}</span>
+                                </div>
+                                <h2 class="post-title">
+                                    {{ boardInfo.title }}
+                                </h2>
+                                <div class="post-author">
+                                    <strong>{{ boardInfo.userId }}</strong> 님의 게시글
+                                </div>
+                            </div>
+
                             <div class="post-content" v-html="boardInfo.contents"></div>
                             <div class="bottom-btn">
-                                <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn" @click="fnMoveToEdit">✏️ 수정</button>
-                                <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn" @click="fnConfirmDelete">🗑️ 삭제</button>
-                                <button v-if="sessionId != boardInfo.userId" class="edit-inline-btn" @click="fnConfirmReport">🚨 신고</button>
+                                <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn"
+                                    @click="fnMoveToEdit">✏️
+                                    수정</button>
+                                <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn"
+                                    @click="fnConfirmDelete">🗑️
+                                    삭제</button>
+                                <button v-if="sessionId != boardInfo.userId" class="edit-inline-btn"
+                                    @click="fnConfirmReport">🚨
+                                    신고</button>
                             </div>
                         </div>
 
-                        <aside class="sidebar">
-                            <h2 class="sidebar-heading"> COMMUNITY ></h2>
-                            <nav class="mypage-menu">
-                                <ul>
-                                    <li class="active">
-                                        <span class="icon">📝</span>
-                                        <a href="/home/community/board.do">게시판</a>
-                                    </li>
-                                    <li>
-                                        <span class="icon">📦</span>
-                                        <a href="/home/community/crew.do">크루 찾기</a>
-                                    </li>
-                                    <li>
-                                        <span class="icon">💬</span>
-                                        <a href="/home/community/rally.do">대회정보</a>
-                                    </li>
-                                    <li>
-                                        <span class="icon">👤</span>
-                                        <a href="/home/community/chat.do">채팅방</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </aside>
+                        <!-- 댓글 보기 -->
 
-                        <main class="main-content">
-                            <div class="board-header">
-                                <h1 class="main-title">
-                                    게시판 • 상세보기
-                                </h1>
-                            </div>
+                        <div class="comments-section">
+                            <h3 class="comment-title">
+                                💬 {{ commentList.length }} Comments
+                            </h3>
 
-                            <!-- 게시글 보기 -->
-                            <div class="post-container">
-                                <div class="post-header">
-                                    <div class="post-meta">
-                                        <span class="post-category">
-                                            {{
-                                            type === 'B' ? '공지사항' :
-                                            type === 'Q' ? '문의게시판' :
-                                            type === 'F' ? '자유게시판' :
-                                            type === 'R' ? '대회게시판' :
-                                            '게시판'
-                                            }}
-                                        </span>
-                                        <span class="post-date">{{ boardInfo.chardate }}</span>
+                            <div class="comment-view" v-if="commentList.length > 0">
+                                <div v-for="item in commentList" :key="item.commentNo" class="comment-card">
+                                    <div class="comment-header">
+                                        <div class="comment-author">{{ item.userId }}</div>
+                                        <div class="comment-date">{{ item.chardate }}</div>
                                     </div>
-                                    <h2 class="post-title">
-                                        {{ boardInfo.title }}
-                                    </h2>
-                                    <div class="post-author">
-                                        <strong>{{ boardInfo.userId }}</strong> 님의 게시글
+                                    <div class="comment-body">
+                                        {{ item.contents }}
                                     </div>
                                 </div>
-
-                                <div class="post-content" v-html="boardInfo.contents"></div>
-                                <div class="bottom-btn">
-                                    <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn"
-                                        @click="fnMoveToEdit">✏️ 수정</button>
-                                    <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn"
-                                        @click="fnConfirmDelete">🗑️ 삭제</button>
-                                </div>
                             </div>
 
-                            <!-- 댓글 보기 -->
-
-                            <div class="comments-section">
-                                <h3 class="comment-title">
-                                    💬 {{ commentList.length }} Comments
-                                </h3>
-
-                                <div class="comment-view" v-if="commentList.length > 0">
-                                    <div v-for="item in commentList" :key="item.commentNo" class="comment-card">
-                                        <div class="comment-header">
-                                            <div class="comment-author">{{ item.userId }}</div>
-                                            <div class="comment-date">{{ item.chardate }}</div>
-                                        </div>
-                                        <div class="comment-body">
-                                            {{ item.contents }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div v-else class="no-comments">
-                                    아직 댓글이 없습니다. 첫 번째로 댓글을 남겨보세요!
-                                </div>
+                            <div v-else class="no-comments">
+                                아직 댓글이 없습니다. 첫 번째로 댓글을 남겨보세요!
                             </div>
+                        </div>
 
-                            <!-- 댓글 쓰기 -->
-                            <div v-if="sessionId != '' " class="comment-box">
-                                <div class="comment-header">
-                                    <strong>{{userName}}</strong>
-                                </div>
-                                <div class="comment-input">
-                                    <textarea placeholder="댓글을 남겨보세요" v-model="commentContent"
-                                        @keyup.enter="fnPostComment"></textarea>
-                                    <button @click="fnPostComment">등록</button>
-                                </div>
+                        <!-- 댓글 쓰기 -->
+                        <div v-if="sessionId != '' " class="comment-box">
+                            <div class="comment-header">
+                                <strong>{{userName}}</strong>
                             </div>
-
-                            <div class="list-btn">
-                                <button @click="fnMoveToBoard">목록</button>
+                            <div class="comment-input">
+                                <textarea placeholder="댓글을 남겨보세요" v-model="commentContent"
+                                    @keyup.enter="fnPostComment"></textarea>
+                                <button @click="fnPostComment">등록</button>
                             </div>
+                        </div>
 
-                        
-                        
+                        <div class="list-btn">
+                            <button @click="fnMoveToBoard">목록</button>
+                        </div>
+
+
+
                         <!-- Report popup -->
                         <div v-if="confirmReport" class="modal-overlay">
                             <div class="modal-content">
-                                
+
                                 <template v-if="!wasReported">
                                     <h2>이 게시글을 신고하시겠습니까?</h2>
                                     <button class="btn" @click="fnCloseModal">닫기</button>
@@ -221,108 +214,109 @@
                                     <h2>신고가 성공적으로 접수되었습니다.</h2>
                                     <button class="btn" @click="fnCloseModal">닫기</button>
                                 </template>
-                                
-                            </div>
-                        </div>
-
-                    
-                            <!-- Modal Popup -->
-                            <!-- v-if="confirmDelete"  -->
-                            <div v-if="confirmDelete" class="modal-overlay">
-
-                                <div v-if="!deleted" class="modal-content">
-                                    <h2>정말 이 게시글을 삭제하시겠습니까?</h2>
-                                    <div>
-                                        <button class="btn" @click="fnCancel">취소</button>
-                                        <button class="btn" @click="fnDeletePost">삭제</button>
-                                    </div>
-                                </div>
-                                <div v-else class="modal-content">
-                                    <h2>게시글이 삭제되었습니다.</h2>
-                                    <div>
-                                        <button class="btn" @click="fnMoveToBoard">확인</button>
-                                    </div>
-                                </div>
 
                             </div>
+                        </div>
 
-                        </main>
 
+                        <!-- Modal Popup -->
+                        <!-- v-if="confirmDelete"  -->
+                        <div v-if="confirmDelete" class="modal-overlay">
+
+                            <div v-if="!deleted" class="modal-content">
+                                <h2>정말 이 게시글을 삭제하시겠습니까?</h2>
+                                <div>
+                                    <button class="btn" @click="fnCancel">취소</button>
+                                    <button class="btn" @click="fnDeletePost">삭제</button>
+                                </div>
+                            </div>
+                            <div v-else class="modal-content">
+                                <h2>게시글이 삭제되었습니다.</h2>
+                                <div>
+                                    <button class="btn" @click="fnMoveToBoard">확인</button>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
+                    </main>
 
-                </main>
+            </div>
 
-                <footer>
-                    <div class="footer-left">
-                        <div class="company-info">
-                            <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
-                            <div><strong>대표:</strong> 김재</div>
-                            <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
-                            <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
-                            <div><strong>부가세 번호:</strong> KR123456789</div>
-                        </div>
-                        <div class="copyright">
-                            COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
-                        </div>
+            </main>
+
+            <footer>
+                <div class="footer-left">
+                    <div class="company-info">
+                        <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
+                        <div><strong>대표:</strong> 김재</div>
+                        <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
+                        <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
+                        <div><strong>부가세 번호:</strong> KR123456789</div>
                     </div>
-                    <div class="footer-right">
-                        <div class="other">
-                            <span><a href="/home/about.do">회사소개</a></span>
-                            <span><a @click="fnNotice">공지사항</a></span>
-                            <span><a href="/home/terms.do">이용약관</a></span>
-                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
-                        </div>
-                        <div class="socials">
-                            <span>INSTAGRAM</span>
-                            <span>NAVER</span>
-                        </div>
+                    <div class="copyright">
+                        COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
                     </div>
                 </div>
+                <div class="footer-right">
+                    <div class="other">
+                        <span><a href="/home/about.do">회사소개</a></span>
+                        <span><a @click="fnNotice">공지사항</a></span>
+                        <span><a href="/home/terms.do">이용약관</a></span>
+                        <span><a href="/home/privacy.do">개인정보처리방침</a></span>
+                    </div>
+                    <div class="socials">
+                        <span>INSTAGRAM</span>
+                        <span>NAVER</span>
+                    </div>
+                </div>
+
             </footer>
-         </div>
-    </div>
-</body>
-</html>
 
-<script>
-    const app = Vue.createApp({
-        data() {
-            return {
-                // 변수 - (key : value)
-                sessionId : "${sessionId}",
-                userName : "",
-                boardInfo : {},
-                boardNo : "${boardNo}",
-                commentList : [],
+        </div>
+    </body>
 
-                keyword : "",
-                type : "B",
-                title : "",
-                keylock : "",
-                content : "",
+    </html>
 
-                // pagination
-                cnt: 0,
-                page: 1,
-                pageSize: 10,
-                index: 0,
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    // 변수 - (key : value)
+                    sessionId: "${sessionId}",
+                    userName: "",
+                    boardInfo: {},
+                    boardNo: "${boardNo}",
+                    commentList: [],
 
-                // popup modal
-                isLoggedIn : true,
-                isLoggedOut : false,
-                confirmDelete : false,
-                deleted : false,
-                confirmReport : false,
-                wasReported : false,
+                    keyword: "",
+                    type: "B",
+                    title: "",
+                    keylock: "",
+                    content: "",
 
-                // post comment
-                commentContent : ""
+                    // pagination
+                    cnt: 0,
+                    page: 1,
+                    pageSize: 10,
+                    index: 0,
 
-            };
-        },
-        methods: {
-            // 함수(메소드) - (key : function())
-            fnGetUserInfo: function () {
+                    // popup modal
+                    isLoggedIn: true,
+                    isLoggedOut: false,
+                    confirmDelete: false,
+                    deleted: false,
+                    confirmReport: false,
+                    wasReported: false,
+
+                    // post comment
+                    commentContent: ""
+
+                };
+            },
+            methods: {
+                // 함수(메소드) - (key : function())
+                fnGetUserInfo: function () {
                     let self = this;
                     $.ajax({
                         url: "/home/mypage/userInfo.dox",
@@ -456,63 +450,63 @@
                                 alert("error");
                             }
 
-                    }
-                });
-            },
-            fnConfirmReport: function(){
-                let self = this;
-                // if(!confirm("이 게시글을 신고하시겠습니까?")){
-                //     return;
-                // }
-                self.confirmReport = true;
-            },
-            fnReportPost: function(){
-                let self = this;
-                let param = {
-                    boardNo : self.boardNo,
-                    reporterId : self.sessionId
-                };
-                $.ajax({
-                    url: "/board/report.dox",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    success: function (data) {
-                        if(data.result == "success"){
-                            // alert("신고가 성공적으로 접수되었습니다.");
-                            self.wasReported = true;
-                            // self.confirmReport = false;
-                        } else {
-                            alert("error");
                         }
+                    });
+                },
+                fnConfirmReport: function () {
+                    let self = this;
+                    // if(!confirm("이 게시글을 신고하시겠습니까?")){
+                    //     return;
+                    // }
+                    self.confirmReport = true;
+                },
+                fnReportPost: function () {
+                    let self = this;
+                    let param = {
+                        boardNo: self.boardNo,
+                        reporterId: self.sessionId
+                    };
+                    $.ajax({
+                        url: "/board/report.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                // alert("신고가 성공적으로 접수되었습니다.");
+                                self.wasReported = true;
+                                // self.confirmReport = false;
+                            } else {
+                                alert("error");
+                            }
 
-                    }
-                });
-            },
-            fnNotice(){
-                let self = this;
-                pageChange("/home/community/board.do", {type : "B"});
-            },
-            fnLogout : function(){
-                let self = this;
-                let param = {};
-                $.ajax({
-                    url: "/member/logout.dox",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    success: function (data) {
-                        if(data.result == "success"){
-                            self.userName = data.userName;
-                            self.isLoggedOut = true;
                         }
+                    });
+                },
+                fnNotice() {
+                    let self = this;
+                    pageChange("/home/community/board.do", { type: "B" });
+                },
+                fnLogout: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                self.userName = data.userName;
+                                self.isLoggedOut = true;
+                            }
 
-                    }
-                });
-            },
-            fnCloseModal: function(){
-                let self = this;
-                self.confirmReport = false;
+                        }
+                    });
+                },
+                fnCloseModal: function () {
+                    let self = this;
+                    self.confirmReport = false;
 
                 },
                 fnNotice() {
