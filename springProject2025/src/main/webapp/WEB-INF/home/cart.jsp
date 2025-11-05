@@ -167,7 +167,7 @@
                             <a href="/home/product.do">제품</a>
                         </div>
                         <div>
-                            <a href="/home/product.do">세일</a>
+                            <a href="javascript:;" @click="fnSale">세일</a>
                         </div>
                         <div>
                             <a href="/home/community/board.do">커뮤니티</a>
@@ -208,8 +208,7 @@
                                         <input type="checkbox" v-model="list.selected" @change="recomputeSummary"
                                             style="margin-right: 15px; width: 18px; height: 18px; flex-shrink: 0;">
 
-                                        <img :src="getImagePath(list.imgPath)"
-                                            :alt="list.productName"
+                                        <img :src="getImagePath(list.imgPath)" :alt="list.productName"
                                             style="width: 100px; height: 100px; object-fit: contain; margin-right: 20px; border: 1px solid #eee; flex-shrink: 0;"
                                             onerror="this.src='/img/no-image.png'">
 
@@ -658,7 +657,7 @@
                     } else {
                         // 초과 시 알림 및 고정
                         this.currentQty = stock;
-                        alert('재고가 부족합니다. 최대 '+stock+'개 까지 가능합니다.');
+                        alert('재고가 부족합니다. 최대 ' + stock + '개 까지 가능합니다.');
                     }
                 },
 
@@ -757,7 +756,7 @@
                 proceedToCheckout: function () {
                     // 체크된 상품만 필터링
                     let selectedItems = this.cartList.filter(item => item.selected);
-                    
+
                     if (selectedItems.length === 0) {
                         alert("주문할 상품을 선택해주세요.");
                         return;
@@ -765,14 +764,14 @@
 
                     // 체크된 상품의 cartNo 목록만 추출 (기존 프로젝트 스타일)
                     let selectedCartNos = selectedItems.map(item => item.cartNo);
-                    
+
                     // pageChange 함수를 사용하여 paybefore.jsp로 이동
                     // sessionId는 브라우저 세션에서 자동으로 가져오므로 파라미터로 전달할 필요 없음
                     if (typeof pageChange === 'function') {
                         pageChange("payment/paybefore.do", {
                             selectedCartNos: selectedCartNos
                         });
-                    } 
+                    }
                     // else {
                     //     // pageChange 함수가 없는 경우 직접 URL로 이동
                     //     let url = "/home/payment/paybefore.do?sessionId=" + encodeURIComponent(this.sessionId) + 
@@ -780,6 +779,11 @@
                     //     window.location.href = url;
                     // }
                 },
+                fnSale() {
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                }
 
             }, // methods
             mounted() {

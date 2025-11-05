@@ -357,7 +357,20 @@
             },
             methods: {
                 fnLogout: function () {
-                    pageChange("/home.do", { sessionId: "" });
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+                        }
+                    });
+
                 },
                 fnList: function () {
                     let self = this;

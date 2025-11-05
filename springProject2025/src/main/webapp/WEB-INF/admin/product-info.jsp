@@ -122,15 +122,28 @@
                     productNo: "${productNo}",
                     info: {},
                     img: {},
-                    salePrice : "",
-                    quantityFlg : false
+                    salePrice: "",
+                    quantityFlg: false
 
                 };
             },
             methods: {
                 // 함수(메소드) - (key : function())
                 fnLogout: function () {
-                    pageChange("/home.do", { sessionId: "" });
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+                        }
+                    });
+
                 },
                 fnInfo() {
                     let self = this;
@@ -152,10 +165,10 @@
                 },
                 fnEditProduct() {
                     let self = this;
-                    if(self.info.salePrice != 0){
+                    if (self.info.salePrice != 0) {
                         self.info.saleYN = "Y";
                     }
-                    if(self.info.salePrice == 0){
+                    if (self.info.salePrice == 0) {
                         self.info.saleYN = "N";
                     }
                     $.ajax({
@@ -188,7 +201,7 @@
                 fnBack() {
                     location.href = "/admin/product.do";
                 },
-                fnQuantity(){
+                fnQuantity() {
                     let self = this;
                     let param = {
                         productNo: self.productNo,

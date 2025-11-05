@@ -1405,7 +1405,7 @@
                         let param = {};
                         $.ajax({
                             url: "/member/logout.dox",
-                            dataType: "json",
+                            dataType: "json",   
                             type: "POST",
                             data: param,
                             success: function (data) {
@@ -1425,13 +1425,6 @@
                                 breakpoints: { 640: { slidesPerView: 2, spaceBetween: 20, slidesPerGroup: 2, }, 1024: { slidesPerView: 3, spaceBetween: 30, slidesPerGroup: 3, }, },
                             });
                         }
-                    },
-
-
-
-                    fnNotice() {
-                        let self = this;
-                        pageChange("/home/community/board.do", { type: "B" });
                     },
 
                     fnKakao: function () {

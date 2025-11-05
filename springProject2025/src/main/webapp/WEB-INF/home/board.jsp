@@ -6,7 +6,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
-         <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/board-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,7 +56,7 @@
                             <a href="/home/product.do">제품</a>
                         </div>
                         <div>
-                            <a href="/home/product.do">세일</a>
+                            <a href="javascript:;" @click="fnSale">세일</a>
                         </div>
                         <div>
                             <a href="/home/community/board.do">커뮤니티</a>
@@ -165,7 +165,7 @@
                                 <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
                                 <!-- <a v-if="page != index" @click="fnMove(index)" href="javascript:void(0)">→</a> -->
                             </div>
-                            
+
                             <div class="write-btn-wrapper">
                                 <button @click="moveToPost" class="btn">글쓰기</button>
                             </div>
@@ -270,10 +270,10 @@
                     let startRow = (self.page - 1) * self.pageSize + 1;
                     let endRow = self.page * self.pageSize;
                     let param = {
-                        type: self.type, 
+                        type: self.type,
                         keyword: self.keyword.trim(),
-                        page: (self.page - 1) * self.pageSize, 
-                        pageSize: self.pageSize, 
+                        page: (self.page - 1) * self.pageSize,
+                        pageSize: self.pageSize,
                         startRow: startRow,
                         endRow: endRow
                     };
@@ -364,10 +364,15 @@
                     let self = this;
                     pageChange("/home/community/chat.do", { sessionId: self.sessionId });
                 },
-                fnNotice(){
-                let self = this;
-                pageChange("/home/community/board.do", {type : "B"});
-            }
+                fnNotice() {
+                    let self = this;
+                    pageChange("/home/community/board.do", { type: "B" });
+                },
+                fnSale() {
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                }
             }, // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분
