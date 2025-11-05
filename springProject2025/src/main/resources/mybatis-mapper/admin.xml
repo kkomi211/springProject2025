@@ -193,7 +193,7 @@
 		                    AND I.CDATE &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD') + 0.99999
 		                </if>
 		            </where>
-		            ORDER BY I.INQUIRY_NO DESC
+		            ORDER BY I.CDATE DESC
 		        ) SUB
 		    ) 
 		    WHERE RN > #{startIndex} AND RN &lt;= #{startIndex} + #{pageSize}
