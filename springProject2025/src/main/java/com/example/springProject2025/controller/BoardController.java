@@ -29,13 +29,20 @@ public class BoardController {
 		return "home/rally-board"; // .jsp빠진형태
 	}
 	
-	// rally post board list
+	// crew post board list
 		@RequestMapping("/home/community/crew/post.do")
-		public String rallyPostBoardList(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
+		public String crewPostBoardList(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
 			request.setAttribute("sessionId", map.get("sessionId"));
 			request.setAttribute("chatroomNo", map.get("chatroomNo"));
 			return "home/crew-post"; // .jsp빠진형태
 		}
+	// crew view board list
+		@RequestMapping("/home/community/crew/view.do")
+		public String crewViewBoardList(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
+			request.setAttribute("sessionId", map.get("sessionId"));
+			request.setAttribute("chatroomNo", map.get("chatroomNo"));
+			return "home/crew-view"; // .jsp빠진형태
+	}
 	
 	// crew board list
 	@RequestMapping("/home/community/crewBoard.do")
@@ -63,18 +70,16 @@ public class BoardController {
 			resultMap = boardService.getCrewBoardList(map);
 			return new Gson().toJson(resultMap);
 		}
-	// crew board post (추가페이지)
-		@RequestMapping(value = "/crew/post.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	// crew insert board post (추가 채티방이동)
+		@RequestMapping(value = "/home/crew/chatMove.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 		@ResponseBody
 		public String crewinsertPost(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 			HashMap<String, Object> resultMap = new HashMap<String, Object>();
-			resultMap = boardService.crewPostboard(map);
+			resultMap = boardService.crewCaInsert(map);
 			
 			return new Gson().toJson(resultMap);
 		}
 		
-		
-	
 	@RequestMapping("/home/community/board/post.do")
 	public String boardPost(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
 		request.setAttribute("sessionId", map.get("sessionId"));

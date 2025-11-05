@@ -43,11 +43,12 @@ public class BoardService {
 			return resultMap;
 		}
 		
-		// crew post insert
-		public HashMap<String, Object> crewPostboard(HashMap<String, Object> map) {
+		// crew 채티방입장 insert
+		public HashMap<String, Object> crewCaInsert(HashMap<String, Object> map) {
 			// TODO Auto-generated method stub
 			HashMap<String, Object> resultMap = new HashMap<String, Object>();
-			int cnt = boardMapper.crewBoardPost(map);
+			System.out.println(map);
+			int cnt = boardMapper.crewCatInsertMember(map);
 			
 			if(cnt > 0) {
 				resultMap.put("result", "success");
@@ -56,21 +57,7 @@ public class BoardService {
 			}
 			return resultMap;
 		}
-		
-		// crew post delete
-//		public HashMap<String, Object> crewdeletePost(HashMap<String, Object> map) {
-//			// TODO Auto-generated method stub
-//			HashMap<String, Object> resultMap = new HashMap<String, Object>();
-//			int cnt = boardMapper.crewDeleteBoardPost(map);
-//			
-//			if(cnt > 0) {
-//				resultMap.put("result", "success");
-//			} else {
-//				resultMap.put("result", "fail");
-//			}
-//			return resultMap;
-//		}
-		
+			
 	
 	public HashMap<String, Object> getBoardList(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub

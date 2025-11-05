@@ -150,9 +150,8 @@
                                     <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
                                 </div>
 
-                                <!-- 글쓰기 버튼-->
                                 <div class="write-btn-wrapper">
-                                    <button @click="moveToPost" class="btn">글쓰기</button>
+                                    <button @click="moveToPost" class="btn">크루생성하기</button>
                                 </div>
 
                                 <!--  비밀번호 모달 -->
@@ -216,7 +215,7 @@
                         inputPwd: "",
                         sessionId: "${sessionId}",
                         status: "${sessionStatus}",
-
+                        chatroomNo: "",
                         cnt: 0,
                         page: 1,
                         pageSize: 10,
@@ -299,20 +298,48 @@
                         self.fnList();
                     },
 
-                    fnEnterChat(chatroomNo) {
-                        alert("채팅방 번호 " + chatroomNo + "에 입장합니다.");
-                        location.href = "/home/community/chat/show.do?chatroomNo=" + chatroomNo;
-
-                    },
-
-                    moveToPost() {
-                        alert("글쓰기 페이지로 이동합니다.");
-                        window.location.href = "/home/community/crew/post.do?sessionId=" + this.sessionId;
+                    // 프론트엔드 - 입장하기 버튼 클릭 시 JavaScript
+                    fnEnterChat: function (chatroomNo) {
+                        let self = this;
+                        $.ajax({
+                            url: "/home/crew/chatMove.dox", // 서버에서 DB에 유저 정보 저장 요청
+                            dataType: "json",
+                            type: "POST",
+                            data: {
+                                userId: self.sessionId,
+                                chatroomNo: chatroomNo
+                            },
+                            success: function (response) {
+                                if (response.result == 'success') {
+                                    // DB 저장 성공 확인 후, 이제 존재하는 채팅방 페이지로 이동!
+                                    location.href = "/home/community/chat/show.do?chatroomNo=" + chatroomNo;
+                                } else {
+                                    alert("채팅방 입장 실패: " + (response.message || "권한이 없거나 오류 발생"));
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                alert("서버 통신 중 오류가 발생했습니다. (500 에러 먼저 해결해야 합니다!)");
+                                console.error(xhr.responseText);
+                            }
+                        });
                     },
 
                     fnNotice() {
                         let self = this;
                         pageChange("/home/community/board.do", { type: "B" });
+                    },
+
+                    fnPostView: function (chatroomNo) {
+                        const post = this.list.find(i => i.chatroomNo === chatroomNo);
+                        if (post && post.pwd) {
+                            this.selectedPost = post;
+                            this.pwdCorrect = true;
+                        } else {
+                            location.href = `/home/community/crew/view.do?chatroomNo=${chatroomNo}`;
+                        }
+                    },
+                    moveToPost() {
+                        alert("글쓰기 페이지로 이동합니다.");
                     },
 
                 },

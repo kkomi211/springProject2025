@@ -41,35 +41,18 @@
 		    </if>
 		</select>
 			
-		<!--crew update post -->
-		<insert id="crewBoardPost" parameterType="hashmap">
-			 INSERT INTO CHAT (
-			    CHATROOM_NO,
-			    ROOM_TYPE,
-			    TITLE,
-			    OWNER_ID,
-			    CDATE,
-			    NAME,
-			    INTRO,
-			    UDATE
-			)
-			VALUES (
-			    CHAT_SEQ.NEXTVAL,
-			    'GROUP',              
-			    #{title, jdbcType=VARCHAR},
-			    #{ownerId, jdbcType=VARCHAR},
-			    SYSDATE,
-			    #{name, jdbcType=VARCHAR},
-			    #{intro, jdbcType=VARCHAR},
-			    SYSDATE
-			)
+		<insert id="crewCatInsertMember" parameterType="hashmap">
+		   INSERT INTO CHAT_MEMBER
+		    VALUES (
+		        CHAT_MEMBER_SEQ.NEXTVAL,
+		        SYSDATE, <!-- jdbcType=VARCHAR 추가 -->
+		        'M',
+		        #{userId},
+		        #{chatroomNo}
+		    )
 		</insert>
 
+
 		
-		<!-- crew delect post-->	
-		<!--<delete id="deleteCrewPost" parameterType="hashmap">
-			DELETE FROM CHAT
-			WHERE CHATROOM_NO = #{chatroomNo}
-		</delete>-->
 			
 	</mapper>  
