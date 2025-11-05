@@ -35,6 +35,15 @@ public interface BoardMapper {
 	// crew 채팅방 입장하기(insert)
 	int crewCatInsertMember(HashMap<String, Object> map);
 	
+	// cerw 채팅방 유저 체크 (cnt 값)
+	int selectCrewCheck(HashMap<String, Object> map);
+	
+	// crew 게시판 글 추가(insert)
+	int crewChatInsert(HashMap<String, Object> map);
+	
+	// crew 채팅방 oner and member 추가(insert)
+	int crewChatInsertOner(HashMap<String, Object> map);
+	
 	// 게시글 추가
 	int boardAdd (HashMap<String, Object> map);
 	
