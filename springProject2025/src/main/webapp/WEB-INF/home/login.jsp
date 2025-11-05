@@ -35,18 +35,11 @@
                                 <input type="text" placeholder="검색어를 입력해 주세요.">
                             </div>
                             <div>
-                                <template v-if="sessionId != ''">
-                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
-                                </template>
-                                <template v-else>
-                                    <a href="/home/login.do">로그인</a>
-                                </template>
+                                <a href="/home/login.do">로그인</a>
                             </div>
-                            <div v-if="sessionId == ''">
+                            <div>
                                 <a href="/home/signup.do">가입하기</a>
                             </div>
-                            <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
-                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -155,6 +148,7 @@
                     pwd: "",
                     isLoginModal: false,
                     noLoginModal: false,
+                    sessionId: "${sessionId}",
 
                     //kakao login
                     // location : "${location}"
