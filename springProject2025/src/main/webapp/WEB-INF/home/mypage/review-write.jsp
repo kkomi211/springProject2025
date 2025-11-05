@@ -186,11 +186,11 @@
                                                 style="width: 200px; padding-right: 20px; vertical-align: top;">
                                                 <div
                                                     style="width: 150px; height: 150px; overflow: hidden; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd;">
-                                                    <img :src="imgPath + '/' + imgName" alt="상품 이미지"
+                                                    <img :src="imgPath" alt="상품 이미지"
                                                         style="width: 100%; height: 100%; object-fit: cover;"
-                                                        v-if="imgPath && imgName">
+                                                        v-if="imgPath">
                                                     <span v-else>
-
+                                                        이미지 없음
                                                     </span>
                                                 </div>
                                             </td>
@@ -378,6 +378,7 @@
                             console.log("리스트 응답 데이터:", data);
                             if (data.result == "success") {
                                 self.orderList = data.list;
+                                // alert("self.orderList는 " + self.orderList);
                                 // self.orderList = data.list.map(order => {
                                 // URL로 넘어온 orderNo와 현재 목록의 orderNo가 일치하는지 확인
                                 // let isTargetOrder = order.orderNo === self.orderNo;
