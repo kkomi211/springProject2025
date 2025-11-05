@@ -23,8 +23,10 @@ public class Product {
 	private String typeName;
 	private String typePart;
 	private String depth;
+	
+	private String salePrice;
 	private String saleYN;
-	private int salePrice;
+	
 	
 //	REVIEW 테이블 용
 	private String reviewNo;

@@ -78,6 +78,16 @@
                 color: #333;
             }
         }
+
+
+
+        /* 답변완료 상태에 사용할 초록색 스타일 */
+        .status-completed {
+            color: #4CAF50;
+            /* 초록색 (Green) */
+            font-weight: bold;
+            /* 선택적으로 강조 */
+        }
     </style>
 
     <body>
@@ -185,7 +195,9 @@
                                             <td><a href="javascript:;"
                                                     @click="fnView(item.inquiryNo)">{{item.title}}</a></td>
                                             <td>{{ item.udate }}</td>
-                                            <td>{{ item.status === 'Y' ? '답변완료' : '답변대기' }}</td>
+                                            <td :class="{'status-completed': item.status === 'Y'}">
+                                                {{ item.status === 'Y' ? '답변완료' : '답변대기' }}
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -449,6 +461,11 @@
                     let self = this;
                     pageChange("/home/community/board.do", { type: "B" });
                 },
+                fnSale(){
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                }
             }, // methods
             mounted() {
                 let self = this;

@@ -51,6 +51,7 @@ public class ProductController {
     @ResponseBody
     public String productInfo(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
         HashMap<String, Object> resultMap = productService.getProductUserInfo(map);
+        System.out.println("/product/user/info.dox에서 서버로 되돌려 주기직전 "  + resultMap);
         return new Gson().toJson(resultMap);
     }
     
