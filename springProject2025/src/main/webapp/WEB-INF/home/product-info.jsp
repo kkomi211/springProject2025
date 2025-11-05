@@ -568,6 +568,7 @@
                     if(!self.fnLoginCheck()){
                         alert("로그인후 시도해주세요!")
                         location.href="/home/login.do";
+                        return;
                     }
                     pageChange("/home/product/inquiry/add.do", { productNo: proNo, sessionId: self.sessionId });
                 },
