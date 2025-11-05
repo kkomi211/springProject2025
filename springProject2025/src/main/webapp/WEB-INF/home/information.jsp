@@ -53,7 +53,7 @@
                             <a href="/home/product.do">제품</a>
                         </div>
                         <div>
-                            <a href="/home/product.do">세일</a>
+                            <a href="javascript:;" @click="fnSale">세일</a>
                         </div>
                         <div>
                             <a href="/home/community/board.do">커뮤니티</a>
@@ -322,6 +322,11 @@
                     // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장)
                     window.pageChange("refund-return.do", { sessionId: sessionId });
                 },
+                fnSale() {
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                }
             }, // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분
