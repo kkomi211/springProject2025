@@ -533,7 +533,7 @@
                                                 <p class="product-price">상품 총가격 : {{ formatCurrency(parseInt(item.price)
                                                     *
                                                     parseInt(item.quantity || 1)) }}원</p>
-                                                <p v-if="item.saleYn === 'Y'"
+                                                <p v-if="item.saleYN === 'Y'"
                                                     style="font-size: 16px; font-weight: bold; color: #e74c3c;">
                                                     할인된 상품 총가격 : {{ formatCurrency(parseInt(item.salePrice) *
                                                     parseInt(item.quantity || 1)) }}원
@@ -659,7 +659,7 @@
                 // 총 할인 금액
                 totalDiscountAmount() {
                     return this.selectedItems.reduce((sum, item) => {
-                        if (item.saleYn === 'Y' && item.salePrice) {
+                        if (item.saleYN === 'Y' && item.salePrice) {
                             let originalTotal = parseInt(item.price) * parseInt(item.quantity || 1);
                             let discountedTotal = parseInt(item.salePrice) * parseInt(item.quantity || 1);
                             return sum + (originalTotal - discountedTotal);
@@ -797,7 +797,7 @@
                         let finalPricePerItem;
 
                         // **할인 여부('saleYn')를 확인하여 최종 가격을 결정합니다.**
-                        if (item.saleYn === 'Y' && item.salePrice) {
+                        if (item.saleYN === 'Y' && item.salePrice) {
                             finalPricePerItem = parseInt(item.salePrice);
                         } else {
                             finalPricePerItem = parseInt(item.price);
@@ -975,7 +975,7 @@
 
                 // 제품 상세에서 직접 구매인 경우 따로 함수
                 fnInitDirectPurchase: function (productNo, quantity, productSize) {
-                    alert("바로구매 감지");
+                    // alert("바로구매 감지");
                     let self = this;
                     // 제품 상세 정보 조회
                     let param = {
@@ -1015,11 +1015,11 @@
                                         // 🚨 [핵심 수정] 필요한 모든 가격 및 할인 정보를 가져옵니다.
                                         let originalPrice = selectedSizeInfo.price;
                                         let salePrice = selectedSizeInfo.salePrice || originalPrice; // 할인 가격이 없으면 원가와 동일하게
-                                        let saleYn = selectedSizeInfo.saleYn;
+                                        let saleYN = selectedSizeInfo.saleYN;
 
                                         console.log("originalPrice는 " +originalPrice);
                                         console.log("salePrice는 " +salePrice);
-                                        console.log("saleYn는 " +saleYn);
+                                        console.log("saleYN는 " +saleYN);
 
                                         // selectedItems에 추가
                                         self.selectedItems = [{
@@ -1027,7 +1027,7 @@
                                             productName: productInfo.productName || "",
                                             price: originalPrice, // 정가 (PRICE)
                                             salePrice: salePrice, // 할인된 가격 (SALE_PRICE)
-                                            saleYn: saleYn,       // 할인 여부 (SALE_YN)
+                                            saleYN: saleYN,       // 할인 여부 (SALE_YN)
                                             quantity: parseInt(quantity) || 1,
                                             productSize: productSize || (selectedSizeInfo ? selectedSizeInfo.productSize : ""),
                                             imgPath: firstImg ? firstImg.imgPath : null
@@ -1089,7 +1089,7 @@
 
                 fnCalculateTotals: function () {
                     let self = this;
-                    alert("fnCalculateTotals함수동작");
+                    // alert("fnCalculateTotals함수동작");
                     console.log("selectedItems는 " + JSON.stringify(self.selectedItems));
                     
                     let totalOriginalPrice = 0;
@@ -1099,13 +1099,13 @@
                         const originalPrice = parseInt(item.price) || 0; // 원가 (PRICE)
                         const salePrice = parseInt(item.salePrice) || originalPrice; // 할인된 가격 (SALE_PRICE)
                         const quantity = parseInt(item.quantity || 1);
-                        const saleYn = item.saleYn === 'Y'; // 'Y'일 경우 true
+                        const saleYN = item.saleYN === 'Y'; // 'Y'일 경우 true
 
                         // 1. 총 원가 계산 (할인 여부와 관계없이 원가 기준)
                         totalOriginalPrice += originalPrice * quantity;
 
                         // 2. 총 할인 금액 계산
-                        if (saleYn && originalPrice > salePrice) {
+                        if (saleYN && originalPrice > salePrice) {
                             // 할인 중이고, 원가와 할인 가격이 다를 경우에만 할인액을 계산
                             const discountPerItem = originalPrice - salePrice;
                             totalDiscountAmount += discountPerItem * quantity;
