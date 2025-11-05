@@ -1097,7 +1097,7 @@
                     </div>
                     <div class="bottom-header">
                         <div><a href="/home/product.do">제품</a></div>
-                        <div><a href="fnSale">세일</a></div>
+                        <div><a href="javascript:;" @click="fnSale">세일</a></div>
                         <div><a href="/home/community/board.do">커뮤니티</a></div>
                     </div>
                 </header>
@@ -1145,7 +1145,8 @@
                                             </div>
                                             <div class="product-info-text"> <!-- 텍스트 정보 컨테이너 추가 -->
                                                 <h3>{{ product.productName }}</h3>
-                                                <p class="product-price">{{ formatCurrency(product.productPrice) }}</p>
+                                                <p class="product-price" v-if="product.saleYN == 'N'">{{ formatCurrency(product.productPrice) }}</p>
+                                                <p class="product-price" v-else><del>{{ formatCurrency(product.productPrice) }}</del> {{formatCurrency(product.salePrice)}}</p>
                                             </div>
                                         </a>
                                     </div>
