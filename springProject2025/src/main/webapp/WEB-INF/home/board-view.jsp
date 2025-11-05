@@ -209,7 +209,7 @@
                         
                         
                         <!-- Report popup -->
-                        <div v-if="confirmReport" class="modal-overlay">
+                        <!-- <div v-if="confirmReport" class="modal-overlay">
                             <div class="modal-content">
                                 
                                 <template v-if="!wasReported">
@@ -244,7 +244,7 @@
                                     </div>
                                 </div>
 
-                            </div>
+                            </div> -->
 
                         </main>
 
