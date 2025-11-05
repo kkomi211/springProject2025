@@ -18,7 +18,7 @@
 		<!-- 상단 검은색 바 -->
 		<div class="topbar">
 		    <div><strong>관리자 메인화면</strong></div>
-		    <div>관리자 test123 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none" @click="fnLogout">로그오프</a></div>
+		    <div>관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none" @click="fnLogout">로그오프</a></div>
 		</div>
 
 		<!-- 메뉴 바 (검은색) -->
@@ -76,21 +76,23 @@
                 <table id="inquiry-list-table">
                     <tr>
                         <th>문의번호</th>
+                        <th>상품명</th>
+                        <th>문의제목</th>
                         <th>ID</th>
                         <th>이름</th>
-                        <th>문의제목</th>
                         <th>등록일</th>
                         <th>상태</th>
                     </tr>
                     <tr v-for="item in list">
                         <td>{{item.inquiryNo}}</td>
-                        <td>{{item.userId}}</td>
-                        <td>{{item.name}}</td>
+                        <td>{{item.productName}}</td>
                         <td>
                             <a href="javascript:;" @click="fnInquiryView(item.inquiryNo)">
                                 {{item.title}}
                             </a>
                         </td>
+                        <td>{{item.userId}}</td>
+                        <td>{{item.name}}</td>
                         <td>{{item.cDate}}</td>
                         <td>
                             <span v-if="item.status === 'N'" class="status-waiting">답변 대기</span>
