@@ -345,7 +345,12 @@ html, body {
                             <section v-if="inquiry" class="mypage-content inquiry-view">
                                 <div class="inquiry-detail order-item">
                                     <h2>제목 : {{ inquiry.title }}</h2>
-                                    <p>번호 {{ inquiry.inquiryNo }} | 문의 날짜 {{ inquiry.cdate }}</p>
+                                    <!-- <p>번호 {{ inquiry.inquiryNo }} | 문의 날짜 {{ inquiry.cdate }} | 문의 상품 {{inquiry.productName}} | 문의 상품번호 {{inquiry.productNo}} </p> -->
+                                    <p>
+                                        문의번호 {{ inquiry.inquiryNo }}  &nbsp;&nbsp;|&nbsp;&nbsp;  문의 날짜 {{ inquiry.cdate }}  &nbsp;&nbsp;|&nbsp;&nbsp; 
+                                        문의 상품  <a href="javascript:;" @click="pageChangeProduct(inquiry.productNo)">  {{inquiry.productName}}  </a> &nbsp;&nbsp;|&nbsp;&nbsp;
+                                        문의 상품번호  <a href="javascript:;" @click="pageChangeProduct(inquiry.productNo)">  {{inquiry.productNo}}  </a>
+                                    </p>
                                     <hr>
                                     <div class="inquiry-content-box">
                                         <p v-html="inquiry.content"></p>
@@ -368,7 +373,7 @@ html, body {
                             </section>
 
                             <div v-else class="loading-message">
-                                문의 정보를 불러오는 중입니다...
+                                문의 정보를 불러오는 중입니다... 오래 지속될시 뒤로 돌아가세요
                             </div>
 
                             <div class="button-area" style="text-align: right; margin-top: 20px;">
@@ -527,7 +532,7 @@ html, body {
                         data: { inquiryNo: self.inquiryNo },
                         dataType: "json",
                         success(data) {
-                            console.log("돌아온 detail관련 data는" + data)
+                            console.log("돌아온 detail관련 data는" + JSON.stringify(data))
                             if (data.result === "success") {
                                 self.inquiry = data.info;
                             } else {
@@ -555,6 +560,20 @@ html, body {
                 fnNotice() {
                     let self = this;
                     pageChange("/home/community/board.do", { type: "B" });
+                },
+                // 상품 상세 페이지로 이동하는 새로운 메서드 추가
+                pageChangeProduct: function (productNo) {
+                    let self = this;
+                    console.log("상품번호 " + productNo + "로 상품 상세 페이지 이동");
+                    // page-change.js 파일에 정의된 pageChange 함수 호출
+                    // 예시: 상품 상세 페이지 URL이 '/home/product-detail.do'라고 가정
+                    // window.pageChange("/home/product-info.do", { productNo: productNo, sessionId: self.sessionId });
+                    pageChange("/home/product-info.do", { productNo: productNo });
+                },
+                fnSale(){
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                 },
             }, // methods
             mounted() {

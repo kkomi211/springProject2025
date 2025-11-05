@@ -146,7 +146,7 @@
                                     </div>
                                 </div>
 
-                                    <!-- Logout popup -->
+                                <!-- Logout popup -->
                                 <div v-if="isLoggedOut" class="modal-overlay">
                                     <div class="modal-content">
                                         <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
@@ -201,7 +201,7 @@
                     // Modal Popup
                     pwdMatch: false,
                     pwdCorrect: null,
-                    isLoggedOut : false
+                    isLoggedOut: false
                 };
             },
             methods: {
@@ -331,27 +331,26 @@
                     // 2. pageChange 함수 호출 (전역 함수이므로 window.pageChange 사용 권장)
                     window.pageChange("refund-return.do", { sessionId: sessionId });
                 },
-                fnLogout : function(){
-                let self = this;
-                let param = {};
-                $.ajax({
-                    url: "/member/logout.dox",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    success: function (data) {
-                        if(data.result == "success"){
-                            self.userName = data.userName;
-                            self.isLoggedOut = true;
-                        }
+                fnLogout: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
 
-                    }
-                });
-            },
-            fnNotice(){
-                let self = this;
-                pageChange("/home/community/board.do", {type : "B"});
-            },
+                        }
+                    })
+                },
+                fnNotice() {
+                    let self = this;
+                    pageChange("/home/community/board.do", { type: "B" });
+                },
                 fnSale() {
                     let self = this;
                     self.saleYN = 'Y';

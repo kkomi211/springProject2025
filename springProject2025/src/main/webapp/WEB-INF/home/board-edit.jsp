@@ -400,12 +400,11 @@
                         data: param,
                         success: function (data) {
                             if (data.result == "success") {
-                                self.userName = data.userName;
-                                self.isLoggedOut = true;
+                                location.href = "/home.do";
                             }
 
                         }
-                    });
+                    })
                 }
             }, // methods
             mounted() {

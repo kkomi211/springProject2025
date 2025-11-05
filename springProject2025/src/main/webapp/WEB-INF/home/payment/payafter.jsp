@@ -529,6 +529,11 @@
                     let self = this;
                     pageChange("/home/community/board.do", { type: "B" });
                 },
+                fnSale(){
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                },
             },
             mounted() {
                 let self = this;
