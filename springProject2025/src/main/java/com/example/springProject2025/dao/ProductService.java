@@ -65,8 +65,10 @@ public class ProductService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			int cnt = productmapper.deleteProduct(map);
 			int cnt2 = productmapper.deleteProductImg(map);
+			int cnt3 = productmapper.deleteProductInquiry(map);
+			int cnt4 = productmapper.deleteProductReview(map);
+			int cnt = productmapper.deleteProduct(map);
 			resultMap.put("result", "success");
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
