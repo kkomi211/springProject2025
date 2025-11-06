@@ -5,7 +5,7 @@
 <h3>파일 흐름 간단 구조</h3>
 home.jsp<br>
 	├─login.jsp<br>
-		├─idPwdSearch.jsp
+		&nbsp;├─idPwdSearch.jsp
 	├─signup.jsp
 		├─jusoPopup.jsp
 	/mypage
