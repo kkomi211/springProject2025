@@ -71,21 +71,13 @@
 	
 	<!-- product banner 추가 -->
 	<insert id="insertProductBanner" parameterType="hashmap">
-	    INSERT INTO PRODUCT_BANNER_IMG (
-	        PBANNER_IMG_NO,
-	        TITLE,
-	        PRODUCT_NO,
-	        PRODUCT_IMG_NO,  IMAGE_DIR,       CDATE
-	    ) VALUES (
+	    INSERT INTO PRODUCT_BANNER_IMG 
+	    VALUES (
 	        PRODUCT_BANNER_SEQ.NEXTVAL,
 	        
-	        #{title, jdbcType=VARCHAR},
+	        #{title},
 	        
-	        #{productNo, jdbcType=NUMERIC}, 
-	        
-	        #{productImgNo, jdbcType=VARCHAR},
-	        
-	        NULL,
+	        #{productNo}, 
 	        
 	        SYSDATE
 	    )

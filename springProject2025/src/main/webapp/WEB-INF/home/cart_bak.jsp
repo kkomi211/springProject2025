@@ -34,13 +34,18 @@
                                 <input type="text" placeholder="검색어를 입력해 주세요.">
                             </div>
                             <div>
-                                <a href="/home/login.do">로그인</a>
+                                <template v-if="sessionId != ''">
+                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
+                                </template>
+                                <template v-else>
+                                    <a href="/home/login.do">로그인</a>
+                                </template>
                             </div>
-                            <div>
+                            <div v-if="sessionId == ''">
                                 <a href="/home/signup.do">가입하기</a>
                             </div>
-                            <div><a href="/home/mypage/inquiry.do">문의</a></div>
-                            <div><a href="/home/cart.do">장바구니</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -48,7 +53,7 @@
                             <a href="/home/product.do">제품</a>
                         </div>
                         <div>
-                            <a href="/home/product.do">세일</a>
+                            <a href="javascript:;" @click="fnSale">세일</a>
                         </div>
                         <div>
                             <a href="/home/community/board.do">커뮤니티</a>
@@ -76,9 +81,9 @@
                                     <span class="status-text">{{ order.status }}</span>
                                 </div> -->
                                 <div class="order-details">
-                                    <img v-if="list.imgPath && list.imgName"
-                                        :src="list.imgPath + '/' + list.imgName" :alt="list.productName"
-                                        class="product-image" style="width: 150px; height: 150px; object-fit: cover;">
+                                    <img v-if="list.imgPath && list.imgName" :src="list.imgPath + '/' + list.imgName"
+                                        :alt="list.productName" class="product-image"
+                                        style="width: 150px; height: 150px; object-fit: cover;">
                                     <div v-else class="product-image"
                                         style="background: #f0f0f0; min-width: 150px; height: 150px; display: flex; align-items: center; justify-content: center;">
                                         이미지 없음
@@ -146,7 +151,7 @@
                     sessionId: "${sessionId}",
                     userName: "",
                     cartList: [],
-                    
+
                 };
             },
             methods: {
@@ -158,7 +163,7 @@
                 },
                 fnList: function () {
                     let self = this;
-                    let param = {sessionId: self.sessionId};
+                    let param = { sessionId: self.sessionId };
                     // alert("서버로 보내는 param"+ JSON.stringify(param));
                     $.ajax({
                         url: "/home/cart.dox",
@@ -167,7 +172,7 @@
                         data: param,
                         success: function (data) {
                             // alert("어쩃든 서버로 돌아옴" + JSON.stringify(data));
-                            console.log("어쩃든 서버로 돌아옴 "+JSON.stringify(data))
+                            console.log("어쩃든 서버로 돌아옴 " + JSON.stringify(data))
                             self.cartList = data.list;
                         }
                     });
@@ -189,6 +194,27 @@
                         }
                     });
                 },
+                fnSale() {
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                },
+                fnLogout: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+
+                        }
+                    })
+                }
             }, // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분

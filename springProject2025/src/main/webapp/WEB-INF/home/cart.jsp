@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/css/user-style.css">
+        <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="stylesheet" href="/css/jghstyle.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -130,6 +130,174 @@
             button {
                 font-size: 20px;
             }
+                       /* New CSS from homepage */
+
+html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        #app { /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Header Section (화면 전체 너비) --- */
+        header { /* default 헤더 스타일이 header 태그에 직접 적용되도록 재구성 */
+            width: 100%;
+            background-color: black; /* default top-header의 배경색을 header 전체로 */
+            color: white; /* default top-header의 글자색을 header 전체로 */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .top-header { /* default top-header가 header의 유일한 자식이 됨 */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 150px; /* default top-header의 높이 */
+            padding: 0 40px; /* default footer padding과 맞춤 */
+            box-sizing: border-box; /* 패딩이 width에 포함되도록 */
+        }
+        .top-header div {
+            display: inline-block;
+            text-align: left;
+            font-size: 15px;
+            margin-right: 0; /* flex gap 사용을 위해 개별 div 마진 제거 */
+        }
+        .top-header input {
+            height: 25px;
+            border-radius: 8px;
+            width: 200px;
+        }
+
+        .brand-name { /* top-header 내 brand-name */
+            margin-right: 0; /* top-header div의 default margin-right 상쇄 */
+        }
+        .brand-name div {
+            font-family: 'Fugaz One', sans-serif;
+            font-size: 60px;
+            letter-spacing: 5px;
+            margin-left: 0; /* top-header div의 default margin-left 상쇄 */
+            display: block;
+            color: white; /* default 유지 */
+        }
+        .brand-name a {
+            color: white;
+        }
+
+        #right-items {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* 요소들 간 간격 */
+        }
+        #right-items div {
+            font-size: 15px;
+            white-space: nowrap;
+        }
+        #right-items div a {
+            color: white; /* default top-header의 글자색 */
+        }
+        #right-items div a:hover {
+            color: #eee;
+        }
+
+        .bottom-header {
+            display: flex;
+            justify-content: center;
+            font-size: 30px; /* default bottom-header 폰트 사이즈 */
+            background-color: white; /* bottom-header 배경색 추가 */
+            /* border-bottom: 1px solid #eee; 하단 경계선 */
+            padding: 20px 0; /* 세로 패딩 */
+        }
+        .bottom-header div {
+            display: inline-block;
+            margin-right: 100px; /* default bottom-header div의 마진 */
+            margin-top: 0; /* flex-align으로 중앙 정렬 */
+            text-align: center;
+        }
+        .bottom-header div:last-child {
+            margin-right: 0;
+        }
+        .bottom-header a {
+            color: black; /* default bottom-header 링크색 */
+        }
+        .bottom-header a:hover {
+            color: #007bff;
+        }
+
+                /* --- Footer Section (화면 전체 너비) --- */
+        footer { /* default 푸터 스타일 */
+            width: 100%;
+            height: 200px;
+            background-color: black;
+            color: white;
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 0 40px; /* default footer의 padding */
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+            margin-top: auto; /* #app이 flex-direction: column일 때 푸터를 아래로 밀어냄 */
+            box-sizing: border-box; /* 패딩이 width에 포함되도록 */
+        }
+
+        .footer-left {
+            margin-left: 0; /* padding이 있으므로 margin-left 제거 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .footer-left .company-info div {
+            margin-bottom: 5px;
+            white-space: nowrap;
+        }
+        .copyright {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #bbb;
+            white-space: nowrap;
+        }
+
+        .footer-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+        }
+        .other {
+            margin-bottom: 10px;
+            white-space: nowrap;
+        }
+        .other span {
+            margin-left: 20px;
+            cursor: pointer;
+        }
+        .other span:hover {
+            text-decoration: underline;
+        }
+        .other span:first-child {
+            margin-left: 0;
+        }
+        .socials span {
+            margin-left: 20px;
+            cursor: pointer;
+        }
+        .socials span:hover {
+            text-decoration: underline;
+        }
+        .socials span:first-child {
+            margin-left: 0;
+        }
         </style>
     </head>
 
@@ -167,7 +335,7 @@
                             <a href="/home/product.do">제품</a>
                         </div>
                         <div>
-                            <a href="/home/product.do">세일</a>
+                            <a href="javascript:;" @click="fnSale">세일</a>
                         </div>
                         <div>
                             <a href="/home/community/board.do">커뮤니티</a>
@@ -208,8 +376,7 @@
                                         <input type="checkbox" v-model="list.selected" @change="recomputeSummary"
                                             style="margin-right: 15px; width: 18px; height: 18px; flex-shrink: 0;">
 
-                                        <img :src="getImagePath(list.imgPath)"
-                                            :alt="list.productName"
+                                        <img :src="getImagePath(list.imgPath)" :alt="list.productName"
                                             style="width: 100px; height: 100px; object-fit: contain; margin-right: 20px; border: 1px solid #eee; flex-shrink: 0;"
                                             onerror="this.src='/img/no-image.png'">
 
@@ -221,9 +388,12 @@
                                                 list.quantity }} / 사이즈: {{ list.productSize || 'FREE' }}</p>
                                             <p style="font-size: 14px; color: #666; margin-bottom: 3px;">브랜드 : {{
                                                 list.brand }}</p>
-                                            <p style="font-size: 16px; font-weight: bold;">상품가격 : {{
-                                                formatCurrency(list.price) }}원</p>
-
+                                            <p style="font-size: 16px; font-weight: bold;">상품가격 :
+                                                {{formatCurrency(list.price) }}원</p>
+                                            <p v-if="list.saleYN === 'Y'"
+                                                style="font-size: 16px; font-weight: bold; color: #e74c3c;">
+                                                할인된 가격 : {{list.salePrice}}원
+                                            </p>
                                             <div style="margin-top: 10px;">
                                                 <button @click="openOptionChangeModal(list.productNo, list.cartNo)"
                                                     style="color:#000; border: 1px solid #ccc; padding: 5px 10px; background: #fff; cursor: pointer; font-size: 13px; margin-right: 5px;">
@@ -336,11 +506,10 @@
                     </div>
                     <div class="footer-right">
                         <div class="other">
-                            <span>회사소개</span>
-                            <span>매장안내</span>
-                            <span>공지사항</span>
-                            <span>이용약관</span>
-                            <span>개인정보처리방침</span>
+                            <span><a href="/home/about.do">회사소개</a></span>
+                            <span><a @click="fnNotice">공지사항</a></span>
+                            <span><a href="/home/terms.do">이용약관</a></span>
+                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
                         </div>
                         <div class="socials">
                             <span>INSTAGRAM</span>
@@ -470,15 +639,32 @@
                             self.availableOptions = unique;
 
                             // unitPrice: 가능한 경우 첫 옵션의 가격 사용, 없으면 cart에 있던 가격
+                            // const firstOptWithPrice = unique.find(o => o.price);
+                            // if (firstOptWithPrice) self.unitPrice = firstOptWithPrice.price;
+                            // else {
+                            //     const cartItem = self.cartList.find(i => i.productNo === productNo || i.cartNo === productNo);
+                            //     if (cartItem) self.unitPrice = parseInt(cartItem.price) || self.unitPrice;
+                            // }
+
+                            // unitPrice: 가능한 경우 첫 옵션의 가격 사용, 없으면 cart에 있던 가격
                             const firstOptWithPrice = unique.find(o => o.price);
-                            if (firstOptWithPrice) self.unitPrice = firstOptWithPrice.price;
-                            else {
-                                const cartItem = self.cartList.find(i => i.productNo === productNo || i.cartNo === productNo);
-                                if (cartItem) self.unitPrice = parseInt(cartItem.price) || self.unitPrice;
-                            }
+                            // 초기 선택값: 만약 cartItem이 있고 그 상품의 productSize가 있으면 그 사이즈에 해당하는 option을 찾아 선택 
+                            const cartItem = self.cartList.find(i => i.productNo === productNo || i.cartNo === productNo); // 장바구니 항목
+
+                            // [수정] 옵션 가격 결정 로직: 
+                            // 1. 카트 항목이 할인 상품(saleYn='Y')이면 salePrice를 사용합니다.
+                            // 2. 아니면 옵션 목록의 첫 번째 가격을 사용합니다.
+                            // 3. 그것도 없으면 카트 항목의 price를 사용합니다.
+                            if (cartItem && cartItem.saleYN === 'Y' && cartItem.salePrice != null) {
+                                self.unitPrice = parseInt(cartItem.salePrice);
+                            } else if (firstOptWithPrice) {
+                                self.unitPrice = firstOptWithPrice.price;
+                            } else if (cartItem) {
+                                self.unitPrice = parseInt(cartItem.price) || self.unitPrice;
+                            }
 
                             // 초기 선택값: 만약 cartItem이 있고 그 상품의 productSize가 있으면 그 사이즈에 해당하는 option을 찾아 선택
-                            const cartItem = self.cartList.find(i => i.productNo === productNo || i.cartNo === productNo);
+                            // const cartItem = self.cartList.find(i => i.productNo === productNo || i.cartNo === productNo);
                             if (cartItem && cartItem.productSize) {
                                 // productSize로 일치하는 option 찾기 (label 기준)
                                 const match = unique.find(o => String(o.label) === String(cartItem.productSize));
@@ -588,21 +774,33 @@
                     });
                 },
                 recomputeSummary: function () {
-                    let total = 0;
+                    let total = 0; // 할인 전 총 상품 금액 (상품 금액 항목에 표시)
+                    let totalDisc = 0; // 총 할인 금액
                     let count = 0;
                     this.cartList.forEach(item => {
                         if (item.selected) {
                             const price = parseInt(item.price);
+                            const salePrice = item.saleYN === 'Y' ? parseInt(item.salePrice) : price; // 할인 가격 적용
                             const quantity = parseInt(item.quantity || 1);
+
                             if (!isNaN(price) && !isNaN(quantity)) {
+                                // 1. 총 상품 금액 (할인 전 금액 합산)
                                 total += price * quantity;
+
+                                // 2. 총 할인 금액 (정가 - 할인 가격)
+                                if (item.saleYN === 'Y' && !isNaN(salePrice) && salePrice < price) {
+                                    totalDisc += (price - salePrice) * quantity;
+                                }
+
                                 count += 1;
                             }
                         }
                     });
-                    this.totalProductPrice = total;
-                    this.totalDiscount = 0;
-                    this.deliveryFee = total >= 50000 || total === 0 ? 0 : 3000;
+                    this.totalProductPrice = total; // 총 상품 금액 (할인 전 합산)
+                    this.totalDiscount = totalDisc; // 총 할인 금액
+                    // 총 금액 - 총 할인 금액으로 배송비 기준을 잡아야 정확합니다.
+                    const finalProductTotal = total - totalDisc;
+                    this.deliveryFee = finalProductTotal >= 50000 || finalProductTotal === 0 ? 0 : 3000;
                     this.selectedCount = count;
                     this.isAllSelected = this.cartList.length > 0 && this.cartList.every(i => !!i.selected);
                 },
@@ -658,7 +856,7 @@
                     } else {
                         // 초과 시 알림 및 고정
                         this.currentQty = stock;
-                        alert('재고가 부족합니다. 최대 '+stock+'개 까지 가능합니다.');
+                        alert('재고가 부족합니다. 최대 ' + stock + '개 까지 가능합니다.');
                     }
                 },
 
@@ -757,7 +955,7 @@
                 proceedToCheckout: function () {
                     // 체크된 상품만 필터링
                     let selectedItems = this.cartList.filter(item => item.selected);
-                    
+
                     if (selectedItems.length === 0) {
                         alert("주문할 상품을 선택해주세요.");
                         return;
@@ -765,14 +963,15 @@
 
                     // 체크된 상품의 cartNo 목록만 추출 (기존 프로젝트 스타일)
                     let selectedCartNos = selectedItems.map(item => item.cartNo);
-                    
+
                     // pageChange 함수를 사용하여 paybefore.jsp로 이동
                     // sessionId는 브라우저 세션에서 자동으로 가져오므로 파라미터로 전달할 필요 없음
                     if (typeof pageChange === 'function') {
+                        // alert("결제직전페이지로 넘기는 데이터 확인 " + JSON.stringify(selectedCartNos) ); 
                         pageChange("payment/paybefore.do", {
                             selectedCartNos: selectedCartNos
                         });
-                    } 
+                    }
                     // else {
                     //     // pageChange 함수가 없는 경우 직접 URL로 이동
                     //     let url = "/home/payment/paybefore.do?sessionId=" + encodeURIComponent(this.sessionId) + 
@@ -780,6 +979,31 @@
                     //     window.location.href = url;
                     // }
                 },
+                fnSale() {
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                },
+                fnNotice(){
+                    let self = this;
+                    pageChange("/home/community/board.do", {type : "B"});
+                },
+                fnLogout: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+
+                        }
+                    })
+                }
 
             }, // methods
             mounted() {

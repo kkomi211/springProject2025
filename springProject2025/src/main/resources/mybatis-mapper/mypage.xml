@@ -30,10 +30,11 @@
 	
 		<!-- 나의 상품 문의내역 1개 불러오기 -->
 		<select id="selectMyInquiry" parameterType="hashmap" resultType="com.example.springProject2025.model.MyInquiry">
-			SELECT *
-			FROM PRODUCT_INQUIRY
-			WHERE 1=1
-			
+			SELECT
+			* 
+			FROM 
+			PRODUCT_INQUIRY I
+			INNER JOIN PRODUCT P ON I.PRODUCT_NO = P.PRODUCT_NO 
 			AND INQUIRY_NO = #{inquiryNo}
 		</select>
 		

@@ -364,6 +364,7 @@ button:hover {
   padding: 20px;
   margin-top: 40px;
   margin-bottom: 20px;
+  height: 110px;
 }
 
 .comment-header {
@@ -381,7 +382,7 @@ button:hover {
 
 .comment-input textarea {
   flex: 1;
-  height: 80px;
+  height: 70px;
   resize: none;
   border: none;
   border-radius: 8px;
@@ -684,7 +685,7 @@ html, body {
             justify-content: center;
             font-size: 30px; /* default bottom-header 폰트 사이즈 */
             background-color: white; /* bottom-header 배경색 추가 */
-            border-bottom: 1px solid #eee; /* 하단 경계선 */
+            /* border-bottom: 1px solid #eee; 하단 경계선 */
             padding: 20px 0; /* 세로 패딩 */
         }
         .bottom-header div {

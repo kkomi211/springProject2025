@@ -5,11 +5,12 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/css/user-style.css">
+        <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="stylesheet" href="/css/crew-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
+        <script src="/js/page-change.js"></script>
         <title>커뮤니티 게시판</title>
 
         <script src="https://code.jquery.com/jquery-3.7.1.js"
@@ -50,7 +51,7 @@
 
                         <div class="bottom-header">
                             <div><a href="/home/product.do">제품</a></div>
-                            <div><a href="/home/product.do">세일</a></div>
+                            <div><a href="javascript:;" @click="fnSale">세일</a></div>
                             <div><a href="/home/community/board.do">커뮤니티</a></div>
                         </div>
                     </header>
@@ -313,15 +314,22 @@
                             }
                         });
                     },
-
-                    fnNotice() {
+                    fnNotice(){
                         let self = this;
-                        pageChange("/home/community/board.do", { type: "B" });
+                        pageChange("/home/community/board.do", {type : "B"});
                     },
                     moveToPost: function () {
                         let self = this;
                         pageChange("/home/community/crew/post.do", { sessionId: self.sessionId });
-
+                    },
+                    fnPostView: function (chatroomNo) {
+                        const post = this.list.find(i => i.chatroomNo === chatroomNo);
+                        if (post && post.pwd) {
+                            this.selectedPost = post;
+                            this.pwdCorrect = true;
+                        } else {
+                            location.href = `/home/community/crew/view.do?chatroomNo=${chatroomNo}`;
+                        }
                     },
 
                     fnSale() {
@@ -361,7 +369,11 @@
                             }
                         });
                     },
-
+                    fnSale() {
+                        let self = this;
+                        self.saleYN = 'Y';
+                        pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                    }
                 },
                 mounted() {
                     let self = this;

@@ -110,13 +110,26 @@
                     pageSize: 15,
                     page: "1",
                     totalPage: "",
-                    orderBy : "down"
+                    orderBy: "down"
                 };
             },
             methods: {
                 // 함수(메소드) - (key : function())
                 fnLogout: function () {
-                    pageChange("/home.do", { sessionId: "" });
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+                        }
+                    });
+
                 },
                 fnList() {
                     let self = this;
@@ -125,7 +138,7 @@
                         keytype: self.keytype,
                         page: (self.page - 1) * 15,
                         pageSize: self.pageSize,
-                        orderBy : self.orderBy
+                        orderBy: self.orderBy
                     };
                     $.ajax({
                         url: "/product/list.dox",
@@ -151,7 +164,7 @@
                 fnInfoProduct(productNo) {
                     pageChange("/admin/product-info.do", { productNo: productNo });
                 },
-                fnOrderBy(status){
+                fnOrderBy(status) {
                     let self = this;
                     self.orderBy = status;
                     self.fnList();

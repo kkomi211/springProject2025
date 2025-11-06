@@ -143,6 +143,7 @@ public class ProductService {
 		try {
 			Product info = productmapper.selectProductInfoUser(map);
 			List<Product> sizeList = productmapper.selectSizeAndQuantity(map);
+			System.out.println("sizeList은" + sizeList);
 			resultMap.put("info", info);
 			resultMap.put("sizeList", sizeList);
 			
