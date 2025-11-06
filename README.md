@@ -39,8 +39,8 @@ home.jsp
 		├─about.jsp
 		├─privacy-policy.jsp
 		├─terms.jsp
-
-
+</pre>
+<pre>
 admin
 	├─admin-main.jsp(admin default screen)
    	├─banner.jsp
