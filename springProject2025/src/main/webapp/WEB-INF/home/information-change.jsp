@@ -834,8 +834,8 @@
                     let self = this;
                     self.saleYN = 'Y';
                     pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
-                }
-            },
+                },
+            
             
             fnNotice(){
                 let self = this;
