@@ -3,9 +3,10 @@
 
 
 <h3>파일 흐름 간단 구조</h3>
-home.jsp<br>
-	├─login.jsp<br>
-		&nbsp;├─idPwdSearch.jsp
+<pre>
+home.jsp
+	├─login.jsp
+		├─idPwdSearch.jsp
 	├─signup.jsp
 		├─jusoPopup.jsp
 	/mypage
@@ -39,7 +40,7 @@ home.jsp<br>
 		/privacy-policy.jsp
 		/terms.jsp
 
-├─ 
+
 admin
 	/admin-main.jsp(admin default screen)
    	/banner.jsp
@@ -54,3 +55,4 @@ admin
       		/board-report-view.jsp
    	/user-list.jsp
       		/user-list-view.jsp
+</pre>
