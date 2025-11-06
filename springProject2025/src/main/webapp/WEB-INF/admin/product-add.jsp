@@ -184,6 +184,8 @@
                         , contentType: false
                         , data: form
                         , success: function (data) {
+                            console.log("사진 == >");
+                            
                             console.log(data);
 
                         }

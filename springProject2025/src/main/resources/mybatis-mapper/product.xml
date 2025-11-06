@@ -212,6 +212,20 @@
 		VALUES (PRODUCT_IMG_SEQ.NEXTVAL, #{productNo}, #{path}, #{fileName}, #{orgName}, #{size}, #{ext})
 	</insert>
 	
+	<update id="updateProductImg" parameterType="hashmap">
+		UPDATE PRODUCT_IMG
+		SET IMG_PATH = #{path}, IMG_NAME = #{fileName}, IMG_ORGNAME = #{orgName}, IMG_SIZE = #{size}, IMG_ETC = #{ext}
+		WHERE PRODUCT_NO IN (
+			SELECT PRODUCT_NO
+			FROM PRODUCT
+			WHERE PRODUCT_NAME IN(
+				SELECT PRODUCT_NAME
+				FROM PRODUCT
+				WHERE PRODUCT_NO = #{productNo}
+			)
+		)
+	</update>
+	
 	<delete id="deleteProductImg" parameterType="hashmap">
 		DELETE FROM PRODUCT_IMG
 		WHERE PRODUCT_NO = #{productNo}

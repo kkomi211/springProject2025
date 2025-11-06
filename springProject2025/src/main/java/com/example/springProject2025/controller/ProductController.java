@@ -223,6 +223,67 @@ public class ProductController {
             return new Gson().toJson(res);
         }
     }
+    
+ // ===== 파일 업로드(JSON 응답) =====
+    @RequestMapping(value = "/product/update/fileUpload.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String result1(
+            @RequestParam("file1") MultipartFile multi,
+            @RequestParam("productNo") int productNo,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Model model) {
+
+        Map<String, Object> res = new HashMap<>();
+        try {
+            if (multi == null || multi.isEmpty() || multi.getOriginalFilename() == null) {
+                res.put("ok", false);
+                res.put("msg", "파일이 비어있습니다.");
+                return new Gson().toJson(res);
+            }
+
+            String originFilename = multi.getOriginalFilename();
+            String extName = originFilename.substring(originFilename.lastIndexOf(".")); // 점 포함
+            long size = multi.getSize();
+            String saveFileName = genSaveFileName(extName);
+
+            // 실제 저장 경로(프로젝트 내 webapp/img)
+            String baseDir = System.getProperty("user.dir") + File.separator + "src"
+                    + File.separator + "main" + File.separator + "webapp" + File.separator + "img";
+
+            File dir = new File(baseDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            File file = new File(dir, saveFileName);
+            multi.transferTo(file);
+
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("fileName", saveFileName);
+            map.put("path", "/img/" + saveFileName);
+            map.put("productNo", productNo);
+            map.put("orgName", originFilename);
+            map.put("size", size);
+            map.put("ext", extName);
+            System.out.println(map);
+            // DB insert
+            productService.updateProductImg(map);
+
+            // JSON 응답
+            res.put("ok", true);
+            res.put("fileName", saveFileName);
+            res.put("path", "/img/" + saveFileName);
+            res.put("productNo", productNo);
+            return new Gson().toJson(res);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            res.put("ok", false);
+            res.put("msg", e.getMessage());
+            return new Gson().toJson(res);
+        }
+    }
 
     // 현재 시간을 기준으로 파일 이름 생성
     private String genSaveFileName(String extName) {
