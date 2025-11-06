@@ -262,5 +262,10 @@ public class ProductService {
 		return resultMap;
 	}
 
+	public void updateProductImg(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		int cnt = productmapper.updateProductImg(map);
+	}
+
 	
 }
