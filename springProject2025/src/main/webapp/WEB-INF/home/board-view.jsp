@@ -379,12 +379,13 @@
                                 <div class="comment-view" v-if="commentList.length > 0">
                                     <div v-for="item in commentList" :key="item.commentNo" class="comment-card">
                                         <div class="comment-header">
-                                            <div class="comment-author">{{ userName }}</div>
+                                            <div class="comment-author">{{ item.nickname }}</div>
                                             <div class="comment-date">{{ item.chardate }}</div>
                                         </div>
                                         <div class="comment-body">
                                             {{ item.contents }}
                                         </div>
+                                        <div style="float: right;" v-if="sessionId == item.userId"><button @click="fnDeleteComment(item.commentNo)">삭제</button></div>
                                     </div>
                                 </div>
 
@@ -710,6 +711,21 @@
                 fnNotice() {
                     let self = this;
                     pageChange("/home/community/board.do", { type: "B" });
+                },
+                fnDeleteComment(commentNo){
+                    let self = this;
+                    let param = {
+                        commentNo : commentNo
+                    };
+                    $.ajax({
+                        url: "/board/delete/comment.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            self.fnViewComment();
+                        }
+                    })
                 }
             }, // methods
             mounted() {
