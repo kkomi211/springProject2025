@@ -3,7 +3,7 @@
 
 
 <h3>파일 흐름 간단 구조</h3>
-home.jsp
+home.jsp<br>
 	├─login.jsp
 		├─idPwdSearch.jsp
 	├─signup.jsp
