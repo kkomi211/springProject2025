@@ -1062,6 +1062,7 @@
                         right: -30px;
                     }
                 }
+
             </style>
 
         </head>
@@ -1110,7 +1111,7 @@
                                     <div class="swiper-wrapper">
                                         <div class="swiper-slide" v-for="slide in mainSlideImages"
                                             :key="slide.BANNER_ID">
-                                            <a :href="slide.LINK_URL" target="_blank">
+                                            <a :href="slide.linkUrl">
                                                 <img :src="slide.imageDir" :alt="slide.title">
                                             </a>
                                         </div>
@@ -1128,11 +1129,13 @@
 
                                 <!-- 왼쪽 고정 이미지 및 소개 영역 -->
                                 <div class="fixed-image-area">
-                                    <img src="/img/productmain.jpg">
-                                    <div class="image-text-overlay">
-                                        <h3>GEL-CUMULUS 16</h3>
-                                        <p>혁신적인 쿠셔닝과 최적의 안정성을 자랑합니다. <br>매일의 러닝에 최적화된 편안함.</p>
-                                    </div>
+                                    <a href="/home/product-info.do?productNo=282">
+                                        <img src="/img/productmain.jpg">
+                                        <div class="image-text-overlay">
+                                            <h3>GEL-CUMULUS 16</h3>
+                                            <p>혁신적인 쿠셔닝과 최적의 안정성을 자랑합니다. <br>매일의 러닝에 최적화된 편안함.</p>
+                                        </div>
+                                    </a>
                                 </div>
 
                                 <!-- 오른쪽에 상품 4개 그리드 -->
@@ -1144,6 +1147,7 @@
                                                 <img :src="product.imgPath" :alt="product.productName">
                                             </div>
                                             <div class="product-info-text"> <!-- 텍스트 정보 컨테이너 추가 -->
+                                                <h4>{{ product.brand }}</h4>
                                                 <h3>{{ product.productName }}</h3>
                                                 <p class="product-price" v-if="product.saleYN == 'N'">{{ formatCurrency(product.productPrice) }}</p>
                                                 <p class="product-price" v-else><del>{{ formatCurrency(product.productPrice) }}</del> {{formatCurrency(product.salePrice)}}</p>
@@ -1193,7 +1197,9 @@
                                         </a>
                                     </div>
                                 </div>
-                                <span class="crew-overlay-text">JOIN A CREW</span> <!-- 텍스트는 항상 보임, 중앙 위치 -->
+                                <a href="/home/community/crew.do">
+                                    <span class="crew-overlay-text">JOIN A CREW</span> <!-- 텍스트는 항상 보임, 중앙 위치 -->
+                                </a>    
                             </div>
                         </section>
                     </main>
