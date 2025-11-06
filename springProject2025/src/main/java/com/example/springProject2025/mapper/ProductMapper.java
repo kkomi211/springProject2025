@@ -72,4 +72,8 @@ public interface ProductMapper {
 
 	int UpdateQuantity(HashMap<String, Object> map);
 
+	int deleteProductInquiry(HashMap<String, Object> map);
+
+	int deleteProductReview(HashMap<String, Object> map);
+
 }

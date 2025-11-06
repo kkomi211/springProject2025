@@ -605,7 +605,7 @@ html, body {
             color: inherit;
         }
         a:hover {
-            text-decoration: underline;
+            /* text-decoration: underline; */
         }
 
         /* --- Header Section (화면 전체 너비) --- */

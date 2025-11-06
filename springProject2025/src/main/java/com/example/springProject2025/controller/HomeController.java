@@ -128,7 +128,7 @@ public class HomeController {
 		request.setAttribute("sessionId", map.get("sessionId"));
 		request.setAttribute("category", map.get("category"));
 		request.setAttribute("keyword", map.get("keyword"));
-		request.setAttribute("saleYN", map.get("saleYN"));
+		request.setAttribute("saleYN", map.get("saleYN"));		
 		System.out.println(map);
 		return "home/product"; // .jsp빠진형태
 	}
