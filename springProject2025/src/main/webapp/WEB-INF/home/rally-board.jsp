@@ -94,18 +94,13 @@
                             </nav>
                         </aside>
 
-                        <main class="main-content">
-                            <div class="board-header">
-                                <h1 class="main-title">
-                                    대회정보 •
-                                    {{
-                                    type === '' ? '전체 게시판' :
-                                    type === 'B' ? '공지사항' :
-                                    type === 'Q' ? '문의게시판' :
-                                    type === 'F' ? '자유게시판' :
-                                    type === 'R' ? '대회게시판' : '게시판'
-                                    }}
-                                </h1>
+                        
+
+                            <main class="main-content">
+                                <div class="board-header">
+                                    <h1 class="main-title">
+                                        대회 정보            
+                                    </h1>
 
                                 <div class="search-bar">
                                     <div class="search-wrapper">
@@ -319,11 +314,13 @@
                         let self = this;
                         pageChange("/home/community/board.do", { type: "B" });
                     },
+
                     fnSale() {
                         let self = this;
                         self.saleYN = 'Y';
                         pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                     }
+
 
                 },
                 mounted() {

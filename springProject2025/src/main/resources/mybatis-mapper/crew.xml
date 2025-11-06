@@ -40,19 +40,43 @@
 		        )
 		    </if>
 		</select>
-			
+		
+		<!-- crew chatting cnt in check-->
+		<select id="selectCrewCheck" parameterType="hashmap" resultType="int">
+			SELECT COUNT(*) AS CNT
+		    FROM CHAT_MEMBER 
+		    WHERE USER_ID = #{userId}
+		    AND CHATROOM_NO = #{chatroomNo}
+		</select>
+		
+		<!-- 채팅방 입장 후 CHAT_MEMBER insert-->
 		<insert id="crewCatInsertMember" parameterType="hashmap">
 		   INSERT INTO CHAT_MEMBER
-		    VALUES (
-		        CHAT_MEMBER_SEQ.NEXTVAL,
-		        SYSDATE, <!-- jdbcType=VARCHAR 추가 -->
-		        'M',
-		        #{userId},
-		        #{chatroomNo}
+		   VALUES (
+		       CHAT_MEMBER_SEQ.NEXTVAL,
+		       SYSDATE, 
+		       'M',
+		       #{userId},
+		       #{chatroomNo}
 		    )
 		</insert>
-
-
 		
-			
+		
+		<insert id="crewChatInsert" parameterType="hashmap" useGeneratedKeys="true" keyColumn="CHATROOM_NO" keyProperty="chatroomNo" >
+			INSERT INTO CHAT 
+			VALUES(CHAT_SEQ.NEXTVAL, 'GROUP', #{title}, #{userId}, SYSDATE, #{name}, #{intro}, SYSDATE)
+		</insert>
+		
+		<insert id="crewChatInsertOner" parameterType="hashmap">
+		   INSERT INTO CHAT_MEMBER
+		   VALUES (
+		       CHAT_MEMBER_SEQ.NEXTVAL,
+		       SYSDATE, 
+		       'O',
+		       #{userId},
+		       #{chatroomNo}
+		    )
+		</insert>
+		
+		
 	</mapper>  

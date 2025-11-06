@@ -4,43 +4,54 @@
 
 	<mapper namespace="com.example.springProject2025.mapper.BoardMapper">
 		
-		<!-- rally board.xml(대회 게시판) list-->
-		<select id="selectRallyBoardList" parameterType="hashmap" resultType="com.example.springProject2025.model.Board">
-			SELECT 
-			    R.*, 
-			    I.IMG_PATH
-			FROM RALLY R
-			INNER JOIN RALLY_IMG I ON R.RALLY_NO = I.RALLY_NO
-			WHERE 1=1
-			<if test="keyword != null and keyword != ''">
-			    AND (
-			        R.RALLY_NAME LIKE '%' || #{keyword} || '%'
-			        OR R.RALLY_DATE LIKE '%' || #{keyword} || '%'
-			        OR R.APPLICATION_PERIOD LIKE '%' || #{keyword} || '%'
-			        OR R.PRICE LIKE '%' || #{keyword} || '%'
-			        OR R.PHONE LIKE '%' || #{keyword} || '%'
-			        OR R.TYPE LIKE '%' || #{keyword} || '%'
-			        OR R.HOST LIKE '%' || #{keyword} || '%'
-			    )
-			</if>
-			ORDER BY R.RALLY_NO DESC
-			OFFSET ( (#{page} - 1) * #{pageSize} ) ROWS FETCH NEXT #{pageSize} ROWS ONLY
-		</select>
-		
-		<select id="selectRallyBoardCnt" parameterType="hashmap" resultType="int">
-		    SELECT COUNT(*) AS CNT
-		    FROM RALLY R
-		    INNER JOIN RALLY_IMG I ON R.RALLY_NO = I.RALLY_NO
-		    WHERE 1=1
-		    <if test="type != null and type != ''">
-		        AND TYPE = #{type}
-		    </if>
-		    <if test="keyword != null and keyword != ''">
-		        AND (
-		            RALLY_NO LIKE '%' || #{keyword} || '%'
-		            OR RALLY_NAME LIKE '%' || #{keyword} || '%'
-		        )
-		    </if>
-		</select>
+			<!-- 리스트 -->
+			<select id="selectRallyBoardList" parameterType="hashmap" resultType="com.example.springProject2025.model.Board">
+			    SELECT 
+			        R.*, 
+			        I.IMG_PATH
+			    FROM RALLY R
+			    INNER JOIN (
+			        SELECT RALLY_NO, MIN(IMG_PATH) AS IMG_PATH -- 대표 이미지 한 개만 선택
+			        FROM RALLY_IMG
+			        GROUP BY RALLY_NO
+			    ) I ON R.RALLY_NO = I.RALLY_NO
+			    WHERE 1=1
+			    <if test="keyword != null and keyword != ''">
+			        AND (
+			            R.RALLY_NAME LIKE '%' || #{keyword} || '%'
+			            OR TO_CHAR(R.RALLY_DATE, 'YYYY-MM-DD') LIKE '%' || #{keyword} || '%'
+			            OR R.APPLICATION_PERIOD LIKE '%' || #{keyword} || '%'
+			            OR R.PRICE LIKE '%' || #{keyword} || '%'
+			            OR R.PHONE LIKE '%' || #{keyword} || '%'
+			            OR R.TYPE LIKE '%' || #{keyword} || '%'
+			            OR R.HOST LIKE '%' || #{keyword} || '%'
+			        )
+			    </if>
+			    ORDER BY R.RALLY_NO DESC
+			    OFFSET ( (#{page} - 1) * #{pageSize} ) ROWS FETCH NEXT #{pageSize} ROWS ONLY
+			</select>
+			
+			<!-- 카운트 -->
+			<select id="selectRallyBoardCnt" parameterType="hashmap" resultType="int">
+			    SELECT COUNT(DISTINCT R.RALLY_NO) AS CNT
+			    FROM RALLY R
+			    INNER JOIN RALLY_IMG I ON R.RALLY_NO = I.RALLY_NO
+			    WHERE 1=1
+			    <if test="type != null and type != ''">
+			        AND R.TYPE = #{type}
+			    </if>
+			    <if test="keyword != null and keyword != ''">
+			        AND (
+			            R.RALLY_NAME LIKE '%' || #{keyword} || '%'
+			            OR TO_CHAR(R.RALLY_DATE, 'YYYY-MM-DD') LIKE '%' || #{keyword} || '%'
+			            OR R.APPLICATION_PERIOD LIKE '%' || #{keyword} || '%'
+			            OR R.PRICE LIKE '%' || #{keyword} || '%'
+			            OR R.PHONE LIKE '%' || #{keyword} || '%'
+			            OR R.TYPE LIKE '%' || #{keyword} || '%'
+			            OR R.HOST LIKE '%' || #{keyword} || '%'
+			        )
+			    </if>
+			</select>
+
 		
 	</mapper>  

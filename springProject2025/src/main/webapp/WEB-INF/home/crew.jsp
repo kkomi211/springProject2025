@@ -16,175 +16,7 @@
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-        <style>
-             /* New CSS from homepage */
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            color: #333;
-        }
-        #app { /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-
-        /* --- Header Section (화면 전체 너비) --- */
-        header { /* default 헤더 스타일이 header 태그에 직접 적용되도록 재구성 */
-            width: 100%;
-            background-color: black; /* default top-header의 배경색을 header 전체로 */
-            color: white; /* default top-header의 글자색을 header 전체로 */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .top-header { /* default top-header가 header의 유일한 자식이 됨 */
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 150px; /* default top-header의 높이 */
-            padding: 0 40px; /* default footer padding과 맞춤 */
-            box-sizing: border-box; /* 패딩이 width에 포함되도록 */
-        }
-        .top-header div {
-            display: inline-block;
-            text-align: left;
-            font-size: 15px;
-            margin-right: 0; /* flex gap 사용을 위해 개별 div 마진 제거 */
-        }
-        .top-header input {
-            height: 25px;
-            border-radius: 8px;
-            width: 200px;
-        }
-
-        .brand-name { /* top-header 내 brand-name */
-            margin-right: 0; /* top-header div의 default margin-right 상쇄 */
-        }
-        .brand-name div {
-            font-family: 'Fugaz One', sans-serif;
-            font-size: 60px;
-            letter-spacing: 5px;
-            margin-left: 0; /* top-header div의 default margin-left 상쇄 */
-            display: block;
-            color: white; /* default 유지 */
-        }
-        .brand-name a {
-            color: white;
-        }
-
-        #right-items {
-            display: flex;
-            align-items: center;
-            gap: 20px; /* 요소들 간 간격 */
-        }
-        #right-items div {
-            font-size: 15px;
-            white-space: nowrap;
-        }
-        #right-items div a {
-            color: white; /* default top-header의 글자색 */
-        }
-        #right-items div a:hover {
-            color: #eee;
-        }
-
-        .bottom-header {
-            display: flex;
-            justify-content: center;
-            font-size: 30px; /* default bottom-header 폰트 사이즈 */
-            background-color: white; /* bottom-header 배경색 추가 */
-            /* border-bottom: 1px solid #eee; 하단 경계선 */
-            padding: 20px 0; /* 세로 패딩 */
-        }
-        .bottom-header div {
-            display: inline-block;
-            margin-right: 100px; /* default bottom-header div의 마진 */
-            margin-top: 0; /* flex-align으로 중앙 정렬 */
-            text-align: center;
-        }
-        .bottom-header div:last-child {
-            margin-right: 0;
-        }
-        .bottom-header a {
-            color: black; /* default bottom-header 링크색 */
-        }
-        .bottom-header a:hover {
-            color: #007bff;
-        }
-
-                /* --- Footer Section (화면 전체 너비) --- */
-        footer { /* default 푸터 스타일 */
-            width: 100%;
-            height: 200px;
-            background-color: black;
-            color: white;
-            align-items: center;
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            padding: 0 40px; /* default footer의 padding */
-            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
-            margin-top: auto; /* #app이 flex-direction: column일 때 푸터를 아래로 밀어냄 */
-            box-sizing: border-box; /* 패딩이 width에 포함되도록 */
-        }
-
-        .footer-left {
-            margin-left: 0; /* padding이 있으므로 margin-left 제거 */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .footer-left .company-info div {
-            margin-bottom: 5px;
-            white-space: nowrap;
-        }
-        .copyright {
-            margin-top: 8px;
-            font-size: 0.9em;
-            color: #bbb;
-            white-space: nowrap;
-        }
-
-        .footer-right {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-end;
-        }
-        .other {
-            margin-bottom: 10px;
-            white-space: nowrap;
-        }
-        .other span {
-            margin-left: 20px;
-            cursor: pointer;
-        }
-        .other span:hover {
-            text-decoration: underline;
-        }
-        .other span:first-child {
-            margin-left: 0;
-        }
-        .socials span {
-            margin-left: 20px;
-            cursor: pointer;
-        }
-        .socials span:hover {
-            text-decoration: underline;
-        }
-        .socials span:first-child {
-            margin-left: 0;
-        }
-        </style>
+        <script src="/js/page-change.js"></script>
     </head>
 
     <body>
@@ -247,7 +79,7 @@
                                         </li>
                                         <li>
                                             <span class="icon">💬</span>
-                                            <a href="/home/community/rally.do">대회정보</a>
+                                            <a href="/home/community/rally.do">대회 정보</a>
                                         </li>
                                         <li>
                                             <span class="icon">👤</span>
@@ -261,25 +93,11 @@
                             <main class="main-content">
                                 <div class="board-header">
                                     <h1 class="main-title">
-                                        게시판 •
-                                        {{
-                                        type === '' ? '전체 게시판' :
-                                        type === 'B' ? '공지사항' :
-                                        type === 'Q' ? '문의게시판' :
-                                        type === 'F' ? '자유게시판' :
-                                        type === 'R' ? '대회게시판' : '게시판'
-                                        }}
+                                        크루 찾기
                                     </h1>
 
                                     <div class="search-bar">
                                         <div class="search-wrapper">
-                                            <select v-model="type" @change="fnList">
-                                                <option value="">전체</option>
-                                                <option value="B">공지사항</option>
-                                                <option value="Q">문의게시판</option>
-                                                <option value="F">자유게시판</option>
-                                                <option value="R">대회게시판</option>
-                                            </select>
                                             <input type="text" placeholder="검색어" v-model="keyword"
                                                 @keyup.enter="fnList">
                                             <button class="search-btn" @click="fnList">🔍</button>
@@ -297,7 +115,7 @@
                                     <tr v-for="item in list">
                                         <td>{{item.chatroomNo}}</td>
                                         <td>
-                                            <a href="javascript:;" @click="fnPostView(item.chatroomNo)">
+                                            <a href="javascript:;">
                                                 {{item.title}}
                                                 <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
                                             </a>
@@ -311,6 +129,7 @@
                                     </tr>
 
                                 </table>
+
                                 <div v-if="index > 0" class="pagination">
                                     <a v-if="page != 1" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
                                     <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index"
@@ -321,8 +140,9 @@
                                 </div>
 
                                 <div class="write-btn-wrapper">
-                                    <button @click="moveToPost" class="btn">크루생성하기</button>
+                                    <button @click="moveToPost" class="btn">크루 생성</button>
                                 </div>
+
 
                                 <!--  비밀번호 모달 -->
                                 <div v-if="pwdCorrect" class="modal-overlay">
@@ -338,6 +158,7 @@
                                 </div>
                             </main>
                         </div>
+
                     </main>
 
                     <!--  푸터 -->
@@ -497,6 +318,10 @@
                         let self = this;
                         pageChange("/home/community/board.do", {type : "B"});
                     },
+                    moveToPost: function () {
+                        let self = this;
+                        pageChange("/home/community/crew/post.do", { sessionId: self.sessionId });
+                    },
                     fnPostView: function (chatroomNo) {
                         const post = this.list.find(i => i.chatroomNo === chatroomNo);
                         if (post && post.pwd) {
@@ -506,8 +331,43 @@
                             location.href = `/home/community/crew/view.do?chatroomNo=${chatroomNo}`;
                         }
                     },
-                    moveToPost() {
-                        alert("글쓰기 페이지로 이동합니다.");
+
+                    fnSale() {
+                        let self = this;
+                        self.saleYN = 'Y';
+                        pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                    },
+
+                    fnKeylock: function () {
+                        let self = this;
+                        if (!self.selectedPost) return; // safety check
+
+                        let param = {
+                            boardNo: self.selectedPost.boardNo, // send the post ID
+                            keylock: self.keylock               // send the password entered
+                        };
+
+                        $.ajax({
+                            url: "/board/keylock.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success: function (data) {
+                                if (data.result === "success") {
+                                    // alert("Password correct");
+                                    self.pwdCorrect = false; // close modal
+                                    // redirect to the post
+                                    pageChange("board/view.do", { boardNo: self.selectedPost.boardNo });
+                                } else if (data.result === "fail") {
+                                    alert("비밀번호가 올바르지 않습니다."); // wrong password
+                                    document.querySelector("#keylock").focus();
+                                    self.keylock = "";
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("Keylock check failed:", error);
+                            }
+                        });
                     },
                     fnSale() {
                         let self = this;
