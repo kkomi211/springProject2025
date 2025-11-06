@@ -182,7 +182,7 @@
                             form.append("file1", $("#file1")[0].files[0]);
                             form.append("productNo", self.productNo); // 임시 pk
                             self.upload(form);
-                            // self.fnBack();
+                            self.fnBack();
                         }
                     });
                 },
