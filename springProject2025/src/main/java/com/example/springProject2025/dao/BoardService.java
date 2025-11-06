@@ -188,6 +188,19 @@ public class BoardService {
 		}
 		return resultMap;
 	}
+	
+	public HashMap<String, Object> countReport(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cntReport = boardMapper.reportCnt(map);
+		
+		if(cntReport > 0) {
+			resultMap.put("result", "success");
+		} else {
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
 
 	public HashMap<String, Object> commentDelete(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
