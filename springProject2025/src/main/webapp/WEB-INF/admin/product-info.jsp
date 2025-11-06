@@ -122,7 +122,7 @@
                     productNo: "${productNo}",
                     info: {},
                     img: {},
-                    salePrice: "",
+                    salePrice: 0,
                     quantityFlg: false
 
                 };
@@ -165,10 +165,10 @@
                 },
                 fnEditProduct() {
                     let self = this;
-                    if (self.info.salePrice != 0) {
+                    if (self.info.salePrice != null || self.info.salePrice != 0) {
                         self.info.saleYN = "Y";
                     }
-                    if (self.info.salePrice == 0) {
+                    else {
                         self.info.saleYN = "N";
                     }
                     $.ajax({

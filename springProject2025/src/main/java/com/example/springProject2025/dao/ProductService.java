@@ -50,6 +50,7 @@ public class ProductService {
 	public HashMap<String, Object> EditProduct(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
 		try {
 			int cnt = productmapper.editProduct(map);
 			resultMap.put("result", "success");
