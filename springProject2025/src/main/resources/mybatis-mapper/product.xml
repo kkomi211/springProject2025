@@ -201,6 +201,32 @@
 		WHERE PRODUCT_NO = #{productNo}
 	</delete>
 	
+	<delete id="deleteProductInquiry" parameterType="hashmap">
+		DELETE FROM PRODUCT_INQUIRY
+		WHERE PRODUCT_NO IN (
+			SELECT PRODUCT_NO
+			FROM PRODUCT
+			WHERE PRODUCT_NAME IN(
+				SELECT PRODUCT_NAME
+				FROM PRODUCT
+				WHERE PRODUCT_NO = #{productNo}
+			)
+		)
+	</delete>
+	
+	<delete id="deleteProductReview" parameterType="hashmap">
+		DELETE FROM REVIEW
+		WHERE PRODUCT_NO IN (
+			SELECT PRODUCT_NO
+			FROM PRODUCT
+			WHERE PRODUCT_NAME IN(
+				SELECT PRODUCT_NAME
+				FROM PRODUCT
+				WHERE PRODUCT_NO = #{productNo}
+			)
+		)
+	</delete>
+	
 	<insert id="insertProduct" parameterType="hashmap" useGeneratedKeys="true" keyColumn="PRODUCT_NO" keyProperty="productNo">
 		INSERT INTO PRODUCT
 		VALUES (PRODUCT_SEQ.NEXTVAL, #{userId}, #{brand}, #{productName}, #{price}, #{productSize}, #{productDetail}, 0, #{quantity},
