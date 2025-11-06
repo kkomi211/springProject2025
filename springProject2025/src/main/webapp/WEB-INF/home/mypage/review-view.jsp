@@ -343,7 +343,7 @@ html, body {
                                         <td rowspan="2" style="width: 200px; padding-right: 20px; vertical-align: top;">
                                             <div
                                                 style="width: 150px; height: 150px; overflow: hidden; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd;">
-                                                <img :src="review.imgPath + '/' + review.imgName" alt="상품 이미지"
+                                                <img :src="review.imgPath" alt="상품 이미지"
                                                     style="width: 100%; height: 100%; object-fit: cover;"
                                                     v-if="review.imgPath && review.imgName">
                                                 <span v-else>

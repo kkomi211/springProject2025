@@ -364,8 +364,8 @@ html, body {
                                             <input type="checkbox" v-model="order.isChecked"
                                                 style="transform: scale(1.5); margin-right: 10px; transform-origin: left center;">
                                         </div> -->
-                                        <img v-if="order.imgPath && order.imgName"
-                                            :src="order.imgPath + '/' + order.imgName" :alt="order.productName"
+                                        <img v-if="order.imgPath"
+                                            :src="order.imgPath" :alt="order.productName"
                                             class="product-image"
                                             style="width: 150px; height: 150px; object-fit: cover;">
                                         <div v-else class="product-image"
@@ -380,6 +380,7 @@ html, body {
                                             <p>브랜드 : {{ order.brand }}</p>
                                             <p>상품가격 : {{ formatCurrency(order.paymentAmount) }}원</p>
                                             <p>주문일자 : {{ order.udate }}</p> <!--분명뭔가 요청을했고 그순간의 마지막 날짜를 기준잡았음-->
+                                            <!-- <p>이미지주소: {{ order.imgPath || '이미지주소보려고' }}</p> -->
                                             <!-- <p>별점: {{ order.rating || '평점 없음' }}</p> -->
                                         </div>
 
@@ -678,7 +679,7 @@ html, body {
 
                     // 1. Vue의 sessionId 데이터에 접근
                     let sessionId = self.sessionId;
-
+                    // alert("넘길떄 이미지 경로 "+ JSON.stringify(order));
                     // 2. 전달받은 order 객체에서 orderNo와 productNo를 가져옵니다.
                     let orderNo = order.orderNo;   // 수정
                     let productNo = order.productNo; // 
@@ -696,6 +697,7 @@ html, body {
                     //         quantity: quantity, paymentAmount:paymentAmount, udate:udate,
                     //         imgPath : imgPath , imgName : imgName, status: status
                     // })  );
+                    // alert("넘길떄 이미지 경로 "+ imgPath);
                     pageChange("review-write.do",
                         {
                             sessionId: sessionId, orderNo: orderNo, productNo: productNo,
