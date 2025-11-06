@@ -607,7 +607,7 @@ html, body {
 
                 /** 반품요청 또는 교환요청 상태인지 확인 */
                 isRefundOrExchangeRequested: function (status) {
-                    return status === '교환완료' || status === '취소완료' || status === '배송완료';
+                    return status === '취소완료' || status === '배송완료';
                 },
 
                 /** 교환/반품 또는 리뷰 버튼 클릭 시 처리 */

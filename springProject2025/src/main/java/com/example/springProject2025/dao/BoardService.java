@@ -167,7 +167,7 @@ public class BoardService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		int cnt = boardMapper.deletePost(map);
-
+		int cnt2 = boardMapper.deleteComment(map);
 		if (cnt > 0) {
 			resultMap.put("result", "success");
 		} else {
@@ -182,6 +182,17 @@ public class BoardService {
 		int cnt = boardMapper.reportBoard(map);
 		
 		if(cnt > 0) {
+			resultMap.put("result", "success");
+		} else {
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+
+	public HashMap<String, Object> commentDelete(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt2 = boardMapper.deleteComment(map);
+		if (cnt2 > 0) {
 			resultMap.put("result", "success");
 		} else {
 			resultMap.put("result", "fail");
