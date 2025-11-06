@@ -310,19 +310,19 @@
                                 <ul>
                                     <li class="active">
                                         <span class="icon">📝</span>
-                                        <a href="#">게시판</a>
+                                        <a href="/home/community/board.do">게시판</a>
                                     </li>
-                                    <li @click="moveToRefund">
+                                    <li>
                                         <span class="icon">📦</span>
-                                        <a href="javascript:;">크루 찾기</a>
+                                        <a href="/home/community/crew.do">크루 찾기</a>
                                     </li>
                                     <li>
                                         <span class="icon">💬</span>
-                                        <a href="#">대회정보</a>
+                                        <a href="/home/community/rally.do">대회정보</a>
                                     </li>
-                                    <li @click="moveToInfo">
+                                    <li>
                                         <span class="icon">👤</span>
-                                        <a href="#">채팅방</a>
+                                        <a href="/home/community/chat.do">채팅방</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -364,6 +364,8 @@
                                         @click="fnMoveToEdit">✏️ 수정</button>
                                     <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn"
                                         @click="fnConfirmDelete">🗑️ 삭제</button>
+                                    <button v-if="sessionId != boardInfo.userId" class="edit-inline-btn"
+                                        @click="fnConfirmReport">🚨 신고</button>
                                 </div>
                             </div>
 
@@ -422,6 +424,25 @@
                                     <h2>게시글이 삭제되었습니다.</h2>
                                     <div>
                                         <button class="btn" @click="fnMoveToBoard">확인</button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Report popup -->
+                            <div v-if="confirmReport" class="modal-overlay">
+
+                                <div v-if="!postReported" class="modal-content">
+                                    <h2>이 댓글을 신고하시겠습니까?</h2>
+                                    <div>
+                                        <button class="btn" @click="fnCancel">닫기</button>
+                                        <button class="btn" @click="fnReportPost">확인</button>
+                                    </div>
+                                </div>
+                                <div v-else class="modal-content">
+                                    <h2>이 게시글이 신고되었습니다.</h2>
+                                    <div>
+                                        <button class="btn" @click="fnCancel">닫기</button>
                                     </div>
                                 </div>
 
@@ -494,7 +515,11 @@
                     deleted: false,
 
                     // post comment
-                    commentContent: ""
+                    commentContent: "",
+
+                    // report
+                    confirmReport : false,
+                    postReported : false
 
                 };
             },
@@ -630,6 +655,7 @@
                 fnCancel: function () {
                     let self = this;
                     self.confirmDelete = false;
+                    self.confirmReport = false;
                 },
                 fnDeletePost: function () {
                     let self = this;
@@ -656,8 +682,31 @@
                     self.confirmReport = false;
 
                 },
+                fnConfirmReport : function(){
+                    let self = this;
+                    self.confirmReport = true;
 
-
+                },
+                fnReportPost : function () {
+                    let self = this;
+                    let param = {
+                        boardNo : self.boardNo,
+                        reporterId : self.sessionId
+                    };
+                    $.ajax({
+                        url: "/board/report.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                self.postReported = true;
+                            } else {
+                                alert("error");
+                            }
+                        }
+                    })
+                },
                 fnNotice() {
                     let self = this;
                     pageChange("/home/community/board.do", { type: "B" });
