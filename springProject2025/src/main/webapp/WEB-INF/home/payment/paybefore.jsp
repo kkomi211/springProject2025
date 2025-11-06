@@ -707,8 +707,8 @@
                                                 </p>
                                             </div>
 
-                                            <button @click="fnUseCoupon(item)" class="btn-coupon">
-                                                쿠폰 사용</button>
+                                            <!-- <button @click="fnUseCoupon(item)" class="btn-coupon">
+                                                쿠폰 사용</button> -->
                                         </div>
                                     </section>
                                 </template>
@@ -864,9 +864,9 @@
                     const baseNumber = String(timestamp).slice(-8) + String(random).padStart(4, '0');
                     return baseNumber + String(index || 0).padStart(2, '0');
                 },
-                fnUseCoupon: function (item) {
-                    alert("쿠폰 기능은 준비 중입니다.");
-                },
+                //fnUseCoupon: function (item) {
+                //    alert("쿠폰 기능은 준비 중입니다.");
+                //},
                 fnChangeDeliveryAddress: function () {
                     // 모달 열기 전 현재 배송지 정보를 임시 변수에 복사
                     this.tempDeliveryInfo = {
