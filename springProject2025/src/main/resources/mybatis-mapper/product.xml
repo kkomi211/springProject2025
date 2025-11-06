@@ -177,7 +177,7 @@
 	
 	<update id="editProduct" parameterType="hashmap">
 		UPDATE PRODUCT
-		SET PRODUCT_NAME = #{productName}, PRICE = #{price}, PRODUCT_DETAIL = #{productDetail}, QUANTITY = #{quantity},
+		SET PRODUCT_NAME = #{productName}, PRICE = #{price}, PRODUCT_DETAIL = #{productDetail},
 		GENDER = #{gender}, TYPE_NO = #{typeNo}, UDATE = SYSDATE, SALE_YN = #{saleYN}, SALE_PRICE = #{salePrice}
 		WHERE PRODUCT_NO IN (
 			SELECT PRODUCT_NO

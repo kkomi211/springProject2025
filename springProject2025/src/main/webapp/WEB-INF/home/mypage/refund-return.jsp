@@ -348,7 +348,7 @@ html, body {
                                     </div>
 
                                     <div class="order-details" style="display: flex; align-items: center;">
-                                        <div v-if="!isRefundOrExchangeRequested(order.status)">
+                                        <div v-if="isRefundOrExchangeRequested(order.status)">
                                             <!-- {{index}} -->
                                             <input type="checkbox" v-model="order.isChecked"
                                                 style="transform: scale(1.5); margin-right: 10px; transform-origin: left center;">
@@ -371,7 +371,7 @@ html, body {
                                             <p>주문일자 : {{ order.udate }}</p> <!--분명뭔가 요청을했고 그순간의 마지막 날짜를 기준잡았음-->
                                         </div>
 
-                                        <div v-if="!isRefundOrExchangeRequested(order.status)">
+                                        <div v-if="isRefundOrExchangeRequested(order.status)">
                                             <div>
                                                 <label style="margin-right: 10px;">
                                                     <input type="radio" v-model="order.actionType" value="R">반품
@@ -607,7 +607,7 @@ html, body {
 
                 /** 반품요청 또는 교환요청 상태인지 확인 */
                 isRefundOrExchangeRequested: function (status) {
-                    return status === '반품요청' || status === '교환요청' || status === '취소요청';
+                    return status === '교환완료' || status === '취소완료' || status === '배송완료';
                 },
 
                 /** 교환/반품 또는 리뷰 버튼 클릭 시 처리 */
