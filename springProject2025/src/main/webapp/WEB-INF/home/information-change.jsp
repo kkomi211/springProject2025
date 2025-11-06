@@ -310,13 +310,25 @@
                                             <th>휴대폰번호</th>
                                             <td>
                                                 <template v-if="!phoneFlg ">{{info.phone}}</template>
-                                                <template v-else><input type="text" v-model="info.phone"
-                                                        id="phone"></template>
+                                                <template v-else>
+                                                    <input v-if="!timerFlg && !authSuccess" type="text" v-model="inputNum" id="auth" placeholder="하이픈(-) 없이 전화번호를 입력하세요">
+                                                    <input v-else-if="timerFlg && !authSuccess" type="text" placeholder="인증번호" v-model="authNum">
+                                                    <input v-else type="text" v-model="inputNum" disabled>
+                                                    <span>{{timer}}</span>
+                                                </template>
                                             </td>
                                             <td>
-                                                <button class="btn" v-if="!phoneFlg" @click="fnPhoneChange">휴대폰번호 수정
-                                                </button>
-                                                <button class="btn" v-if="phoneFlg" @click="fnPhoneSave">저장</button>
+                                                <button class="btn" v-if="!phoneFlg"  @click="fnPhoneChange">휴대폰번호 수정</button>
+                                                <template v-if="authConfirm">
+                                                    <template v-if="!smsFlg && !flg">
+                                                        <button class="btn" @click="fnSms">인증번호 전송</button>
+                                                    </template>
+                                                    <template v-else-if="smsFlg && !authSuccess">
+                                                        <button class="btn" @click="fnSmsAuth">인증</button>
+                                                    </template>
+                                                </template>
+                                                
+                                                <button class="btn" v-if="authSuccess" @click="fnPhoneSave">저장</button>
                                             </td>
                                         </tr>
                                         <tr v-if="userType != 'K' ">
@@ -463,12 +475,29 @@
                     saveBtn: false,
                     pwdFlg: false,
                     addrFlg: false,
+                    flg : false,
 
                     // Popup Modal
                     confirmDelete: false,
                     accountDeleted: false,
                     isLoggedOut: false,
-                    isLoggedIn: true
+                    isLoggedIn: true,
+
+                    // 인증
+                    smsFlg: false,
+                    joinFlg: false, // 문자 인증 유무
+                    authFlag: false,
+                    authConfirm : false,
+                    timerFlg: false,
+                    authSuccess : false,
+                    authNum : "",
+
+                    ranStr: "111", // 문자 인증 번호 
+                    inputNum: "",
+                    timer: "",
+                    count: 180,
+                    interval : null
+
 
                 };
             },
@@ -563,7 +592,10 @@
                 },
                 fnPhoneChange: function () {
                     let self = this;
+                    self.info.phone = "";
+                    // document.querySelector("#phone").focus();
                     self.phoneFlg = true;
+                    self.authConfirm = true;
                 },
                 fnEmailCheck: function () {
                     let self = this;
@@ -634,14 +666,14 @@
                 },
                 fnPhoneSave: function () {
                     let self = this;
-                    if (self.info.phone.length < 11 || !/^[0-9]+$/.test(self.info.phone)) {
+                    if (self.inputNum < 11 || !/^[0-9]+$/.test(self.inputNum)) {
                         alert("전화번호를 다시 확인해주세요.");
                         document.querySelector("#phone").focus();
                         return;
                     }
                     let param = {
                         userId: self.sessionId,
-                        phone: self.info.phone
+                        phone: self.inputNum 
                     };
                     $.ajax({
                         url: "/home/mypage/phoneSave.dox",
@@ -651,7 +683,12 @@
                         success: function (data) {
                             if (data.result == "success") {
                                 alert("전화번호가 수정되었습니다.");
+                                self.authSuccess = false;
+                                self.smsFlg = false;
                                 self.phoneFlg = false;
+                                self.flg = true;
+                                self.info.phone = self.inputNum;
+                                location.reload();   
                             } else {
                                 alert("오류가 발생했습니다.");
                             }
@@ -835,8 +872,84 @@
                     self.saleYN = 'Y';
                     pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                 },
-            
-            
+
+                 fnSms: function () {
+                    let self = this;
+                    if (self.inputNum == "") {
+                        alert("인증번호를 입력해주세요.");
+                        document.querySelector("#auth").focus();
+                        return;
+                    }
+                    if (self.inputNum < 11 || !/^[0-9]+$/.test(self.inputNum)) {
+                        alert("전화번호를 다시 확인해주세요.");
+                        document.querySelector("#auth").focus();
+                        return;
+                    }
+                    // self.smsFlg = true;
+                    // self.timerFlg = true;
+                    // self.fnTimer();
+                    let param = {
+                        phone: self.inputNum
+                    };
+                    
+                    $.ajax({
+                        url: "/send-one",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            if (data.res.statusCode == "2000") {
+                                alert("문자 전송 완료");
+                                self.ranStr = data.ranStr;
+                                self.smsFlg = true;
+                                    self.timerFlg = true;
+                                    self.fnTimer();
+                            } else {
+                                alert("잠시 후 다시 시도해주세요.");
+                            }
+                        }
+                    });
+                },
+                fnSmsAuth: function () {
+                    let self = this;
+                    // if (self.inputNum == "") {
+                    //     alert("인증번호를 입력해주세요.");
+                    //     document.querySelector("#auth").focus();
+                    //     return;
+                    // }
+
+                    // let num = document.querySelector("#num").value;
+                    if (self.ranStr == self.authNum) {
+                        alert("문자 인증 완료되았습니다");
+                        self.authSuccess = true;
+                        self.timerFlg = false;
+                        clearInterval(self.interval);
+                        self.joinFlg = true;
+                        self.authFlag = true;
+                    } else {
+                        alert("문자인증 실패했습니다.");
+                        self.joinFlg = false;
+                    }
+                },
+                fnTimer: function () {
+                    let self = this;
+                    self.interval = setInterval(function () {
+                        if (self.count == 0) {
+                            clearInterval(interval);
+                            alert("시간이  만료되었습니다!");
+                        } else {
+                            let min = parseInt(self.count / 60);
+                            let sec = self.count % 60;
+
+                            min = min < 10 ? "0" + min : min;
+                            sec = sec < 10 ? "0" + sec : sec;
+                            self.timer = min + " : " + sec;
+
+                            self.count--;
+                        }
+                    }, 1000);
+                },
             fnNotice(){
                 let self = this;
                 pageChange("/home/community/board.do", {type : "B"});
