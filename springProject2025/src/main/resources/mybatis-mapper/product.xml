@@ -204,7 +204,7 @@
 	<insert id="insertProduct" parameterType="hashmap" useGeneratedKeys="true" keyColumn="PRODUCT_NO" keyProperty="productNo">
 		INSERT INTO PRODUCT
 		VALUES (PRODUCT_SEQ.NEXTVAL, #{userId}, #{brand}, #{productName}, #{price}, #{productSize}, #{productDetail}, 0, #{quantity},
-		#{gender}, #{typeNo}, SYSDATE, SYSDATE)
+		#{gender}, #{typeNo}, SYSDATE, SYSDATE, 'N', NULL)
 	</insert>
 	
 	<insert id="insertProductImg" parameterType="hashmap">

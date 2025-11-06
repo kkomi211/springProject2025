@@ -77,6 +77,7 @@ public class ProductService {
 	public HashMap<String, Object> InsertProduct(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
 		try {
 			int cnt = productmapper.insertProduct(map);
 			resultMap.put("result", "success");
