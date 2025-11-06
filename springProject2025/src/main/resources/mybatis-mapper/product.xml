@@ -177,7 +177,7 @@
 	
 	<update id="editProduct" parameterType="hashmap">
 		UPDATE PRODUCT
-		SET PRODUCT_NAME = #{productName}, PRICE = #{price}, PRODUCT_DETAIL = #{productDetail},
+		SET PRODUCT_NAME = #{productName}, PRICE = #{price}, PRODUCT_DETAIL = #{productDetail}, BRAND = #{brand},
 		GENDER = #{gender}, TYPE_NO = #{typeNo}, UDATE = SYSDATE, SALE_YN = #{saleYN}, SALE_PRICE = #{salePrice}
 		WHERE PRODUCT_NO IN (
 			SELECT PRODUCT_NO
@@ -200,6 +200,14 @@
 		DELETE FROM PRODUCT
 		WHERE PRODUCT_NO = #{productNo}
 	</delete>
+	
+	<!-- product_banner_img delete -->
+	<delete id="deleteProductBannerImg" parameterType="hashmap">
+		DELETE FROM PRODUCT_BANNER_IMG
+		WHERE 1=1
+		AND PRODUCT_NO = #{productNo}
+	</delete>
+	
 	
 	<insert id="insertProduct" parameterType="hashmap" useGeneratedKeys="true" keyColumn="PRODUCT_NO" keyProperty="productNo">
 		INSERT INTO PRODUCT

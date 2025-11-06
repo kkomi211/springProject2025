@@ -67,6 +67,9 @@ public class ProductService {
 		try {
 			int cnt = productmapper.deleteProduct(map);
 			int cnt2 = productmapper.deleteProductImg(map);
+			System.out.println("banner img 확인 바래요 productImgNo 이거 들어와야함 " + map);
+			int cnt3 = productmapper.deleteProductBannerImg(map);
+			
 			resultMap.put("result", "success");
 		} catch(Exception e) {
 			System.out.println(e.getMessage());

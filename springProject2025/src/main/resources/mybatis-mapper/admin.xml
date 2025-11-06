@@ -88,7 +88,7 @@
 	
 	<!-- rally banner 추가 -->
 	<insert id="insertRallyBanner" parameterType="hashmap" useGeneratedKeys="true" keyColumn="RALLY_NO" keyProperty="rallyNo">
-		INSERT INTO RALLY (
+			INSERT INTO RALLY (
 	        RALLY_NO,
 	        RALLY_NAME,
 	        RALLY_DATE,
@@ -101,11 +101,8 @@
 	    VALUES (
 	        RALLY_SEQ.NEXTVAL,
 	        #{rallyName},
-	        
-	        TO_DATE(#{rallyDate}, 'YYYY-MM-DD'), 
-	        
-	        TO_DATE(#{applicationPeriod}, 'YYYY-MM-DD'), 
-	        
+	        TO_DATE(#{rallyDate}, 'YYYY-MM-DD'),
+	        TO_DATE(#{applicationPeriod}, 'YYYY-MM-DD'),
 	        #{price},
 	        #{phone},
 	        #{type},
