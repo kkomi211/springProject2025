@@ -335,9 +335,11 @@ html, body {
             text-decoration: none;
             color: inherit;
         }
+		
         a:hover {
-            text-decoration: underline;
+            /*text-decoration: underline;*/
         }
+		
 
         /* --- Header Section (화면 전체 너비) --- */
         header { /* default 헤더 스타일이 header 태그에 직접 적용되도록 재구성 */
@@ -485,3 +487,8 @@ html, body {
         .socials span:first-child {
             margin-left: 0;
         }
+		
+		.container{
+		    background-color: #fff;
+		}
+
