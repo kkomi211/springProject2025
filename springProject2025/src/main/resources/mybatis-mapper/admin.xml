@@ -722,17 +722,17 @@
 	
 	    <!-- 총 회원 수 (일반 회원만) -->
 	    <select id="selectTotalUserCount" resultType="int">
-	        SELECT COUNT(USER_ID) FROM USERS WHERE USERTYPE = 'U'
+	        SELECT COUNT(USER_ID) FROM USERS WHERE USERTYPE = 'U' OR USERTYPE = 'K'
 	    </select>
 	
 	    <!-- 오늘 가입한 신규 회원 수 -->
 	    <select id="selectNewUsersTodayCount" resultType="int">
-	        SELECT COUNT(USER_ID) FROM USERS WHERE USERTYPE = 'U' AND TRUNC(CDATE) = TRUNC(SYSDATE)
+	        SELECT COUNT(USER_ID) FROM USERS WHERE (USERTYPE = 'U' OR USERTYPE = 'K') AND TRUNC(CDATE) = TRUNC(SYSDATE)
 	    </select>
 	
 	    <!-- 이번 달 가입한 신규 회원 수 -->
 	    <select id="selectNewUsersMonthCount" resultType="int">
-	        SELECT COUNT(USER_ID) FROM USERS WHERE USERTYPE = 'U' AND TO_CHAR(CDATE, 'YYYYMM') = TO_CHAR(SYSDATE, 'YYYYMM')
+	        SELECT COUNT(USER_ID) FROM USERS WHERE (USERTYPE = 'U' OR USERTYPE = 'K') AND TO_CHAR(CDATE, 'YYYYMM') = TO_CHAR(SYSDATE, 'YYYYMM')
 	    </select>
 	
 	    <!-- 배송 중인 주문 수 -->
@@ -787,7 +787,7 @@
 	    <select id="selectUsersByGenderCount" resultType="hashmap">
 	        SELECT GENDER, COUNT(USER_ID) AS USER_COUNT
 	        FROM USERS
-	        WHERE USERTYPE = 'U'
+	        WHERE USERTYPE = 'U' OR USERTYPE = 'K'
 	        GROUP BY GENDER
 	        ORDER BY GENDER DESC
 	    </select>

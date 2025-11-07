@@ -540,7 +540,8 @@
                         location.href="/home/login.do";
                     }
                     let param = {
-                        reviewNo: reviewNo
+                        reviewNo: reviewNo,
+                        userId : self.sessionId
                     };
                     $.ajax({
                         url: "/product/review/1up.dox",
@@ -549,6 +550,10 @@
                         data: param,
                         success: function (data) {
                             console.log(data);
+                            if(data.result == "same"){
+                                alert("이미 추천한 리뷰입니다!");
+                                return;
+                            }
                             self.fnReviewList();
                         }
                     });

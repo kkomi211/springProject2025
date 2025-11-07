@@ -79,4 +79,10 @@ public interface ProductMapper {
 
 	int deleteProductReview(HashMap<String, Object> map);
 
+	int insertWhoUpHeart(HashMap<String, Object> map);
+
+	int selectWhoUpHeart(HashMap<String, Object> map);
+
+	int deleteHelpful(HashMap<String, Object> map);
+
 }
