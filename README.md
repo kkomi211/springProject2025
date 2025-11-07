@@ -72,7 +72,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 |------|------------|
 | 👨‍💼 **정은성(팀장)** | **/home/product** , **/admin/product** | 
 | 🧑‍💻 **아린** |  **공통 CSS (Header/Footer)** , **/home/community · board · info · login/signup** |  
-| 👟 **전경환** | **러닝 메이트 위치 공유** ,  **공통 CSS (Header/Footer)**  | 
+| 👟 **전경환** | **마이페이지 작성 및 수정** ,  **공통 CSS 확인 수정(Header/Footer)**  | 
 | 🤖 **김지훈** | **/admin/inquiry · refund-return · orders · user-list** | 
 | 🎨 **김반석** | **/admin/banner** , **/home/rally** ,  | 
 
