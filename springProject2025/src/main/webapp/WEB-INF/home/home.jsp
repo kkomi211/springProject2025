@@ -1232,22 +1232,23 @@
                         </section>
 
                         <!-- 크루 가입 영역 -->
+                         <a href="/home/community/crew.do" style="display: block;">
                         <section class="crew-join-section">
                             <div class="crew-images-wrapper">
                                 <div class="crew-image-container"> <!-- 이미지 두 개를 담는 컨테이너 -->
                                     <div class="crew-image-item" style="width: 100%; overflow: hidden;">
-                                        <a href="/home/community/crew.do" style="display: block;">
+                                        <!-- <a href="/home/community/crew.do" style="display: block;"> -->
                                             <img 
                                             src="/img/crew_join_banner3.jpg"
                                             alt="크루 가입 배너 1"
                                             style="width: 100%; height: auto; display: block; border-radius: 10px; object-fit: contain;">
-                                        </a>
+                                        <!-- </a> -->
                                     </div>
                                 </div>
                                 <span class="crew-overlay-text">JOIN A CREW</span> <!-- 텍스트는 항상 보임, 중앙 위치 -->
                             </div>
                         </section>
-
+                        </a>
                         <!-- <section class="crew-join-section">
                             <div class="crew-images-wrapper">
                                 <div class="crew-image-container"> 이미지 두 개를 담는 컨테이너

@@ -229,11 +229,6 @@
             margin-right: 0;
         }
 
-        .bottom-header a {
-            color: black;
-            /* default bottom-header 링크색 */
-        }
-
         /* .bottom-header a:hover {
             color: #007bff;
         } */

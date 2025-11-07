@@ -42,14 +42,14 @@ body {
             align-items: center;
             font-size: 30px;
         }
-
+/* 
         .bottom-header div {
             display: inline-block;
             margin-right: 100px;
             margin-top: 20px;
             margin-bottom: 20px;
             text-align: center;
-        }
+        } */
         .bottom-header a{
             color: black;
         }
