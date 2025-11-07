@@ -10,11 +10,13 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
+        <script src="/js/page-change.js"></script>
         <title>커뮤니티 게시판</title>
 
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script src="/js/page-change.js"></script>
     </head>
 
     <body>
@@ -77,7 +79,7 @@
                                         </li>
                                         <li>
                                             <span class="icon">💬</span>
-                                            <a href="/home/community/rally.do">대회정보</a>
+                                            <a href="/home/community/rally.do">대회 정보</a>
                                         </li>
                                         <li>
                                             <span class="icon">👤</span>
@@ -91,25 +93,11 @@
                             <main class="main-content">
                                 <div class="board-header">
                                     <h1 class="main-title">
-                                        게시판 •
-                                        {{
-                                        type === '' ? '전체 게시판' :
-                                        type === 'B' ? '공지사항' :
-                                        type === 'Q' ? '문의게시판' :
-                                        type === 'F' ? '자유게시판' :
-                                        type === 'R' ? '대회게시판' : '게시판'
-                                        }}
+                                        크루 찾기
                                     </h1>
 
                                     <div class="search-bar">
                                         <div class="search-wrapper">
-                                            <select v-model="type" @change="fnList">
-                                                <option value="">전체</option>
-                                                <option value="B">공지사항</option>
-                                                <option value="Q">문의게시판</option>
-                                                <option value="F">자유게시판</option>
-                                                <option value="R">대회게시판</option>
-                                            </select>
                                             <input type="text" placeholder="검색어" v-model="keyword"
                                                 @keyup.enter="fnList">
                                             <button class="search-btn" @click="fnList">🔍</button>
@@ -127,7 +115,7 @@
                                     <tr v-for="item in list">
                                         <td>{{item.chatroomNo}}</td>
                                         <td>
-                                            <a href="javascript:;" @click="fnPostView(item.chatroomNo)">
+                                            <a href="javascript:;">
                                                 {{item.title}}
                                                 <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
                                             </a>
@@ -141,6 +129,7 @@
                                     </tr>
 
                                 </table>
+
                                 <div v-if="index > 0" class="pagination">
                                     <a v-if="page != 1" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
                                     <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index"
@@ -151,8 +140,9 @@
                                 </div>
 
                                 <div class="write-btn-wrapper">
-                                    <button @click="moveToPost" class="btn">크루생성하기</button>
+                                    <button @click="moveToPost" class="btn">크루 생성</button>
                                 </div>
+
 
                                 <!--  비밀번호 모달 -->
                                 <div v-if="pwdCorrect" class="modal-overlay">
@@ -168,6 +158,7 @@
                                 </div>
                             </main>
                         </div>
+
                     </main>
 
                     <!--  푸터 -->
@@ -323,12 +314,14 @@
                             }
                         });
                     },
-
-                    fnNotice() {
+                    fnNotice(){
                         let self = this;
-                        pageChange("/home/community/board.do", { type: "B" });
+                        pageChange("/home/community/board.do", {type : "B"});
                     },
-
+                    moveToPost: function () {
+                        let self = this;
+                        pageChange("/home/community/crew/post.do", { sessionId: self.sessionId });
+                    },
                     fnPostView: function (chatroomNo) {
                         const post = this.list.find(i => i.chatroomNo === chatroomNo);
                         if (post && post.pwd) {
@@ -338,8 +331,43 @@
                             location.href = `/home/community/crew/view.do?chatroomNo=${chatroomNo}`;
                         }
                     },
-                    moveToPost() {
-                        alert("글쓰기 페이지로 이동합니다.");
+
+                    fnSale() {
+                        let self = this;
+                        self.saleYN = 'Y';
+                        pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                    },
+
+                    fnKeylock: function () {
+                        let self = this;
+                        if (!self.selectedPost) return; // safety check
+
+                        let param = {
+                            boardNo: self.selectedPost.boardNo, // send the post ID
+                            keylock: self.keylock               // send the password entered
+                        };
+
+                        $.ajax({
+                            url: "/board/keylock.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success: function (data) {
+                                if (data.result === "success") {
+                                    // alert("Password correct");
+                                    self.pwdCorrect = false; // close modal
+                                    // redirect to the post
+                                    pageChange("board/view.do", { boardNo: self.selectedPost.boardNo });
+                                } else if (data.result === "fail") {
+                                    alert("비밀번호가 올바르지 않습니다."); // wrong password
+                                    document.querySelector("#keylock").focus();
+                                    self.keylock = "";
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("Keylock check failed:", error);
+                            }
+                        });
                     },
                     fnSale() {
                         let self = this;

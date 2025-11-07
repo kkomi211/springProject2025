@@ -50,6 +50,7 @@ public class ProductService {
 	public HashMap<String, Object> EditProduct(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
 		try {
 			int cnt = productmapper.editProduct(map);
 			resultMap.put("result", "success");
@@ -64,8 +65,10 @@ public class ProductService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			int cnt = productmapper.deleteProduct(map);
 			int cnt2 = productmapper.deleteProductImg(map);
+			int cnt3 = productmapper.deleteProductInquiry(map);
+			int cnt4 = productmapper.deleteProductReview(map);
+			int cnt = productmapper.deleteProduct(map);
 			resultMap.put("result", "success");
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
@@ -77,6 +80,7 @@ public class ProductService {
 	public HashMap<String, Object> InsertProduct(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
 		try {
 			int cnt = productmapper.insertProduct(map);
 			resultMap.put("result", "success");
@@ -258,6 +262,11 @@ public class ProductService {
 			resultMap.put("result", "fail");
 		}
 		return resultMap;
+	}
+
+	public void updateProductImg(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		int cnt = productmapper.updateProductImg(map);
 	}
 
 	

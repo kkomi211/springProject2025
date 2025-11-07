@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/css/user-style.css">
+        <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="stylesheet" href="/css/jghstyle.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -392,6 +392,173 @@
                 gap: 10px;
                 margin-top: 18px;
             }
+             /* New CSS from homepage */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        #app { /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Header Section (화면 전체 너비) --- */
+        header { /* default 헤더 스타일이 header 태그에 직접 적용되도록 재구성 */
+            width: 100%;
+            background-color: black; /* default top-header의 배경색을 header 전체로 */
+            color: white; /* default top-header의 글자색을 header 전체로 */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .top-header { /* default top-header가 header의 유일한 자식이 됨 */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 150px; /* default top-header의 높이 */
+            padding: 0 40px; /* default footer padding과 맞춤 */
+            box-sizing: border-box; /* 패딩이 width에 포함되도록 */
+        }
+        .top-header div {
+            display: inline-block;
+            text-align: left;
+            font-size: 15px;
+            margin-right: 0; /* flex gap 사용을 위해 개별 div 마진 제거 */
+        }
+        .top-header input {
+            height: 25px;
+            border-radius: 8px;
+            width: 200px;
+        }
+
+        .brand-name { /* top-header 내 brand-name */
+            margin-right: 0; /* top-header div의 default margin-right 상쇄 */
+        }
+        .brand-name div {
+            font-family: 'Fugaz One', sans-serif;
+            font-size: 60px;
+            letter-spacing: 5px;
+            margin-left: 0; /* top-header div의 default margin-left 상쇄 */
+            display: block;
+            color: white; /* default 유지 */
+        }
+        .brand-name a {
+            color: white;
+        }
+
+        #right-items {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* 요소들 간 간격 */
+        }
+        #right-items div {
+            font-size: 15px;
+            white-space: nowrap;
+        }
+        #right-items div a {
+            color: white; /* default top-header의 글자색 */
+        }
+        #right-items div a:hover {
+            color: #eee;
+        }
+
+        .bottom-header {
+            display: flex;
+            justify-content: center;
+            font-size: 30px; /* default bottom-header 폰트 사이즈 */
+            background-color: white; /* bottom-header 배경색 추가 */
+            /* border-bottom: 1px solid #eee; 하단 경계선 */
+            padding: 20px 0; /* 세로 패딩 */
+        }
+        .bottom-header div {
+            display: inline-block;
+            margin-right: 100px; /* default bottom-header div의 마진 */
+            margin-top: 0; /* flex-align으로 중앙 정렬 */
+            text-align: center;
+        }
+        .bottom-header div:last-child {
+            margin-right: 0;
+        }
+        .bottom-header a {
+            color: black; /* default bottom-header 링크색 */
+        }
+        .bottom-header a:hover {
+            color: #007bff;
+        }
+
+                /* --- Footer Section (화면 전체 너비) --- */
+        footer { /* default 푸터 스타일 */
+            width: 100%;
+            height: 200px;
+            background-color: black;
+            color: white;
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 0 40px; /* default footer의 padding */
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+            margin-top: auto; /* #app이 flex-direction: column일 때 푸터를 아래로 밀어냄 */
+            box-sizing: border-box; /* 패딩이 width에 포함되도록 */
+        }
+
+        .footer-left {
+            margin-left: 0; /* padding이 있으므로 margin-left 제거 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .footer-left .company-info div {
+            margin-bottom: 5px;
+            white-space: nowrap;
+        }
+        .copyright {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #bbb;
+            white-space: nowrap;
+        }
+
+        .footer-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+        }
+        .other {
+            margin-bottom: 10px;
+            white-space: nowrap;
+        }
+        .other span {
+            margin-left: 20px;
+            cursor: pointer;
+        }
+        .other span:hover {
+            text-decoration: underline;
+        }
+        .other span:first-child {
+            margin-left: 0;
+        }
+        .socials span {
+            margin-left: 20px;
+            cursor: pointer;
+        }
+        .socials span:hover {
+            text-decoration: underline;
+        }
+        .socials span:first-child {
+            margin-left: 0;
+        }
         </style>
     </head>
 
@@ -533,7 +700,7 @@
                                                 <p class="product-price">상품 총가격 : {{ formatCurrency(parseInt(item.price)
                                                     *
                                                     parseInt(item.quantity || 1)) }}원</p>
-                                                <p v-if="item.saleYn === 'Y'"
+                                                <p v-if="item.saleYN === 'Y'"
                                                     style="font-size: 16px; font-weight: bold; color: #e74c3c;">
                                                     할인된 상품 총가격 : {{ formatCurrency(parseInt(item.salePrice) *
                                                     parseInt(item.quantity || 1)) }}원
@@ -659,7 +826,7 @@
                 // 총 할인 금액
                 totalDiscountAmount() {
                     return this.selectedItems.reduce((sum, item) => {
-                        if (item.saleYn === 'Y' && item.salePrice) {
+                        if (item.saleYN === 'Y' && item.salePrice) {
                             let originalTotal = parseInt(item.price) * parseInt(item.quantity || 1);
                             let discountedTotal = parseInt(item.salePrice) * parseInt(item.quantity || 1);
                             return sum + (originalTotal - discountedTotal);
@@ -797,7 +964,7 @@
                         let finalPricePerItem;
 
                         // **할인 여부('saleYn')를 확인하여 최종 가격을 결정합니다.**
-                        if (item.saleYn === 'Y' && item.salePrice) {
+                        if (item.saleYN === 'Y' && item.salePrice) {
                             finalPricePerItem = parseInt(item.salePrice);
                         } else {
                             finalPricePerItem = parseInt(item.price);
@@ -975,7 +1142,7 @@
 
                 // 제품 상세에서 직접 구매인 경우 따로 함수
                 fnInitDirectPurchase: function (productNo, quantity, productSize) {
-                    alert("바로구매 감지");
+                    // alert("바로구매 감지");
                     let self = this;
                     // 제품 상세 정보 조회
                     let param = {
@@ -1015,11 +1182,11 @@
                                         // 🚨 [핵심 수정] 필요한 모든 가격 및 할인 정보를 가져옵니다.
                                         let originalPrice = selectedSizeInfo.price;
                                         let salePrice = selectedSizeInfo.salePrice || originalPrice; // 할인 가격이 없으면 원가와 동일하게
-                                        let saleYn = selectedSizeInfo.saleYn;
+                                        let saleYN = selectedSizeInfo.saleYN;
 
                                         console.log("originalPrice는 " +originalPrice);
                                         console.log("salePrice는 " +salePrice);
-                                        console.log("saleYn는 " +saleYn);
+                                        console.log("saleYN는 " +saleYN);
 
                                         // selectedItems에 추가
                                         self.selectedItems = [{
@@ -1027,7 +1194,7 @@
                                             productName: productInfo.productName || "",
                                             price: originalPrice, // 정가 (PRICE)
                                             salePrice: salePrice, // 할인된 가격 (SALE_PRICE)
-                                            saleYn: saleYn,       // 할인 여부 (SALE_YN)
+                                            saleYN: saleYN,       // 할인 여부 (SALE_YN)
                                             quantity: parseInt(quantity) || 1,
                                             productSize: productSize || (selectedSizeInfo ? selectedSizeInfo.productSize : ""),
                                             imgPath: firstImg ? firstImg.imgPath : null
@@ -1089,7 +1256,7 @@
 
                 fnCalculateTotals: function () {
                     let self = this;
-                    alert("fnCalculateTotals함수동작");
+                    // alert("fnCalculateTotals함수동작");
                     console.log("selectedItems는 " + JSON.stringify(self.selectedItems));
                     
                     let totalOriginalPrice = 0;
@@ -1099,13 +1266,13 @@
                         const originalPrice = parseInt(item.price) || 0; // 원가 (PRICE)
                         const salePrice = parseInt(item.salePrice) || originalPrice; // 할인된 가격 (SALE_PRICE)
                         const quantity = parseInt(item.quantity || 1);
-                        const saleYn = item.saleYn === 'Y'; // 'Y'일 경우 true
+                        const saleYN = item.saleYN === 'Y'; // 'Y'일 경우 true
 
                         // 1. 총 원가 계산 (할인 여부와 관계없이 원가 기준)
                         totalOriginalPrice += originalPrice * quantity;
 
                         // 2. 총 할인 금액 계산
-                        if (saleYn && originalPrice > salePrice) {
+                        if (saleYN && originalPrice > salePrice) {
                             // 할인 중이고, 원가와 할인 가격이 다를 경우에만 할인액을 계산
                             const discountPerItem = originalPrice - salePrice;
                             totalDiscountAmount += discountPerItem * quantity;

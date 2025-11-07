@@ -58,8 +58,9 @@
 	</select>
 	
 	<select id="commentInfo" parameterType="hashmap" resultType="com.example.springProject2025.model.Comment">
-		SELECT C.*, TO_CHAR(CDATE, 'YYYY-MM-DD') AS CHARDATE
+		SELECT C.*, TO_CHAR(C.CDATE, 'YYYY-MM-DD') AS CHARDATE, NICKNAME
 		FROM COMMENTS C
+		INNER JOIN USERS U ON C.USER_ID = U.USER_ID
 		WHERE BOARD_NO = #{boardNo}
 	</select>
 	
@@ -94,6 +95,17 @@
 		WHERE BOARD_NO = #{boardNo}
 		AND USER_ID = #{userId}
 	</delete>
+	
+	<delete id="deleteComment" parameterType="hashmap">
+		DELETE FROM COMMENTS
+		WHERE 1=1
+		<if test="boardNo != null and boardNo != 'undefined' and boardNo != ''">
+			AND BOARD_NO = #{boardNo}	
+		</if>
+		<if test="commentNo != null and commentNo != 'undefined' and commentNo != ''">
+			AND COMMENT_NO = #{commentNo}
+		</if>
+	</delete>
 
 	<update id="viewCnt" parameterType="hashmap">
 		UPDATE BOARD
@@ -106,6 +118,11 @@
 		VALUES(REPORT_BOARD_SEQ.NEXTVAL, #{boardNo}, #{reporterId}, SYSDATE, 'N')
 	</insert>
 	
+	<select id="reportCnt" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM REPORT_BOARD
+		WHERE REPORTER_ID = #{reporterId} AND BOARD_NO = #{boardNo}
+	</select>
 </mapper>
 
 

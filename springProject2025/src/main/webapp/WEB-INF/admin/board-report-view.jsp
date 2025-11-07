@@ -61,7 +61,7 @@
 
                     <hr>
                     <div class="detail-item"><strong>게시글 내용:</strong></div>
-                    <div class="detail-content">{{ detail.boardContent }}</div>
+                    <div class="detail-content" v-html="detail.boardContent"></div>
                 </div>
 
                 <div class="detail-button-group">

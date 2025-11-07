@@ -30,6 +30,8 @@ public interface ProductMapper {
 
 	int insertProductImg(HashMap<String, Object> map);
 	
+	int updateProductImg(HashMap<String, Object> map);
+	
 	int deleteProductImg(HashMap<String, Object> map);
 	
 	Product selectProductImg(HashMap<String, Object> map);
@@ -69,5 +71,9 @@ public interface ProductMapper {
 	int updateProductStockAndSellCount(HashMap<String, Object> item);
 
 	int UpdateQuantity(HashMap<String, Object> map);
+
+	int deleteProductInquiry(HashMap<String, Object> map);
+
+	int deleteProductReview(HashMap<String, Object> map);
 
 }

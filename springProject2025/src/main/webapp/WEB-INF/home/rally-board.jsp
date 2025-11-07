@@ -12,6 +12,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
+        <script src="/js/page-change.js"></script>
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -93,18 +94,13 @@
                             </nav>
                         </aside>
 
-                        <main class="main-content">
-                            <div class="board-header">
-                                <h1 class="main-title">
-                                    대회정보 •
-                                    {{
-                                    type === '' ? '전체 게시판' :
-                                    type === 'B' ? '공지사항' :
-                                    type === 'Q' ? '문의게시판' :
-                                    type === 'F' ? '자유게시판' :
-                                    type === 'R' ? '대회게시판' : '게시판'
-                                    }}
-                                </h1>
+                        
+
+                            <main class="main-content">
+                                <div class="board-header">
+                                    <h1 class="main-title">
+                                        대회 정보            
+                                    </h1>
 
                                 <div class="search-bar">
                                     <div class="search-wrapper">
@@ -318,11 +314,13 @@
                         let self = this;
                         pageChange("/home/community/board.do", { type: "B" });
                     },
+
                     fnSale() {
                         let self = this;
                         self.saleYN = 'Y';
                         pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                     }
+
 
                 },
                 mounted() {

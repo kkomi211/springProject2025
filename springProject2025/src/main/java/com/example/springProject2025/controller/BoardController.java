@@ -36,8 +36,8 @@ public class BoardController {
 			request.setAttribute("chatroomNo", map.get("chatroomNo"));
 			return "home/crew-post"; // .jsp빠진형태
 		}
-	// crew view board list
-		@RequestMapping("/home/community/crew/view.do")
+	// crew insert board 
+		@RequestMapping("/home/community/crew/insert.do")
 		public String crewViewBoardList(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
 			request.setAttribute("sessionId", map.get("sessionId"));
 			request.setAttribute("chatroomNo", map.get("chatroomNo"));
@@ -70,12 +70,23 @@ public class BoardController {
 			resultMap = boardService.getCrewBoardList(map);
 			return new Gson().toJson(resultMap);
 		}
-	// crew insert board post (추가 채티방이동)
+	// crew insert move 채팅방 (CHAT_MEMBER 추가 채티방이동)
 		@RequestMapping(value = "/home/crew/chatMove.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+		@ResponseBody
+		public String crewInsertChat(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+			HashMap<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap = boardService.crewChatInsert(map);
+			
+			return new Gson().toJson(resultMap);
+		}
+		
+	// crew insert post 크루 채팅방개설 (CHAT, CHAT_MEMBER에 DB저장 밑 게시판 글)
+		@RequestMapping(value = "/crew/chatInsert.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 		@ResponseBody
 		public String crewinsertPost(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 			HashMap<String, Object> resultMap = new HashMap<String, Object>();
-			resultMap = boardService.crewCaInsert(map);
+			System.out.println("잘 들어왔는지 확인" + map);
+			resultMap = boardService.InsertCrewBoard(map);
 			
 			return new Gson().toJson(resultMap);
 		}
@@ -140,6 +151,18 @@ public class BoardController {
 		return new Gson().toJson(resultMap);
 	}
 	
+	
+	@RequestMapping(value = "/board/delete/comment.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String commentDelete(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println("comment data " + map);
+		resultMap = boardService.commentDelete(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	
 	@RequestMapping(value = "/board/comment-post.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String addComment(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
@@ -182,6 +205,15 @@ public class BoardController {
 	public String reportBoard(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap = boardService.reportBoard(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/board/report/cnt.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String countReport(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = boardService.countReport(map);
 		
 		return new Gson().toJson(resultMap);
 	}

@@ -12,10 +12,10 @@ import com.example.springProject2025.model.Comment;
 
 @Service
 public class BoardService {
-	
+
 	@Autowired
 	BoardMapper boardMapper;
-	
+
 	// rally board list 목록
 	public HashMap<String, Object> getRallyBoardList(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
@@ -23,91 +23,111 @@ public class BoardService {
 		List<Board> list = boardMapper.selectRallyBoardList(map);
 		int cnt = boardMapper.selectRallyBoardCnt(map);
 		System.out.println("여기는 서비스고cnt는 이거야" + cnt);
-		
+
 		resultMap.put("list", list);
 		resultMap.put("cnt", cnt);
 		resultMap.put("result", "success");
 		return resultMap;
 	}
-	
-	// crew board list 목록
-		public HashMap<String, Object> getCrewBoardList(HashMap<String, Object> map) {
-			// TODO Auto-generated method stub
-			HashMap<String, Object> resultMap = new HashMap<String, Object>();
-			List<Board> list = boardMapper.selectCrewBoardList(map);
-			int cnt = boardMapper.selectCrewBoardCnt(map);
 
-			resultMap.put("list", list);
-			resultMap.put("cnt", cnt);
+	// crew board list 목록
+	public HashMap<String, Object> getCrewBoardList(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		List<Board> list = boardMapper.selectCrewBoardList(map);
+		int cnt = boardMapper.selectCrewBoardCnt(map);
+
+		resultMap.put("list", list);
+		resultMap.put("cnt", cnt);
+		resultMap.put("result", "success");
+		return resultMap;
+	}
+
+	// crew 채팅방입장 insert
+	public HashMap<String, Object> crewChatInsert(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
+		int check = boardMapper.selectCrewCheck(map);
+		if (check > 0) {
 			resultMap.put("result", "success");
-			return resultMap;
-		}
-		
-		// crew 채티방입장 insert
-		public HashMap<String, Object> crewCaInsert(HashMap<String, Object> map) {
-			// TODO Auto-generated method stub
-			HashMap<String, Object> resultMap = new HashMap<String, Object>();
-			System.out.println(map);
+		} else {
 			int cnt = boardMapper.crewCatInsertMember(map);
-			
-			if(cnt > 0) {
+
+			if (cnt > 0) {
 				resultMap.put("result", "success");
 			} else {
 				resultMap.put("result", "fail");
 			}
-			return resultMap;
 		}
-			
-	
+		return resultMap;
+	}
+
+	// crew 게시판 등록 insert
+	public HashMap<String, Object> InsertCrewBoard(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
+		int room = boardMapper.crewChatInsert(map);
+		int oner = boardMapper.crewChatInsertOner(map);
+
+		if (room > 0) {
+			resultMap.put("result", "success");
+		} else {
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+
 	public HashMap<String, Object> getBoardList(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		List <Board> list = boardMapper.boardList(map);
+		List<Board> list = boardMapper.boardList(map);
 		int cnt = boardMapper.boardCnt(map);
-		
+
 		resultMap.put("list", list);
 		resultMap.put("cnt", cnt);
 		resultMap.put("result", "success");
 		return resultMap;
 	}
-	
+
 	public HashMap<String, Object> addBoardList(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		int cnt = boardMapper.boardAdd(map);
-		
+
 		resultMap.put("boardNo", map.get("boardNo"));
 		resultMap.put("result", "success");
 		return resultMap;
 	}
-	
+
 	public HashMap<String, Object> boardInfo(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		Board info = boardMapper.boardInfo(map);
 		int cnt = boardMapper.viewCnt(map);
-		
+
 		resultMap.put("result", "success");
 		resultMap.put("info", info);
 		return resultMap;
 	}
-	
+
 	public HashMap<String, Object> commentInfo(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		List <Comment> list = boardMapper.commentInfo(map);
-		
+		List<Comment> list = boardMapper.commentInfo(map);
+
 		resultMap.put("result", "success");
 		resultMap.put("list", list);
 		return resultMap;
 	}
-	
+
 	public HashMap<String, Object> addComment(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		int cnt = boardMapper.commentAdd(map);
-		
-		if(cnt > 0) {
+
+		if (cnt > 0) {
 			resultMap.put("boardNo", map.get("boardNo"));
 			resultMap.put("result", "success");
 		} else {
@@ -115,13 +135,13 @@ public class BoardService {
 		}
 		return resultMap;
 	}
-	
+
 	public HashMap<String, Object> checkKeylock(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		int cnt = boardMapper.checkKeylock(map);
-		
-		if(cnt > 0) {
+
+		if (cnt > 0) {
 			resultMap.put("boardNo", map.get("boardNo"));
 			resultMap.put("result", "success");
 		} else {
@@ -129,26 +149,26 @@ public class BoardService {
 		}
 		return resultMap;
 	}
-	
+
 	public HashMap<String, Object> changePost(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		int cnt = boardMapper.changePost(map);
-		
-		if(cnt > 0) {
+
+		if (cnt > 0) {
 			resultMap.put("result", "success");
 		} else {
 			resultMap.put("result", "fail");
 		}
 		return resultMap;
 	}
-	
+
 	public HashMap<String, Object> deletePost(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		int cnt = boardMapper.deletePost(map);
-		
-		if(cnt > 0) {
+		int cnt2 = boardMapper.deleteComment(map);
+		if (cnt > 0) {
 			resultMap.put("result", "success");
 		} else {
 			resultMap.put("result", "fail");
@@ -162,6 +182,30 @@ public class BoardService {
 		int cnt = boardMapper.reportBoard(map);
 		
 		if(cnt > 0) {
+			resultMap.put("result", "success");
+		} else {
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> countReport(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cntReport = boardMapper.reportCnt(map);
+		
+		if(cntReport > 0) {
+			resultMap.put("result", "success");
+		} else {
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+
+	public HashMap<String, Object> commentDelete(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt2 = boardMapper.deleteComment(map);
+		if (cnt2 > 0) {
 			resultMap.put("result", "success");
 		} else {
 			resultMap.put("result", "fail");

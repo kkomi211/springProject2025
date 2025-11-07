@@ -13,5 +13,5 @@ public class Comment {
 	private String cdate;
 	private String udate;
 	private String chardate;
-
+	private String nickname;
 }

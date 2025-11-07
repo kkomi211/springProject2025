@@ -9,6 +9,12 @@
 		overflow: hidden;
 		
 	}
+	.text-white{
+		color: white;
+	}
+	.text-decoration-none{
+		text-decoration: none;
+	}
 	.content h2 {
 	    color: #343a40;
 	    font-size: 1.8rem;

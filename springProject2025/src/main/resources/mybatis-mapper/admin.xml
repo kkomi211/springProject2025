@@ -174,7 +174,7 @@
 		                P.PRODUCT_NAME <!-- ★★★ PRODUCT 테이블에서 상품명 가져오기 ★★★ -->
 		            FROM PRODUCT_INQUIRY I
 		            INNER JOIN USERS U ON I.USER_ID = U.USER_ID
-		            INNER JOIN PRODUCT P ON I.PRODUCT_NO = P.PRODUCT_NO <!-- ★★★ PRODUCT 테이블 JOIN ★★★ -->
+		            LEFT JOIN PRODUCT P ON I.PRODUCT_NO = P.PRODUCT_NO <!-- ★★★ PRODUCT 테이블 JOIN ★★★ -->
 		            <where>
 		                <if test="keyword != null and keyword != ''">
 		                    AND (I.TITLE LIKE '%' || #{keyword} || '%'
@@ -206,7 +206,7 @@
 		        P.PRODUCT_NAME <!-- ★★★ PRODUCT 테이블에서 상품명 가져오기 ★★★ -->
 		    FROM PRODUCT_INQUIRY I
 		    INNER JOIN USERS U ON I.USER_ID = U.USER_ID
-		    INNER JOIN PRODUCT P ON I.PRODUCT_NO = P.PRODUCT_NO <!-- ★★★ PRODUCT 테이블 JOIN ★★★ -->
+		    LEFT JOIN PRODUCT P ON I.PRODUCT_NO = P.PRODUCT_NO <!-- ★★★ PRODUCT 테이블 JOIN ★★★ -->
 		    WHERE INQUIRY_NO = #{inquiryNo}
 		</select>
 		
@@ -581,9 +581,9 @@
 		                U_R.NAME AS REPORTERNAME,       <!-- 신고자 이름 (추가 조회) -->
 		                U_B.NAME AS BOARDAUTHORNAME     <!-- 게시글 작성자 이름 (추가 조회) -->
 		            FROM REPORT_BOARD RB
-		            JOIN BOARD B ON RB.BOARD_NO = B.BOARD_NO
-		            JOIN USERS U_R ON RB.REPORTER_ID = U_R.USER_ID <!-- 신고자 정보 가져오기 -->
-		            JOIN USERS U_B ON B.USER_ID = U_B.USER_ID <!-- 게시글 작성자 정보 가져오기 -->
+		            LEFT JOIN BOARD B ON RB.BOARD_NO = B.BOARD_NO
+		            LEFT JOIN USERS U_R ON RB.REPORTER_ID = U_R.USER_ID <!-- 신고자 정보 가져오기 -->
+		            LEFT JOIN USERS U_B ON B.USER_ID = U_B.USER_ID <!-- 게시글 작성자 정보 가져오기 -->
 		            <where>
 		                <if test="keyword != null and keyword != ''">
 		                    AND (B.TITLE LIKE '%' || #{keyword} || '%'

@@ -16,14 +16,16 @@ h1 {
     margin: 30px;
     border-color: #757575;
 }
-.small-input{
+
+.small-input {
     width: 50px;
 }
+
 .margin30 {
     margin: 10px;
 }
 
-.marginbutton{
+.marginbutton {
     margin-right: 10px;
     margin-left: 10px;
 }
@@ -350,10 +352,10 @@ td input {
 
 .side-bar {
     width: 20%;
-    margin-bottom: 30px;
+    margin-left: 30px;
     float: left;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* border: 1px solid #ccc; */
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
 }
 
 .sidebar {
@@ -373,24 +375,23 @@ td input {
     cursor: pointer;
 }
 
-.category-box .category {
-    width: 100%;
-    text-align: center;
-    padding: 20px 20px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.category-box {
+    margin-bottom: 20px;
+    padding-top: 15px;
+    /* 카테고리 박스 상단 패딩 추가 */
 }
 
-.category-box .subcategory {
-    width: 100%;
-    text-align: center;
-    padding: 10px 20px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.category-box .category {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #222;
+    padding: 15px 0 15px 5px;
+    /* 좌측 패딩 추가 */
+    border-bottom: 2px solid #222;
+    margin-bottom: 15px;
 }
+
+
 
 .main-container {
     width: 80%;
@@ -414,10 +415,9 @@ td input {
 .infoMain-container {
     width: 60%;
     padding: 0px;
-    border: 1px solid black;
     margin-bottom: 30px;
     float: left;
-    border: 1px solid #ccc;
+    /* border: 1px solid #ccc; */
     padding: 20px;
     background-color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -519,27 +519,31 @@ td input {
 
 
 .subcategory {
-    padding: 6px 10px;
+    font-size: 1.1em;
+    padding: 10px 5px;
+    /* 모든 서브카테고리 아이템의 좌우 여백 */
     cursor: pointer;
-    border: 1px solid #ddd;
-    border-right: none;
-    /* 오른쪽 보더 제거 → 붙어 보이게 */
-    background-color: white;
-    color: black;
+    color: #555;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.subcategory:hover {
+    background-color: #f0f0f0;
+    color: #222;
+    font-weight: bold;
 }
 
 .subcategory-children {
-    position: absolute;
-    top: 0;
-    left: 100%;
-    /* 바로 오른쪽에 붙이기 */
-    margin-left: 0;
-    /* 여백 제거 */
-    background: #fff;
-    border: 1px solid #ddd;
-    min-width: 160px;
-    z-index: 10;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+    position: static;
+    /* 부모 카테고리 아래로 위치 */
+    width: 100%;
+    background-color: #fff;
+    border: none;
+    box-shadow: none;
+    z-index: 15;
+    border-radius: 0;
+    padding: 0;
+    margin-top: -5px;
 }
 
 .subcategory.child {
@@ -581,6 +585,175 @@ td input {
     padding: 5px;
     margin-bottom: 30px;
 }
+
+                       /* New CSS from homepage */
+
+html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        #app { /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        a:hover {
+            /* text-decoration: underline; */
+        }
+
+        /* --- Header Section (화면 전체 너비) --- */
+        header { /* default 헤더 스타일이 header 태그에 직접 적용되도록 재구성 */
+            width: 100%;
+            background-color: black; /* default top-header의 배경색을 header 전체로 */
+            color: white; /* default top-header의 글자색을 header 전체로 */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .top-header { /* default top-header가 header의 유일한 자식이 됨 */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 150px; /* default top-header의 높이 */
+            padding: 0 40px; /* default footer padding과 맞춤 */
+            box-sizing: border-box; /* 패딩이 width에 포함되도록 */
+        }
+        .top-header div {
+            display: inline-block;
+            text-align: left;
+            font-size: 15px;
+            margin-right: 0; /* flex gap 사용을 위해 개별 div 마진 제거 */
+        }
+        .top-header input {
+            height: 25px;
+            border-radius: 8px;
+            width: 200px;
+        }
+
+        .brand-name { /* top-header 내 brand-name */
+            margin-right: 0; /* top-header div의 default margin-right 상쇄 */
+        }
+        .brand-name div {
+            font-family: 'Fugaz One', sans-serif;
+            font-size: 60px;
+            letter-spacing: 5px;
+            margin-left: 0; /* top-header div의 default margin-left 상쇄 */
+            display: block;
+            color: white; /* default 유지 */
+        }
+        .brand-name a {
+            color: white;
+        }
+
+        #right-items {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* 요소들 간 간격 */
+        }
+        #right-items div {
+            font-size: 15px;
+            white-space: nowrap;
+        }
+        #right-items div a {
+            color: white; /* default top-header의 글자색 */
+        }
+        #right-items div a:hover {
+            color: #eee;
+        }
+
+        .bottom-header {
+            display: flex;
+            justify-content: center;
+            font-size: 30px; /* default bottom-header 폰트 사이즈 */
+            background-color: white; /* bottom-header 배경색 추가 */
+            /* border-bottom: 1px solid #eee; 하단 경계선 */
+            padding: 20px 0; /* 세로 패딩 */
+        }
+        .bottom-header div {
+            display: inline-block;
+            margin-right: 100px; /* default bottom-header div의 마진 */
+            margin-top: 0; /* flex-align으로 중앙 정렬 */
+            text-align: center;
+        }
+        .bottom-header div:last-child {
+            margin-right: 0;
+        }
+        .bottom-header a {
+            color: black; /* default bottom-header 링크색 */
+        }
+        .bottom-header a:hover {
+            color: #007bff;
+        }
+
+                /* --- Footer Section (화면 전체 너비) --- */
+        footer { /* default 푸터 스타일 */
+            width: 100%;
+            height: 200px;
+            background-color: black;
+            color: white;
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 0 40px; /* default footer의 padding */
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+            margin-top: auto; /* #app이 flex-direction: column일 때 푸터를 아래로 밀어냄 */
+            box-sizing: border-box; /* 패딩이 width에 포함되도록 */
+        }
+
+        .footer-left {
+            margin-left: 0; /* padding이 있으므로 margin-left 제거 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .footer-left .company-info div {
+            margin-bottom: 5px;
+            white-space: nowrap;
+        }
+        .copyright {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #bbb;
+            white-space: nowrap;
+        }
+
+        .footer-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+        }
+        .other {
+            margin-bottom: 10px;
+            white-space: nowrap;
+        }
+        .other span {
+            margin-left: 20px;
+            cursor: pointer;
+        }
+        .other span:hover {
+            text-decoration: underline;
+        }
+        .other span:first-child {
+            margin-left: 0;
+        }
+        .socials span {
+            margin-left: 20px;
+            cursor: pointer;
+        }
+        .socials span:hover {
+            text-decoration: underline;
+        }
+        .socials span:first-child {
+            margin-left: 0;
+        }
 
 .detail-box {
     clear: both;
@@ -732,7 +905,7 @@ td input {
 #editor {
     width: 100%;
     height: 500px;
-    
+
 }
 
 .header {

@@ -177,7 +177,7 @@
 	
 	<update id="editProduct" parameterType="hashmap">
 		UPDATE PRODUCT
-		SET PRODUCT_NAME = #{productName}, PRICE = #{price}, PRODUCT_DETAIL = #{productDetail}, QUANTITY = #{quantity},
+		SET PRODUCT_NAME = #{productName}, PRICE = #{price}, PRODUCT_DETAIL = #{productDetail},
 		GENDER = #{gender}, TYPE_NO = #{typeNo}, UDATE = SYSDATE, SALE_YN = #{saleYN}, SALE_PRICE = #{salePrice}
 		WHERE PRODUCT_NO IN (
 			SELECT PRODUCT_NO
@@ -201,16 +201,56 @@
 		WHERE PRODUCT_NO = #{productNo}
 	</delete>
 	
+	<delete id="deleteProductInquiry" parameterType="hashmap">
+		DELETE FROM PRODUCT_INQUIRY
+		WHERE PRODUCT_NO IN (
+			SELECT PRODUCT_NO
+			FROM PRODUCT
+			WHERE PRODUCT_NAME IN(
+				SELECT PRODUCT_NAME
+				FROM PRODUCT
+				WHERE PRODUCT_NO = #{productNo}
+			)
+		)
+	</delete>
+	
+	<delete id="deleteProductReview" parameterType="hashmap">
+		DELETE FROM REVIEW
+		WHERE PRODUCT_NO IN (
+			SELECT PRODUCT_NO
+			FROM PRODUCT
+			WHERE PRODUCT_NAME IN(
+				SELECT PRODUCT_NAME
+				FROM PRODUCT
+				WHERE PRODUCT_NO = #{productNo}
+			)
+		)
+	</delete>
+	
 	<insert id="insertProduct" parameterType="hashmap" useGeneratedKeys="true" keyColumn="PRODUCT_NO" keyProperty="productNo">
 		INSERT INTO PRODUCT
 		VALUES (PRODUCT_SEQ.NEXTVAL, #{userId}, #{brand}, #{productName}, #{price}, #{productSize}, #{productDetail}, 0, #{quantity},
-		#{gender}, #{typeNo}, SYSDATE, SYSDATE)
+		#{gender}, #{typeNo}, SYSDATE, SYSDATE, 'N', 0)
 	</insert>
 	
 	<insert id="insertProductImg" parameterType="hashmap">
 		INSERT INTO PRODUCT_IMG
 		VALUES (PRODUCT_IMG_SEQ.NEXTVAL, #{productNo}, #{path}, #{fileName}, #{orgName}, #{size}, #{ext})
 	</insert>
+	
+	<update id="updateProductImg" parameterType="hashmap">
+		UPDATE PRODUCT_IMG
+		SET IMG_PATH = #{path}, IMG_NAME = #{fileName}, IMG_ORGNAME = #{orgName}, IMG_SIZE = #{size}, IMG_ETC = #{ext}
+		WHERE PRODUCT_NO IN (
+			SELECT PRODUCT_NO
+			FROM PRODUCT
+			WHERE PRODUCT_NAME IN(
+				SELECT PRODUCT_NAME
+				FROM PRODUCT
+				WHERE PRODUCT_NO = #{productNo}
+			)
+		)
+	</update>
 	
 	<delete id="deleteProductImg" parameterType="hashmap">
 		DELETE FROM PRODUCT_IMG

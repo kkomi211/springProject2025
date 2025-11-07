@@ -93,7 +93,7 @@
                         <tr>
                             <th>이미지</th>
                             <td>
-                                <input type="file">
+                                <input type="file" id="file1" name="file1" accept=".jpg, .png">
                                 <a v-if="img != undefined">
                                     <img :src="img.imgPath">
                                 </a>
@@ -118,11 +118,11 @@
             data() {
                 return {
                     // 변수 - (key : value)
-                    sessionId: "",
+                    sessionId: "${sessionId}",
                     productNo: "${productNo}",
                     info: {},
                     img: {},
-                    salePrice: "",
+                    salePrice: 0,
                     quantityFlg: false
 
                 };
@@ -165,10 +165,10 @@
                 },
                 fnEditProduct() {
                     let self = this;
-                    if (self.info.salePrice != 0) {
+                    if (self.info.salePrice != null && self.info.salePrice != '0') {
                         self.info.saleYN = "Y";
                     }
-                    if (self.info.salePrice == 0) {
+                    else {
                         self.info.saleYN = "N";
                     }
                     $.ajax({
@@ -178,7 +178,29 @@
                         data: self.info,
                         success: function (data) {
                             alert("수정되었습니다!");
+                            var form = new FormData();
+                            form.append("file1", $("#file1")[0].files[0]);
+                            form.append("productNo", self.productNo); // 임시 pk
+                            self.upload(form);
                             self.fnBack();
+                        }
+                    });
+                },
+                upload: function (form) {
+                    console.log(form);
+
+                    var self = this;
+                    $.ajax({
+                        url: "/product/update/fileUpload.dox"
+                        , type: "POST"
+                        , processData: false
+                        , contentType: false
+                        , data: form
+                        , success: function (data) {
+                            console.log("사진 == >");
+                            
+                            console.log(data);
+
                         }
                     });
                 },
