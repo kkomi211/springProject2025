@@ -7,15 +7,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="stylesheet" href="/css/jghstyle.css">
+        <link rel="stylesheet" href="/css/mypage.css">
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
+
 
     </head>
     <style>
@@ -80,83 +84,113 @@
             border: none;
             border-radius: 5px;
         } */
-                    /* New CSS from homepage */
+        /* New CSS from homepage */
 
-html, body {
+        html,
+        body {
             height: 100%;
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
             color: #333;
         }
-        #app { /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
+
+        #app {
+            /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
+
         a {
             text-decoration: none;
             color: inherit;
         }
+
         a:hover {
             text-decoration: underline;
         }
 
         /* --- Header Section (화면 전체 너비) --- */
-        header { /* default 헤더 스타일이 header 태그에 직접 적용되도록 재구성 */
+        header {
+            /* default 헤더 스타일이 header 태그에 직접 적용되도록 재구성 */
             width: 100%;
-            background-color: black; /* default top-header의 배경색을 header 전체로 */
-            color: white; /* default top-header의 글자색을 header 전체로 */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background-color: black;
+            /* default top-header의 배경색을 header 전체로 */
+            color: white;
+            /* default top-header의 글자색을 header 전체로 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .top-header { /* default top-header가 header의 유일한 자식이 됨 */
+        .top-header {
+            /* default top-header가 header의 유일한 자식이 됨 */
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 150px; /* default top-header의 높이 */
-            padding: 0 40px; /* default footer padding과 맞춤 */
-            box-sizing: border-box; /* 패딩이 width에 포함되도록 */
+            height: 150px;
+            /* default top-header의 높이 */
+            padding: 0 40px;
+            /* default footer padding과 맞춤 */
+            box-sizing: border-box;
+            /* 패딩이 width에 포함되도록 */
         }
+
         .top-header div {
             display: inline-block;
             text-align: left;
             font-size: 15px;
-            margin-right: 0; /* flex gap 사용을 위해 개별 div 마진 제거 */
+            margin-right: 0;
+            /* flex gap 사용을 위해 개별 div 마진 제거 */
         }
+
         .top-header input {
             height: 25px;
             border-radius: 8px;
             width: 200px;
         }
 
-        .brand-name { /* top-header 내 brand-name */
-            margin-right: 0; /* top-header div의 default margin-right 상쇄 */
+        .brand-name {
+            /* top-header 내 brand-name */
+            margin-right: 0;
+            /* top-header div의 default margin-right 상쇄 */
         }
+
         .brand-name div {
-            font-family: 'Fugaz One', sans-serif;
+            font-family: 'Jost', sans-serif;
             font-size: 60px;
-            letter-spacing: 5px;
-            margin-left: 0; /* top-header div의 default margin-left 상쇄 */
+            font-weight: 900;
+            letter-spacing: 3px;
+            margin-left: 0;
+            /* top-header div의 default margin-left 상쇄 */
             display: block;
-            color: white; /* default 유지 */
+            color: white;
+            /* default 유지 */
         }
+
         .brand-name a {
             color: white;
         }
+        .brand-name a:hover {
+			text-decoration: none;
+		}
 
         #right-items {
             display: flex;
             align-items: center;
-            gap: 20px; /* 요소들 간 간격 */
+            gap: 20px;
+            /* 요소들 간 간격 */
         }
+
         #right-items div {
             font-size: 15px;
             white-space: nowrap;
         }
+
         #right-items div a {
-            color: white; /* default top-header의 글자색 */
+            color: white;
+            /* default top-header의 글자색 */
         }
+
         #right-items div a:hover {
             color: #eee;
         }
@@ -164,29 +198,54 @@ html, body {
         .bottom-header {
             display: flex;
             justify-content: center;
-            font-size: 30px; /* default bottom-header 폰트 사이즈 */
-            background-color: white; /* bottom-header 배경색 추가 */
-            /* border-bottom: 1px solid #eee; 하단 경계선 */
-            padding: 20px 0; /* 세로 패딩 */
+            font-size: 25px;
+            /* default bottom-header 폰트 사이즈 */
+            background-color: white;
+            /* bottom-header 배경색 추가 */
+            border-bottom: 1px solid #eee;
+            /* 하단 경계선 */
+            padding: 20px 0;
+            /* 세로 패딩 */
+            letter-spacing: 3px;
         }
+
+        .bottom-header a:hover {
+            text-decoration: none;
+            transform: scale(1.1);
+            transition: transform 0.3s ease-out; /* faster ease-out */
+        }
+
+        .bottom-header a {
+            color: black;
+            transition: transform 0.2s ease-in; /* slower ease-in */
+            display: inline-block;
+        }
+
         .bottom-header div {
             display: inline-block;
-            margin-right: 100px; /* default bottom-header div의 마진 */
-            margin-top: 0; /* flex-align으로 중앙 정렬 */
+            margin-right: 100px;
+            /* default bottom-header div의 마진 */
+            margin-top: 0;
+            /* flex-align으로 중앙 정렬 */
             text-align: center;
         }
+
         .bottom-header div:last-child {
             margin-right: 0;
         }
+
         .bottom-header a {
-            color: black; /* default bottom-header 링크색 */
-        }
-        .bottom-header a:hover {
-            color: #007bff;
+            color: black;
+            /* default bottom-header 링크색 */
         }
 
-                /* --- Footer Section (화면 전체 너비) --- */
-        footer { /* default 푸터 스타일 */
+        /* .bottom-header a:hover {
+            color: #007bff;
+        } */
+
+        /* --- Footer Section (화면 전체 너비) --- */
+        footer {
+            /* default 푸터 스타일 */
             width: 100%;
             height: 200px;
             background-color: black;
@@ -195,22 +254,28 @@ html, body {
             display: flex;
             justify-content: space-between;
             font-size: 12px;
-            padding: 0 40px; /* default footer의 padding */
-            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
-            margin-top: auto; /* #app이 flex-direction: column일 때 푸터를 아래로 밀어냄 */
-            box-sizing: border-box; /* 패딩이 width에 포함되도록 */
+            padding: 0 40px;
+            /* default footer의 padding */
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: auto;
+            /* #app이 flex-direction: column일 때 푸터를 아래로 밀어냄 */
+            box-sizing: border-box;
+            /* 패딩이 width에 포함되도록 */
         }
 
         .footer-left {
-            margin-left: 0; /* padding이 있으므로 margin-left 제거 */
+            margin-left: 0;
+            /* padding이 있으므로 margin-left 제거 */
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
+
         .footer-left .company-info div {
             margin-bottom: 5px;
             white-space: nowrap;
         }
+
         .copyright {
             margin-top: 8px;
             font-size: 0.9em;
@@ -224,39 +289,48 @@ html, body {
             justify-content: center;
             align-items: flex-end;
         }
+
         .other {
             margin-bottom: 10px;
             white-space: nowrap;
         }
+
         .other span {
             margin-left: 20px;
             cursor: pointer;
         }
+
         .other span:hover {
             text-decoration: underline;
         }
+
         .other span:first-child {
             margin-left: 0;
         }
+
         .socials span {
             margin-left: 20px;
             cursor: pointer;
         }
+
         .socials span:hover {
             text-decoration: underline;
         }
+
         .socials span:first-child {
             margin-left: 0;
         }
+
         .container {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
             background-color: #fff;
-            }
+        }
 
-            main {
-            flex: 1; /* makes main take up all remaining vertical space */
+        main {
+            flex: 1;
+            /* makes main take up all remaining vertical space */
         }
     </style>
 
@@ -272,22 +346,21 @@ html, body {
                         </div>
                         <div id="right-items">
                             <div>
-                                <input type="text" placeholder="검색어를 입력해 주세요.">
-                            </div>
-                            <div>
-                                <template v-if="sessionId != ''">
-                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
-                                </template>
-                                <template v-else>
-                                    <a href="/home/login.do">로그인</a>
-                                </template>
+                                <!-- <template > -->
+                                    <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
+                                <!-- </template> -->
+                                <!-- <template > -->
+                                    <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
+                                <!-- </template> -->
                             </div>
                             <div v-if="sessionId == ''">
-                                <a href="/home/signup.do">가입하기</a>
+                                <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
                             </div>
-                            <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
-                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
-
+                            <div v-if="sessionId != '' && userType != 'K'"><a
+                                    href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                            <div v-else-if="sessionId != '' && userType == 'K'"><a
+                                    href="home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div>
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -364,8 +437,7 @@ html, body {
                                             <input type="checkbox" v-model="order.isChecked"
                                                 style="transform: scale(1.5); margin-right: 10px; transform-origin: left center;">
                                         </div> -->
-                                        <img v-if="order.imgPath"
-                                            :src="order.imgPath" :alt="order.productName"
+                                        <img v-if="order.imgPath" :src="order.imgPath" :alt="order.productName"
                                             class="product-image"
                                             style="width: 150px; height: 150px; object-fit: cover;">
                                         <div v-else class="product-image"
@@ -502,6 +574,7 @@ html, body {
     </html>
 
     <script>
+        lucide.createIcons();
         // Vue 인스턴스를 전역에서 접근 가능하도록 'app' 변수로 선언
         const app = Vue.createApp({
             data() {
@@ -519,7 +592,8 @@ html, body {
                     productNo: '${productNo}',
                     // sau : 'R',
                     // because: '',
-                    rating: "${rating}"
+                    rating: "${rating}",
+                    userType : '${userType}',
 
                 };
             },
@@ -800,7 +874,7 @@ html, body {
                     let self = this;
                     pageChange("/home/community/board.do", { type: "B" });
                 },
-                fnSale(){
+                fnSale() {
                     let self = this;
                     self.saleYN = 'Y';
                     pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });

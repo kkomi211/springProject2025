@@ -24,6 +24,14 @@
             <!-- Google Fonts (Fugaz One) -->
             <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
 
+             <!-- Google Fonts (Jost)  -->
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+            <!-- Icons -->
+            <script src="https://unpkg.com/lucide@latest"></script>
+
             <script src="/js/page-change.js"></script>
 
             <style>
@@ -101,9 +109,10 @@
                 }
 
                 .brand-name div {
-                    font-family: 'Fugaz One', sans-serif;
+                    font-family: 'Jost', sans-serif;
                     font-size: 60px;
-                    letter-spacing: 5px;
+                    font-weight: 900;
+                    letter-spacing: 3px;
                     margin-left: 0;
                     /* top-header div의 default margin-left 상쇄 */
                     display: block;
@@ -128,18 +137,22 @@
                 }
 
                 #right-items div a {
-                    color: white;
+                    /* color: white; */
+                    color: #eee;
                     /* default top-header의 글자색 */
                 }
 
                 #right-items div a:hover {
-                    color: #eee;
+                    /* color: #eee; */
+                    color: white;
                 }
+
+                /* bottom-header 수정 부분 */
 
                 .bottom-header {
                     display: flex;
                     justify-content: center;
-                    font-size: 30px;
+                    font-size: 25px;
                     /* default bottom-header 폰트 사이즈 */
                     background-color: white;
                     /* bottom-header 배경색 추가 */
@@ -147,6 +160,37 @@
                     /* 하단 경계선 */
                     padding: 20px 0;
                     /* 세로 패딩 */
+                    letter-spacing: 3px;
+                }
+
+                .bottom-header-sub{
+                    display: flex;
+                    flex-direction: column; /* ← makes items go top-to-bottom */
+                    justify-content: center; /* centers vertically inside container */
+                    align-items: center;
+                    width:600px;
+                    height: 60px;
+                    border-radius: 10px;
+                    box-sizing: border-box;
+                    line-height: 60px;
+                    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+
+                }
+                /* .bottom-header-sub:hover{
+                    background-color: #f1f1f1;
+                    /* transition: 0.3s; */
+                    /* opacity: 0.5; 0 = fully transparent, 1 = fully opaque */
+                
+                
+                .bottom-header a:hover {
+                    transform: scale(1.1);
+                    transition: transform 0.3s ease-out; /* faster ease-out */
+                }
+
+                .bottom-header a {
+                    color: black;
+                    transition: transform 0.2s ease-in; /* slower ease-in */
+                    display: inline-block;
                 }
 
                 .bottom-header div {
@@ -158,6 +202,8 @@
                     text-align: center;
                 }
 
+                /* bottom-header 수정 부분 */
+
                 .bottom-header div:last-child {
                     margin-right: 0;
                 }
@@ -167,9 +213,9 @@
                     /* default bottom-header 링크색 */
                 }
 
-                .bottom-header a:hover {
+                /* .bottom-header a:hover {
                     color: #007bff;
-                }
+                } */
 
 
                 /* --- Main Content Section (콘텐츠 너비 제한) --- */
@@ -698,8 +744,9 @@
                 }
 
                 .crew-join-section .crew-images-wrapper {
-                    width: 100%;
-                    max-width: 1520px;
+                    /* width: 100%; */
+                    width: 100vw;
+                    /* max-width: 1520px; */
                     margin: 0 auto;
                     position: relative;
                     overflow: hidden;
@@ -710,7 +757,8 @@
 
                 .crew-join-section .crew-image-container {
                     display: flex;
-                    width: 100%;
+                    /* width: 100%; */
+                    width: 100vw;
                     height: 400px;
                     /* 컨테이너 높이 */
                     align-items: stretch;
@@ -761,7 +809,8 @@
                 }
 
                 .crew-join-section .crew-image-item img {
-                    width: 100%;
+                    /* width: 100%; */
+                    width: 100vw;
                     height: 100%;
                     object-fit: cover;
                     object-position: center;
@@ -777,6 +826,7 @@
 
                 /* 오버레이 텍스트 스타일 (이전과 동일) */
                 .crew-join-section .crew-overlay-text {
+                    width: 100%;
                     position: absolute;
                     top: 50%;
                     left: 50%;
@@ -1075,31 +1125,30 @@
                             <div><a href="/home.do" style="text-decoration: none;">RUNNERS' HOUSE</a></div>
                         </div>
                         <div id="right-items">
-                            <div class="search-box">
-                                <input type="text" placeholder="검색어를 입력해 주세요.">
-                            </div>
                             <div>
-                                <template v-if="sessionId != ''">
-                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
-                                </template>
-                                <template v-else>
-                                    <a href="/home/login.do">로그인</a>
-                                </template>
+                                <!-- <template > -->
+                                    <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
+                                <!-- </template> -->
+                                <!-- <template > -->
+                                    <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
+                                <!-- </template> -->
                             </div>
                             <div v-if="sessionId == ''">
-                                <a href="/home/signup.do">가입하기</a>
+                                <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
                             </div>
                             <div v-if="sessionId != '' && userType != 'K'"><a
-                                    href="/home/mypage/information.do">마이페이지</a></div>
+                                    href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
                             <div v-else-if="sessionId != '' && userType == 'K'"><a
-                                    href="home/mypage/information/change.do">마이페이지</a></div>
-                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
+                                    href="home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div>
                         </div>
                     </div>
                     <div class="bottom-header">
-                        <div><a href="/home/product.do">제품</a></div>
-                        <div><a href="javascript:;" @click="fnSale">세일</a></div>
-                        <div><a href="/home/community/board.do">커뮤니티</a></div>
+                        <!-- <div class="bottom-header-sub"> -->
+                            <div><a href="/home/product.do">제품</a></div>
+                            <div><a href="javascript:;" @click="fnSale">세일</a></div>
+                            <div><a href="/home/community/board.do">커뮤니티</a></div>
+                        <!-- </div> -->
                     </div>
                 </header>
                 <div class="container">
@@ -1186,22 +1235,39 @@
                         <section class="crew-join-section">
                             <div class="crew-images-wrapper">
                                 <div class="crew-image-container"> <!-- 이미지 두 개를 담는 컨테이너 -->
+                                    <div class="crew-image-item" style="width: 100%; overflow: hidden;">
+                                        <a href="/home/community/crew.do" style="display: block;">
+                                            <img 
+                                            src="/img/crew_join_banner3.jpg"
+                                            alt="크루 가입 배너 1"
+                                            style="width: 100%; height: auto; display: block; border-radius: 10px; object-fit: contain;">
+                                        </a>
+                                    </div>
+                                </div>
+                                <span class="crew-overlay-text">JOIN A CREW</span> <!-- 텍스트는 항상 보임, 중앙 위치 -->
+                            </div>
+                        </section>
+
+                        <!-- <section class="crew-join-section">
+                            <div class="crew-images-wrapper">
+                                <div class="crew-image-container"> 이미지 두 개를 담는 컨테이너
                                     <div class="crew-image-item">
-                                        <a href="/home/community/crew.do"> <!-- 각 이미지가 자체 링크를 가짐 -->
+                                        <a href="/home/community/crew.do"> 각 이미지가 자체 링크를 가짐
                                             <img src="/img/crew_join_banner.jpg" alt="크루 가입 배너 1">
                                         </a>
                                     </div>
                                     <div class="crew-image-item">
-                                        <a href="/home/community/crew.do"> <!-- 각 이미지가 자체 링크를 가짐 -->
+                                        <a href="/home/community/crew.do"> 각 이미지가 자체 링크를 가짐
                                             <img src="/img/crew_join_banner2.jpg" alt="크루 가입 배너 2">
                                         </a>
                                     </div>
                                 </div>
                                 <a href="/home/community/crew.do">
-                                    <span class="crew-overlay-text">JOIN A CREW</span> <!-- 텍스트는 항상 보임, 중앙 위치 -->
+                                    <span class="crew-overlay-text">JOIN A CREW</span> 텍스트는 항상 보임, 중앙 위치
                                 </a>    
                             </div>
-                        </section>
+                        </section> -->
+
                     </main>
                 </div>
                 <footer>
@@ -1238,6 +1304,7 @@
 
 
         <script>
+            lucide.createIcons();
             const app = Vue.createApp({
                 data() {
                     return {
@@ -1246,7 +1313,7 @@
                         latestRallies: [],
                         sessionId: '${sessionId}',
                         isLoggedOut: false,
-                        userType: '${userType}'
+                        userType: '${userType}',
                     };
                 },
                 methods: {

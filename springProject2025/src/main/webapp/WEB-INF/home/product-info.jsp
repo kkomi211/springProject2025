@@ -9,6 +9,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -16,6 +17,7 @@
         <link rel="stylesheet" href="/css/jes.css">
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
         <script src="/js/page-change.js"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
 
         <style>
  
@@ -32,21 +34,21 @@
                     </div>
                     <div id="right-items">
                         <div>
-                            <input type="text" placeholder="검색어를 입력해 주세요.">
-                        </div>
-                        <div>
-                            <template v-if="sessionId != ''">
-                                <a href="javascript:;" @click="fnLogout">로그아웃</a>
-                            </template>
-                            <template v-else>
-                                <a href="/home/login.do">로그인</a>
-                            </template>
+                            <!-- <template > -->
+                                <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
+                            <!-- </template> -->
+                            <!-- <template > -->
+                                <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
+                            <!-- </template> -->
                         </div>
                         <div v-if="sessionId == ''">
-                            <a href="/home/signup.do">가입하기</a>
+                            <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
                         </div>
-                        <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
-                        <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
+                        <div v-if="sessionId != '' && userType != 'K'"><a
+                                href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                        <div v-else-if="sessionId != '' && userType == 'K'"><a
+                                href="home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                        <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div>
                     </div>
                 </div>
                 <div class="bottom-header">
@@ -279,6 +281,7 @@
     </html>
 
     <script>
+        lucide.createIcons();
         const app = Vue.createApp({
             data() {
                 return {
@@ -317,7 +320,9 @@
                     size: "",
                     maxQuantity: 1,
                     sessionId: "${sessionId}",
-                    userName: ""
+                    userName: "",
+
+                    userType : '${userType}',
                 };
             },
             computed: {
@@ -540,7 +545,8 @@
                         location.href="/home/login.do";
                     }
                     let param = {
-                        reviewNo: reviewNo
+                        reviewNo: reviewNo,
+                        userId : self.sessionId
                     };
                     $.ajax({
                         url: "/product/review/1up.dox",
@@ -549,6 +555,10 @@
                         data: param,
                         success: function (data) {
                             console.log(data);
+                            if(data.result == "same"){
+                                alert("이미 추천한 리뷰입니다!");
+                                return;
+                            }
                             self.fnReviewList();
                         }
                     });
