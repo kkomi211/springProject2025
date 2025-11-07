@@ -1,8 +1,22 @@
 # 3team 프로젝트
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/2a094a86-f8d7-461d-a563-579b46c50b83" width="800" alt="GwasilZero 시연 영상">
+  <img  src="https://github.com/user-attachments/assets/cfe64dfb-543e-466e-ab1e-47cf6be20a41" alt="GwasilZero 시연 영상" width="1200" height="500">
 </div>
+# 3team - 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <h4>파일 흐름 간단 구조</h4>
 <pre>
