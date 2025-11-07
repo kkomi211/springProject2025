@@ -379,7 +379,9 @@
                     directFlg: false,
                     chatbotFlg: false,
                     userInput: "",
-                    messages: []
+                    messages: [],
+
+                    userType : '${userType}',
                 };
             },
             methods: {

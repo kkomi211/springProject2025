@@ -813,7 +813,8 @@
                     orderRequest: "",
                     totalProductPrice: 0,
                     totalDiscount: 0,
-                    deliveryFee: 0
+                    deliveryFee: 0,
+                    userType : '${userType}',
                 };
             },
             computed: {

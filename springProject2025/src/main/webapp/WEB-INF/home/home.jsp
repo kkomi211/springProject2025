@@ -1313,7 +1313,7 @@
                         latestRallies: [],
                         sessionId: '${sessionId}',
                         isLoggedOut: false,
-                        userType: '${userType}'
+                        userType: '${userType}',
                     };
                 },
                 methods: {

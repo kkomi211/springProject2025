@@ -472,7 +472,8 @@ html, body {
                     sessionId: '${sessionId}',
                     orderNo: '${orderNo}',
                     productNo: '${productNo}',
-                    review: {}
+                    review: {},
+                    userType : '${userType}',
                 };
             },
             methods: {

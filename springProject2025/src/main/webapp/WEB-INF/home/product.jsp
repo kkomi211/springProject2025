@@ -188,7 +188,9 @@
                     sessionId: "${sessionId}",
                     userName: "",
                     saleYN : "${saleYN}",
-                    activeParentNo: null
+                    activeParentNo: null,
+
+                    userType : '${userType}',
                 };
             },
             computed: {

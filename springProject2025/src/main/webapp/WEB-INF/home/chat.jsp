@@ -322,6 +322,8 @@
                     keyword: "",
                     chatList: [],
 
+                    userType : '${userType}',
+
                 };
             },
             methods: {

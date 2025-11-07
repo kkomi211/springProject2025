@@ -272,7 +272,8 @@
                     index: 0,
 
                     // popup modal
-                    isLoggedIn: true
+                    isLoggedIn: true,
+                    userType : '${userType}',
 
                 };
             },

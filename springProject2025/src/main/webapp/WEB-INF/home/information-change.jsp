@@ -497,7 +497,7 @@
                     inputNum: "",
                     timer: "",
                     count: 180,
-                    interval : null
+                    interval : null,
 
 
                 };

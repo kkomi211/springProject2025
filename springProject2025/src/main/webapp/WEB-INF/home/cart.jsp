@@ -543,7 +543,9 @@ html, body {
                     availableOptions: [],                 // 서버에서 받아온 옵션(객체 배열)
                     currentSelectedOptionNo: null,        // 선택된 옵션의 실제 productNo (v-model)
                     currentQty: 1,
-                    unitPrice: 156000
+                    unitPrice: 156000,
+
+                    userType : '${userType}',
                 };
             },
             computed: {

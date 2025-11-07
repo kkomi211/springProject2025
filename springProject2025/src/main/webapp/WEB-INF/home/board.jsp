@@ -394,7 +394,8 @@
                     isLoggedOut : false, // logout popup 
                     pwdCorrect: false,
                     selectedPost: null,  // store the post object being clicked
-                    keylock: ""
+                    keylock: "",
+                    userType : '${userType}',
                 };
             },
             methods: {

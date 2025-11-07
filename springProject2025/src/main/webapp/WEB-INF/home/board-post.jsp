@@ -281,7 +281,8 @@
 
                     // popup modal
                     isLoggedIn: true,
-                    isLoggedOut: false
+                    isLoggedOut: false,
+                    userType : '${userType}',
 
                 };
             },

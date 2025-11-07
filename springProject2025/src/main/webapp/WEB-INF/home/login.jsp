@@ -153,7 +153,9 @@
                     //kakao login
                     // location : "${location}"
                     client_id: "${client_id}",
-                    redirect_uri: "${redirect_uri}"
+                    redirect_uri: "${redirect_uri}",
+
+                    userType : '${userType}',
                 };
             },
             methods: {

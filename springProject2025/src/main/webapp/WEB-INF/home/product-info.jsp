@@ -317,7 +317,9 @@
                     size: "",
                     maxQuantity: 1,
                     sessionId: "${sessionId}",
-                    userName: ""
+                    userName: "",
+
+                    userType : '${userType}',
                 };
             },
             computed: {

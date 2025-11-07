@@ -432,7 +432,9 @@
                     // Modal Popup
                     pwdMatch: false,
                     pwdCorrect: null,
-                    isLoggedOut: false
+                    isLoggedOut: false,
+
+                    userType : '${userType}',
                 };
             },
             methods: {

@@ -265,7 +265,9 @@
                     ranStr: "111", // 문자 인증 번호 
                     inputNum: "",
                     timer: "",
-                    count: 180
+                    count: 180,
+
+                    userType : '${userType}',
                 };
             },
             methods: {
