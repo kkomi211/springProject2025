@@ -571,7 +571,8 @@
                     productNo: '${productNo}',
                     // sau : 'R',
                     // because: '',
-                    rating: "${rating}"
+                    rating: "${rating}",
+                    userType : '${userType}',
 
                 };
             },

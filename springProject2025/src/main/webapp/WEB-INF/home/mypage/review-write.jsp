@@ -516,6 +516,7 @@ html, body {
                     reviewContent: '', // 리뷰 내용
 
                     editorInstance: null,
+                    userType : '${userType}',
                 };
             },
             methods: {

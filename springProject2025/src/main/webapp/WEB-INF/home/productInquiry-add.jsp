@@ -340,7 +340,9 @@
                     title: "",
                     content: "",
                     pwd: "",
-                    sessionId: "${sessionId}"
+                    sessionId: "${sessionId}",
+
+                    userType : '${userType}',
                 };
             },
             computed: {

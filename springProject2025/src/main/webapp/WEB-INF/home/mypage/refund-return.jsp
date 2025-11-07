@@ -553,7 +553,8 @@
 
                     // 모달 관련
                     reasonModalVisible: false,
-                    missingReasons: [] // [{ orderNo: 'xxx' }, ...]
+                    missingReasons: [], // [{ orderNo: 'xxx' }, ...]
+                    userType : '${userType}',
                 };
             },
             methods: {

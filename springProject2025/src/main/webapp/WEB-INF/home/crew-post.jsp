@@ -216,7 +216,9 @@
                     page: 1,
                     pageSize: 10,
                     index: 0,
-                    isLoggedIn: true
+                    isLoggedIn: true,
+
+                    userType : '${userType}',
                 };
             },
             methods: {

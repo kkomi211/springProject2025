@@ -434,7 +434,8 @@ html, body {
                     userName: "로딩중...",
 
                     inquiryNo: "${inquiryNo}",
-                    inquiry: null
+                    inquiry: null,
+                    userType : '${userType}',
                 };
             },
             methods: {

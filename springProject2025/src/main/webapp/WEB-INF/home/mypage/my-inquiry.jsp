@@ -531,6 +531,7 @@
                     currentCancelOrderNo: null,
                     sessionId: "${sessionId}",
                     userName: "로딩중...",
+                    userType : '${userType}',
                 };
             },
             methods: {

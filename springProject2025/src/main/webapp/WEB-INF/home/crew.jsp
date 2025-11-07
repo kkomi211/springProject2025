@@ -211,6 +211,8 @@
                         page: 1,
                         pageSize: 10,
                         index: 0,
+
+                        userType : '${userType}',
                     };
                 },
                 methods: {

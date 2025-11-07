@@ -529,7 +529,9 @@
                     // report
                     confirmReport : false,
                     postReported : false,
-                    reported : false
+                    reported : false,
+
+                    userType : '${userType}',
 
                 };
             },

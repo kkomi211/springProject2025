@@ -459,7 +459,8 @@
                         productName: "${productName != null ? productName : '주문상품'}"
                     },
                     orderItems: [],
-                    orderDate: "${orderDate}"
+                    orderDate: "${orderDate}",
+                    userType : '${userType}',
                 };
             },
             methods: {
