@@ -159,13 +159,22 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-
+                            // alert("파일저장 성공확인1");
                             console.log(data.productNo);
+                            // alert("파일저장 성공확인2");
                             var form = new FormData();
+                            // alert("파일저장 성공확인3");
                             form.append("file1", $("#file1")[0].files[0]);
+                            // alert("파일저장 성공확인4");
                             form.append("productNo", data.productNo); // 임시 pk
+                            // alert("파일저장 성공확인5");
                             self.upload(form);
-
+                            // setTimeout(function() {
+                            //     alert("파일저장 성공확인6");
+                            //     alert("form 내용확인 " + JSON.stringify(form));
+                            //     self.upload(form);
+                            // }, 100);
+                          
 
                         }
                     });
@@ -185,7 +194,7 @@
                         , data: form
                         , success: function (data) {
                             console.log("사진 == >");
-                            
+
                             console.log(data);
 
                         }
@@ -200,11 +209,29 @@
                 },
                 fnAddSystem() {
                     let self = this;
+
+                    // 이미지 파일이 선택되었는지 확인
+                    if (!self.fnimgexist()) { //false면 true로 보이게 해서 그냥 여기서 중단
+                        alert("이미지 파일을 선택해 주세요.");
+                        return; // 파일이 없으면 등록 진행 중단
+                    }
+
                     for (let i = 0; i < self.sizeNum; i++) {
                         self.fnAddProduct(i + 1);
                     }
                     alert("작성이 완료되었습니다!");
                     self.fnBack();
+                    setTimeout(function () {
+                        self.fnBack();
+                    }, 850);
+                },
+                //이미지정보 존재하나 확인하는 함수 추가 251107
+                fnimgexist() {
+                    // jQuery를 사용하여 'file1' ID를 가진 input 요소에서 파일 목록을 가져옵니다.
+                    let fileInput = $("#file1")[0];
+                    // fileInput.files는 FileList 객체이며, length가 0보다 크면 파일이 선택된 것입니다.
+                    return fileInput && fileInput.files && fileInput.files.length > 0;
+                    //있으면 true 없으면 false의도
                 }
             }, // methods
             mounted() {
