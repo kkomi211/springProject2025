@@ -398,9 +398,9 @@ html, body {
                                                 <button @click="openOptionChangeModal(list.productNo, list.cartNo)"
                                                     style="color:#000; border: 1px solid #ccc; padding: 5px 10px; background: #fff; cursor: pointer; font-size: 13px; margin-right: 5px;">
                                                     옵션변경</button>
-                                                <button
+                                                <!-- <button
                                                     style="color:#000; border: 1px solid #ccc; padding: 5px 10px; background: #fff; cursor: pointer; font-size: 13px;">
-                                                    쿠폰사용</button>
+                                                    쿠폰사용</button> -->
                                             </div>
                                         </div>
                                     </section>
