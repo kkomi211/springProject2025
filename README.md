@@ -1,6 +1,8 @@
-# springProject2025
-프로젝트
+# 3team 프로젝트
 
+<div align="center">
+  <img src="./img/demo_main.gif" width="800" alt="GwasilZero 시연 영상">
+</div>
 
 <h4>파일 흐름 간단 구조</h4>
 <pre>
@@ -56,3 +58,6 @@ admin
    	├─user-list.jsp
       	├─user-list-view.jsp
 </pre>
+
+
+
