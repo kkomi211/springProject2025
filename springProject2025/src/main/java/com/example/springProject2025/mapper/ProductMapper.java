@@ -83,4 +83,6 @@ public interface ProductMapper {
 
 	int selectWhoUpHeart(HashMap<String, Object> map);
 
+	int deleteHelpful(HashMap<String, Object> map);
+
 }

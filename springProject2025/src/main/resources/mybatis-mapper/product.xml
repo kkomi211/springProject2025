@@ -236,8 +236,17 @@
 	
 	<insert id="insertWhoUpHeart" parameterType="hashmap">
 		INSERT INTO HELPFUL_REVIEW
-		VALUES (HELPFUL_REVIEW_SEQ.NEXTVAL, #{userId}, #{productNo}, #{reviewNo})
+		VALUES (HELPFUL_REVIEW_SEQ.NEXTVAL, #{userId}, #{reviewNo}, SYSDATE)
 	</insert>
+	
+	<delete id="deleteHelpful" parameterType="hashmap">
+		DELETE HELPFUL_REVIEW
+		WHERE REVIEW_NO IN (
+			SELECT REVIEW_NO
+			FROM REVIEW
+			WHERE PRODUCT_NO = #{productNo}
+		)
+	</delete>
 	
 	<insert id="insertProduct" parameterType="hashmap" useGeneratedKeys="true" keyColumn="PRODUCT_NO" keyProperty="productNo">
 		INSERT INTO PRODUCT
@@ -313,6 +322,15 @@
 		  CASE WHEN REGEXP_LIKE(PRODUCT_SIZE, '^\d+$')
 		       THEN TO_NUMBER(PRODUCT_SIZE) END,
 		  PRODUCT_SIZE
+	</select>
+	
+	<select id="selectWhoUpHeart" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM HELPFUL_REVIEW
+		WHERE 1=1
+			AND USER_ID = #{userId}
+			AND REVIEW_NO = #{reviewNo}
+		
 	</select>
 
 	<select id="selectInquiryList" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
