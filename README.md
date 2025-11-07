@@ -107,12 +107,55 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 <br>
 
 # 😀 ADMIN
-### 🥽 ADMIN 메인화면 기능
-- DB정보 현황 각종 정보 list 출력
+### 🕵️‍♂️ ADMIN 메인 기능
+- DB정보 각종 정보 현황출력
+- 그래프 기능 추가 (주문현황 및 월별 매출 자동최신화)
 
-|작업 전 | 작업 후|
+| Before | After |
 |------|------|
-|<img width="500" height="150" alt="회원가입페이지" src="https://github.com/user-attachments/assets/14b5438d-d36d-4ff8-af29-0ee4503f06ba" />|<img width="500" height="150" alt="회원가입페이지"               src="https://github.com/KIMBANSEOK92/solo_project/blob/main/img/%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85.PNG" />|
+|<img width="500" height="200" alt="관리자메인" src="https://github.com/user-attachments/assets/122a3d2e-aba3-41c0-82c1-00ec032c57fb" />|<img width="500" height="200" alt="관리자메인최종" src="https://github.com/user-attachments/assets/c1376fb2-4dc3-4f59-9620-8d3e374160c6" />|
+
+<br>
+
+### 💂🏼‍♀️ ADMIN 배너 기능
+- 슬라이드 기능 
+- 스크롤 onclick (좌측 해당 카테고리 클릭시 스크롤 자동이동)
+- 추가 삭제 수정
+- Title 클릭시 해당 제품 및 광고 이미지 출력
+
+| Before | After |
+|------|------|
+|<img width="500" height="200" alt="관리자베너" src="https://github.com/user-attachments/assets/7ddee7d4-5c16-4106-89cf-064a97ed0f6a" /> |<img width="500" height="200" alt="관리자배너최종" src="https://github.com/user-attachments/assets/3add4e41-4ad0-4558-b94e-2f08c92351a0" />|
+
+<br>
+
+### 💂 ADMIN 문의 기능
+- search옵션 구현 (제품별, 상태별, 날짜별) 
+- 문의제목 클릭시 해당 문의상세내역 출력 
+
+| Before | After |
+|------|------|
+|<img width="500" height="200" alt="관리자문의" src="https://github.com/user-attachments/assets/f7d6091b-559f-469c-834f-8059a583a6a1" />|<img width="500" height="200" alt="관리자문의최종" src="https://github.com/user-attachments/assets/a79e1793-141b-4a00-9b96-69e723bdafb3" />|
+
+<br>
+
+### 💂 ADMIN 교환/환불 기능
+- search옵션 구현 (제품별, 상태별, 날짜별) 
+- 문의제목 클릭시 해당 문의상세내역 출력 
+
+| Before | After |
+|------|------|
+|<img width="500" height="200" alt="관리자교환환불" src="https://github.com/user-attachments/assets/7899ee90-c4be-4f53-abe6-104f14ff2e5e" /> |<img width="500" height="200" alt="관리자교환한불최종" src="https://github.com/user-attachments/assets/374518b6-9bc9-4963-ba3f-983c23d7858c" />|
+
+<br>
+
+### 💂 ADMIN 상품 기능
+- search옵션 구현 (제품별, 상태별, 날짜별) 
+- 문의제목 클릭시 해당 문의상세내역 출력 
+
+| Before | After |
+|------|------|
+|<img width="500" height="200" alt="관리자상품" src="https://github.com/user-attachments/assets/919453bb-6825-477d-8aea-9c43c8138ec6" />|<img width="500" height="200" alt="관리자상품최종" src="https://github.com/user-attachments/assets/51f55bea-91d4-414c-bcfd-7c1c1669e7e3" />|
 
 <br>
 
