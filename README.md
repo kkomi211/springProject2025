@@ -98,12 +98,11 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 <br>
 
 ## 📂 프로젝트 자료 모음
-
 | 분류 | 링크 |
 |------|------|
-| 📝 회의록 | [회의록 보기](https://docs.google.com/document/d/1IBMVSNfwdWseMDj5G-dgKjRZBsJ3Z7KgpZNmYsxiB68/edit?usp=sharing) |
-| 🏗 설계 자료 | [설계 보기](https://drive.google.com/drive/folders/1WqbDMTMkynVD0cCp9hnwFD0ld0HBcUQW) |
-| 📚 공통 문서 | [공통 문서 보기](https://drive.google.com/drive/folders/1Xm2uaNjuhy3Qlk6FlUh8F5hIuKT3p7nS) |
+| 📝 회의록 | 📅 [1회차 회의록](https://docs.google.com/document/d/1IBMVSNfwdWseMDj5G-dgKjRZBsJ3Z7KgpZNmYsxiB68/edit?tab=t.0#heading=h.e7kg3ftbsybo) <br> 📅 [2회차 회의록](https://docs.google.com/document/d/1DaKMqalhLBlbPVI9fClOcuETAOyZ9NJHFzqa0MWb32Y/edit?tab=t.0#heading=h.yy6yu7s9btks) <br> 📅 [3회차 회의록](https://docs.google.com/document/d/1RBKqZUBVvUV1O_i2waK_uNEKyPlnBFy2lZw-NkOCGpU/edit?tab=t.0#heading=h.9rxlwmuobtu0) <br> 📅 [4회차 회의록](https://docs.google.com/document/d/1ea8pNOIKGgQ-Lhn2w062fU7lESIIiGn6nxTZB5CNc4Q/edit?tab=t.0#heading=h.ikntdt7us4ql) <br> 📅 [5회차 회의록](https://docs.google.com/document/d/1t8VOMNyBihpKgVWMnIFfy1xmj1BXT0_yaiKgegxwy-E/edit?tab=t.0#heading=h.cizds215c55g) |
+| 🏗 설계 자료 | 🎨 [Figma 설계 보기](https://www.figma.com/board/juNUf8MP9yGI9F7JTSs2Xt/%EC%8A%A4%ED%94%84%EB%A7%81%ED%8C%80-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?node-id=823-4489&t=B1LYrMboaBRkYo05-0) |
+| 📚 공통 문서 | 📁 [공통 문서 폴더 보기](https://drive.google.com/drive/folders/1NU8Ee9OwcgXFoat8LBS6yKJDuQ7ZoHTF) |
 
 
 <h4> 🎆 파일 흐름 간단 구조</h4>
