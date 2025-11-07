@@ -383,7 +383,7 @@
                     postInfo: {},
                     keyword: "",
                     type: "${type}",
-
+                    userType : "${userType}",
                     // pagination
                     cnt: 0,
                     page: 1,
