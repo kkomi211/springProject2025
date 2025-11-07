@@ -125,7 +125,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 | Before | After |
 |------|------|
-|<img width="500" height="200" alt="관리자베너" src="https://github.com/user-attachments/assets/7ddee7d4-5c16-4106-89cf-064a97ed0f6a" /> |<img width="500" height="200" alt="관리자배너최종" src="https://github.com/user-attachments/assets/3add4e41-4ad0-4558-b94e-2f08c92351a0" />|
+|<img width="500" height="200" alt="관리자베너" src="https://github.com/user-attachments/assets/7ddee7d4-5c16-4106-89cf-064a97ed0f6a" /> |<img width="500" height="200" alt="관리자배너 최종" src="https://github.com/user-attachments/assets/d5a8f1f2-2e8c-43a6-a989-92e05e9dd426" />|
 
 <br>
 
