@@ -145,6 +145,13 @@ public class HomeController {
         return "home/product-info"; // .jsp 빠진 형태
     }
 	
+	@RequestMapping("home/product-info2.do")
+    public String productInfo2(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		request.setAttribute("sessionId", map.get("sessionId"));
+        request.setAttribute("productNo", map.get("productNo"));
+        return "home/product-info2"; // .jsp 빠진 형태
+    }
+	
 	@RequestMapping("home/addr.do")
 	public String addr(Model model) throws Exception {
 		return "home/jusoPopup"; // 주소 검색 팝업 (.jsp빠진형태)
