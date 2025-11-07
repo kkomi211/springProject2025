@@ -435,7 +435,7 @@
 
                                 <template v-if="!reported">
                                     <div v-if="!postReported" class="modal-content">
-                                    <h2>이 댓글을 신고하시겠습니까?</h2>
+                                    <h2>이 게시글을 신고하시겠습니까?</h2>
                                     <div>
                                         <button class="btn" @click="fnCancel">닫기</button>
                                         <button class="btn" @click="fnReportPost">확인</button>
@@ -450,7 +450,7 @@
                                 </template>
                                 <template v-else>
                                     <div class="modal-content">
-                                    <h2>이미 이 게시물을 신고하셨습니다.</h2>
+                                    <h2>이미 이 게시글을 신고하셨습니다.</h2>
                                     <div>
                                         <button class="btn" @click="fnCancel">닫기</button>
                                     </div>

@@ -227,6 +227,11 @@
 		)
 	</delete>
 	
+	<insert id="insertWhoUpHeart" parameterType="hashmap">
+		INSERT INTO HELPFUL_REVIEW
+		VALUES (HELPFUL_REVIEW_SEQ.NEXTVAL, #{userId}, #{productNo}, #{reviewNo})
+	</insert>
+	
 	<insert id="insertProduct" parameterType="hashmap" useGeneratedKeys="true" keyColumn="PRODUCT_NO" keyProperty="productNo">
 		INSERT INTO PRODUCT
 		VALUES (PRODUCT_SEQ.NEXTVAL, #{userId}, #{brand}, #{productName}, #{price}, #{productSize}, #{productDetail}, 0, #{quantity},
