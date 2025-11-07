@@ -101,6 +101,7 @@ public class ProductController {
     @RequestMapping(value = "/product/edit.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
     public String productEdit(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+//    	System.out.println("화면에서 이미지의 정보도 주나?" + map);
         HashMap<String, Object> resultMap = productService.EditProduct(map);
         return new Gson().toJson(resultMap);
     }

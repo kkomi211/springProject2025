@@ -25,6 +25,9 @@ public interface ProductMapper {
 	int editProduct(HashMap<String, Object> map);
 	
 	int deleteProduct(HashMap<String, Object> map);
+	
+	// product delete main banner img
+	int deleteProductBannerImg(HashMap<String, Object> map);
 
 	int insertProduct(HashMap<String, Object> map);
 
