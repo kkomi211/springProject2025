@@ -1,7 +1,7 @@
 # 3team 프로젝트
 
 <div align="center">
-  <img  src="https://github.com/user-attachments/assets/cfe64dfb-543e-466e-ab1e-47cf6be20a41" alt="GwasilZero 시연 영상" width="1200" height="500">
+  <img  src="media/KakaoTalk_20251107_114123012.gif" alt="GwasilZero 시연 영상" width="1200" height="500">
 </div>
 # 3team - 
 
