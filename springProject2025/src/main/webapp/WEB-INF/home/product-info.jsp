@@ -20,7 +20,22 @@
         <script src="https://unpkg.com/lucide@latest"></script>
 
         <style>
- 
+            html,
+                body {
+                    height: 100%;
+                    margin: 0;
+                    padding: 0;
+                    font-family: Arial, sans-serif;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                #app {
+                    /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
+                    display: flex;
+                    flex-direction: column;
+                    min-height: 100vh;
+                }
         </style>
     </head>
 

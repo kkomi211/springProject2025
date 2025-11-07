@@ -11,6 +11,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
         <script src="/js/page-change.js"></script>
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
@@ -74,13 +75,19 @@
             margin-right: 0; /* top-header div의 default margin-right 상쇄 */
         }
         .brand-name div {
-            font-family: 'Fugaz One', sans-serif;
-            font-size: 60px;
-            letter-spacing: 5px;
-            margin-left: 0; /* top-header div의 default margin-left 상쇄 */
-            display: block;
-            color: white; /* default 유지 */
-        }
+			font-family: 'Jost', sans-serif;
+			font-size: 60px;
+			font-weight: 900;
+			letter-spacing: 3px;
+			margin-left: 0;
+			/* top-header div의 default margin-left 상쇄 */
+			display: block;
+			color: white;
+			/* default 유지 */
+		}
+		.brand-name a:hover {
+			text-decoration: none;
+		}
         .brand-name a {
             color: white;
         }
@@ -104,10 +111,27 @@
         .bottom-header {
             display: flex;
             justify-content: center;
-            font-size: 30px; /* default bottom-header 폰트 사이즈 */
-            background-color: white; /* bottom-header 배경색 추가 */
-            /* border-bottom: 1px solid #eee; 하단 경계선 */
-            padding: 20px 0; /* 세로 패딩 */
+            font-size: 25px;
+            /* default bottom-header 폰트 사이즈 */
+            background-color: white;
+            /* bottom-header 배경색 추가 */
+            border-bottom: 1px solid #eee;
+            /* 하단 경계선 */
+            padding: 20px 0;
+            /* 세로 패딩 */
+            letter-spacing: 3px;
+        }
+
+        .bottom-header a:hover {
+            text-decoration: none;
+            transform: scale(1.1);
+            transition: transform 0.3s ease-out; /* faster ease-out */
+        }
+
+        .bottom-header a {
+            color: black;
+            transition: transform 0.2s ease-in; /* slower ease-in */
+            display: inline-block;
         }
         .bottom-header div {
             display: inline-block;
@@ -117,9 +141,6 @@
         }
         .bottom-header div:last-child {
             margin-right: 0;
-        }
-        .bottom-header a {
-            color: black; /* default bottom-header 링크색 */
         }
         /* .bottom-header a:hover {
             color: #007bff;
