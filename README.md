@@ -104,61 +104,105 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 | 🏗 설계 자료 | 🎨 [Figma 설계 보기](https://www.figma.com/board/juNUf8MP9yGI9F7JTSs2Xt/%EC%8A%A4%ED%94%84%EB%A7%81%ED%8C%80-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?node-id=0-1&p=f&t=6LaQWhwB5UERVeYt-0) |
 | 📚 공통 문서 | 📁 [공통 문서 폴더 보기](https://drive.google.com/drive/folders/1NU8Ee9OwcgXFoat8LBS6yKJDuQ7ZoHTF) |
 
+<br>
 
-<h4> 🎆 파일 흐름 간단 구조</h4>
-<pre>
-home.jsp
-	├─login.jsp
-		├─idPwdSearch.jsp
-	├─signup.jsp
-		├─jusoPopup.jsp
-	├─mypage
-		├─information.jsp(mypage default screen)
-			├─information-change.jsp
-		├─my-inquiry.jsp
-			├─my-inquiry-detail.jsp
-		├─orders.jsp
-		├─review.jsp
-			├─review-view.jsp
-			├─review-write.jsp
-		├─refund-return.jsp
-	├─community
-		├─board.jsp(community default screen)
-			├─board-edit.jsp
-			├─board-post.jsp
-			├─board-view.jsp
-		├─rally-board.jsp
-		├─crew.jsp
-			├─crew-post.jsp
-		├─chat.jsp
-			├─chatroom-view.jsp
-	├─product.jsp
-		├─product-info.jsp
-			├─productInquiry-add.jsp
-	├─cart.jsp	
-		├─paybefore.jsp
-			├─payafter.jsp
-	├─policy
-		├─about.jsp
-		├─privacy-policy.jsp
-		├─terms.jsp
-</pre>
-<pre>
-admin
-	├─admin-main.jsp(admin default screen)
-   	├─banner.jsp
-   	├─inquiry.jsp
-    	├─inquiry-view.jsp
-   	├─refund-return.jsp
-  	├─product.jsp
-     	├─product-info.jsp
-      	├─product-add.jsp
-   	├─orders.jsp
-   	├─board-report.jsp
-      	├─board-report-view.jsp
-   	├─user-list.jsp
-      	├─user-list-view.jsp
-</pre>
+# 😀 ADMIN
+### 🥽 ADMIN 메인화면 기능
+- DB정보 현황 각종 정보 list 출력
+
+|작업 전 | 작업 후|
+|------|------|
+|<img width="500" height="150" alt="회원가입페이지" src="https://github.com/user-attachments/assets/14b5438d-d36d-4ff8-af29-0ee4503f06ba" />|<img width="500" height="150" alt="회원가입페이지"               src="https://github.com/KIMBANSEOK92/solo_project/blob/main/img/%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85.PNG" />|
+
+<br>
+
+## 🎆 파일 흐름 구조 (Mermaid)
+    - subgraph Home[🏡 사용자 페이지] -
+        home[home.jsp]
+        login[🔐 login.jsp]
+        idPwd[🧩 idPwdSearch.jsp]
+        signup[📝 signup.jsp]
+        juso[🗺 jusoPopup.jsp]
+        mypage[👤 mypage/]
+        information[🧭 information.jsp]
+        information_change[✏️ information-change.jsp]
+        my_inquiry[❓ my-inquiry.jsp]
+        my_inquiry_detail[🔍 my-inquiry-detail.jsp]
+        orders[📦 orders.jsp]
+        review[⭐ review.jsp]
+        review_view[👁 review-view.jsp]
+        review_write[✍️ review-write.jsp]
+        refund[🔄 refund-return.jsp]
+        community[💬 community/]
+        board[🧱 board.jsp]
+        board_edit[✏️ board-edit.jsp]
+        board_post[🆕 board-post.jsp]
+        board_view[👁 board-view.jsp]
+        rally[🏁 rally-board.jsp]
+        crew[🏃 crew.jsp]
+        crew_post[🆕 crew-post.jsp]
+        chat[💭 chat.jsp]
+        chat_view[💬 chatroom-view.jsp]
+        product[🛍 product.jsp]
+        product_info[📋 product-info.jsp]
+        product_inquiry[📨 productInquiry-add.jsp]
+        cart[🛒 cart.jsp]
+        paybefore[💳 paybefore.jsp]
+        payafter[✅ payafter.jsp]
+        policy[⚖️ policy/]
+        about[ℹ️ about.jsp]
+        privacy[🔒 privacy-policy.jsp]
+        terms[📜 terms.jsp]
+
+        home --> login --> idPwd
+        home --> signup --> juso
+        home --> mypage
+        mypage --> information --> information_change
+        mypage --> my_inquiry --> my_inquiry_detail
+        mypage --> orders
+        mypage --> review --> review_view
+        mypage --> review --> review_write
+        mypage --> refund
+        home --> community
+        community --> board --> board_edit
+        community --> board --> board_post
+        community --> board --> board_view
+        community --> rally
+        community --> crew --> crew_post
+        community --> chat --> chat_view
+        home --> product --> product_info --> product_inquiry
+        home --> cart --> paybefore --> payafter
+        home --> policy --> about
+        home --> policy --> privacy
+        home --> policy --> terms
+    end
+
+    - subgraph Admin[👑 관리자 페이지] -
+        admin_main[🖥 admin-main.jsp]
+        banner[🖼 banner.jsp]
+        inquiry[📩 inquiry.jsp]
+        inquiry_view[🔍 inquiry-view.jsp]
+        refund_admin[🔁 refund-return.jsp]
+        product_admin[📦 product.jsp]
+        product_info_admin[📋 product-info.jsp]
+        product_add[➕ product-add.jsp]
+        orders_admin[🚚 orders.jsp]
+        board_report[🚨 board-report.jsp]
+        board_report_view[👁 board-report-view.jsp]
+        user_list[🧑‍🤝‍🧑 user-list.jsp]
+        user_list_view[🔎 user-list-view.jsp]
+
+        admin_main --> banner
+        admin_main --> inquiry --> inquiry_view
+        admin_main --> refund_admin
+        admin_main --> product_admin --> product_info_admin
+        product_admin --> product_add
+        admin_main --> orders_admin
+        admin_main --> board_report --> board_report_view
+        admin_main --> user_list --> user_list_view
+    end
+
+
 
 
 
