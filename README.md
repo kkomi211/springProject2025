@@ -129,7 +129,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-### 💂 ADMIN 문의 기능
+### 👮🏼‍♀️ ADMIN 문의 기능
 - search옵션 구현 (제품별, 상태별, 날짜별) 
 - 문의제목 클릭시 해당 문의상세내역 출력 
 
@@ -139,7 +139,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-### 💂 ADMIN 교환/환불 기능
+### 👨🏼‍🏫 ADMIN 교환/환불 기능
 - search옵션 구현 (제품별, 상태별, 날짜별) 
 - 문의제목 클릭시 해당 문의상세내역 출력 
 
@@ -149,13 +149,43 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-### 💂 ADMIN 상품 기능
+### 👷🏼‍♂️ ADMIN 상품 기능
 - search옵션 구현 (제품별, 상태별, 날짜별) 
 - 문의제목 클릭시 해당 문의상세내역 출력 
 
 | Before | After |
 |------|------|
 |<img width="500" height="200" alt="관리자상품" src="https://github.com/user-attachments/assets/919453bb-6825-477d-8aea-9c43c8138ec6" />|<img width="500" height="200" alt="관리자상품최종" src="https://github.com/user-attachments/assets/51f55bea-91d4-414c-bcfd-7c1c1669e7e3" />|
+
+<br>
+
+### 👩🏼‍⚕️ ADMIN 주문내역 기능
+- search옵션 구현 (제품별, 상태별, 날짜별) 
+- 상품주문, 결제내역 확인 후 (배송처리,배송완료) 처리변환
+
+| Before | After |
+|------|------|
+|<img width="500" height="200" alt="관리자주문내역" src="https://github.com/user-attachments/assets/384303cf-0b89-4528-af6d-75e7396d3e88" /> |<img width="500" height="200" alt="관리자주문내역최종" src="https://github.com/user-attachments/assets/eb6ec4ad-e4e0-45f6-91f7-cd7cdbd2834d" />|
+
+<br>
+
+### 👨🏼‍💼 ADMIN 게시판 신고 기능
+- search옵션 구현 (제품별, 상태별, 날짜별) 
+- 상품주문, 결제내역 확인 후 (배송처리,배송완료) 처리변환
+
+| Before | After |
+|------|------|
+|<img width="500" height="200" alt="관리자게시판신고" src="https://github.com/user-attachments/assets/7b57bee7-98e7-46e5-b940-05c30bcf4e32" />|<img width="500" height="200" alt="관리자게시판신고최종" src="https://github.com/user-attachments/assets/7037abac-0299-4e57-996a-a73dc5ada88f" />|
+
+<br>
+
+### 👨🏼‍🎨 ADMIN 회원관리 기능
+- search옵션 구현 (제품별, 상태별, 날짜별) 
+- 상품주문, 결제내역 확인 후 (배송처리,배송완료) 처리변환
+
+| Before | After |
+|------|------|
+|<img width="500" height="200" alt="관리자회원관리" src="https://github.com/user-attachments/assets/7e171352-1eae-4aa7-bd0a-473a8b2195e5" />|<img width="500" height="200" alt="관리자회원관리최종" src="https://github.com/user-attachments/assets/b81b2f3f-c8e2-49ae-9cd4-ea45dc695709" />|
 
 <br>
 
