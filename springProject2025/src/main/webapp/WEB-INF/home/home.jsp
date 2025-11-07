@@ -1144,11 +1144,11 @@
                         </div>
                     </div>
                     <div class="bottom-header">
-                        <div class="bottom-header-sub">
+                        <!-- <div class="bottom-header-sub"> -->
                             <div><a href="/home/product.do">제품</a></div>
                             <div><a href="javascript:;" @click="fnSale">세일</a></div>
                             <div><a href="/home/community/board.do">커뮤니티</a></div>
-                        </div>
+                        <!-- </div> -->
                     </div>
                 </header>
                 <div class="container">
@@ -1313,7 +1313,7 @@
                         latestRallies: [],
                         sessionId: '${sessionId}',
                         isLoggedOut: false,
-                        userType: '${userType}'
+                        userType: '${userType}',
                     };
                 },
                 methods: {

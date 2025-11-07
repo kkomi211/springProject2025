@@ -17,6 +17,7 @@
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
     </head>
 
     <body>
@@ -30,21 +31,21 @@
                         </div>
                         <div id="right-items">
                             <div>
-                                <input type="text" placeholder="검색어를 입력해 주세요.">
-                            </div>
-                            <div>
-                                <template v-if="sessionId != ''">
-                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
-                                </template>
-                                <template v-else>
-                                    <a href="/home/login.do">로그인</a>
-                                </template>
+                                <!-- <template > -->
+                                    <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
+                                <!-- </template> -->
+                                <!-- <template > -->
+                                    <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
+                                <!-- </template> -->
                             </div>
                             <div v-if="sessionId == ''">
-                                <a href="/home/signup.do">가입하기</a>
+                                <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
                             </div>
-                            <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
-                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
+                            <div v-if="sessionId != '' && userType != 'K'"><a
+                                    href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                            <div v-else-if="sessionId != '' && userType == 'K'"><a
+                                    href="home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div>
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -203,6 +204,7 @@
     </body>
 
         <script>
+            lucide.createIcons();
             const app = Vue.createApp({
                 data() {
                     return {
@@ -221,6 +223,8 @@
                         page: 1,
                         pageSize: 10,
                         index: 0,
+
+                        userType : '${userType}',
                     };
                 },
                 methods: {
