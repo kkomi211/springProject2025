@@ -97,6 +97,14 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
+## 📂 프로젝트 자료 모음
+
+| 분류 | 링크 |
+|------|------|
+| 📝 회의록 | [회의록 보기](https://docs.google.com/document/d/1IBMVSNfwdWseMDj5G-dgKjRZBsJ3Z7KgpZNmYsxiB68/edit?usp=sharing) |
+| 🏗 설계 자료 | [설계 보기](https://drive.google.com/drive/folders/1WqbDMTMkynVD0cCp9hnwFD0ld0HBcUQW) |
+| 📚 공통 문서 | [공통 문서 보기](https://drive.google.com/drive/folders/1Xm2uaNjuhy3Qlk6FlUh8F5hIuKT3p7nS) |
+
 
 <h4> 🎆 파일 흐름 간단 구조</h4>
 <pre>
