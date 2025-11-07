@@ -26,10 +26,11 @@
             ORDER BY P.SELL_COUNT DESC, P.UDATE DESC
         )
         WHERE ROWNUM &lt;= #{limit} -->
-        SELECT I.*, B.*, P.PRODUCT_NO, P.PRODUCT_NAME, P.PRICE AS productPrice, P.SALE_YN, P.SALE_PRICE
+        SELECT I.*, B.*, P.PRODUCT_NO, P.PRODUCT_NAME, P.PRICE AS productPrice, P.SALE_YN, P.SALE_PRICE, P.BRAND
 		FROM PRODUCT_IMG I
 		INNER JOIN PRODUCT_BANNER_IMG B ON I.PRODUCT_NO = B.PRODUCT_NO
 		INNER JOIN PRODUCT P ON P.PRODUCT_NO = I.PRODUCT_NO
+		ORDER BY B.PBANNER_IMG_NO
 	</select>
 
     <!-- 최신 대회 정보 조회 (현재 날짜 기준 접수 기간 내인 것 우선) - ROWNUM 및 인라인 뷰로 수정 -->

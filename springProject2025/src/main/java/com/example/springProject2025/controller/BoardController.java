@@ -209,4 +209,13 @@ public class BoardController {
 		return new Gson().toJson(resultMap);
 	}
 	
+	@RequestMapping(value = "/board/report/cnt.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String countReport(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = boardService.countReport(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
 }

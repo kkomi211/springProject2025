@@ -433,20 +433,28 @@
                             <!-- Report popup -->
                             <div v-if="confirmReport" class="modal-overlay">
 
-                                <div v-if="!postReported" class="modal-content">
+                                <template v-if="!reported">
+                                    <div v-if="!postReported" class="modal-content">
                                     <h2>이 댓글을 신고하시겠습니까?</h2>
                                     <div>
                                         <button class="btn" @click="fnCancel">닫기</button>
                                         <button class="btn" @click="fnReportPost">확인</button>
                                     </div>
-                                </div>
-                                <div v-else class="modal-content">
-                                    <h2>이 게시글이 신고되었습니다.</h2>
+                                    </div>
+                                    <div v-else class="modal-content">
+                                        <h2>이 게시글이 신고되었습니다.</h2>
+                                        <div>
+                                            <button class="btn" @click="fnCancel">닫기</button>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template v-else>
+                                    <div class="modal-content">
+                                    <h2>이미 이 게시물을 신고하셨습니다.</h2>
                                     <div>
                                         <button class="btn" @click="fnCancel">닫기</button>
                                     </div>
-                                </div>
-
+                                </template>                       
                             </div>
 
                         </main>
@@ -520,7 +528,8 @@
 
                     // report
                     confirmReport : false,
-                    postReported : false
+                    postReported : false,
+                    reported : false
 
                 };
             },
@@ -683,13 +692,37 @@
                     self.confirmReport = false;
 
                 },
+                fnReportCnt : function(){
+                    let self = this;
+                    let param = {
+                        boardNo : self.boardNo,
+                        reporterId : self.sessionId
+                    };
+                    $.ajax({
+                        url: "/board/report/cnt.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                self.confirmReport = true;
+                                self.reported = true;
+                                // alert("You've already reported this post.");
+                            } else {
+                                self.confirmReport = true; // open the modal
+                            }
+                        }
+                    })
+                },
                 fnConfirmReport : function(){
                     let self = this;
-                    self.confirmReport = true;
+                    self.fnReportCnt();
+                    // self.confirmReport = true;
 
                 },
                 fnReportPost : function () {
                     let self = this;
+                    
                     let param = {
                         boardNo : self.boardNo,
                         reporterId : self.sessionId
