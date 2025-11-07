@@ -332,7 +332,7 @@
                 },
                 fnProduct() {
                     let self = this;
-                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: "" });
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: "", keyword: "" });
                 },
                 fnUserInfo() {
                     let self = this;
@@ -370,7 +370,7 @@
                 fnSale(){
                     let self = this;
                     self.saleYN = 'Y';
-                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN, keyword: ""});
                 },
                 fnNotice(){
                     let self = this;

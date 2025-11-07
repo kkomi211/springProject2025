@@ -72,6 +72,9 @@ public interface BoardMapper {
 	int reportBoard (HashMap<String, Object> map);
 
 	int deleteComment(HashMap<String, Object> map);
+	
+	// 신고 개수
+	int reportCnt(HashMap<String, Object> map);
 }
 
 

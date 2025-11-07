@@ -65,8 +65,8 @@
                 <main>
                     <div class="newcontent">
                         <!-- <h1 class="margintop">제품</h1> -->
-                        <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword">
-                        <button class="height40 bluebutton" @click="fnList">검색</button>
+                        <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword" @keyup.enter="fnSearch">
+                        <button class="height40 bluebutton" @click="fnSearch">검색</button>
                     </div>
 
                     <div class="side-bar">
@@ -555,15 +555,15 @@
                 },
                 fnCategoryProduct(category) {
                     let self = this;
-                    pageChange("/home/product.do", { keyword: "", category: category, sessionId: self.sessionId });
+                    pageChange("/home/product.do", { keyword: "", category: category, sessionId: self.sessionId, keyword: "" });
                 },
                 fnProduct() {
                     let self = this;
-                    pageChange("/home/product.do", { keyword: "", category: "", sessionId: self.sessionId });
+                    pageChange("/home/product.do", { keyword: "", category: "", sessionId: self.sessionId, keyword: "" });
                 },
                 fnProductSearch(key) {
                     let self = this;
-                    pageChange("/home/product.do", { keyword: key, category: "", sessionId: self.sessionId });
+                    pageChange("/home/product.do", { keyword: key, category: "", sessionId: self.sessionId, keyword: "" });
                 },
                 fnProductInquiryAdd(proNo) {
                     let self = this;
@@ -670,11 +670,15 @@
                 fnSale(){
                     let self = this;
                     self.saleYN = 'Y';
-                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN, keyword: "" });
                 },
                 fnNotice(){
                     let self = this;
                     pageChange("/home/community/board.do", {type : "B"});
+                },
+                fnSearch(){
+                    let self = this;
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN, keyword: self.keyword });
                 }
 
             }, // methods

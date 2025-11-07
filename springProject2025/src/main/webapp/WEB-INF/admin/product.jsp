@@ -104,7 +104,7 @@
                 return {
                     // 변수 - (key : value)
                     sessionId: "",
-                    keyword: "",
+                    keyword: "${keyword}",
                     keytype: "no",
                     list: [],
                     pageSize: 15,

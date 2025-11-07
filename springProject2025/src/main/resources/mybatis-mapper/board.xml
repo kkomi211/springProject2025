@@ -118,6 +118,11 @@
 		VALUES(REPORT_BOARD_SEQ.NEXTVAL, #{boardNo}, #{reporterId}, SYSDATE, 'N')
 	</insert>
 	
+	<select id="reportCnt" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM REPORT_BOARD
+		WHERE REPORTER_ID = #{reporterId} AND BOARD_NO = #{boardNo}
+	</select>
 </mapper>
 
 

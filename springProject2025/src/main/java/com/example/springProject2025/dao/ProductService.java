@@ -65,11 +65,13 @@ public class ProductService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			int cnt = productmapper.deleteProduct(map);
 			int cnt2 = productmapper.deleteProductImg(map);
 			System.out.println("banner img 확인 바래요 productImgNo 이거 들어와야함 " + map);
 			int cnt3 = productmapper.deleteProductBannerImg(map);
 			
+			int cnt5 = productmapper.deleteProductInquiry(map);
+			int cnt4 = productmapper.deleteProductReview(map);
+			int cnt = productmapper.deleteProduct(map);
 			resultMap.put("result", "success");
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
