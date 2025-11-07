@@ -67,30 +67,14 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-## 💡 **팀원별 핵심 아이디어**
-
-| 팀원 | 아이디어 | 설명 |
-|------|------------|------|
-| 🧑‍💻 **아린** | **러닝 이벤트 캘린더** | 마라톤 및 크루 이벤트 일정 관리 |
-| 👨‍💼 **정은성(팀장)** | **라이벌 시스템** | 친구 간 러닝 거리 경쟁 기능 |
-| 👟 **전경환** | **러닝 메이트 위치 공유** | 근처 러너와 매칭, 오프라인 소통 지원 |
-| 🤖 **김지훈** | **AI 러닝 코스 추천** | 사용자의 취향에 맞춘 코스 추천 |
-| 🎨 **김반석** | **배너 및 Rally 페이지 구현** | 시각적 집중 요소 및 러너 이벤트 페이지 설계 |
-
-<br>
-
-## 🛠️ **역할 분담**
-
-| 영역 | 담당자 |
-|------|---------|
-| **/admin/banner** | 김반석 |
-| **/admin/inquiry · refund-return · orders · user-list** | 김지훈 |
-| **/admin/product** | 정은성 |
-| **/home/community · board · info · login/signup** | 아린 |
-| **/home/orders · review · cart · payment** | 전경환 |
-| **공통 CSS (Header/Footer)** | 전경환, 아린 |
-| **/home/product** | 정은성 |
-| **/home/rally** | 김반석 |
+## 💡 **팀원별 역할 분담**
+| 팀원 | 역할분담 | 
+|------|------------|
+| 👨‍💼 **정은성(팀장)** | **/home/product** , **/admin/product** | 
+| 🧑‍💻 **아린** |  **공통 CSS (Header/Footer)** , **/home/community · board · info · login/signup** |  
+| 👟 **전경환** | **러닝 메이트 위치 공유** ,  **공통 CSS (Header/Footer)**  | 
+| 🤖 **김지훈** | **/admin/inquiry · refund-return · orders · user-list** | 
+| 🎨 **김반석** | **/admin/banner** , **/home/rally** ,  | 
 
 <br>
 
