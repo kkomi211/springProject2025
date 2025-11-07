@@ -156,7 +156,7 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data);
+                            console.log(data);                      
                             self.info = data.info;
                             self.img = data.img;
 
@@ -171,16 +171,21 @@
                     else {
                         self.info.saleYN = "N";
                     }
+                    // alert("버튼 확인");
+                    // alert("화면에서 데이터를 잘 주낭?" + JSON.stringify(self.info));
+                    // alert("화면에서 이미지데이터를 잘 주낭?" + JSON.stringify(self.img));
                     $.ajax({
                         url: "/product/edit.dox",
                         dataType: "json",
                         type: "POST",
-                        data: self.info,
+                        data: self.info, 
                         success: function (data) {
                             alert("수정되었습니다!");
                             var form = new FormData();
+                            // alert("form에 뭐가 들어가나" + JSON.stringify(form));
                             form.append("file1", $("#file1")[0].files[0]);
                             form.append("productNo", self.productNo); // 임시 pk
+                           
                             self.upload(form);
                             self.fnBack();
                         }
@@ -188,7 +193,7 @@
                 },
                 upload: function (form) {
                     console.log(form);
-
+                    // alert("이미지 업로드 진입");
                     var self = this;
                     $.ajax({
                         url: "/product/update/fileUpload.dox"
