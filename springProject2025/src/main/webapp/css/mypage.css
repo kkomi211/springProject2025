@@ -460,13 +460,19 @@ table th{
             margin-right: 0; /* top-header div의 default margin-right 상쇄 */
         }
         .brand-name div {
-            font-family: 'Fugaz One', sans-serif;
-            font-size: 60px;
-            letter-spacing: 5px;
-            margin-left: 0; /* top-header div의 default margin-left 상쇄 */
-            display: block;
-            color: white; /* default 유지 */
-        }
+			font-family: 'Jost', sans-serif;
+			font-size: 60px;
+			font-weight: 900;
+			letter-spacing: 3px;
+			margin-left: 0;
+			/* top-header div의 default margin-left 상쇄 */
+			display: block;
+			color: white;
+			/* default 유지 */
+		}
+		.brand-name a:hover {
+			text-decoration: none;
+		}
         .brand-name a {
             color: white;
         }
@@ -490,10 +496,27 @@ table th{
         .bottom-header {
             display: flex;
             justify-content: center;
-            font-size: 29px; /* default bottom-header 폰트 사이즈 */
-            background-color: white; /* bottom-header 배경색 추가 */
-            /* border-bottom: 1px solid #eee; 하단 경계선 */
-            padding: 16px 0; /* 세로 패딩 */
+            font-size: 25px;
+            /* default bottom-header 폰트 사이즈 */
+            background-color: white;
+            /* bottom-header 배경색 추가 */
+            border-bottom: 1px solid #eee;
+            /* 하단 경계선 */
+            padding: 20px 0;
+            /* 세로 패딩 */
+            letter-spacing: 3px;
+        }
+
+        .bottom-header a:hover {
+            text-decoration: none;
+            transform: scale(1.1);
+            transition: transform 0.3s ease-out; /* faster ease-out */
+        }
+
+        .bottom-header a {
+            color: black;
+            transition: transform 0.2s ease-in; /* slower ease-in */
+            display: inline-block;
         }
         .bottom-header div {
             display: inline-block;
@@ -504,12 +527,7 @@ table th{
         .bottom-header div:last-child {
             margin-right: 0;
         }
-        .bottom-header a {
-            color: black; /* default bottom-header 링크색 */
-        }
-        .bottom-header a:hover {
-            color: #007bff;
-        }
+
 
  /* --- Footer Section (화면 전체 너비) --- */
         footer { /* default 푸터 스타일 */

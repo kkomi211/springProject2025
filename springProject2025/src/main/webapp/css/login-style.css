@@ -189,13 +189,19 @@ html, body {
             margin-right: 0; /* top-header div의 default margin-right 상쇄 */
         }
         .brand-name div {
-            font-family: 'Fugaz One', sans-serif;
-            font-size: 60px;
-            letter-spacing: 5px;
-            margin-left: 0; /* top-header div의 default margin-left 상쇄 */
-            display: block;
-            color: white; /* default 유지 */
-        }
+			font-family: 'Jost', sans-serif;
+			font-size: 60px;
+			font-weight: 900;
+			letter-spacing: 3px;
+			margin-left: 0;
+			/* top-header div의 default margin-left 상쇄 */
+			display: block;
+			color: white;
+			/* default 유지 */
+		}
+		.brand-name a:hover {
+			text-decoration: none;
+		}
         .brand-name a {
             color: white;
         }
@@ -230,15 +236,16 @@ html, body {
             margin-top: 0; /* flex-align으로 중앙 정렬 */
             text-align: center;
         }
+
+        .bottom-header a:hover {
+            text-decoration: none;
+        }
         .bottom-header div:last-child {
             margin-right: 0;
         }
-        .bottom-header a {
-            color: black; /* default bottom-header 링크색 */
-        }
-        .bottom-header a:hover {
+        /* .bottom-header a:hover {
             color: #007bff;
-        }
+        } */
 
                 /* --- Footer Section (화면 전체 너비) --- */
         footer { /* default 푸터 스타일 */

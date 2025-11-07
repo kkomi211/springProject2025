@@ -18,6 +18,8 @@
         <script src="/js/page-change.js"></script>
         <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
         <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
+
 
     </head>
     <style>
@@ -136,17 +138,22 @@ html, body {
             margin-right: 0; /* top-header div의 default margin-right 상쇄 */
         }
         .brand-name div {
-            font-family: 'Fugaz One', sans-serif;
+            font-family: 'Jost', sans-serif;
             font-size: 60px;
-            letter-spacing: 5px;
-            margin-left: 0; /* top-header div의 default margin-left 상쇄 */
+            font-weight: 900;
+            letter-spacing: 3px;
+            margin-left: 0;
+            /* top-header div의 default margin-left 상쇄 */
             display: block;
-            color: white; /* default 유지 */
+            color: white;
+            /* default 유지 */
         }
         .brand-name a {
             color: white;
         }
-
+        .brand-name a:hover {
+			text-decoration: none;
+		}
         #right-items {
             display: flex;
             align-items: center;
@@ -274,22 +281,21 @@ html, body {
                         </div>
                         <div id="right-items">
                             <div>
-                                <input type="text" placeholder="검색어를 입력해 주세요.">
-                            </div>
-                            <div>
-                                <template v-if="sessionId != ''">
-                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
-                                </template>
-                                <template v-else>
-                                    <a href="/home/login.do">로그인</a>
-                                </template>
+                                <!-- <template > -->
+                                    <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
+                                <!-- </template> -->
+                                <!-- <template > -->
+                                    <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
+                                <!-- </template> -->
                             </div>
                             <div v-if="sessionId == ''">
-                                <a href="/home/signup.do">가입하기</a>
+                                <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
                             </div>
-                            <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
-                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
-
+                            <div v-if="sessionId != '' && userType != 'K'"><a
+                                    href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                            <div v-else-if="sessionId != '' && userType == 'K'"><a
+                                    href="home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div>
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -482,6 +488,7 @@ html, body {
     </html>
 
     <script>
+        lucide.createIcons();
         // Vue 인스턴스를 전역에서 접근 가능하도록 'app' 변수로 선언
         const app = Vue.createApp({
             data() {

@@ -11,11 +11,14 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
+
 
     </head>
     <style>
@@ -142,9 +145,10 @@
         }
 
         .brand-name div {
-            font-family: 'Fugaz One', sans-serif;
+            font-family: 'Jost', sans-serif;
             font-size: 60px;
-            letter-spacing: 5px;
+            font-weight: 900;
+            letter-spacing: 3px;
             margin-left: 0;
             /* top-header div의 default margin-left 상쇄 */
             display: block;
@@ -155,6 +159,9 @@
         .brand-name a {
             color: white;
         }
+        .brand-name a:hover {
+			text-decoration: none;
+		}
 
         #right-items {
             display: flex;
@@ -180,13 +187,27 @@
         .bottom-header {
             display: flex;
             justify-content: center;
-            font-size: 30px;
+            font-size: 25px;
             /* default bottom-header 폰트 사이즈 */
             background-color: white;
             /* bottom-header 배경색 추가 */
-            /* border-bottom: 1px solid #eee; 하단 경계선 */
+            border-bottom: 1px solid #eee;
+            /* 하단 경계선 */
             padding: 20px 0;
             /* 세로 패딩 */
+            letter-spacing: 3px;
+        }
+
+        .bottom-header a:hover {
+            text-decoration: none;
+            transform: scale(1.1);
+            transition: transform 0.3s ease-out; /* faster ease-out */
+        }
+
+        .bottom-header a {
+            color: black;
+            transition: transform 0.2s ease-in; /* slower ease-in */
+            display: inline-block;
         }
 
         .bottom-header div {
@@ -206,10 +227,10 @@
             color: black;
             /* default bottom-header 링크색 */
         }
-
+/* 
         .bottom-header a:hover {
             color: #007bff;
-        }
+        } */
 
         /* --- Footer Section (화면 전체 너비) --- */
         footer {
@@ -314,22 +335,21 @@
                         </div>
                         <div id="right-items">
                             <div>
-                                <input type="text" placeholder="검색어를 입력해 주세요.">
-                            </div>
-                            <div>
-                                <template v-if="sessionId != ''">
-                                    <a href="javascript:;" @click="fnLogout">로그아웃</a>
-                                </template>
-                                <template v-else>
-                                    <a href="/home/login.do">로그인</a>
-                                </template>
+                                <!-- <template > -->
+                                    <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
+                                <!-- </template> -->
+                                <!-- <template > -->
+                                    <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
+                                <!-- </template> -->
                             </div>
                             <div v-if="sessionId == ''">
-                                <a href="/home/signup.do">가입하기</a>
+                                <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
                             </div>
-                            <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
-                            <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
-
+                            <div v-if="sessionId != '' && userType != 'K'"><a
+                                    href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                            <div v-else-if="sessionId != '' && userType == 'K'"><a
+                                    href="home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div>
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -533,6 +553,7 @@
     </html>
 
     <script>
+        lucide.createIcons();
         // Vue 인스턴스를 전역에서 접근 가능하도록 'app' 변수로 선언
         const app = Vue.createApp({
             data() {
