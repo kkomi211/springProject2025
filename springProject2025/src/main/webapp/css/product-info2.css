@@ -968,6 +968,7 @@ html, body {
 }
 
 .infoText-box {
+    font-family: "Inter", sans-serif;
     font-size: 40px;
     text-align: left;
     width: 400px;
@@ -981,11 +982,13 @@ html, body {
 .infoText-box .product-name {
     margin-bottom: 20px;
     font-size: 40px;
+    font-weight: bold;
 }
 
 .infoText-box .product-type {
     margin-bottom: 20px;
     font-size: 22px;
+    font-weight: 300;
 }
 
 .infoText-box .product-price {
@@ -1028,13 +1031,13 @@ html, body {
 }
 
 .quantity-input {
-    height: 40px;
+    height: 39px;
     width: 70px;
     text-align: center;
     border: solid 1px grey;
 }
 .add-btn {
-    height: 45px;
+    height: 43px;
     width: 40px;
 }
 
@@ -1080,45 +1083,167 @@ html, body {
 #inquiry-title {
     padding-left: 20px;
     text-align: left;
-
+    gap: 10px;
+}
+#inquiry-title span {
+    margin-right: 10px;
 }
 #inquiry-status{
     padding-right: 20px;
     text-align: right;
 }
 
-.inquiry-search-box {
+.inquiry-search-box, .review-search-box {
     position: relative;          /* make this the positioning container */
     display: inline-block;
     margin-left: 25px;
     margin-bottom: -15px;
 }
 
-.inquiry-search-box input {
+.inquiry-search-box input, .review-search-box input {
     border-radius: 10px;
     border: solid 1px grey;
     padding-left: 15px;  /* move text and placeholder right */
     padding-top: 5px;    /* move text and placeholder down */
 }
 
-.inquiry-search-box div {
+.inquiry-search-box div, .review-search-box div {
     position: absolute;
     top:40px;
     right:40px;
 }
 .write-inquiry {
     width: 100%;
-    align-items: left;         /* vertically center it if the div has height */
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;  
+    /* margin-right: 0px;s */
+    margin-top: 50px;
+    margin-bottom: 80px;
+    position: relative;
+    
 }
 .write-inquiry button {
     border-radius: 10px;
     width: 100px;
     border: solid 1px gray;
     padding: 10px;
+    position: absolute;
+    right: 60px;
 }
 .write-inquiry button:hover {
     cursor: pointer;
     background-color: #000000;
     color: white;
     font-weight: bold;
+}
+
+.modal-actions .cancel-btn{
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid rgb(184, 184, 184);
+    width: 60px;
+}
+.modal-actions .cancel-btn:hover{
+    cursor: pointer;
+    background-color: rgb(173, 172, 172);
+}
+
+.review-section {
+  display: flex;               /* places children side by side */
+  /* justify-content: space-between; spaces them apart (search left, sort right) */
+  align-items: center;          /* vertically centers them */
+  width: 100%;                  /* full width */
+}
+
+.review-section .helpful-section {
+    margin-top: 10px;
+}
+
+/* 리뷰 리스트 보기 */
+.post-container {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 25px 30px;
+  margin-bottom: 25px;
+  margin-top: 25px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
+  width: 85%;
+}
+
+.post-container:hover {
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
+}
+
+.post-header {
+  margin-bottom: 20px;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.post-category {
+  font-weight: 600;
+  color: #666;
+  background: #f3f3f3;
+  padding: 4px 10px;
+  border-radius: 5px;
+}
+
+.post-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #222;
+  margin-top: 20px;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  word-break: break-word;
+}
+
+.post-author, .post-type {
+margin-left: 5px;
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.post-type {
+  display: flex;
+  gap: 15px;
+}
+
+.post-date {
+    font-size: 15px;
+}
+
+.post-author input{
+  width: 100%;
+}
+
+.post-content {
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #333;
+  word-break: break-word;
+}
+
+.post-content img {
+  max-width: 100%;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+
+.review-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column; /* keep vertical stacking */
+  align-items: center;    /* centers children horizontally */
 }

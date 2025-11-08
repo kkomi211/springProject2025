@@ -133,6 +133,17 @@ public class HomeController {
 		return "home/product"; // .jsp빠진형태
 	}
 	
+	// test
+	@RequestMapping("home/product2.do")
+	public String product2(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		request.setAttribute("sessionId", map.get("sessionId"));
+		request.setAttribute("category", map.get("category"));
+		request.setAttribute("keyword", map.get("keyword"));
+		request.setAttribute("saleYN", map.get("saleYN"));		
+		System.out.println(map);
+		return "home/product2"; // .jsp빠진형태
+	}
+	
 	@RequestMapping("home/sales.do")
 	public String sales(Model model) throws Exception {
 		return "home/sales"; // .jsp빠진형태
@@ -144,6 +155,8 @@ public class HomeController {
         request.setAttribute("productNo", map.get("productNo"));
         return "home/product-info"; // .jsp 빠진 형태
     }
+	
+	//test
 	
 	@RequestMapping("home/product-info2.do")
     public String productInfo2(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception {
