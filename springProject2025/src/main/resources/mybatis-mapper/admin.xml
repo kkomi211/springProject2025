@@ -382,8 +382,8 @@
 		<select id="selectRefundReturnListCount" parameterType="hashmap" resultType="int">
 		    SELECT COUNT(O.ORDER_NO)
 		    FROM ORDERS O
-		    JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
-		    JOIN USERS U ON O.USER_ID = U.USER_ID
+		    LEFT JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
+		    LEFT JOIN USERS U ON O.USER_ID = U.USER_ID
 		    <where>
 		        O.STATUS IN ('교환요청', '교환완료', '취소요청', '취소완료', '반품요청', '반품완료')
 		        <if test="keyword != null and keyword != ''">
