@@ -191,42 +191,6 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 ## 🎆 파일 흐름 구조 (Mermaid)
     - subgraph Home[🏡 사용자 페이지] -
-        home[home.jsp]
-        login[🔐 login.jsp]
-        idPwd[🧩 idPwdSearch.jsp]
-        signup[📝 signup.jsp]
-        juso[🗺 jusoPopup.jsp]
-        mypage[👤 mypage/]
-        information[🧭 information.jsp]
-        information_change[✏️ information-change.jsp]
-        my_inquiry[❓ my-inquiry.jsp]
-        my_inquiry_detail[🔍 my-inquiry-detail.jsp]
-        orders[📦 orders.jsp]
-        review[⭐ review.jsp]
-        review_view[👁 review-view.jsp]
-        review_write[✍️ review-write.jsp]
-        refund[🔄 refund-return.jsp]
-        community[💬 community/]
-        board[🧱 board.jsp]
-        board_edit[✏️ board-edit.jsp]
-        board_post[🆕 board-post.jsp]
-        board_view[👁 board-view.jsp]
-        rally[🏁 rally-board.jsp]
-        crew[🏃 crew.jsp]
-        crew_post[🆕 crew-post.jsp]
-        chat[💭 chat.jsp]
-        chat_view[💬 chatroom-view.jsp]
-        product[🛍 product.jsp]
-        product_info[📋 product-info.jsp]
-        product_inquiry[📨 productInquiry-add.jsp]
-        cart[🛒 cart.jsp]
-        paybefore[💳 paybefore.jsp]
-        payafter[✅ payafter.jsp]
-        policy[⚖️ policy/]
-        about[ℹ️ about.jsp]
-        privacy[🔒 privacy-policy.jsp]
-        terms[📜 terms.jsp]
-
         home --> login --> idPwd
         home --> signup --> juso
         home --> mypage
@@ -245,31 +209,18 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
         community --> chat --> chat_view
         home --> product --> product_info --> product_inquiry
         home --> cart --> paybefore --> payafter
-        home --> policy --> about
-        home --> policy --> privacy
-        home --> policy --> terms
+        home --> policy 
+        policy --> about
+        policy --> privacy
+        policy --> terms
     end
 
     - subgraph Admin[👑 관리자 페이지] -
-        admin_main[🖥 admin-main.jsp]
-        banner[🖼 banner.jsp]
-        inquiry[📩 inquiry.jsp]
-        inquiry_view[🔍 inquiry-view.jsp]
-        refund_admin[🔁 refund-return.jsp]
-        product_admin[📦 product.jsp]
-        product_info_admin[📋 product-info.jsp]
-        product_add[➕ product-add.jsp]
-        orders_admin[🚚 orders.jsp]
-        board_report[🚨 board-report.jsp]
-        board_report_view[👁 board-report-view.jsp]
-        user_list[🧑‍🤝‍🧑 user-list.jsp]
-        user_list_view[🔎 user-list-view.jsp]
-
         admin_main --> banner
         admin_main --> inquiry --> inquiry_view
         admin_main --> refund_admin
-        admin_main --> product_admin --> product_info_admin
-        product_admin --> product_add
+        admin_main --> product_admin --> product_info
+        admin_main --> product_admin --> product_add
         admin_main --> orders_admin
         admin_main --> board_report --> board_report_view
         admin_main --> user_list --> user_list_view
