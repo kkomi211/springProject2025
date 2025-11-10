@@ -904,33 +904,6 @@
                 self.fnMessageList();
                 self.fnMemberList();
                 self.connect();
-<<<<<<< HEAD
-            
-                 // --- 새로 추가: 3초마다 메시지 갱신 (사용자가 로그인해서 채팅방에 있을 때만 실행)
-                    // sessionId가 비어있지 않으면 폴링 시작
-                    if (self.sessionId && self.sessionId !== '') {
-                        // 이미 타이머가 있으면 없애고 새로 설정
-                        if (self.pollTimer) clearInterval(self.pollTimer);
-                        self.pollTimer = setInterval(function() {
-                            self.fnMessageList();
-                        }, 3000); // 3000ms = 3초
-                    }
-
-                    // 페이지 닫거나 이동할 때 타이머 정리
-                    window.addEventListener('beforeunload', function() {
-                        if (self.pollTimer) {
-                            clearInterval(self.pollTimer);
-                            self.pollTimer = null;
-                        }
-                    });
-                },
-                // 컴포넌트 언마운트 시에도 타이머 정리 (안전장치)
-            beforeUnmount() {
-                    if (this.pollTimer) {
-                        clearInterval(this.pollTimer);
-                        this.pollTimer = null;
-                    }
-=======
                 // --- 새로 추가: 3초마다 메시지 갱신 (사용자가 로그인해서 채팅방에 있을 때만 실행)
                 // sessionId가 비어있지 않으면 폴링 시작
                 if (self.sessionId && self.sessionId !== '') {
@@ -948,7 +921,6 @@
                         self.pollTimer = null;
                     }
                 });
->>>>>>> branch 'develop' of https://github.com/kkomi211/springProject2025.git
             }
         });
 
