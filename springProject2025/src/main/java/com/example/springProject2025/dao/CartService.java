@@ -63,7 +63,7 @@ public class CartService {
 	        	String baseProductName = productDetails.getProductName().replaceAll("\\s*\\(.*\\)", "").trim(); 
 	            map.put("baseProductName", baseProductName);
 	            map.put("brand", productDetails.getBrand());
-	            
+	            System.out.println("조회직전 map값" + map);
 	            List<Cart> productOptions = cartMapper.selectRelatedProductOptions(map);
 	            resultMap.put("options", productOptions);
 	            resultMap.put("result", "success");
