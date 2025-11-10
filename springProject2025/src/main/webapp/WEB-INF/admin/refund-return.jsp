@@ -186,6 +186,7 @@
                         <div class="btn-group">
                             <button class="btn-cancel" @click="closeModal()">취소</button>
                             <button class="btn-process" @click="processStatusChange()">{{ processButtonText }}</button>
+                            <button class="btn-process" @click="processStatusChange2()" v-if="productOptions == 0">반품 처리</button>
                         </div>
                     </div>
                 </div>
@@ -442,6 +443,45 @@
                             alert('잘못된 상태 변경 요청입니다.');
                             return;
                     }
+
+                    if (!confirm(confirmMsg)) {
+                        return;
+                    }
+
+                    $.ajax({
+                        url: url,
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result === "success") {
+                                alert(data.message);
+                                self.closeModal();
+                                self.fnGetRefundReturnList(self.currentPage); // 리스트 새로고침
+                            } else {
+                                alert("처리 실패: " + data.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("처리 AJAX 오류:", status, error, xhr.responseText);
+                            alert("요청 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+                        }
+                    });
+                },
+                processStatusChange2() {
+                    let self = this;
+                    let url = "";
+                    let param = {
+                        orderNo: self.selectedOrder.orderNo,
+                        currentStatus: self.selectedOrder.status,
+                        newStatus: ""
+                    };
+
+                    let confirmMsg = "";
+
+                    param.newStatus = '반품완료';
+                    confirmMsg = "삭제된 제품으로, 반품 처리를 완료했습니다.";
+                    url = "/admin/refund-return/updateStatus.dox";
 
                     if (!confirm(confirmMsg)) {
                         return;
