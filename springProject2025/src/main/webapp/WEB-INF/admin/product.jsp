@@ -43,7 +43,7 @@
                     <h2>상품 리스트</h2>
                 </div>
                 <div class="search-box search-filters">
-                    <input class="search margin30" placeholder="검색" v-model="keyword">
+                    <input class="search margin30" placeholder="검색" v-model="keyword" @keyup.enter="fnList">
                     <select class="margin30 height40" v-model="keytype">
                         <option value="no">제품번호</option>
                         <option value="name">제품이름</option>
@@ -105,7 +105,7 @@
                     // 변수 - (key : value)
                     sessionId: "",
                     keyword: "${keyword}",
-                    keytype: "no",
+                    keytype: "name",
                     list: [],
                     pageSize: 15,
                     page: "1",
