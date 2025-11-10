@@ -382,8 +382,8 @@
 		<select id="selectRefundReturnListCount" parameterType="hashmap" resultType="int">
 		    SELECT COUNT(O.ORDER_NO)
 		    FROM ORDERS O
-		    JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
-		    JOIN USERS U ON O.USER_ID = U.USER_ID
+		    LEFT JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
+		    LEFT JOIN USERS U ON O.USER_ID = U.USER_ID
 		    <where>
 		        O.STATUS IN ('교환요청', '교환완료', '취소요청', '취소완료', '반품요청', '반품완료')
 		        <if test="keyword != null and keyword != ''">
@@ -412,18 +412,18 @@
 		        FROM (
 		            SELECT
 		                O.ORDER_NO,
-		                P.PRODUCT_NAME,
+		                NVL(P.PRODUCT_NAME, '삭제된상품') AS PRODUCT_NAME,
 		                O.USER_ID,
-		                U.NAME,
-		                U.PHONE,
+		                NVL(U.NAME, '삭제된유저') AS NAME,
+            			NVL(U.PHONE, '삭제된유저번호') AS PHONE,
 		                TO_CHAR(O.UDATE, 'YYYY-MM-DD') AS UDATE,
 		                O.STATUS,
 		                O.PRODUCT_NO, <!-- 교환 처리 시 필요 -->
 		                O.QUANTITY,   <!-- 교환 처리 시 필요 -->
 		                O.BECAUSE     <!-- 교환/반품/취소 사유 -->
 		            FROM ORDERS O
-		            JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
-		            JOIN USERS U ON O.USER_ID = U.USER_ID
+		            LEFT JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
+		            LEFT JOIN USERS U ON O.USER_ID = U.USER_ID
 		            <where>
 		                O.STATUS IN ('교환요청', '교환완료', '취소요청', '취소완료', '반품요청', '반품완료')
 		                <if test="keyword != null and keyword != ''">
@@ -512,6 +512,8 @@
 		        SYSDATE
 		    )
 		</insert>
+		
+		
 		
 		<!-- productNo로 제품 상세 정보 조회 -->
 		<select id="selectProductByProductNo" parameterType="hashmap" resultType="com.example.springProject2025.model.Admin">
