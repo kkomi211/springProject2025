@@ -163,8 +163,10 @@
 	</select>
 	
 	<select id="selectProductInfo" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
-		SELECT *
-		FROM PRODUCT
+		SELECT P.*, T.TYPE_NAME
+		FROM PRODUCT P
+		INNER JOIN PRODUCT_TYPE T
+		ON P.TYPE_NO = T.TYPE_NO
 		WHERE PRODUCT_NO = #{productNo}
 	</select>
 	
@@ -296,9 +298,11 @@
 	</select>
 	
 	<select id="selectProductInfoUser" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
-		SELECT *
-		FROM PRODUCT
-		WHERE PRODUCT_NO = #{productNo}
+		SELECT P.*, T.TYPE_NAME
+		FROM PRODUCT P
+		INNER JOIN PRODUCT_TYPE T
+		ON P.TYPE_NO = T.TYPE_NO
+		WHERE PRODUCT_NO = #{productNo}	
 	</select>
 	
 	<insert id="InsertProductInquiry" parameterType="hashmap">
