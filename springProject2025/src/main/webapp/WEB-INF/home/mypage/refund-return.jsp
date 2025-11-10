@@ -11,7 +11,8 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet">
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -159,9 +160,10 @@
         .brand-name a {
             color: white;
         }
+
         .brand-name a:hover {
-			text-decoration: none;
-		}
+            text-decoration: none;
+        }
 
         #right-items {
             display: flex;
@@ -201,12 +203,14 @@
         .bottom-header a:hover {
             text-decoration: none;
             transform: scale(1.1);
-            transition: transform 0.3s ease-out; /* faster ease-out */
+            transition: transform 0.3s ease-out;
+            /* faster ease-out */
         }
 
         .bottom-header a {
             color: black;
-            transition: transform 0.2s ease-in; /* slower ease-in */
+            transition: transform 0.2s ease-in;
+            /* slower ease-in */
             display: inline-block;
         }
 
@@ -227,7 +231,8 @@
             color: black;
             /* default bottom-header 링크색 */
         }
-/* 
+
+        /* 
         .bottom-header a:hover {
             color: #007bff;
         } */
@@ -336,20 +341,24 @@
                         <div id="right-items">
                             <div>
                                 <!-- <template > -->
-                                    <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
+                                <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i
+                                            data-lucide="log-out" stroke-width="1.5"></i></a></div>
                                 <!-- </template> -->
                                 <!-- <template > -->
-                                    <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
+                                <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a>
+                                </div>
                                 <!-- </template> -->
                             </div>
                             <div v-if="sessionId == ''">
                                 <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
                             </div>
-                            <div v-if="sessionId != '' && userType != 'K'"><a
-                                    href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                            <div v-if="sessionId != '' && userType != 'K'"><a href="/home/mypage/information.do"><i
+                                        data-lucide="user" stroke-width="1.5"></i></a></div>
                             <div v-else-if="sessionId != '' && userType == 'K'"><a
-                                    href="home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
-                            <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div>
+                                    href="home/mypage/information/change.do"><i data-lucide="user"
+                                        stroke-width="1.5"></i></a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart"
+                                        stroke-width="1.5"></i></a></div>
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -575,7 +584,7 @@
                     // 모달 관련
                     reasonModalVisible: false,
                     missingReasons: [], // [{ orderNo: 'xxx' }, ...]
-                    userType : '${userType}',
+                    userType: '${userType}',
                 };
             },
             methods: {
@@ -857,6 +866,26 @@
                     let self = this;
                     self.saleYN = 'Y';
                     pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                },
+                moveToBoard: function () {
+                    let self = this;
+
+                    pageChange("/home/community/board.do", {});
+                },
+                moveToCrew: function () {
+                    let self = this;
+
+                    pageChange("/home/community/crew.do", {});
+                },
+                moveToRally: function () {
+                    let self = this;
+
+                    pageChange("/home/community/rally.do", {});
+                },
+                moveToChat: function () {
+                    let self = this;
+
+                    pageChange("/home/community/chat.do", {});
                 },
             }, // methods
             mounted() {

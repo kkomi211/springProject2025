@@ -16,7 +16,8 @@ import com.example.springProject2025.dao.ChatService;
 import com.example.springProject2025.model.Chat;
 import com.google.gson.Gson;
 
-import ch.qos.logback.core.model.Model;
+//import ch.qos.logback.core.model.Model; //251107전경환주석처리
+import org.springframework.ui.Model; //251107전경환추가
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
