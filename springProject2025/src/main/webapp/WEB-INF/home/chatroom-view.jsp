@@ -478,19 +478,19 @@
                             <h2 class="sidebar-heading"> COMMUNITY ></h2>
                             <nav class="mypage-menu">
                                 <ul>
-                                    <li>
+                                    <li @click="moveToBoard">
                                         <span class="icon">📝</span>
                                         <a href="/home/community/board.do">게시판</a>
                                     </li>
-                                    <li>
+                                    <li @click="moveToCrew">
                                         <span class="icon">📦</span>
                                         <a href="/home/community/crew.do">크루 찾기</a>
                                     </li>
-                                    <li>
+                                    <li @click="moveToRally">
                                         <span class="icon">💬</span>
                                         <a href="/home/community/rally.do">대회정보</a>
                                     </li>
-                                    <li class="active">
+                                    <li @click="moveToChat" class="active">
                                         <span class="icon">👤</span>
                                         <a href="/home/community/chat.do">채팅방</a>
                                     </li>
@@ -892,6 +892,26 @@
                 fnNotice() {
                     let self = this;
                     pageChange("/home/community/board.do", { type: "B" });
+                },
+                moveToBoard: function () {
+                    let self = this;
+
+                    pageChange("/home/community/board.do", {});
+                },
+                moveToCrew: function () {
+                    let self = this;
+
+                    pageChange("/home/community/crew.do", {});
+                },
+                moveToRally: function () {
+                    let self = this;
+
+                    pageChange("/home/community/rally.do", {});
+                },
+                moveToChat: function () {
+                    let self = this;
+
+                    pageChange("/home/community/chat.do", {});
                 },
 
             }, // methods
