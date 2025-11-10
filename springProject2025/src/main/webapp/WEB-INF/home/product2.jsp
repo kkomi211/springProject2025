@@ -36,6 +36,33 @@
                     flex-direction: column;
                     min-height: 100vh;
                 }
+
+            /* search box */
+
+            .search-box {
+                position: relative;          /* make this the positioning container */
+                display: inline-block;
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+            .newcontent input{
+                /* margin-top: 10px; */
+                border-radius: 5px;
+                border: solid 1px grey;
+                padding-left: 15px;  /* move text and placeholder right */
+                padding-top: 5px;    /* move text and placeholder down */
+            }
+
+            .newcontent input:hover {
+                border-radius: 5px;
+                border: solid 1px rgb(0, 0, 0);
+            }
+
+            .search-box div {
+                position: absolute;
+                top:8px;
+                right:18px;
+            }
         </style>
     </head>
 
@@ -84,8 +111,14 @@
             <div class="container">
                 <main>
                     <div class="newcontent">
-                        <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword">
-                        <button class="height40 bluebutton" @click="fnList">검색</button>
+                        <!-- <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword">
+                        <button class="height40 bluebutton" @click="fnList">검색</button> -->
+                        <div class="search-box">
+                            <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword" @keyup.enter="fnList">
+                            <a href="javascript:;" @click="fnList">
+                                <div><i data-lucide="search" stroke-width="1"></i></div>
+                            </a>
+                        </div>
                     </div>
                     <!-- <div class="header">
                         <div class="header-welcome">
@@ -130,7 +163,7 @@
                         <main class="main-content">
                             <div class="main-container">
                                 <div class="product-box" v-for="item in list" :key="item.productNo" @click="fnProductView(item.productNo)">
-                                    <a :href="'/home/product-info.do?productNo=' + item.productNo">
+                                    <a :href="'/home/product-info2.do?productNo=' + item.productNo">
                                         <div class="product-image-container">
                                             <img :src="imgByProduct[String(item.productNo)] || '/img/no-image.png'" class="small-img" :alt="item.productName">
                                         </div>
@@ -349,7 +382,7 @@
                 },
                 fnProductView(productNo, rating) {
                     let self = this;
-                    pageChange("/home/product-info.do", { productNo: productNo, sessionId: self.sessionId });
+                    pageChange("/home/product-info2.do", { productNo: productNo, sessionId: self.sessionId });
                 },
                 fnProduct() {
                     let self = this;

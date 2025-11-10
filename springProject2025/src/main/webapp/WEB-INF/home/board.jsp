@@ -19,6 +19,22 @@
         <script src="/js/page-change.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
         <style>
+            html,
+                body {
+                    height: 100%;
+                    margin: 0;
+                    padding: 0;
+                    font-family: Arial, sans-serif;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                #app {
+                    /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
+                    display: flex;
+                    flex-direction: column;
+                    min-height: 100vh;
+                }
 
            /* Main Hero Slider styles (메인 상단 배너) */
            .main-hero-slider .crew-overlay-text {
@@ -188,23 +204,23 @@
                         </div>
                     </div>
                 </header>
+
                 <div class="main-hero-slider-area">
-                            <section class="main-hero-slider">
-                                <div class="swiper-container mySwiper">
-                                    <div class="swiper-wrapper">
-                                        <div class="swiper-slide"
-                                            >
-                                            
-                                                <img src="https://as2.ftcdn.net/v2/jpg/02/34/65/76/1000_F_234657662_jQjqcHFWIh3oVh9DTXAXzKAXVZ5Zf6ko.jpg"  >
-                                            
-                                        </div>
-                                    </div>
-                                    <div class="swiper-pagination"></div>
+                    <section class="main-hero-slider">
+                        <div class="swiper-container mySwiper">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide"
+                                    >
+                                    
+                                        <img src="https://as2.ftcdn.net/v2/jpg/02/34/65/76/1000_F_234657662_jQjqcHFWIh3oVh9DTXAXzKAXVZ5Zf6ko.jpg"  >
+                                    
                                 </div>
-                                <span class="crew-overlay-text">COMMUNITY</span> <!-- 텍스트는 항상 보임, 중앙 위치 -->
-                            </section>
-                            
+                            </div>
+                            <div class="swiper-pagination"></div>
                         </div>
+                        <span class="crew-overlay-text">COMMUNITY</span> <!-- 텍스트는 항상 보임, 중앙 위치 -->
+                    </section>
+                </div>
 
                 <main class="below-header">
                     

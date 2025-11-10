@@ -39,6 +39,7 @@ public class ProductController {
         request.setAttribute("rating", map.get("rating"));
         return "admin/product-info"; // .jsp 빠진 형태
     }
+    
     @RequestMapping("home/product/inquiry/add.do")
     public String inquiryAdd(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception {
     	request.setAttribute("sessionId", map.get("sessionId"));
