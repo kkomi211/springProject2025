@@ -9,16 +9,35 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+        
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-        <link rel="stylesheet" href="/css/jes.css">
+        <link rel="stylesheet" href="/css/product-info2.css">
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
         <script src="/js/page-change.js"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
 
         <style>
- 
+            html,
+                body {
+                    height: 100%;
+                    margin: 0;
+                    padding: 0;
+                    font-family: Arial, sans-serif;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                #app {
+                    /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
+                    display: flex;
+                    flex-direction: column;
+                    min-height: 100vh;
+                }
         </style>
     </head>
 
@@ -32,21 +51,21 @@
                     </div>
                     <div id="right-items">
                         <div>
-                            <input type="text" placeholder="검색어를 입력해 주세요.">
-                        </div>
-                        <div>
-                            <template v-if="sessionId != ''">
-                                <a href="javascript:;" @click="fnLogout">로그아웃</a>
-                            </template>
-                            <template v-else>
-                                <a href="/home/login.do">로그인</a>
-                            </template>
+                            <!-- <template > -->
+                                <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
+                            <!-- </template> -->
+                            <!-- <template > -->
+                                <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
+                            <!-- </template> -->
                         </div>
                         <div v-if="sessionId == ''">
-                            <a href="/home/signup.do">가입하기</a>
+                            <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
                         </div>
-                        <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
-                        <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
+                        <div v-if="sessionId != '' && userType != 'K'"><a
+                                href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                        <div v-else-if="sessionId != '' && userType == 'K'"><a
+                                href="home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                        <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div>
                     </div>
                 </div>
                 <div class="bottom-header">
@@ -65,8 +84,12 @@
                 <main>
                     <div class="newcontent">
                         <!-- <h1 class="margintop">제품</h1> -->
-                        <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword" @keyup.enter="fnSearch">
-                        <button class="height40 bluebutton" @click="fnSearch">검색</button>
+                        <div class="search-box">
+                            <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword" @keyup.enter="fnSearch">
+                            <a href="javascript:;" @click="fnSearch">
+                                <div><i data-lucide="search" stroke-width="1"></i></div>
+                            </a>
+                        </div>
                     </div>
 
                     <div class="side-bar">
@@ -95,74 +118,168 @@
                         </div>
                     </div>
                     <div class="infoMain-container">
-                        <h1 class="margintop">제품 상세 </h1>
-                        <div class="img-box"><img :src="imgByProduct[String(productNo)] || '/img/no-image.png'"
-                                class="big-img" :alt="info.productName"></div>
+                        <!-- 수정 부분 -->
+                        <div class="img-box">
+                            <!-- <img 
+                                src="/img/shoe-img.png" 
+                                class="big-img" 
+                                alt="Running shoes for sale"> -->
+                            <img :src="imgByProduct[String(productNo)] || '/img/no-image.png'" class="big-img" :alt="info.productName">
+                        </div>
+                        <!-- 수정 부분 -->
                         <div class="infoText-box">
-                            <div class="margin80">{{info.productName}}</div>
-                            <div class="margin80 font30" v-if="info.saleYN == 'N'">{{info.price}} 원</div>
-                            <div class="margin80 font30" v-else><del>{{info.price}}</del> {{info.salePrice}} 원</div>
-                            <div class="font30 margin30">
+                            <!-- <div class="margin80">{{info.productName}}</div> -->
+                            <div class="product-name">{{info.productName}}</div>
+                            <div class="product-type">{{info.typeName}}</div>
+                            <!-- <div class="margin80 font30" v-if="info.saleYN == 'N'">{{info.price}} 원</div> -->
+                            <div class="product-price">{{Number(info.price).toLocaleString()}} 원</div>
+                            <!-- <div class="margin80 font30" v-else><del>{{info.price}}</del> {{info.salePrice}} 원</div> -->
+                            <div class="product-size">
                                 <!-- 사이즈 -->
-                                <select class="select-box" v-model="size" @change="fnMaxQuantityChange">
-                                    <option v-for="item in sizeList" :value="item.productSize">사이즈 :
-                                        {{item.productSize}} 재고 : {{item.quantity}}
-                                    </option>
-                                </select>
+                                <div>사이즈</div>
+                                <div>
+                                    <select class="select-box" v-model="size" @change="fnMaxQuantityChange" style="text-align: center;">
+                                        <option v-for="item in sizeList" :value="item.productSize">사이즈 :
+                                            {{item.productSize}} 재고 : {{item.quantity}}
+                                        </option>
+                                        <!-- <option value="">사이즈 선택해주세요</option>  -->
+                                    </select>
+                                </div>
                             </div>
-                            <div>
-                                <button class="bluebutton height40 marginbutton small-input" @click="fnQuantity(-1)">-</button>
-                                <input class="height40 small-input" v-model="quantity" disabled>
-                                <button class="bluebutton height40 marginbutton small-input" @click="fnQuantity(1)">+</button>
+                            <div class="product-quantity">
+                                <div>구매수량</div>
+                                <div>
+                                    <button class="add-btn" @click="fnQuantity(-1)">-</button>
+                                    <input class="quantity-input" v-model="quantity" disabled>
+                                    <button class="add-btn" @click="fnQuantity(1)">+</button>
+                                </div>
                             </div>
-
-                            <div class="margin30">
-                                <button class="bluebutton margin30 height40" @click="fnCart">장바구니</button>
+                            <div class="check-out">
+                                <button class="bluebutton margin30 height40" @click="fnCart">장바구니 담기  </button>
                                 <button class="bluebutton margin30 height40" @click="fnPayment">결제하기</button>
                             </div>
                         </div>
-                        <div class="detail-box">{{info.productDetail}}</div>
+                        <!-- <div class="detail-box">{{info.productDetail}}</div> -->
+                        <div class="detail-box">
+                            {{info.productDetail}}
+                            <!-- 가볍고 반응성이 뛰어난 러닝화로, 장거리 달리기부터 일상 트레이닝까지 편안한 착용감을 제공합니다.
+                            통기성 좋은 메쉬 소재와 쿠셔닝 중창이 발의 피로를 줄여주며,
+                            안정적인 아웃솔이 다양한 지면에서 뛰어난 그립력을 제공합니다. -->
+                        </div>
                         <div class="container-foot">
                             <div class="foot-box cursor" @click="status = 1" :class="{active: status == 1} ">상품문의</div>
                             <div class="foot-box cursor" @click="status = 2" :class="{active: status == 2} ">상품리뷰</div>
                             <div v-if="status == 1">
-                                <div class="inquirySearch-box">
+                                <!-- <div class="inquirySearch-box">
                                     <input class="search" v-model="inquiryKeyword">
                                     <button class="bluebutton height40 margin30" @click="fnInquiry">검색</button>
                                     <button class="bluebutton height40 margin30"
                                         @click="fnProductInquiryAdd(productNo)">작성하기</button>
+                                </div> -->
+                                <div class="inquiry-search-box">
+                                    <input class="search" placeholder="문의 검색" v-model="inquiryKeyword" @keyup.enter="fnInquiry">
+                                    <a href="javascript:;" @click="fnInquiry">
+                                        <div><i data-lucide="search" stroke-width="1"></i></div>
+                                    </a>
                                 </div>
-                                <div class="table margintop100">
+                                <div class="inquiry-table">
                                     <table>
                                         <tr>
-                                            <th>문의 제목</th>
-                                            <th>답변 상태</th>
+                                            <th id="inquiry-title">문의 제목</th>
+                                            <th id="inquiry-status">답변 상태</th>
                                         </tr>
                                         <tr v-for="item in inquiryList">
-                                            <td class="longTd" @click="openInquiry(item)">
+                                            <!-- <td id="inquiry-title">이거 뭐할때 쓰는 물건이에요?</td> -->
+                                            <td id="inquiry-title" @click="openInquiry(item)">
                                                 <span class="cursor">{{item.title}}</span>
-                                                <span class="material-symbols-outlined"
-                                                    v-if="item.pwd != undefined && item.pwd != null">key</span>
-                                            </td>
-                                            <td class="shortTd">{{item.status}}</td>
+                                                <span class="material-symbols-outlined" v-if="item.pwd != undefined && item.pwd != null">key</span>
+                                            </td> 
+                                            <!-- <td id="inquiry-status">답변완료</td> -->
+                                            <td id="inquiry-status">{{item.status === 'Y' ? '답변완료' : '미답변'}}</td>
                                         </tr>
                                     </table>
                                 </div>
+                                <div class="write-inquiry">
+                                    <button @click="fnProductInquiryAdd(productNo)">작성하기</button>
+                                </div>
                                 <div class="clear text-center margin30">
-                                    <span class="margin30 font30 cursor" :class="{bold: inquiryPage == num}"
+                                    <span class="margin30 font15 cursor" :class="{bold: inquiryPage == num}"
                                         v-for="num in inquiryTotalPage" @click="fnInquiryPage(num)">{{num}}</span>
                                 </div>
                             </div>
-                            <div v-if="status == 2">
-                                <div class="inquirySearch-box">
+                            <div v-if="status == 2" class="review-container" >
+                                <!-- <div class="inquirySearch-box">
                                     <span class="margin30 cursor" :class="{bold: reviewArray == 1}"
                                         @click="fnReviewArray(1)">도움돼요순</span>
                                     <span class="margin30 cursor" :class="{bold: reviewArray == 2}"
                                         @click="fnReviewArray(2)">최신순</span>
                                     <input class="search" v-model="reviewKeyword">
                                     <button class="bluebutton height40" @click="fnReviewList">검색</button>
+                                </div> -->
+                                <div class="review-section">
+                                     <div class="review-search-box">
+                                        <input class="search" placeholder="리뷰 검색" v-model="reviewKeyword" @keyup.enter="fnReviewArray(reviewArray)">
+                                        <a href="javascript:;" @click="fnReviewArray(reviewArray)" >
+                                            <div><i data-lucide="search" stroke-width="1"></i></div>
+                                        </a>
+                                    </div>
+                                    <div class="helpful-section">
+                                        <span class="margin30 cursor" :class="{bold: reviewArray == 1}"
+                                        @click="fnReviewArray(1)">도움돼요순</span>
+                                        <span class="margin30 cursor" :class="{bold: reviewArray == 2}"
+                                            @click="fnReviewArray(2)">최신순</span>
+                                    </div>
                                 </div>
-                                <div class="table margintop100">
+                                <div class="post-container" v-for="item in reviewList">
+                                    <div class="post-header">
+                                        <div class="post-meta">
+                                            <div>
+                                                <span class="post-category">
+                                                도움돼요 수 : 
+                                                <span style="font-size: 18px; margin-left: 5px; margin-right: 0px;">{{item.helpfulCnt}}</span>
+                                                    <!-- <span class="material-symbols-outlined heart"
+                                                        @click="fnHeartUp(item.reviewNo)" style="margin-left: 10px; ">
+                                                        heart_plus
+                                                    </span> -->
+                                                </span>
+                                                <span class="material-symbols-outlined heart"
+                                                        @click="fnHeartUp(item.reviewNo)" style="margin-left: 10px;">
+                                                        heart_plus
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <span v-for="n in 5" :key="n"
+                                                    style="font-size: 20px; color: #ccc; margin-right: 2px;"
+                                                    :style="{ color: n <= item.rating ? 'gold' : '#ccc' }">
+                                                    &#9733;
+                                                </span>
+                                                <span style="margin-left: 10px; font-size: 1rem; color: #666;">
+                                                    ({{item.rating}}/5)
+                                                </span>
+                                            </div>
+                                            <span class="post-date">{{item.cdate.split(' ')[0]}}</span>
+                                        </div>
+                                        <!-- <div>
+                                            <span v-for="n in 5" :key="n"
+                                                style="font-size: 1rem; color: #ccc; margin-right: 2px;"
+                                                :style="{ color: n <= item.rating ? 'gold' : '#ccc' }">
+                                                &#9733;
+                                            </span>
+                                            <span style="margin-left: 10px; font-size: 1rem; color: #666;">
+                                                ({{item.rating}}/5)
+                                            </span>
+                                        </div> -->
+                                        <h2 class="post-title">
+                                            {{item.title}}
+                                        </h2>
+                                        <div class="post-author">
+                                            <strong>{{item.userId}}</strong>
+                                        </div>
+                                    </div>
+                                    <div class="post-content" v-html="item.content"></div>
+                                </div>
+
+                                <!-- <div class="table margintop100">
                                     <table v-for="item in reviewList">
                                         <tr>
                                             <th>유저</th>
@@ -194,9 +311,9 @@
                                             <td v-html="item.content"></td>
                                         </tr>
                                     </table>
-                                </div>
+                                </div> -->
                                 <div class="clear text-center margin30">
-                                    <span class="margin30 font30 cursor" :class="{bold: reviewPage == num}"
+                                    <span class="margin30 font15 cursor" :class="{bold: reviewPage == num}"
                                         v-for="num in reviewTotalPage" @click="fnReviewPage(num)">{{num}}</span>
                                 </div>
 
@@ -215,7 +332,7 @@
                                 <div class="modal-actions">
                                     <button class="bluebutton height40" @click="confirmPwd"
                                         :disabled="loading">확인</button>
-                                    <button class="height40" @click="closeInquiry">취소</button>
+                                    <button class="cancel-btn" @click="closeInquiry">취소</button>
                                 </div>
                                 <div class="error" v-if="pwdError">{{ pwdError }}</div>
                             </div>
@@ -279,6 +396,7 @@
     </html>
 
     <script>
+        lucide.createIcons();
         const app = Vue.createApp({
             data() {
                 return {
@@ -316,8 +434,10 @@
                     quantity: 1,
                     size: "",
                     maxQuantity: 1,
-                    sessionId: "${sessionId}",
-                    userName: ""
+                    sessionId: "${sessionId}", // HARDCODING for test purposes 
+                    userName: "",
+
+                    userType : '${userType}',
                 };
             },
             computed: {
@@ -540,7 +660,8 @@
                         location.href="/home/login.do";
                     }
                     let param = {
-                        reviewNo: reviewNo
+                        reviewNo: reviewNo,
+                        userId : self.sessionId
                     };
                     $.ajax({
                         url: "/product/review/1up.dox",
@@ -549,6 +670,10 @@
                         data: param,
                         success: function (data) {
                             console.log(data);
+                            if(data.result == "same"){
+                                alert("이미 추천한 리뷰입니다!");
+                                return;
+                            }
                             self.fnReviewList();
                         }
                     });

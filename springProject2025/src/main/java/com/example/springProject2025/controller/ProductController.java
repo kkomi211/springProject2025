@@ -39,6 +39,7 @@ public class ProductController {
         request.setAttribute("rating", map.get("rating"));
         return "admin/product-info"; // .jsp 빠진 형태
     }
+    
     @RequestMapping("home/product/inquiry/add.do")
     public String inquiryAdd(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception {
     	request.setAttribute("sessionId", map.get("sessionId"));
@@ -101,6 +102,7 @@ public class ProductController {
     @RequestMapping(value = "/product/edit.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
     public String productEdit(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+//    	System.out.println("화면에서 이미지의 정보도 주나?" + map);
         HashMap<String, Object> resultMap = productService.EditProduct(map);
         return new Gson().toJson(resultMap);
     }

@@ -66,7 +66,10 @@ public class ProductService {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			int cnt2 = productmapper.deleteProductImg(map);
-			int cnt3 = productmapper.deleteProductInquiry(map);
+			System.out.println("banner img 확인 바래요 productImgNo 이거 들어와야함 " + map);
+			int cnt3 = productmapper.deleteProductBannerImg(map);			
+			int cnt5 = productmapper.deleteProductInquiry(map);
+			int cnt6 = productmapper.deleteHelpful(map);
 			int cnt4 = productmapper.deleteProductReview(map);
 			int cnt = productmapper.deleteProduct(map);
 			resultMap.put("result", "success");
@@ -217,8 +220,16 @@ public class ProductService {
 	public HashMap<String, Object> getheartUp(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			int cnt = productmapper.updateReviewHeart(map);
-			resultMap.put("result", "success");
+			int check = productmapper.selectWhoUpHeart(map);
+			if(check == 0) {
+				int cnt = productmapper.updateReviewHeart(map);
+				int cnt2 = productmapper.insertWhoUpHeart(map);
+				resultMap.put("result", "success");
+				
+			}
+			else {
+				resultMap.put("result", "same");
+			}
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");

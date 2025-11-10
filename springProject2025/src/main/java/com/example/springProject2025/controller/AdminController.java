@@ -330,6 +330,8 @@ public class AdminController {
 	@ResponseBody
 	public String rallyadd(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println("rallyDate = " + map.get("rallyDate"));
+		System.out.println("applicationPeriod = " + map.get("applicationPeriod"));
 		resultMap = adminService.addRallyBanner(map);
 
 		return new Gson().toJson(resultMap);

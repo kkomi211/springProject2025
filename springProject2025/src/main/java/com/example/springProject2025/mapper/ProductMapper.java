@@ -25,6 +25,9 @@ public interface ProductMapper {
 	int editProduct(HashMap<String, Object> map);
 	
 	int deleteProduct(HashMap<String, Object> map);
+	
+	// product delete main banner img
+	int deleteProductBannerImg(HashMap<String, Object> map);
 
 	int insertProduct(HashMap<String, Object> map);
 
@@ -75,5 +78,11 @@ public interface ProductMapper {
 	int deleteProductInquiry(HashMap<String, Object> map);
 
 	int deleteProductReview(HashMap<String, Object> map);
+
+	int insertWhoUpHeart(HashMap<String, Object> map);
+
+	int selectWhoUpHeart(HashMap<String, Object> map);
+
+	int deleteHelpful(HashMap<String, Object> map);
 
 }

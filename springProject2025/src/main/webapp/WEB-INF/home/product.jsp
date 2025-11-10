@@ -6,9 +6,11 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/css/user-style.css">
+        <!-- <link rel="stylesheet" href="/css/style.css"> -->
+         <!-- Google Fonts (Jost)  -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -16,8 +18,51 @@
         <!-- <link rel="stylesheet" href="/css/jes.css"> -->
         <script src="/js/page-change.js"></script>
         <link rel="stylesheet" href="/css/home_product_category-style.css">
+        <script src="https://unpkg.com/lucide@latest"></script>
         <style>
-            
+            html,
+                body {
+                    height: 100%;
+                    margin: 0;
+                    padding: 0;
+                    font-family: Arial, sans-serif;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                #app {
+                    /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
+                    display: flex;
+                    flex-direction: column;
+                    min-height: 100vh;
+                }
+
+            /* search box */
+
+            .search-box {
+                position: relative;          /* make this the positioning container */
+                display: inline-block;
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+            .newcontent input{
+                /* margin-top: 10px; */
+                border-radius: 5px;
+                border: solid 1px grey;
+                padding-left: 15px;  /* move text and placeholder right */
+                padding-top: 5px;    /* move text and placeholder down */
+            }
+
+            .newcontent input:hover {
+                border-radius: 5px;
+                border: solid 1px rgb(0, 0, 0);
+            }
+
+            .search-box div {
+                position: absolute;
+                top:8px;
+                right:18px;
+            }
         </style>
     </head>
 
@@ -30,25 +75,25 @@
             <header>
                 <div class="top-header">
                     <div class="brand-name">
-                        <div><a href="/home.do">RUNNERS' HOUSE</a></div>
+                        <div><a href="/home.do" style="font-family: 'Jost', 'sans-serif';">RUNNERS' HOUSE</a></div>
                     </div>
                     <div id="right-items">
                         <div>
-                            <input type="text" placeholder="검색어를 입력해 주세요.">
-                        </div>
-                        <div>
-                            <template v-if="sessionId != ''">
-                                <a href="javascript:;" @click="fnLogout">로그아웃</a>
-                            </template>
-                            <template v-else>
-                                <a href="/home/login.do">로그인</a>
-                            </template>
+                            <!-- <template > -->
+                                <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
+                            <!-- </template> -->
+                            <!-- <template > -->
+                                <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
+                            <!-- </template> -->
                         </div>
                         <div v-if="sessionId == ''">
-                            <a href="/home/signup.do">가입하기</a>
+                            <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
                         </div>
-                        <div v-if="sessionId != ''"><a href="/home/mypage/information.do">마이페이지</a></div>
-                        <div v-if="sessionId != ''"><a href="/home/cart.do">장바구니</a></div>
+                        <div v-if="sessionId != '' && userType != 'K'"><a
+                                href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                        <div v-else-if="sessionId != '' && userType == 'K'"><a
+                                href="home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                        <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div>
                     </div>
                 </div>
                 <div class="bottom-header">
@@ -66,8 +111,14 @@
             <div class="container">
                 <main>
                     <div class="newcontent">
-                        <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword">
-                        <button class="height40 bluebutton" @click="fnList">검색</button>
+                        <!-- <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword">
+                        <button class="height40 bluebutton" @click="fnList">검색</button> -->
+                        <div class="search-box">
+                            <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword" @keyup.enter="fnList">
+                            <a href="javascript:;" @click="fnList">
+                                <div><i data-lucide="search" stroke-width="1"></i></div>
+                            </a>
+                        </div>
                     </div>
                     <!-- <div class="header">
                         <div class="header-welcome">
@@ -171,6 +222,7 @@
     </html>
 
     <script>
+        lucide.createIcons();
         const app = Vue.createApp({
             data() {
                 return {
@@ -188,7 +240,9 @@
                     sessionId: "${sessionId}",
                     userName: "",
                     saleYN : "${saleYN}",
-                    activeParentNo: null
+                    activeParentNo: null,
+
+                    userType : '${userType}',
                 };
             },
             computed: {

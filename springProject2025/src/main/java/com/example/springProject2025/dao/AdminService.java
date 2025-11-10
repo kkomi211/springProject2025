@@ -665,8 +665,7 @@ public class AdminService {
 			resultMap.put("rallyNo", map.get("rallyNo"));
 			return resultMap;
 		}
-	
-		
+			
 	/**
      * 주문 현황 (상태별 건수) 조회
      * @return List<HashMap<String, Object>> (status, count)

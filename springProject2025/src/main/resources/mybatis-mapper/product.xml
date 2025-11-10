@@ -163,8 +163,10 @@
 	</select>
 	
 	<select id="selectProductInfo" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
-		SELECT *
-		FROM PRODUCT
+		SELECT P.*, T.TYPE_NAME
+		FROM PRODUCT P
+		INNER JOIN PRODUCT_TYPE T
+		ON P.TYPE_NO = T.TYPE_NO
 		WHERE PRODUCT_NO = #{productNo}
 	</select>
 	
@@ -177,7 +179,7 @@
 	
 	<update id="editProduct" parameterType="hashmap">
 		UPDATE PRODUCT
-		SET PRODUCT_NAME = #{productName}, PRICE = #{price}, PRODUCT_DETAIL = #{productDetail},
+		SET PRODUCT_NAME = #{productName}, PRICE = #{price}, PRODUCT_DETAIL = #{productDetail}, BRAND = #{brand},
 		GENDER = #{gender}, TYPE_NO = #{typeNo}, UDATE = SYSDATE, SALE_YN = #{saleYN}, SALE_PRICE = #{salePrice}
 		WHERE PRODUCT_NO IN (
 			SELECT PRODUCT_NO
@@ -199,6 +201,13 @@
 	<delete id="deleteProduct" parameterType="hashmap">
 		DELETE FROM PRODUCT
 		WHERE PRODUCT_NO = #{productNo}
+	</delete>
+	
+	<!-- product_banner_img delete -->
+	<delete id="deleteProductBannerImg" parameterType="hashmap">
+		DELETE FROM PRODUCT_BANNER_IMG
+		WHERE 1=1
+		AND PRODUCT_NO = #{productNo}
 	</delete>
 	
 	<delete id="deleteProductInquiry" parameterType="hashmap">
@@ -224,6 +233,20 @@
 				FROM PRODUCT
 				WHERE PRODUCT_NO = #{productNo}
 			)
+		)
+	</delete>
+	
+	<insert id="insertWhoUpHeart" parameterType="hashmap">
+		INSERT INTO HELPFUL_REVIEW
+		VALUES (HELPFUL_REVIEW_SEQ.NEXTVAL, #{userId}, #{reviewNo}, SYSDATE)
+	</insert>
+	
+	<delete id="deleteHelpful" parameterType="hashmap">
+		DELETE HELPFUL_REVIEW
+		WHERE REVIEW_NO IN (
+			SELECT REVIEW_NO
+			FROM REVIEW
+			WHERE PRODUCT_NO = #{productNo}
 		)
 	</delete>
 	
@@ -275,9 +298,11 @@
 	</select>
 	
 	<select id="selectProductInfoUser" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
-		SELECT *
-		FROM PRODUCT
-		WHERE PRODUCT_NO = #{productNo}
+		SELECT P.*, T.TYPE_NAME
+		FROM PRODUCT P
+		INNER JOIN PRODUCT_TYPE T
+		ON P.TYPE_NO = T.TYPE_NO
+		WHERE PRODUCT_NO = #{productNo}	
 	</select>
 	
 	<insert id="InsertProductInquiry" parameterType="hashmap">
@@ -301,6 +326,15 @@
 		  CASE WHEN REGEXP_LIKE(PRODUCT_SIZE, '^\d+$')
 		       THEN TO_NUMBER(PRODUCT_SIZE) END,
 		  PRODUCT_SIZE
+	</select>
+	
+	<select id="selectWhoUpHeart" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM HELPFUL_REVIEW
+		WHERE 1=1
+			AND USER_ID = #{userId}
+			AND REVIEW_NO = #{reviewNo}
+		
 	</select>
 
 	<select id="selectInquiryList" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
