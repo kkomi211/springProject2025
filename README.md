@@ -49,6 +49,43 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 ## 🧠 **핵심 기능 소개**
 
+## 🎆 파일 흐름 구조 (Mermaid)
+    - subgraph Home[🏡 사용자 페이지] -
+        home --> login --> idPwd
+        home --> signup --> juso
+        home --> mypage
+        mypage --> information --> information_change
+        mypage --> my_inquiry --> my_inquiry_detail
+        mypage --> orders
+        mypage --> review --> review_view
+        mypage --> review --> review_write
+        mypage --> refund
+        home --> community
+        community --> board --> board_edit
+        community --> board --> board_post
+        community --> board --> board_view
+        community --> rally
+        community --> crew --> crew_post
+        community --> chat --> chat_view
+        home --> product --> product_info --> product_inquiry
+        home --> cart --> paybefore --> payafter
+        home --> policy 
+        policy --> about
+        policy --> privacy
+        policy --> terms
+    end
+
+    - subgraph Admin[👑 관리자 페이지] -
+        admin_main --> banner
+        admin_main --> inquiry --> inquiry_view
+        admin_main --> refund_admin
+        admin_main --> product_admin --> product_info
+        admin_main --> product_admin --> product_add
+        admin_main --> orders_admin
+        admin_main --> board_report --> board_report_view
+        admin_main --> user_list --> user_list_view
+    end
+
 ### 🏡 **1. 사용자 페이지 (User Page)**
 - **홈 화면:** 감각적인 Black & White 컨셉 디자인  
 - **회원 관리:** 회원가입, 로그인, 정보 수정  
@@ -189,42 +226,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-## 🎆 파일 흐름 구조 (Mermaid)
-    - subgraph Home[🏡 사용자 페이지] -
-        home --> login --> idPwd
-        home --> signup --> juso
-        home --> mypage
-        mypage --> information --> information_change
-        mypage --> my_inquiry --> my_inquiry_detail
-        mypage --> orders
-        mypage --> review --> review_view
-        mypage --> review --> review_write
-        mypage --> refund
-        home --> community
-        community --> board --> board_edit
-        community --> board --> board_post
-        community --> board --> board_view
-        community --> rally
-        community --> crew --> crew_post
-        community --> chat --> chat_view
-        home --> product --> product_info --> product_inquiry
-        home --> cart --> paybefore --> payafter
-        home --> policy 
-        policy --> about
-        policy --> privacy
-        policy --> terms
-    end
 
-    - subgraph Admin[👑 관리자 페이지] -
-        admin_main --> banner
-        admin_main --> inquiry --> inquiry_view
-        admin_main --> refund_admin
-        admin_main --> product_admin --> product_info
-        admin_main --> product_admin --> product_add
-        admin_main --> orders_admin
-        admin_main --> board_report --> board_report_view
-        admin_main --> user_list --> user_list_view
-    end
 
 
 
