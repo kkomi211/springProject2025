@@ -34,20 +34,20 @@
                         <div id="right-items">
                             <div>
                                 <!-- <template > -->
-                                    <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
+                                    <!-- <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div> -->
                                 <!-- </template> -->
                                 <!-- <template > -->
-                                    <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
+                                    <div><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
                                 <!-- </template> -->
                             </div>
                             <div v-if="sessionId == ''">
                                 <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
                             </div>
-                            <div v-if="sessionId != '' && userType != 'K'"><a
-                                    href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
-                            <div v-else-if="sessionId != '' && userType == 'K'"><a
-                                    href="home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
-                            <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div>
+                            <!-- <div v-if="sessionId != '' && userType != 'K'"><a
+                                    href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div> -->
+                            <!-- <div v-else-if="sessionId != '' && userType == 'K'"><a
+                                    href="home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div> -->
+                            <!-- <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div> -->
                         </div>
                     </div>
                     <div class="bottom-header">
