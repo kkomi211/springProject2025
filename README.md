@@ -243,12 +243,12 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 - 아이디찾기(이름, 전화번호, 생년월일)입력 시 DB정보에서 아이디 출력
 - 비밀번호찾기(아이디, 이름, 생년월일, 전화번호) 인증번호 발송 인증번호 입력 시 기존 비밀번호에서 새 비밀번호 변경
 
-### 회원가입
+#### 회원가입
 | Before | After |
 |--------|-------|
 |<img width="500" height="200" alt="로그인" src="https://github.com/user-attachments/assets/b902aa38-3be4-447f-82d2-8110ccd26bcb" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/5faf363e-9564-4a8b-8621-4ee3925daa5b"/>|
 
-### 아이디/비밀번호 찾기
+#### 아이디/비밀번호 찾기
 | Before | After |
 |--------|-------|
 |<img width="500" height="200" alt="아이디_비밀번호찾기" src="https://github.com/user-attachments/assets/831a2553-9290-40dc-863e-e8fc3605d05d" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/0be25a68-5726-4d95-994c-045925dafe35"/>|
