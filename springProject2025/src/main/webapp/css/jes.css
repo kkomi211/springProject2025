@@ -198,8 +198,12 @@ td input {
     width: 80px;
     background-color: #F24822;
     color: white;
-    border-color: #BD2915;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .bottom200 {

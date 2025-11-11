@@ -85,8 +85,20 @@
                     </table>
                 </div>
                 <div class="pagination">
-                    <a v-for="num in totalPage" :key="num" class="margin30" :class="{ active: num === page }"
-                        @click="fnPage(num)">{{num}}</a>
+                    <a href="javascript:;" @click="fnPage(1)"
+                            :class="{'disabled': page === 1}">&laquo;</a>
+                        <a href="javascript:;" @click="fnPage(page - 1)"
+                            :class="{'disabled': page === 1}">&lt;</a>
+
+                        <template v-for="num in pageNumbers">
+                            <a href="javascript:;" @click="fnPage(num)"
+                                :class="{'active': page === num}">{{ num }}</a>
+                        </template>
+
+                        <a href="javascript:;" @click="fnPage(page + 1)"
+                            :class="{'disabled': page === totalPage}">&gt;</a>
+                        <a href="javascript:;" @click="fnPage(totalPage)"
+                            :class="{'disabled': page === totalPage}">&raquo;</a>
                 </div>
                 <div class="button">
                     <button class="margin30 height40 bluebutton rightbutton" @click="fnAddProduct">등록하기</button>
@@ -112,6 +124,25 @@
                     totalPage: "",
                     orderBy: "down"
                 };
+            },
+            computed: {
+                // 페이지 번호 배열 계산 (최대 5개 페이지 번호만 표시)
+                pageNumbers() {
+                    const pages = [];
+                    let startPage = Math.max(1, this.page - 2);
+                    let endPage = Math.min(this.totalPage, startPage + 4);
+
+                    // 끝 페이지가 전체 페이지보다 작으면 시작 페이지를 조정
+                    if (endPage < this.totalPage) {
+                        startPage = Math.max(1, endPage - 4);
+                    }
+
+                    for (let i = startPage; i <= endPage; i++) {
+                        pages.push(i);
+                    }
+
+                    return pages;
+                }
             },
             methods: {
                 // 함수(메소드) - (key : function())
