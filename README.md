@@ -297,6 +297,8 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 
 
-
+<br>
+## 📸 시연 영상
+https://github.com/kkomi211/springProject2025/blob/main/media/runnershouse%20(2).mp4
 
 
