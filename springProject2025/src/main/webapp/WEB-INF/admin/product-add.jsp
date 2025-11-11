@@ -106,7 +106,6 @@
             data() {
                 return {
                     // 변수 - (key : value)
-                    sessionId: "admin",
                     productName: "",
                     brand: "",
                     price: "",
