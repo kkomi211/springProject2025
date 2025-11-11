@@ -553,6 +553,10 @@ td input {
     /* border: 1px solid #ccc; */
     /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
 }
+/* .big-img-inquiry {
+    width: 400px;
+    height: 400px;
+} */
 
 .img-box {
     margin-top: 30px;
@@ -564,6 +568,7 @@ td input {
     height: 400px;
     float: left;
 }
+
 
 .margin80 {
     margin: 80px;
@@ -924,7 +929,7 @@ html, body {
 
 #editor {
     width: 100%;
-    height: 500px;
+    height: 200px;
 
 }
 
@@ -1131,7 +1136,7 @@ html, body {
     position: absolute;
     right: 60px;
 }
-.write-inquiry button:hover {
+.write-inquiry button:hover, .text-right button:hover {
     cursor: pointer;
     background-color: #000000;
     color: white;
@@ -1246,4 +1251,18 @@ margin-left: 5px;
   display: flex;
   flex-direction: column; /* keep vertical stacking */
   align-items: center;    /* centers children horizontally */
+}
+
+.text-right button {
+    border-radius: 10px;
+    width: 100px;
+    border: solid 1px gray;
+    padding: 10px;
+    /* position: absolute; */
+    right: 60px;
+    margin-top: 20px;
+    margin-right: 15px;
+}
+.text-right button:last-child {
+    margin-right: 0px;
 }

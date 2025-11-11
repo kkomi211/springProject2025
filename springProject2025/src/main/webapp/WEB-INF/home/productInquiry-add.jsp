@@ -22,6 +22,7 @@
         <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
         <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <link rel="stylesheet" href="/css/product-info2.css">
         <style>
             /* New CSS from homepage */
         html, body {
@@ -261,8 +262,14 @@
 
                 <main>
                     <div class="newcontent">
-                        <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword">
-                        <button class="height40 bluebutton" @click="fnProductSearch(keyword)">검색</button>
+                        <!-- <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword"> -->
+                        <div class="search-box">
+                            <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword" @keyup.enter="fnProductSearch(keyword)">
+                            <a href="javascript:;" @click="fnProductSearch(keyword)">
+                                <div><i data-lucide="search" stroke-width="1"></i></div>
+                            </a>
+                        </div>
+                        <!-- <button class="height40 bluebutton" @click="fnProductSearch(keyword)">검색</button> -->
                     </div>
                     <div class="side-bar">
                         <div class="category-box">
@@ -294,22 +301,25 @@
                         <div class="img-box"><img :src="imgByProduct[String(productNo)] || '/img/no-image.png'"
                                 class="big-img" :alt="info.productName"></div>
                         <div class="infoText-box">
-                            <div class="margin80 font20">상품명 : {{info.productName}}</div>
-                            <div class="margin80 font20">브랜드 : {{info.brand}}</div>
-                            <div class="margin80 font20">가격 : {{info.price}} 원</div>
+                            <div class="product-name">{{info.productName}}</div>
+                            <!-- <div class="margin80 font20">상품명 : {{info.productName}}</div> -->
+                            <!-- <div class="margin80 font20">브랜드 : {{info.brand}}</div> -->
+                            <div class="product-type">{{info.brand}}</div>
+                            <!-- <div class="margin80 font20">가격 : {{info.price}} 원</div> -->
+                            <div class="product-price">{{Number(info.price).toLocaleString()}} 원</div>
 
                         </div>
                         <div class="container-foot">
                             <div class="editor-box">
                                 <div class="margin30 fontGray">문의 제목</div>
-                                <div><input v-model="title"></div>
+                                <div><input v-model="title" id="title"></div>
                                 <div class="margin30 fontGray">잠금 설정</div>
                                 <div><input v-model="pwd" placeholder="값을 입력하면 글이 잠깁니다"></div>
                                 <div class="margin30 fontGray">문의 내용</div>
                                 <div id="editor"></div>
                                 <div class="text-right">
-                                    <button class="bluebutton height40 margin30" @click="fnBack">돌아가기</button>
-                                    <button class="redbutton height40 margin30" @click="fnAddInquiry">작성하기</button>
+                                    <button class="inquiry-btn" @click="fnBack">돌아가기</button>
+                                    <button  @click="fnAddInquiry">작성하기</button>
                                 </div>
                             </div>
                         </div>
@@ -478,6 +488,7 @@
                     let self = this;
                     if (self.title == "") {
                         alert("제목이 비어있습니다!");
+                        document.querySelector("#title").focus();
                         return;
                     }
                     if (self.content == "") {
