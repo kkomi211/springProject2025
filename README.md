@@ -244,7 +244,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 | Before | After |
 |--------|-------|
-|<img width="500" height="200" alt="로그인" src="https://github.com/user-attachments/assets/b902aa38-3be4-447f-82d2-8110ccd26bcb" />|<img width="500" height="200" alt="Homepage - Chrome 2025-11-11 13-09-26" src="https://github.com/user-attachments/assets/eed8cb27-adea-4588-a082-b7ff3d5860cf" />|
+|<img width="500" height="200" alt="로그인" src="https://github.com/user-attachments/assets/b902aa38-3be4-447f-82d2-8110ccd26bcb" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/e897545f-6816-42d0-ae23-2205bee31a01"/>|
 
 <br>
 
@@ -258,13 +258,13 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-- ### 🕵️‍♂️ HOME 메인 기능
+- ### 🕵️‍♂️ HOME 제품/세일 기능
 - DB정보 각종 정보 현황출력 (ADIMIN에 등록 된 배너 호출)
 - 총 메인슬라이드, 제품, 대회, 크루 광고 출력
 
 <br>
 
-- ### 🕵️‍♂️ HOME 메인 기능
+- ### 🕵️‍♂️ HOME 커뮤니티 기능
 - DB정보 각종 정보 현황출력 (ADIMIN에 등록 된 배너 호출)
 - 총 메인슬라이드, 제품, 대회, 크루 광고 출력
 
