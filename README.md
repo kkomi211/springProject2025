@@ -255,8 +255,8 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-### 🧚🏼‍♂️ HOME 쇼핑몰 기능(
-= search옵션 구현 
+### 🧚🏼‍♂️ HOME 쇼핑몰 기능
+- search옵션 구현 
 - 제품 구매(결제) 시스템 구현
 - 장바구니 시스템 구현
 - 상품문의 구현
@@ -265,6 +265,10 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 | Before | After |
 |--------|-------|
 |<img width="500" height="200" alt="상품구매" src="https://github.com/user-attachments/assets/fe350251-2966-4bad-9d6d-95d0bc54640f" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/b6372f68-97dd-4bbe-8b57-85006e4a3708" />|
+
+<br>
+
+
 
 <br>
 
