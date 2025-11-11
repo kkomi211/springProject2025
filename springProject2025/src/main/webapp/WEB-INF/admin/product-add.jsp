@@ -106,7 +106,6 @@
             data() {
                 return {
                     // 변수 - (key : value)
-                    sessionId: "admin",
                     productName: "",
                     brand: "",
                     price: "",
@@ -220,7 +219,7 @@
                         self.fnAddProduct(i + 1);
                     }
                     alert("작성이 완료되었습니다!");
-                    self.fnBack();
+                    
                     setTimeout(function () {
                         self.fnBack();
                     }, 850);

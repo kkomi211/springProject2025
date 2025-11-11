@@ -327,7 +327,7 @@
                             <div v-if="needPwd && !authorized">
                                 <h3 class="modal-title">비공개 문의</h3>
                                 <p class="modal-desc">비밀번호를 입력하세요.</p>
-                                <input type="password" v-model="pwdInput" class="modal-input" placeholder="비밀번호"
+                                <input style="width: 700px;" type="password" v-model="pwdInput" class="modal-input" placeholder="비밀번호"
                                     @keyup.enter="confirmPwd">
                                 <div class="modal-actions">
                                     <button class="bluebutton height40" @click="confirmPwd"
@@ -353,7 +353,7 @@
                                     <div class="modal-content" v-html="inquiryDetail.answer"></div>
                                 </div>
                                 <div class="modal-actions">
-                                    <button class="height40" @click="closeInquiry">닫기</button>
+                                    <button class="cancel-btn" @click="closeInquiry">닫기</button>
                                 </div>
                             </div>
                         </div>

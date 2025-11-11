@@ -47,7 +47,9 @@
 	<select id="idRetrieve" parameterType="hashmap" resultType="com.example.springProject2025.model.User">
 		SELECT *
 		FROM USERS
-		WHERE PHONE = #{phone}
+		WHERE 1=1
+		AND NAME = #{name}
+		AND PHONE = #{phone}
 		AND BIRTH = #{birth}
 	</select>
 	
