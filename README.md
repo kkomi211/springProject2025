@@ -280,8 +280,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 #### - 마이페이지 나의정보 수정
 | Before | After |
 |--------|-------|
-|<img width="500" height="200" alt="마이페이지개인정보확인" src="https://github.com/user-attachments/assets/37cd86d0-e40c-4ed2-bb5d-83f31748fead" />
-|<img width="500" height="200" src="https://github.com/user-attachments/assets/253eb978-a881-4260-bc52-cd6957b58b39" />|
+|<img width="500" height="200" alt="마이페이지개인정보확인" src="https://github.com/user-attachments/assets/37cd86d0-e40c-4ed2-bb5d-83f31748fead" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/253eb978-a881-4260-bc52-cd6957b58b39" />|
 
 
 <br>
