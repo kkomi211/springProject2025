@@ -118,7 +118,9 @@ public class MemberService {
 		String message = "";
 		
 		int cnt = memberMapper.idSearch(map);
+		System.out.println("사람찾기위한 cnt입니다" + cnt);
 		User info = memberMapper.idRetrieve(map);
+		System.out.println("뭔가 상세정보 같음" + info);
 		
 		if(cnt < 1 ) {
 			message = "입력정보를 다시 확인해주세요. 입력하신 정보는 존재하지 않습니다";

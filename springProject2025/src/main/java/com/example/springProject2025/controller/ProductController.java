@@ -217,7 +217,7 @@ public class ProductController {
             res.put("productNo", productNo);
             return new Gson().toJson(res);
 
-        } catch (Exception e) {
+        } catch (Exception e) {	
             e.printStackTrace();
             res.put("ok", false);
             res.put("msg", e.getMessage());

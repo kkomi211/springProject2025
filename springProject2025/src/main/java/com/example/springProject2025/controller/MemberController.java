@@ -107,7 +107,7 @@ public class MemberController {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		System.out.println(map);
 		resultMap = memberService.idSearch(map);
-		
+		System.out.println("1person I wanna" + resultMap);
 		return new Gson().toJson(resultMap);
 	}
 	
