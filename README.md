@@ -245,23 +245,8 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 |<img width="400" height="200" alt="메인화면" src="https://github.com/user-attachments/assets/c3cab946-47a6-426a-9b67-91d682727ea5" />|![main 2025-11-11 10-17-42](https://github.com/user-attachments/assets/a16b2adf-ba38-4ce1-80de-521f1b0a30a9)
 |
 
-### 🕵️‍♂️ HOME 마이페이지 기능
-- DB정보 각종 정보 현황출력 (ADIMIN에 등록 된 배너 호출)
-- 총 메인슬라이드, 제품, 대회, 크루 광고 출력
 
-| Before | After |
-|------|------|
-|<img width="400" height="200" alt="메인화면" src="https://github.com/user-attachments/assets/c3cab946-47a6-426a-9b67-91d682727ea5" />|![main 2025-11-11 10-17-42](https://github.com/user-attachments/assets/a16b2adf-ba38-4ce1-80de-521f1b0a30a9)
-|
 
-### 🕵️‍♂️ HOME 마이페이지 기능
-- DB정보 각종 정보 현황출력 (ADIMIN에 등록 된 배너 호출)
-- 총 메인슬라이드, 제품, 대회, 크루 광고 출력
-
-| Before | After |
-|------|------|
-|<img width="400" height="200" alt="메인화면" src="https://github.com/user-attachments/assets/c3cab946-47a6-426a-9b67-91d682727ea5" />|![main 2025-11-11 10-17-42](https://github.com/user-attachments/assets/a16b2adf-ba38-4ce1-80de-521f1b0a30a9)
-|
 
 
 
