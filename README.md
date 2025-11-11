@@ -277,6 +277,13 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 ### 🧕🏼 HOME 마이페이지 기능
 
+#### - 마이페이지 나의정보 수정
+| Before | After |
+|--------|-------|
+|<img width="500" height="200" alt="마이페이지개인정보확인" src="https://github.com/user-attachments/assets/37cd86d0-e40c-4ed2-bb5d-83f31748fead" />
+||
+
+
 <br>
 
 ### 🦸🏼‍♂️ HOME 커뮤니티 기능
