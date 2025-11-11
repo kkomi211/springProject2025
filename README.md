@@ -226,6 +226,14 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
+# 😮 HOME
+### 🕵️‍♂️ ADMIN 메인 기능
+- DB정보 각종 정보 현황출력
+- 그래프 기능 추가 (주문현황 및 월별 매출 자동최신화)
+
+| Before | After |
+|------|------|
+|<img width="500" height="200" alt="메인화면" src="https://github.com/user-attachments/assets/6f42c29e-d4ca-448b-803c-18202d868168" />||
 
 
 
