@@ -229,7 +229,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 # 🧐 HOME
 ### 👨🏼‍🚒 HOME 메인 기능
 - DB정보 각종 정보 현황출력 (ADIMIN에 등록 된 배너 호출)
-- 총 메인슬라이드, 제품, 대회, 크루 광고 출력
+- 메인슬라이드, 제품, 대회, 크루 광고(BANNER) 출력
 
 | Before | After |
 |--------|-------|
@@ -256,18 +256,21 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 <br>
 
 ### 🧚🏼‍♂️ HOME 쇼핑몰 기능(
-- DB정보 각종 정보 현황출력 (ADIMIN에 등록 된 배너 호출)
-- 총 메인슬라이드, 제품, 대회, 크루 광고 출력
+= search옵션 구현 
+- 제품 구매(결제) 시스템 구현
+- 장바구니 시스템 구현
+- 상품문의 구현
 
+### - 제품 장바구니 및 결제 
 | Before | After |
 |--------|-------|
-||<img width="450" height="200" alt="메인화면" src="https://github.com/user-attachments/assets/a16b2adf-ba38-4ce1-80de-521f1b0a30a9" />|
+|<img width="500" height="200" alt="상품구매" src="https://github.com/user-attachments/assets/fe350251-2966-4bad-9d6d-95d0bc54640f" />|<img width="500" height="200" src="" />|
 
 <br>
 
 - ### 🧕🏼 HOME 마이페이지 기능
 - DB정보 각종 정보 현황출력 (ADIMIN에 등록 된 배너 호출)
-- 총 메인슬라이드, 제품, 대회, 크루 광고 출력
+- 
 
 <br>
 
