@@ -233,16 +233,21 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 | Before | After |
 |------|------|
-|<img width="400" height="200" alt="메인화면" src="https://github.com/user-attachments/assets/c3cab946-47a6-426a-9b67-91d682727ea5" />|![main 2025-11-11 10-17-42](https://github.com/user-attachments/assets/a16b2adf-ba38-4ce1-80de-521f1b0a30a9)|
+|<img width="450" height="200" alt="메인화면" src="https://github.com/user-attachments/assets/c3cab946-47a6-426a-9b67-91d682727ea5" />|![main 2025-11-11 10-17-42](https://github.com/user-attachments/assets/a16b2adf-ba38-4ce1-80de-521f1b0a30a9)|
+
+<br>
 
 ### 🕵️‍♂️ HOME 로그인/회원가입/비밀번호 찾기 기능
-- DB정보 각종 정보 현황출력 (ADIMIN에 등록 된 배너 호출)
-- 총 메인슬라이드, 제품, 대회, 크루 광고 출력
+- 로그인, 회원가입, 아이디/비밀번호 찾기 구현
+- 회원가입 시 기입한 핸드폰번호로 인증번호 발송
+- 아이디찾기(이름, 전화번호, 생년월일)입력 시 DB정보에서 아이디 출력
+- 비밀번호찾기(아이디, 이름, 생년월일, 전화번호) 인증번호 발송 인증번호 입력 시 기존 비밀번호에서 새 비밀번호 변경
 
 | Before | After |
 |------|------|
-|<img width="400" height="200" alt="로그인" src="https://github.com/user-attachments/assets/b902aa38-3be4-447f-82d2-8110ccd26bcb" />|![Homepage - Chrome 2025-11-11 13-09-26](https://github.com/user-attachments/assets/eed8cb27-adea-4588-a082-b7ff3d5860cf)
-|
+|<img width="450" height="200" alt="로그인" src="https://github.com/user-attachments/assets/b902aa38-3be4-447f-82d2-8110ccd26bcb" />|![Homepage - Chrome 2025-11-11 13-09-26](https://github.com/user-attachments/assets/eed8cb27-adea-4588-a082-b7ff3d5860cf) |
+
+<br>
 
 ### 🕵️‍♂️ HOME 마이페이지 기능
 - DB정보 각종 정보 현황출력 (ADIMIN에 등록 된 배너 호출)
@@ -250,16 +255,15 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 | Before | After |
 |--------|-------|
-||<img width="400" height="200" alt="메인화면" src="https://github.com/user-attachments/assets/a16b2adf-ba38-4ce1-80de-521f1b0a30a9" />|
+||<img width="450" height="200" alt="메인화면" src="https://github.com/user-attachments/assets/a16b2adf-ba38-4ce1-80de-521f1b0a30a9" />|
 
-
-
-
-
+<br>
 
 - ### 🕵️‍♂️ HOME 메인 기능
 - DB정보 각종 정보 현황출력 (ADIMIN에 등록 된 배너 호출)
 - 총 메인슬라이드, 제품, 대회, 크루 광고 출력
+
+<br>
 
 - ### 🕵️‍♂️ HOME 메인 기능
 - DB정보 각종 정보 현황출력 (ADIMIN에 등록 된 배너 호출)
