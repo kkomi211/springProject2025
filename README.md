@@ -111,7 +111,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 | 🧑‍💻 **아린** |  **공통 CSS (Header/Footer)** , **/home/community · board · info · login/signup** |  
 | 👟 **전경환** | **마이페이지 작성 및 수정** ,  **결제API, 할인적용계산**  | 
 | 🤖 **김지훈** | **/admin/inquiry · refund-return · orders · user-list** | 
-| 🎨 **김반석** | **/admin/banner** , **/home/rally** ,  | 
+| 🎨 **김반석** | **/admin/banner** , **/home/rally** , **/home/crew** | 
 
 <br>
 
