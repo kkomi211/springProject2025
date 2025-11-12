@@ -48,9 +48,13 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 ## 📕 발표 PPT
 
-## 🎞 시연 영상
+<br>
 
-## 🧠 **핵심 기능 소개**
+## 🎞 시연 영상
+|**영상링크**|
+|----|
+|https://github.com/kkomi211/springProject2025/blob/main/media/runnershouse%20(2).mp4|
+<br>
 
 ## 🎆 파일 흐름 구조 (Mermaid)
     - subgraph Home[🏡 사용자 페이지] -
@@ -89,6 +93,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
         admin_main --> user_list --> user_list_view
     end
 
+## 🧠 **핵심 기능 소개**
 ### 🏡 **1. 사용자 페이지 (User Page)**
 - **홈 화면:** 감각적인 Black & White 컨셉 디자인  
 - **회원 관리:** 회원가입, 로그인, 정보 수정  
@@ -301,7 +306,5 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 
 <br>
-## 📸 시연 영상
-https://github.com/kkomi211/springProject2025/blob/main/media/runnershouse%20(2).mp4
 
 
