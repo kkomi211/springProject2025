@@ -57,6 +57,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 |**영상링크**|
 |----|
 |https://drive.google.com/file/d/1f9XaXwcse0Q3q9mvXYs599DYpGR8paOj/view?usp=drive_link|
+https://drive.google.com/file/d/1q-EyMWRM72OPfmJDrCfWjjb1Xvj5rcVK/view?usp=sharing
 <br>
 
 ## 🎆 파일 흐름 구조 (Mermaid)
