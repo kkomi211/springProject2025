@@ -527,6 +527,7 @@
 		    SELECT
 		        PRODUCT_NO,
 		        PRODUCT_NAME,
+		        PRODUCT_SIZE,
 		        QUANTITY,
 		        PRICE
 		    FROM PRODUCT
