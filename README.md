@@ -318,7 +318,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 #### - 게시판, 대회정보
 | Before | After |
 |--------|-------|
-||<img width="500" height="200" src="" />|
+|<img width="500" height="200" alt="합치기2" src="https://github.com/user-attachments/assets/ff48e199-b5d5-41d2-8c32-6da1bf2e1a9e" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/911f7299-7700-41b2-adad-448c30b8bff1" />|
 
 
 
