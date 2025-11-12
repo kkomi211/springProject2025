@@ -49,7 +49,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 <center>
 
 ## 📕 발표 PPT
-[**PPT 발표**](https://www.canva.com/design/DAG4WPzsIwg/mjJqcK0MVKL6ylQOnMct5Q/edit?utm_content=DAG4WPzsIwg&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+[**PPT발표**](https://www.canva.com/design/DAG4WPzsIwg/mjJqcK0MVKL6ylQOnMct5Q/edit?utm_content=DAG4WPzsIwg&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 <br>
 
