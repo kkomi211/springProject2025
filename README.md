@@ -304,16 +304,16 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 ##### - 주문배송내역, 반품/교환내역, 문의내역, 상품리뷰
 | Before | After |
 |--------|-------|
-||<img width="500" height="200" src="" />|
+|<img width="500" height="200" alt="합치기" src="https://github.com/user-attachments/assets/db1862dd-2c6e-4b5d-8741-ffc43c85cc2e" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/a781d650-e159-4504-b500-34113a38349e" />|
 
 <br>
 
 ### 🦸🏼‍♂️ HOME 커뮤니티 기능
+| Before | After |
+|--------|-------|
+||<img width="500" height="200" src="" />|
 
 
 
-
-
-<br>
 
 
