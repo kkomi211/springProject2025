@@ -97,6 +97,8 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
         admin_main --> user_list --> user_list_view
     end
 
+<br>
+
 ## 🧠 **핵심 기능 소개**
 ### 🏡 **1. 사용자 페이지 (User Page)**
 - **홈 화면:** 감각적인 Black & White 컨셉 디자인  
