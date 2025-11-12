@@ -35,7 +35,6 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-
 ## 🖥️ **기술 스택**
 | 구분 | 기술 |
 |------|------|
@@ -46,6 +45,10 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 | **Collaboration** | ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white)  ![KakaoTalk](https://img.shields.io/badge/kakaotalk-ffcd00.svg?style=for-the-badge&logo=kakaotalk&logoColor=000000)  ![Google Drive](https://img.shields.io/badge/Google%20Drive-4285F4?style=for-the-badge&logo=googledrive&logoColor=white)   ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white) | 
 
 <br>
+
+## 📕 발표 PPT
+
+## 🎞 시연 영상
 
 ## 🧠 **핵심 기능 소개**
 
