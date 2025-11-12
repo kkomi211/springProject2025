@@ -56,7 +56,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 ## 🎞 시연 영상
 |**영상링크**|
 |----|
-|https://github.com/kkomi211/springProject2025/blob/main/media/runnershouse%20(2).mp4|
+|https://drive.google.com/file/d/1f9XaXwcse0Q3q9mvXYs599DYpGR8paOj/view?usp=drive_link|
 <br>
 
 ## 🎆 파일 흐름 구조 (Mermaid)
