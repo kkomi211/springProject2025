@@ -132,8 +132,9 @@
                             <div class="product-name">{{info.productName}}</div>
                             <div class="product-type">{{info.typeName}}</div>
                             <!-- <div class="margin80 font30" v-if="info.saleYN == 'N'">{{info.price}} 원</div> -->
-                            <div class="product-price">{{Number(info.price).toLocaleString()}} 원</div>
+                            <div class="product-price" v-if="info.saleYN == 'N'">{{Number(info.price).toLocaleString()}} 원</div>
                             <!-- <div class="margin80 font30" v-else><del>{{info.price}}</del> {{info.salePrice}} 원</div> -->
+                             <div class="product-price" v-else><del style="font-weight: lighter;">{{Number(info.price).toLocaleString()}}</del> {{Number(info.salePrice).toLocaleString()}} 원</div>
                             <div class="product-size">
                                 <!-- 사이즈 -->
                                 <div>사이즈</div>
