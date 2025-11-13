@@ -154,7 +154,7 @@
                                 <option value="">교환할 옵션 선택</option>
                                 <option v-for="option in productOptions" :value="option.productNo"
                                     :key="option.productNo" :disabled="option.quantity === 0">
-                                    {{ option.productName }} / {{ option.productSize }} (재고: {{ option.quantity }}) - {{
+                                    {{ option.productName }} / 사이즈: {{ option.productSize }} (재고: {{ option.quantity }}) - {{
                                     option.price.toLocaleString() }}원
                                 </option>
                             </select>
