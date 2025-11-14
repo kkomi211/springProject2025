@@ -1,0 +1,113 @@
+--------------------------------------------------------
+--  파일이 생성됨 - 수요일-11월-12-2025   
+--------------------------------------------------------
+--------------------------------------------------------
+--  DDL for Sequence BANNER_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."BANNER_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 25 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence BOARD_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."BOARD_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 701 CACHE 100 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence CART_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."CART_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 801 CACHE 100 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence CHAT_MEMBER_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."CHAT_MEMBER_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 81 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence CHAT_MESSAGE_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."CHAT_MESSAGE_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 283 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence CHAT_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."CHAT_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 181 CACHE 20 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence CHATROOM_DIRECT_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."CHATROOM_DIRECT_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 2 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence COMMENTS_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."COMMENTS_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 601 CACHE 100 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence COUPON_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."COUPON_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 100 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence HELPFUL_REVIEW_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."HELPFUL_REVIEW_SEQ"  MINVALUE 1 MAXVALUE 999999999999999999 INCREMENT BY 1 START WITH 4 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence ORDERS_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."ORDERS_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 340 CACHE 20 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence PBANNER_IMG_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."PBANNER_IMG_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 20 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence PRODUCT_BANNER_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."PRODUCT_BANNER_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 15 NOCACHE  NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence PRODUCT_IMG_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."PRODUCT_IMG_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 601 CACHE 100 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence PRODUCT_INQUIRY_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."PRODUCT_INQUIRY_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 601 CACHE 100 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence PRODUCT_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."PRODUCT_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 701 CACHE 100 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence PRODUCT_TYPE_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."PRODUCT_TYPE_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 100 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence RALLY_IMG_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."RALLY_IMG_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 61 CACHE 20 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence RALLY_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."RALLY_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 161 CACHE 20 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence REPORT_BOARD_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."REPORT_BOARD_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 401 CACHE 100 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence REVIEW_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."REVIEW_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 501 CACHE 100 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+--------------------------------------------------------
+--  DDL for Sequence USER_COUPON_SEQ
+--------------------------------------------------------
+
+   CREATE SEQUENCE  "ADMIN"."USER_COUPON_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 100 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
