@@ -1,5 +1,6 @@
 package com.example.springProject2025.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -22,4 +23,8 @@ public interface HomeMapper {
     
     // 대회 대표 이미지 조회
     Home selectRallyMainImage(int rallyNo);
+    
+    //251117
+    // 예산 기반 카테고리별 상품 조회
+    List<Home> selectBudgetProductsByCategory(HashMap<String, Object> map);
 }

@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -223,6 +223,38 @@ public class HomeController {
             resultMap.put("result", "fail");
             resultMap.put("message", "최신 대회 조회 중 오류: " + e.getMessage());
             System.err.println("최신 대회 조회 중 오류: " + e.getMessage());
+        }
+        return new Gson().toJson(resultMap);
+    }
+
+    //251117
+    /**
+     * 예산 기반 상품 추천 (AJAX)
+     */
+    @RequestMapping(value = "/api/budgetRecommendations.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String getBudgetRecommendations(@RequestParam HashMap<String, Object> map) {
+        HashMap<String, Object> resultMap = new HashMap<>();
+        try {
+            int budget = Integer.parseInt(map.get("budget").toString());
+            String categoryName = (String) map.get("categoryName");
+            
+            List<HashMap<String, Object>> recommendations;
+            if (categoryName != null && !categoryName.isEmpty()) {
+                // 단일 카테고리 조회
+                recommendations = homeService.getBudgetRecommendationsByCategory(budget, categoryName);
+            } else {
+                // 전체 카테고리 조회
+                recommendations = homeService.getBudgetRecommendations(budget);
+            }
+            
+            resultMap.put("result", "success");
+            resultMap.put("data", recommendations);
+        } catch (Exception e) {
+            resultMap.put("result", "fail");
+            resultMap.put("message", "예산 기반 추천 조회 중 오류: " + e.getMessage());
+            System.err.println("예산 기반 추천 조회 중 오류: " + e.getMessage());
+            e.printStackTrace();
         }
         return new Gson().toJson(resultMap);
     }
