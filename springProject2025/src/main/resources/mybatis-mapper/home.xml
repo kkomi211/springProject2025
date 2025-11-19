@@ -61,4 +61,94 @@
     <select id="selectRallyMainImage" parameterType="int" resultType="com.example.springProject2025.model.Home">
         SELECT IMG_PATH FROM RALLY_IMG WHERE RALLY_NO = #{rallyNo} AND ROWNUM = 1 ORDER BY RALLY_IMG_NO ASC
     </select>
+
+    <!--251117-->
+    <!-- 예산 기반 카테고리별 상품 조회 -->
+    <select id="selectBudgetProductsByCategory" parameterType="hashmap" resultType="com.example.springProject2025.model.Home">
+        SELECT 
+            P.PRODUCT_NO,
+            P.PRODUCT_NAME,
+            P.PRICE AS productPrice,
+            P.BRAND,
+            P.SALE_YN,
+            P.SALE_PRICE,
+            (SELECT IMG_PATH 
+             FROM (SELECT IMG_PATH, PRODUCT_IMG_NO 
+                   FROM PRODUCT_IMG 
+                   WHERE PRODUCT_NO = P.PRODUCT_NO 
+                   ORDER BY PRODUCT_IMG_NO ASC) 
+             WHERE ROWNUM = 1) AS imgPath
+        FROM (
+            SELECT DISTINCT
+                P.PRODUCT_NO,
+                P.PRODUCT_NAME,
+                P.PRICE,
+                P.BRAND,
+                P.SALE_YN,
+                P.SALE_PRICE,
+                P.QUANTITY,
+                P.TYPE_NO,
+                PT.TYPE_NAME,
+                PT.TYPE_PART,
+                ROW_NUMBER() OVER (
+                    PARTITION BY P.PRODUCT_NAME
+                    ORDER BY P.PRODUCT_NO ASC
+                ) AS rn
+            FROM PRODUCT P
+            INNER JOIN PRODUCT_TYPE PT ON P.TYPE_NO = PT.TYPE_NO
+            WHERE P.QUANTITY > 0
+              AND (
+                  PT.TYPE_NAME = #{categoryName}
+                  OR PT.TYPE_NAME LIKE '%' || #{categoryName} || '%'
+                  OR PT.TYPE_PART LIKE '%' || #{categoryName} || '%'
+                  OR (
+                      #{categoryName} = '러닝화' AND (
+                          PT.TYPE_NAME LIKE '%신발%' 
+                          OR PT.TYPE_NAME LIKE '%화%' 
+                          OR PT.TYPE_NAME LIKE '%운동화%'
+                          OR PT.TYPE_PART LIKE '%신발%'
+                          OR PT.TYPE_PART LIKE '%화%'
+                      )
+                  )
+                  OR (
+                      #{categoryName} = '보호대' AND (
+                          PT.TYPE_NAME LIKE '%보호%' 
+                          OR PT.TYPE_NAME LIKE '%대%'
+                          OR PT.TYPE_PART LIKE '%보호%'
+                      )
+                  )
+                  OR (
+                      #{categoryName} = '러닝복 상의' AND (
+                          PT.TYPE_NAME LIKE '%상의%' 
+                          OR PT.TYPE_NAME LIKE '%상%'
+                          OR PT.TYPE_NAME LIKE '%티%'
+                          OR PT.TYPE_NAME LIKE '%셔츠%'
+                          OR PT.TYPE_PART LIKE '%상의%'
+                          OR PT.TYPE_PART LIKE '%상%'
+                      )
+                  )
+                  OR (
+                      #{categoryName} = '러닝복 하의' AND (
+                          PT.TYPE_NAME LIKE '%하의%' 
+                          OR PT.TYPE_NAME LIKE '%하%'
+                          OR PT.TYPE_NAME LIKE '%바지%'
+                          OR PT.TYPE_NAME LIKE '%팬츠%'
+                          OR PT.TYPE_PART LIKE '%하의%'
+                          OR PT.TYPE_PART LIKE '%하%'
+                      )
+                  )
+              )
+        ) P
+        WHERE P.rn = 1
+          AND (
+              (P.SALE_YN = 'Y' AND P.SALE_PRICE IS NOT NULL AND P.SALE_PRICE &lt;= #{budget})
+              OR
+              (P.SALE_YN = 'N' AND P.PRICE &lt;= #{budget})
+          )
+        ORDER BY 
+          CASE WHEN P.SALE_YN = 'Y' AND P.SALE_PRICE IS NOT NULL 
+               THEN P.SALE_PRICE 
+               ELSE P.PRICE 
+          END DESC
+    </select>
 </mapper>

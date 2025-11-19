@@ -32,6 +32,9 @@
             <!-- Icons -->
             <script src="https://unpkg.com/lucide@latest"></script>
 
+            <!-- ApexCharts for budget recommendation chart -->
+            <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.44.0/dist/apexcharts.min.js"></script>
+
             <script src="/js/page-change.js"></script>
 
             <style>
@@ -1113,6 +1116,302 @@
                     }
                 }
 
+                /* ====== 예산 추천 버튼 및 모달 ====== */
+                .budget-recommend-btn {
+                    position: fixed;
+                    bottom: 30px;
+                    left: 30px;
+                    width: 70px;
+                    height: 70px;
+                    background-color: #007bff;
+                    color: white;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+                    z-index: 1000;
+                    transition: all 0.3s ease;
+                    font-size: 24px;
+                    border: none;
+                }
+
+                .budget-recommend-btn:hover {
+                    background-color: #0056b3;
+                    transform: scale(1.1);
+                    box-shadow: 0 6px 16px rgba(0, 123, 255, 0.6);
+                }
+
+                .budget-modal {
+                    position: fixed;
+                    z-index: 2000;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5);
+                    overflow: auto;
+                }
+
+                .budget-modal-content {
+                    background-color: #fefefe;
+                    margin: 5% auto;
+                    padding: 30px;
+                    border: none;
+                    border-radius: 15px;
+                    width: 90%;
+                    max-width: 1000px;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+                    position: relative;
+                }
+
+                .budget-modal-close {
+                    color: #aaa;
+                    float: right;
+                    font-size: 28px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    position: absolute;
+                    right: 20px;
+                    top: 15px;
+                }
+
+                .budget-modal-close:hover,
+                .budget-modal-close:focus {
+                    color: #000;
+                }
+
+                .budget-input-section {
+                    margin-bottom: 30px;
+                    text-align: center;
+                }
+
+                .budget-input-section h2 {
+                    margin-bottom: 20px;
+                    color: #333;
+                }
+
+                .budget-input-wrapper {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .budget-input-wrapper input {
+                    padding: 12px 20px;
+                    font-size: 18px;
+                    border: 2px solid #ddd;
+                    border-radius: 8px;
+                    width: 200px;
+                }
+
+                .budget-input-wrapper button {
+                    padding: 12px 30px;
+                    font-size: 16px;
+                    background-color: #007bff;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    transition: background-color 0.3s;
+                }
+
+                .budget-input-wrapper button:hover {
+                    background-color: #0056b3;
+                }
+
+                .budget-chart-section {
+                    display: flex;
+                    gap: 40px;
+                    margin-top: 30px;
+                    align-items: flex-start;
+                }
+
+                .budget-chart-container {
+                    flex: 1;
+                    max-width: 450px;
+                    min-height: 400px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                #budgetChart {
+                    width: 100% !important;
+                    min-height: 400px;
+                }
+
+                .budget-category-bars {
+                    flex: 1;
+                }
+
+                .budget-category-bar {
+                    margin-bottom: 25px;
+                    padding: 15px;
+                    background-color: #f8f9fa;
+                    border-radius: 8px;
+                    border-left: 4px solid #007bff;
+                }
+
+                .budget-category-bar h4 {
+                    margin: 0 0 10px 0;
+                    color: #333;
+                    font-size: 16px;
+                }
+
+                .budget-bar-progress {
+                    height: 40px;
+                    background-color: #e9ecef;
+                    border-radius: 20px;
+                    overflow: visible;
+                    position: relative;
+                    cursor: pointer;
+                    margin: 10px 0;
+                }
+
+                .budget-bar-fill {
+                    height: 100%;
+                    border-radius: 20px;
+                    transition: width 0.3s ease;
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                    padding-right: 10px;
+                    color: white;
+                    font-weight: bold;
+                    font-size: 14px;
+                    position: relative;
+                    min-width: 50px;
+                }
+
+                .budget-bar-fill.category-0 {
+                    background: linear-gradient(90deg, #008FFB, #0066CC);
+                }
+
+                .budget-bar-fill.category-1 {
+                    background: linear-gradient(90deg, #00E396, #00B87A);
+                }
+
+                .budget-bar-fill.category-2 {
+                    background: linear-gradient(90deg, #FEB019, #CC8E14);
+                }
+
+                .budget-bar-fill.category-3 {
+                    background: linear-gradient(90deg, #FF4560, #CC364D);
+                }
+
+                .budget-bar-handle {
+                    position: absolute;
+                    right: -10px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    width: 20px;
+                    height: 20px;
+                    background-color: #fff;
+                    border: 3px solid #007bff;
+                    border-radius: 50%;
+                    cursor: grab;
+                    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+                    z-index: 10;
+                }
+
+                .budget-bar-handle:active {
+                    cursor: grabbing;
+                }
+
+                .budget-bar-info {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 5px;
+                }
+
+                .budget-bar-label {
+                    font-weight: 600;
+                    color: #333;
+                }
+
+                .budget-bar-value {
+                    font-weight: bold;
+                    color: #007bff;
+                }
+
+                .budget-recommend-btn-update {
+                    margin-top: 20px;
+                    padding: 10px 20px;
+                    background-color: #28a745;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    font-weight: 600;
+                    transition: background-color 0.3s;
+                }
+
+                .budget-recommend-btn-update:hover {
+                    background-color: #218838;
+                }
+
+                .budget-recommended-products {
+                    margin-top: 20px;
+                    padding-top: 20px;
+                    border-top: 2px solid #eee;
+                }
+
+                .budget-recommended-products h4 {
+                    margin-bottom: 15px;
+                    color: #333;
+                }
+
+                .budget-product-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                    padding: 10px;
+                    margin-bottom: 10px;
+                    background-color: #fff;
+                    border-radius: 8px;
+                    border: 1px solid #ddd;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                }
+
+                .budget-product-item:hover {
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    transform: translateX(5px);
+                }
+
+                .budget-product-item img {
+                    width: 60px;
+                    height: 60px;
+                    object-fit: cover;
+                    border-radius: 5px;
+                }
+
+                .budget-product-info {
+                    flex: 1;
+                }
+
+                .budget-product-info .product-name {
+                    font-weight: bold;
+                    margin-bottom: 5px;
+                }
+
+                .budget-product-info .product-price {
+                    color: #007bff;
+                    font-weight: bold;
+                }
+
+                .budget-no-products {
+                    color: #999;
+                    font-style: italic;
+                    padding: 10px;
+                }
+
             </style>
 
         </head>
@@ -1271,6 +1570,77 @@
 
                     </main>
                 </div>
+
+                <!-- 예산 추천 고정 버튼 -->
+                <!--251117-->
+                <button class="budget-recommend-btn" @click="openBudgetModal" title="예산 기반 상품 추천">
+                    <i data-lucide="dollar-sign" stroke-width="2"></i>
+                </button>
+
+                <!-- 예산 추천 모달 -->
+                <div id="budgetModal" class="budget-modal" v-if="showBudgetModal" @click.self="closeBudgetModal" style="display: block;">
+                    <div class="budget-modal-content">
+                        <span class="budget-modal-close" @click="closeBudgetModal">&times;</span>
+                        <div class="budget-input-section">
+                            <h2>예산 기반 상품 추천</h2>
+                            <div class="budget-input-wrapper">
+                                <input type="number" v-model="budgetAmount" placeholder="예산을 입력하세요 (원)" min="0" @keyup.enter="searchBudgetProducts">
+                                <button @click="searchBudgetProducts">추천받기</button>
+                            </div>
+                        </div>
+                        <div v-if="budgetRecommendations.length > 0" class="budget-chart-section">
+                            <div class="budget-chart-container">
+                                <div id="budgetChart"></div>
+                            </div>
+                            <div class="budget-category-bars">
+                                <div v-for="(category, index) in budgetRecommendations" :key="index" class="budget-category-bar">
+                                    <div class="budget-bar-info">
+                                        <span class="budget-bar-label">{{ category.categoryName }}</span>
+                                        <span class="budget-bar-value">
+                                            {{ (category.adjustedPrice !== undefined ? category.adjustedPrice : (category.totalPrice || 0)).toLocaleString() }}원 
+                                            ({{ (category.adjustedPercentage !== undefined ? category.adjustedPercentage : (category.percentage || 0)).toFixed(1) }}%)
+                                        </span>
+                                    </div>
+                                    <div class="budget-bar-progress" 
+                                         @mousedown="startDrag($event, index)"
+                                         @touchstart="startDrag($event, index)">
+                                        <div class="budget-bar-fill" 
+                                             :class="'category-' + index"
+                                             :style="{ width: (category.adjustedPercentage !== undefined ? category.adjustedPercentage : (category.percentage || 0)) + '%' }">
+                                            <span style="margin-right: 15px;">
+                                                {{ (category.adjustedPrice !== undefined ? category.adjustedPrice : (category.totalPrice || 0)).toLocaleString() }}원
+                                            </span>
+                                            <div class="budget-bar-handle"></div>
+                                        </div>
+                                    </div>
+                                    <div class="budget-recommended-products" v-if="category.products && category.products.length > 0">
+                                        <h4>추천 상품</h4>
+                                        <div v-for="product in category.products" :key="product.productNo" 
+                                             class="budget-product-item" 
+                                             @click="goToProduct(product.productNo)">
+                                            <img :src="product.imgPath || '/img/no-image.jpg'" :alt="product.productName" @error="handleImageError($event)">
+                                            <div class="budget-product-info">
+                                                <div class="product-name">{{ product.productName }}</div>
+                                                <div class="product-price">{{ formatCurrency(product.finalPrice) }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-else class="budget-no-products">예산 내 추천 상품이 없습니다.</div>
+                                </div>
+                            </div>
+                            <div style="text-align: center; margin-top: 20px;">
+                                <button class="budget-recommend-btn-update" @click="updateRecommendationsByRatio">비율 조정 후 다시 추천받기</button>
+                            </div>
+                        </div>
+                        <div v-else-if="budgetSearched && budgetRecommendations.length === 0" style="text-align: center; padding: 40px; color: #999;">
+                            예산 내에서 추천할 수 있는 상품이 없습니다. 예산을 늘려서 다시 시도해주세요.
+                        </div>
+                        <div v-else style="text-align: center; padding: 40px; color: #999;">
+                            예산을 입력하고 추천받기를 클릭해주세요.
+                        </div>
+                    </div>
+                </div>
+
                 <footer>
                     <div class="footer-left">
                         <div class="company-info">
@@ -1315,6 +1685,18 @@
                         sessionId: '${sessionId}',
                         isLoggedOut: false,
                         userType: '${userType}',
+                        //251117
+                        showBudgetModal: false,
+                        budgetAmount: '',
+                        budgetRecommendations: [],
+                        budgetSearched: false,
+                        budgetChart: null,
+                        isDragging: false,
+                        dragIndex: -1,
+                        originalBudget: 0,
+                        dragHandlersInitialized: false,
+                        updateChartTimer: null,
+                        dragUpdateTimer: null,
                     };
                 },
                 methods: {
@@ -1470,6 +1852,13 @@
                         const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
                         return new Date(dateString).toLocaleDateString('ko-KR', options);
                     },
+                    //251117
+                    handleImageError(event) {
+                        // 이미지 로딩 실패 시 기본 이미지로 변경 (무한 루프 방지)
+                        if (event.target.src && !event.target.src.includes('no-image.jpg')) {
+                            event.target.src = '/img/no-image.jpg';
+                        }
+                    },
                     formatCurrency(value) { // 통화 형식 포맷 함수
                         if (value === null || value === undefined) return '0 원';
                         return value.toLocaleString('ko-KR') + ' 원';
@@ -1532,6 +1921,935 @@
                         let self = this;
                         self.saleYN = 'Y';
                         pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                    },
+                    //251117
+                    openBudgetModal() {
+                        this.showBudgetModal = true;
+                        this.$nextTick(() => {
+                            lucide.createIcons();
+                        });
+                    },
+                    //251117
+                    closeBudgetModal() {
+                        this.showBudgetModal = false;
+                        this.budgetRecommendations = [];
+                        this.budgetSearched = false;
+                        if (this.budgetChart) {
+                            this.budgetChart.destroy();
+                            this.budgetChart = null;
+                            const chartElement = document.getElementById('budgetChart');
+                            if (chartElement) {
+                                chartElement.innerHTML = '';
+                            }
+                        }
+                    },
+                    searchBudgetProducts() {
+                        if (!this.budgetAmount || this.budgetAmount <= 0) {
+                            alert('올바른 예산을 입력해주세요.');
+                            return;
+                        }
+
+                        let self = this;
+                        $.ajax({
+                            url: '/api/budgetRecommendations.dox',
+                            method: 'POST',
+                            dataType: 'json',
+                            data: { budget: parseInt(this.budgetAmount) },
+                            success: (response) => {
+                                if (response.result === 'success' && response.data && Array.isArray(response.data)) {
+                                    // adjustedPrice와 adjustedPercentage 초기화
+                                    self.budgetRecommendations = response.data.map((cat, idx) => {
+                                        // 모든 가능한 키 이름 확인
+                                        const categoryName = cat.categoryName || cat['categoryName'] || '';
+                                        const totalPrice = cat.totalPrice !== undefined && cat.totalPrice !== null 
+                                            ? Number(cat.totalPrice) 
+                                            : (cat['totalPrice'] !== undefined && cat['totalPrice'] !== null ? Number(cat['totalPrice']) : 0);
+                                        const percentage = cat.percentage !== undefined && cat.percentage !== null 
+                                            ? Number(cat.percentage) 
+                                            : (cat['percentage'] !== undefined && cat['percentage'] !== null ? Number(cat['percentage']) : 0);
+                                        const products = Array.isArray(cat.products) ? cat.products : (Array.isArray(cat['products']) ? cat['products'] : []);
+                                        
+                                        return {
+                                            categoryName: categoryName,
+                                            totalPrice: totalPrice,
+                                            percentage: percentage,
+                                            products: products,
+                                            adjustedPrice: totalPrice,
+                                            adjustedPercentage: percentage
+                                        };
+                                    });
+                                    
+                                    self.originalBudget = parseInt(self.budgetAmount);
+                                    self.budgetSearched = true;
+                                    self.$nextTick(() => {
+                                        self.drawDonutChart(); // 도넛 차트 초기 생성
+                                        self.initDragHandlers();
+                                    });
+                                } else {
+                                    console.error('응답 데이터 형식 오류:', response);
+                                    alert('추천 상품을 불러오는 중 오류가 발생했습니다: ' + (response.message || '데이터 형식 오류'));
+                                }
+                            },
+                            error: (error) => {
+                                console.error("예산 추천 AJAX 오류:", error);
+                                alert('추천 상품을 불러오는 중 오류가 발생했습니다.');
+                            }
+                        });
+                    },
+                    //251117 - (사용 안 함, drawDonutChart로 대체됨)
+                    drawBudgetChart_OLD() {
+                        if (this.budgetRecommendations.length === 0) return;
+
+                        const chartElement = document.getElementById('budgetChart');
+                        if (!chartElement) return;
+
+                        // 기존 차트가 있으면 제거
+                        if (this.budgetChart) {
+                            this.budgetChart.destroy();
+                            chartElement.innerHTML = '';
+                        }
+
+                        const categories = this.budgetRecommendations.map(cat => cat.categoryName);
+                        // 차트는 adjustedPrice가 있으면 그것을, 없으면 totalPrice를 사용
+                        const prices = this.budgetRecommendations.map(cat => {
+                            return cat.adjustedPrice !== undefined ? cat.adjustedPrice : (cat.totalPrice || 0);
+                        });
+                        const total = prices.reduce((a, b) => a + b, 0);
+                        const budget = this.originalBudget || parseInt(this.budgetAmount) || 0;
+
+                        // 모든 데이터를 포함 (0원이어도 표시)
+                        const filteredData = this.budgetRecommendations
+                            .map((cat, idx) => ({
+                                category: cat.categoryName,
+                                price: prices[idx] || 0
+                            }));
+
+                        // 필터링된 데이터가 없으면 경고
+                        if (filteredData.length === 0) {
+                            return;
+                        }
+                        
+                        const series = filteredData.map(item => item.price);
+                        const filteredCategories = filteredData.map(item => item.category);
+                        
+                        // ApexCharts가 로드되었는지 확인
+                        if (typeof ApexCharts === 'undefined') {
+                            console.error('ApexCharts가 로드되지 않았습니다!');
+                            alert('차트 라이브러리를 불러오는 중 오류가 발생했습니다. 페이지를 새로고침해주세요.');
+                            return;
+                        }
+                        
+                        // 카테고리별 색상 매핑 (정확한 순서대로)
+                        const categoryColorMap = {
+                            '러닝화': '#008FFB',      // 파란색
+                            '보호대': '#00E396',      // 초록색
+                            '러닝복 상의': '#FEB019',  // 주황색
+                            '러닝복 하의': '#FF4560'   // 빨간색
+                        };
+                        
+                        // 카테고리 이름으로 색상 매핑
+                        const mappedColors = filteredCategories.map(cat => {
+                            return categoryColorMap[cat] || '#008FFB'; // 기본값 파란색
+                        });
+
+                        const options = {
+                            series: series,
+                            chart: {
+                                type: 'donut',
+                                width: '100%',
+                                height: 400,
+                                animations: {
+                                    enabled: true,
+                                    animateGradually: {
+                                        enabled: true,
+                                        delay: 150
+                                    },
+                                    dynamicAnimation: {
+                                        enabled: true,
+                                        speed: 350
+                                    }
+                                }
+                            },
+                            labels: filteredCategories,
+                            colors: mappedColors,
+                            stroke: {
+                                show: true,
+                                width: 2,
+                                colors: ['#fff']
+                            },
+                            legend: {
+                                position: 'bottom',
+                                fontSize: '14px',
+                                fontFamily: 'Arial, sans-serif',
+                                itemMargin: {
+                                    horizontal: 10,
+                                    vertical: 5
+                                }
+                            },
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function (val, opts) {
+                                    const value = series[opts.seriesIndex];
+                                    return value.toLocaleString() + '원';
+                                },
+                                style: {
+                                    fontSize: '12px',
+                                    fontWeight: 'bold',
+                                    colors: ['#fff']
+                                }
+                            },
+                            tooltip: {
+                                y: {
+                                    formatter: function (val, opts) {
+                                        const value = series[opts.seriesIndex];
+                                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                        return value.toLocaleString() + '원 (' + percentage + '%)';
+                                    }
+                                }
+                            },
+                            plotOptions: {
+                                pie: {
+                                    donut: {
+                                        size: '65%',
+                                        labels: {
+                                            show: true,
+                                            name: {
+                                                show: true,
+                                                fontSize: '16px',
+                                                fontWeight: 600,
+                                                color: '#373d3f'
+                                            },
+                                            value: {
+                                                show: true,
+                                                fontSize: '20px',
+                                                fontWeight: 700,
+                                                color: '#373d3f',
+                                                formatter: function (val) {
+                                                    return val.toLocaleString() + '원';
+                                                }
+                                            },
+                                            total: {
+                                                show: true,
+                                                label: '사용 예산',
+                                                fontSize: '16px',
+                                                fontWeight: 600,
+                                                color: '#373d3f',
+                                                formatter: function (w) {
+                                                    return total.toLocaleString() + '원 / ' + budget.toLocaleString() + '원';
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            responsive: [{
+                                breakpoint: 768,
+                                options: {
+                                    chart: {
+                                        width: '100%',
+                                        height: 350
+                                    },
+                                    legend: {
+                                        position: 'bottom'
+                                    }
+                                }
+                            }]
+                        };
+
+                        // 차트 컨테이너가 비어있는지 확인
+                        if (chartElement.innerHTML.trim() !== '') {
+                            chartElement.innerHTML = '';
+                        }
+                        
+                        console.log('ApexCharts 옵션:', {
+                            series: options.series,
+                            labels: options.labels,
+                            colors: options.colors,
+                            seriesLength: options.series.length
+                        });
+                        
+                        try {
+                            // 기존 차트가 있으면 완전히 제거
+                            if (this.budgetChart) {
+                                this.budgetChart.destroy();
+                                this.budgetChart = null;
+                            }
+                            
+                            this.budgetChart = new ApexCharts(chartElement, options);
+                            
+                            // 약간의 지연 후 렌더링 (DOM이 완전히 준비되도록)
+                            setTimeout(() => {
+                                this.budgetChart.render().catch((error) => {
+                                    console.error('차트 렌더링 오류:', error);
+                                    alert('차트를 그리는 중 오류가 발생했습니다: ' + error.message);
+                                });
+                            }, 100);
+                        } catch (error) {
+                            console.error('ApexCharts 생성 오류:', error);
+                            alert('차트를 생성하는 중 오류가 발생했습니다: ' + error.message);
+                        }
+                    },
+                    //251117
+                    initDragHandlers() {
+                        // 전역 이벤트 리스너는 한 번만 등록
+                        if (this.dragHandlersInitialized) return;
+                        this.dragHandlersInitialized = true;
+
+                        const self = this;
+                        document.addEventListener('mousemove', (e) => {
+                            if (self.isDragging) {
+                                self.onDrag(e);
+                            }
+                        });
+                        document.addEventListener('mouseup', () => {
+                            if (self.isDragging) {
+                                self.endDrag();
+                            }
+                        });
+                        document.addEventListener('touchmove', (e) => {
+                            if (self.isDragging) {
+                                e.preventDefault();
+                                self.onDrag(e.touches[0]);
+                            }
+                        });
+                        document.addEventListener('touchend', () => {
+                            if (self.isDragging) {
+                                self.endDrag();
+                            }
+                        });
+                    },
+                    //251117
+                    startDrag(event, index) {
+                        event.preventDefault();
+                        this.isDragging = true;
+                        this.dragIndex = index;
+                    },
+                    //251117 - 바 차트 업데이트 (DOM 직접 조작) - 균등 분배용
+                    updateBars(dragIndex, percentage, newPrice, remainingPercentagePerCategory, remainingPricePerCategory) {
+                        const allBars = document.querySelectorAll('.budget-bar-progress');
+                        
+                        allBars.forEach((bar, index) => {
+                            const fillElement = bar.querySelector('.budget-bar-fill');
+                            const valueElement = bar.parentElement.querySelector('.budget-bar-value');
+                            
+                            if (index === dragIndex) {
+                                // 드래그 중인 바
+                                if (fillElement) fillElement.style.width = percentage + '%';
+                                if (valueElement) valueElement.textContent = newPrice.toLocaleString() + '원 (' + percentage.toFixed(1) + '%)';
+                            } else {
+                                // 나머지 바들 (균등 분배)
+                                if (fillElement) fillElement.style.width = remainingPercentagePerCategory + '%';
+                                if (valueElement) valueElement.textContent = remainingPricePerCategory.toLocaleString() + '원 (' + remainingPercentagePerCategory.toFixed(1) + '%)';
+                            }
+                        });
+                    },
+                    //251117 - 바 차트 업데이트 (비율 유지하면서 재분배)
+                    updateBarsWithRatios(dragIndex, percentage, newPrice, remainingPercentagesPerCategory, remainingPricesPerCategory) {
+                        const allBars = document.querySelectorAll('.budget-bar-progress');
+                        
+                        allBars.forEach((bar, index) => {
+                            const fillElement = bar.querySelector('.budget-bar-fill');
+                            const valueElement = bar.parentElement.querySelector('.budget-bar-value');
+                            
+                            if (index === dragIndex) {
+                                // 드래그 중인 바
+                                if (fillElement) fillElement.style.width = percentage + '%';
+                                if (valueElement) valueElement.textContent = newPrice.toLocaleString() + '원 (' + percentage.toFixed(1) + '%)';
+                            } else {
+                                // 나머지 바들 (기존 비율 유지하면서 재분배)
+                                const catPercentage = remainingPercentagesPerCategory[index] || 0;
+                                const catPrice = remainingPricesPerCategory[index] || 0;
+                                if (fillElement) fillElement.style.width = catPercentage + '%';
+                                if (valueElement) valueElement.textContent = catPrice.toLocaleString() + '원 (' + catPercentage.toFixed(1) + '%)';
+                            }
+                        });
+                    },
+                    //251117 - 도넛 차트 업데이트 (Vue 데이터 기반)
+                    updateDonutChart() {
+                        if (this.budgetRecommendations.length === 0) return;
+                        if (!this.budgetChart) return;
+
+                        // adjustedPrice를 우선 사용, 없으면 totalPrice 사용
+                        const prices = this.budgetRecommendations.map(cat => {
+                            return cat.adjustedPrice !== undefined && cat.adjustedPrice > 0 ? cat.adjustedPrice : (cat.totalPrice || 0);
+                        });
+                        const total = prices.reduce((a, b) => a + b, 0);
+                        const budget = this.originalBudget || parseInt(this.budgetAmount) || 0;
+
+                        const filteredData = this.budgetRecommendations
+                            .map((cat, idx) => ({
+                                category: cat.categoryName,
+                                price: prices[idx] || 0
+                            }))
+                            .filter(item => item.price > 0);
+
+                        if (filteredData.length === 0) return;
+
+                        const series = filteredData.map(item => item.price);
+                        const labels = filteredData.map(item => item.category);
+                        
+                        const categoryColorMap = {
+                            '러닝화': '#008FFB',
+                            '보호대': '#00E396',
+                            '러닝복 상의': '#FEB019',
+                            '러닝복 하의': '#FF4560'
+                        };
+                        
+                        const mappedColors = labels.map(cat => categoryColorMap[cat] || '#008FFB');
+
+                        try {
+                            if (this.budgetChart && typeof this.budgetChart.updateSeries === 'function') {
+                                this.budgetChart.updateSeries(series, false); // false = no animate (빠른 업데이트)
+                                this.budgetChart.updateOptions({
+                                    labels: labels,
+                                    colors: mappedColors,
+                                    plotOptions: {
+                                        pie: {
+                                            donut: {
+                                                labels: {
+                                                    total: {
+                                                        formatter: function (w) {
+                                                            return total.toLocaleString() + '원 / ' + budget.toLocaleString() + '원';
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }, false, false); // false = redraw, false = no animate
+                            }
+                        } catch (error) {
+                            console.error('도넛 차트 업데이트 오류:', error);
+                        }
+                    },
+                    //251117 - 도넛 차트 즉시 업데이트 (드래그 중 직접 계산된 값 사용) - 균등 분배용
+                    updateDonutChartImmediate(dragIndex, newPrice, remainingPricePerCategory) {
+                        if (!this.budgetChart) return;
+
+                        // 드래그 중인 값으로 직접 계산
+                        const prices = this.budgetRecommendations.map((cat, idx) => {
+                            if (idx === dragIndex) {
+                                return newPrice;
+                            } else {
+                                return remainingPricePerCategory;
+                            }
+                        });
+                        
+                        this.updateDonutChartWithPrices(prices);
+                    },
+                    //251117 - 도넛 차트 즉시 업데이트 (비율 유지하면서 재분배)
+                    updateDonutChartImmediateWithRatios(dragIndex, newPrice, remainingPricesPerCategory) {
+                        if (!this.budgetChart) return;
+
+                        // 드래그 중인 값으로 직접 계산 (비율 유지)
+                        const prices = this.budgetRecommendations.map((cat, idx) => {
+                            if (idx === dragIndex) {
+                                return newPrice;
+                            } else {
+                                return remainingPricesPerCategory[idx] || 0;
+                            }
+                        });
+                        
+                        this.updateDonutChartWithPrices(prices);
+                    },
+                    //251117 - 도넛 차트 업데이트 공통 로직
+                    updateDonutChartWithPrices(prices) {
+                        if (!this.budgetChart) return;
+                        
+                        const total = prices.reduce((a, b) => a + b, 0);
+                        const budget = this.originalBudget || parseInt(this.budgetAmount) || 0;
+
+                        const filteredData = this.budgetRecommendations
+                            .map((cat, idx) => ({
+                                category: cat.categoryName,
+                                price: prices[idx] || 0
+                            }))
+                            .filter(item => item.price > 0);
+
+                        if (filteredData.length === 0) return;
+
+                        const series = filteredData.map(item => item.price);
+                        const labels = filteredData.map(item => item.category);
+                        
+                        const categoryColorMap = {
+                            '러닝화': '#008FFB',
+                            '보호대': '#00E396',
+                            '러닝복 상의': '#FEB019',
+                            '러닝복 하의': '#FF4560'
+                        };
+                        
+                        const mappedColors = labels.map(cat => categoryColorMap[cat] || '#008FFB');
+
+                        try {
+                            if (this.budgetChart && typeof this.budgetChart.updateSeries === 'function') {
+                                this.budgetChart.updateSeries(series, false); // false = no animate
+                                this.budgetChart.updateOptions({
+                                    labels: labels,
+                                    colors: mappedColors,
+                                    plotOptions: {
+                                        pie: {
+                                            donut: {
+                                                labels: {
+                                                    total: {
+                                                        formatter: function (w) {
+                                                            return total.toLocaleString() + '원 / ' + budget.toLocaleString() + '원';
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }, false, false);
+                            }
+                        } catch (error) {
+                            console.error('도넛 차트 즉시 업데이트 오류:', error);
+                        }
+                    },
+                    //251117
+                    onDrag(event) {
+                        if (this.dragIndex < 0 || !this.isDragging) return;
+
+                        const allBars = document.querySelectorAll('.budget-bar-progress');
+                        const barElement = allBars[this.dragIndex];
+                        if (!barElement || !this.budgetRecommendations[this.dragIndex]) return;
+
+                        const rect = barElement.getBoundingClientRect();
+                        const clientX = event.clientX || (event.touches && event.touches[0] ? event.touches[0].clientX : 0);
+                        const x = clientX - rect.left;
+                        const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+                        const budget = this.originalBudget || parseInt(this.budgetAmount);
+                        const newPrice = Math.round((budget * percentage) / 100);
+
+                        // 나머지 바들의 현재 비율 유지하면서 재분배
+                        const remainingBudget = budget - newPrice;
+                        
+                        // 드래그 중인 바를 제외한 나머지 바들의 현재 총 금액 계산
+                        // DOM에서 직접 읽어와서 정확한 현재 상태 반영
+                        let remainingTotal = 0;
+                        const remainingPrices = [];
+                        allBars.forEach((bar, index) => {
+                            if (index !== this.dragIndex) {
+                                const fillElement = bar.querySelector('.budget-bar-fill');
+                                const valueElement = bar.parentElement.querySelector('.budget-bar-value');
+                                
+                                // DOM에서 현재 width를 읽어서 가격 계산
+                                let currentPrice = 0;
+                                if (fillElement && valueElement) {
+                                    const width = parseFloat(fillElement.style.width) || 0;
+                                    const currentPercentage = width;
+                                    currentPrice = Math.round((budget * currentPercentage) / 100);
+                                } else {
+                                    // DOM에서 읽을 수 없으면 Vue 데이터 사용
+                                    const cat = this.budgetRecommendations[index];
+                                    currentPrice = cat.adjustedPrice !== undefined && cat.adjustedPrice > 0 
+                                        ? cat.adjustedPrice 
+                                        : (cat.totalPrice || 0);
+                                }
+                                
+                                remainingPrices.push({ index: index, price: currentPrice });
+                                remainingTotal += currentPrice;
+                            }
+                        });
+
+                        // 나머지 바들의 비율을 유지하면서 재분배
+                        const remainingPricesPerCategory = [];
+                        const remainingPercentagesPerCategory = [];
+                        
+                        if (remainingTotal > 0 && remainingBudget > 0) {
+                            // 기존 비율대로 재분배
+                            remainingPrices.forEach(item => {
+                                const ratio = item.price / remainingTotal; // 기존 비율
+                                const newPriceForCategory = Math.round(remainingBudget * ratio);
+                                const newPercentageForCategory = (newPriceForCategory / budget) * 100;
+                                remainingPricesPerCategory[item.index] = newPriceForCategory;
+                                remainingPercentagesPerCategory[item.index] = newPercentageForCategory;
+                            });
+                        } else {
+                            // 처음 드래그하는 경우 균등 분배
+                            const remainingCategories = this.budgetRecommendations.length - 1;
+                            const equalPrice = remainingCategories > 0 ? Math.round(remainingBudget / remainingCategories) : 0;
+                            const equalPercentage = remainingCategories > 0 ? (remainingBudget / budget) * 100 / remainingCategories : 0;
+                            this.budgetRecommendations.forEach((cat, index) => {
+                                if (index !== this.dragIndex) {
+                                    remainingPricesPerCategory[index] = equalPrice;
+                                    remainingPercentagesPerCategory[index] = equalPercentage;
+                                }
+                            });
+                        }
+
+                        // 1. 바 차트 즉시 업데이트 (DOM 직접 조작)
+                        this.updateBarsWithRatios(this.dragIndex, percentage, newPrice, remainingPercentagesPerCategory, remainingPricesPerCategory);
+
+                        // 2. 도넛 차트 즉시 업데이트 (계산된 값으로 바로 업데이트)
+                        this.updateDonutChartImmediateWithRatios(this.dragIndex, newPrice, remainingPricesPerCategory);
+
+                        // 3. Vue 데이터는 throttle로 업데이트 (200ms마다 한 번만)
+                        if (!this.dragUpdateTimer) {
+                            this.dragUpdateTimer = setTimeout(() => {
+                                // Vue 데이터 업데이트 (Vue 3에서는 직접 할당)
+                                this.budgetRecommendations[this.dragIndex].adjustedPercentage = percentage;
+                                this.budgetRecommendations[this.dragIndex].adjustedPrice = newPrice;
+                                
+                                this.budgetRecommendations.forEach((cat, index) => {
+                                    if (index !== this.dragIndex) {
+                                        cat.adjustedPercentage = remainingPercentagesPerCategory[index] || 0;
+                                        cat.adjustedPrice = remainingPricesPerCategory[index] || 0;
+                                    }
+                                });
+                                
+                                this.dragUpdateTimer = null;
+                            }, 200);
+                        }
+                    },
+                    //251117
+                    endDrag() {
+                        this.isDragging = false;
+                        const dragIndex = this.dragIndex;
+                        this.dragIndex = -1;
+                        
+                        // 드래그 업데이트 타이머 정리
+                        if (this.dragUpdateTimer) {
+                            clearTimeout(this.dragUpdateTimer);
+                            this.dragUpdateTimer = null;
+                        }
+                        
+                        // 마지막 값으로 Vue 데이터 업데이트 (비율 유지)
+                        if (dragIndex >= 0 && this.budgetRecommendations[dragIndex]) {
+                            const allBars = document.querySelectorAll('.budget-bar-progress');
+                            const barElement = allBars[dragIndex];
+                            if (barElement) {
+                                const fillElement = barElement.querySelector('.budget-bar-fill');
+                                if (fillElement) {
+                                    const width = fillElement.style.width;
+                                    const percentage = parseFloat(width) || 0;
+                                    const budget = this.originalBudget || parseInt(this.budgetAmount);
+                                    const newPrice = Math.round((budget * percentage) / 100);
+                                    
+                                    // 나머지 바들의 현재 비율 유지하면서 재분배
+                                    const remainingBudget = budget - newPrice;
+                                    
+                                    // 드래그 중인 바를 제외한 나머지 바들의 현재 총 금액 계산
+                                    // DOM에서 직접 읽어와서 정확한 현재 상태 반영
+                                    const allBars = document.querySelectorAll('.budget-bar-progress');
+                                    let remainingTotal = 0;
+                                    const remainingPrices = [];
+                                    allBars.forEach((bar, index) => {
+                                        if (index !== dragIndex) {
+                                            const fillElement = bar.querySelector('.budget-bar-fill');
+                                            const valueElement = bar.parentElement.querySelector('.budget-bar-value');
+                                            
+                                            // DOM에서 현재 width를 읽어서 가격 계산
+                                            let currentPrice = 0;
+                                            if (fillElement && valueElement) {
+                                                const width = parseFloat(fillElement.style.width) || 0;
+                                                const currentPercentage = width;
+                                                currentPrice = Math.round((budget * currentPercentage) / 100);
+                                            } else {
+                                                // DOM에서 읽을 수 없으면 Vue 데이터 사용
+                                                const cat = this.budgetRecommendations[index];
+                                                currentPrice = cat.adjustedPrice !== undefined && cat.adjustedPrice > 0 
+                                                    ? cat.adjustedPrice 
+                                                    : (cat.totalPrice || 0);
+                                            }
+                                            
+                                            remainingPrices.push({ index: index, price: currentPrice });
+                                            remainingTotal += currentPrice;
+                                        }
+                                    });
+
+                                    // 나머지 바들의 비율을 유지하면서 재분배
+                                    const remainingPricesPerCategory = [];
+                                    const remainingPercentagesPerCategory = [];
+                                    
+                                    if (remainingTotal > 0 && remainingBudget > 0) {
+                                        // 기존 비율대로 재분배
+                                        remainingPrices.forEach(item => {
+                                            const ratio = item.price / remainingTotal; // 기존 비율
+                                            const newPriceForCategory = Math.round(remainingBudget * ratio);
+                                            const newPercentageForCategory = (newPriceForCategory / budget) * 100;
+                                            remainingPricesPerCategory[item.index] = newPriceForCategory;
+                                            remainingPercentagesPerCategory[item.index] = newPercentageForCategory;
+                                        });
+                                    } else {
+                                        // 처음 드래그하는 경우 균등 분배
+                                        const remainingCategories = this.budgetRecommendations.length - 1;
+                                        const equalPrice = remainingCategories > 0 ? Math.round(remainingBudget / remainingCategories) : 0;
+                                        const equalPercentage = remainingCategories > 0 ? (remainingBudget / budget) * 100 / remainingCategories : 0;
+                                        this.budgetRecommendations.forEach((cat, index) => {
+                                            if (index !== dragIndex) {
+                                                remainingPricesPerCategory[index] = equalPrice;
+                                                remainingPercentagesPerCategory[index] = equalPercentage;
+                                            }
+                                        });
+                                    }
+                                    
+                                    // Vue 데이터 업데이트 (Vue 3에서는 직접 할당)
+                                    this.budgetRecommendations[dragIndex].adjustedPercentage = percentage;
+                                    this.budgetRecommendations[dragIndex].adjustedPrice = newPrice;
+                                    
+                                    this.budgetRecommendations.forEach((cat, index) => {
+                                        if (index !== dragIndex) {
+                                            cat.adjustedPercentage = remainingPercentagesPerCategory[index] || 0;
+                                            cat.adjustedPrice = remainingPricesPerCategory[index] || 0;
+                                        }
+                                    });
+                                    
+                                    console.log('endDrag 완료 - dragIndex: ' + dragIndex + ', adjustedPrice: ' + this.budgetRecommendations[dragIndex].adjustedPrice + ', adjustedPercentage: ' + this.budgetRecommendations[dragIndex].adjustedPercentage);
+                                    
+                                    // 도넛 차트 최종 업데이트
+                                    this.updateDonutChart();
+                                }
+                            }
+                        }
+                    },
+                    //251117 - 도넛 차트 초기 생성 (처음 한 번만)
+                    drawDonutChart() {
+                        if (this.budgetRecommendations.length === 0) return;
+                        const chartElement = document.getElementById('budgetChart');
+                        if (!chartElement) return;
+
+                        // 기존 차트가 있으면 제거
+                        if (this.budgetChart) {
+                            this.budgetChart.destroy();
+                            chartElement.innerHTML = '';
+                        }
+
+                        const prices = this.budgetRecommendations.map(cat => {
+                            return cat.adjustedPrice !== undefined ? cat.adjustedPrice : (cat.totalPrice || 0);
+                        });
+                        const total = prices.reduce((a, b) => a + b, 0);
+                        const budget = this.originalBudget || parseInt(this.budgetAmount) || 0;
+
+                        const filteredData = this.budgetRecommendations
+                            .map((cat, idx) => ({
+                                category: cat.categoryName,
+                                price: prices[idx] || 0
+                            }))
+                            .filter(item => item.price > 0);
+
+                        if (filteredData.length === 0) return;
+
+                        const series = filteredData.map(item => item.price);
+                        const labels = filteredData.map(item => item.category);
+                        
+                        const categoryColorMap = {
+                            '러닝화': '#008FFB',
+                            '보호대': '#00E396',
+                            '러닝복 상의': '#FEB019',
+                            '러닝복 하의': '#FF4560'
+                        };
+                        
+                        const mappedColors = labels.map(cat => categoryColorMap[cat] || '#008FFB');
+
+                        if (typeof ApexCharts === 'undefined') {
+                            console.error('ApexCharts가 로드되지 않았습니다!');
+                            return;
+                        }
+
+                        const options = {
+                            series: series,
+                            chart: {
+                                type: 'donut',
+                                width: '100%',
+                                height: 400
+                            },
+                            labels: labels,
+                            colors: mappedColors,
+                            plotOptions: {
+                                pie: {
+                                    donut: {
+                                        size: '65%',
+                                        labels: {
+                                            show: true,
+                                            name: {
+                                                show: true,
+                                                fontSize: '16px',
+                                                fontWeight: 600
+                                            },
+                                            value: {
+                                                show: true,
+                                                fontSize: '20px',
+                                                fontWeight: 700,
+                                                formatter: function (val) {
+                                                    return val.toLocaleString() + '원';
+                                                }
+                                            },
+                                            total: {
+                                                show: true,
+                                                label: '사용 예산',
+                                                fontSize: '16px',
+                                                fontWeight: 600,
+                                                formatter: function (w) {
+                                                    return total.toLocaleString() + '원 / ' + budget.toLocaleString() + '원';
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        };
+
+                        try {
+                            this.budgetChart = new ApexCharts(chartElement, options);
+                            setTimeout(() => {
+                                this.budgetChart.render().catch((error) => {
+                                    console.error('도넛 차트 렌더링 오류:', error);
+                                });
+                            }, 100);
+                        } catch (error) {
+                            console.error('도넛 차트 생성 오류:', error);
+                        }
+                    },
+                    //251117
+                    updateRecommendationsByRatio() {
+                        // 조정된 비율에 따라 각 카테고리별로 예산을 재할당하여 상품 추천
+                        const self = this;
+                        const vueInstance = this; // Vue 인스턴스 참조 보존
+                        const budget = this.originalBudget || parseInt(this.budgetAmount);
+                        
+                        console.log('비율 조정 후 다시 추천받기 시작');
+                        console.log('현재 budgetRecommendations:', JSON.parse(JSON.stringify(this.budgetRecommendations)));
+                        
+                        // 각 카테고리별로 조정된 예산으로 상품 조회
+                        const promises = this.budgetRecommendations.map((category, index) => {
+                            // adjustedPrice를 우선 사용, 없으면 totalPrice 사용
+                            // adjustedPrice가 0이거나 undefined/null이면 totalPrice 사용
+                            let categoryBudget = 0;
+                            if (category.adjustedPrice !== undefined && category.adjustedPrice !== null && category.adjustedPrice > 0) {
+                                categoryBudget = category.adjustedPrice;
+                            } else if (category.totalPrice !== undefined && category.totalPrice !== null && category.totalPrice > 0) {
+                                categoryBudget = category.totalPrice;
+                            }
+                            
+                            console.log('카테고리 ' + category.categoryName + ' - adjustedPrice: ' + category.adjustedPrice + ', totalPrice: ' + category.totalPrice + ', adjustedPercentage: ' + category.adjustedPercentage + ', 사용할 예산: ' + categoryBudget);
+                            
+                            if (categoryBudget <= 0) {
+                                console.warn('카테고리 ' + category.categoryName + ' 예산이 0이므로 상품 조회 스킵');
+                                return Promise.resolve({ category: category.categoryName, products: [] });
+                            }
+
+                            return new Promise((resolve) => {
+                                $.ajax({
+                                    url: '/api/budgetRecommendations.dox',
+                                    method: 'POST',
+                                    dataType: 'json',
+                                    data: { 
+                                        budget: categoryBudget,
+                                        categoryName: category.categoryName
+                                    },
+                                    success: (response) => {
+                                        console.log('카테고리 ' + category.categoryName + ' API 응답:', response);
+                                        if (response.result === 'success' && response.data && response.data.length > 0) {
+                                            const catData = response.data[0]; // 단일 카테고리 조회이므로 첫 번째 요소
+                                            console.log('카테고리 ' + category.categoryName + ' 상품 수: ' + (catData.products ? catData.products.length : 0) + ', 상품 목록:', catData.products);
+                                            resolve({
+                                                category: category.categoryName,
+                                                products: catData.products || []
+                                            });
+                                        } else {
+                                            console.warn('카테고리 ' + category.categoryName + ' 응답 데이터 없음 - result: ' + response.result + ', data:', response.data);
+                                            resolve({ category: category.categoryName, products: [] });
+                                        }
+                                    },
+                                    error: (error) => {
+                                        console.error('카테고리 ' + category.categoryName + ' API 오류:', error);
+                                        resolve({ category: category.categoryName, products: [] });
+                                    }
+                                });
+                            });
+                        });
+
+                        Promise.all(promises).then((results) => {
+                            try {
+                                console.log('모든 API 응답 완료:', results);
+                                
+                                // 결과를 budgetRecommendations에 반영
+                                results.forEach((result) => {
+                                    try {
+                                        // 배열 인덱스를 찾아서 직접 업데이트
+                                        const categoryIndex = self.budgetRecommendations.findIndex(c => c.categoryName === result.category);
+                                        if (categoryIndex >= 0) {
+                                            const category = self.budgetRecommendations[categoryIndex];
+                                            console.log('카테고리 ' + result.category + ' 업데이트 전 상품 수: ' + (category.products ? category.products.length : 0));
+                                            console.log('카테고리 ' + result.category + ' 업데이트 후 상품 수: ' + (result.products ? result.products.length : 0));
+                                            
+                                            // 조정된 예산(adjustedPrice)은 유지 (사용자가 조정한 비율 보존)
+                                            // adjustedPrice가 있으면 사용, 없으면 현재 totalPrice를 adjustedPrice로 설정
+                                            let currentAdjustedPrice = category.adjustedPrice;
+                                            let currentAdjustedPercentage = category.adjustedPercentage;
+                                            
+                                            // adjustedPrice가 없거나 0이면, 현재 totalPrice를 adjustedPrice로 사용
+                                            if (currentAdjustedPrice === undefined || currentAdjustedPrice === null || currentAdjustedPrice === 0) {
+                                                currentAdjustedPrice = category.totalPrice || 0;
+                                                currentAdjustedPercentage = category.percentage || 0;
+                                            }
+                                            
+                                            // adjustedPercentage가 없으면 계산
+                                            if (currentAdjustedPercentage === undefined || currentAdjustedPercentage === null) {
+                                                currentAdjustedPercentage = budget > 0 ? (currentAdjustedPrice * 100.0 / budget) : 0;
+                                            }
+                                            
+                                            console.log('카테고리 ' + result.category + ' 조정된 예산 유지 - adjustedPrice: ' + currentAdjustedPrice + ', adjustedPercentage: ' + currentAdjustedPercentage + '%, totalPrice: ' + category.totalPrice + ', percentage: ' + category.percentage + '%');
+                                            
+                                            // 조정된 예산에 맞게 실제 사용된 금액 계산
+                                            let actualTotal = 0;
+                                            
+                                            if (result.products && result.products.length > 0) {
+                                                // 가장 비싼 제품 1개만 사용 (1세트 개념)
+                                                // 백엔드에서 이미 가장 비싼 제품 1개만 반환하므로 첫 번째 제품 사용
+                                                actualTotal = result.products[0].finalPrice || 0;
+                                            }
+                                            
+                                            // 실제 사용된 금액이 조정된 예산보다 크면 조정된 예산으로 제한
+                                            actualTotal = Math.min(actualTotal, currentAdjustedPrice);
+                                            
+                                            // 객체 속성을 직접 수정하여 Vue 반응성 보장 (Vue 3)
+                                            category.products = result.products || [];
+                                            category.totalPrice = actualTotal;
+                                            // percentage는 실제 사용된 금액 기준으로 계산 (도넛 차트용)
+                                            category.percentage = budget > 0 ? (actualTotal * 100.0 / budget) : 0;
+                                            // adjustedPrice와 adjustedPercentage는 사용자가 조정한 값 유지 (바 차트용)
+                                            category.adjustedPrice = currentAdjustedPrice;
+                                            category.adjustedPercentage = currentAdjustedPercentage;
+                                            
+                                            console.log('카테고리 ' + result.category + ' 업데이트 - products: ' + category.products.length + '개, totalPrice: ' + category.totalPrice + ', percentage: ' + category.percentage + '%, adjustedPrice: ' + category.adjustedPrice + ', adjustedPercentage: ' + category.adjustedPercentage + '%');
+                                            
+                                            console.log('카테고리 ' + result.category + ' 최종 업데이트 완료 - 상품: ' + category.products.length + '개, 실제금액: ' + actualTotal + ', 조정예산: ' + currentAdjustedPrice);
+                                        } else {
+                                            console.warn('카테고리 ' + result.category + '를 찾을 수 없음');
+                                        }
+                                    } catch (err) {
+                                        console.error('카테고리 ' + result.category + ' 업데이트 중 오류:', err);
+                                    }
+                                });
+                                
+                                try {
+                                    console.log('업데이트 후 budgetRecommendations:', JSON.parse(JSON.stringify(self.budgetRecommendations)));
+                                } catch (jsonErr) {
+                                    console.warn('JSON 직렬화 오류 (무시 가능):', jsonErr);
+                                }
+                                
+                                // 도넛 차트 업데이트 (Vue 반응성 업데이트 완료 후)
+                                self.$nextTick(() => {
+                                    try {
+                                        self.updateDonutChart();
+                                    } catch (chartErr) {
+                                        console.error('도넛 차트 업데이트 오류:', chartErr);
+                                    }
+                                });
+                            } catch (err) {
+                                console.error('Promise.all 처리 중 오류:', err);
+                                throw err; // catch 블록으로 전달
+                            }
+                        }).catch((error) => {
+                            console.error('비율 조정 후 추천받기 오류:', error);
+                            console.error('에러 상세:', error.message, error.stack);
+                            alert('추천 상품을 불러오는 중 오류가 발생했습니다: ' + (error.message || '알 수 없는 오류'));
+                        });
+                    },
+                    //251117
+                    goToProduct(productNo) {
+                        window.location.href = '/home/product-info.do?productNo=' + productNo;
                     }
                 },
                 mounted() {
@@ -1545,6 +2863,7 @@
                     this.fetchMainSlideImages();
                     this.fetchRecommendedProducts();
                     this.fetchLatestRallies();
+                    lucide.createIcons();
                 }
             });
 
