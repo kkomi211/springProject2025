@@ -35,7 +35,6 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-
 ## 🖥️ **기술 스택**
 | 구분 | 기술 |
 |------|------|
@@ -47,7 +46,19 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-## 🧠 **핵심 기능 소개**
+<center>
+
+## 📕 발표 PPT
+<a href="https://www.canva.com/design/DAG4WPzsIwg/mjJqcK0MVKL6ylQOnMct5Q/edit?utm_content=DAG4WPzsIwg&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank"><b>PPT발표</b></a>
+
+<br>
+
+## 🎞 시연 영상
+<a href="https://drive.google.com/file/d/1q-EyMWRM72OPfmJDrCfWjjb1Xvj5rcVK/view?usp=sharing" target="_blank"><b>영상링크</b></a>
+
+</center>
+
+<br>
 
 ## 🎆 파일 흐름 구조 (Mermaid)
     - subgraph Home[🏡 사용자 페이지] -
@@ -86,6 +97,9 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
         admin_main --> user_list --> user_list_view
     end
 
+<br>
+
+## 🧠 **핵심 기능 소개**
 ### 🏡 **1. 사용자 페이지 (User Page)**
 - **홈 화면:** 감각적인 Black & White 컨셉 디자인  
 - **회원 관리:** 회원가입, 로그인, 정보 수정  
@@ -111,7 +125,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 | 🧑‍💻 **아린** |  **공통 CSS (Header/Footer)** , **/home/community · board · info · login/signup** |  
 | 👟 **전경환** | **마이페이지 작성 및 수정** ,  **결제API, 할인적용계산**  | 
 | 🤖 **김지훈** | **/admin/inquiry · refund-return · orders · user-list** | 
-| 🎨 **김반석** | **/admin/banner** , **/home/rally** ,  | 
+| 🎨 **김반석** | **/admin/banner** , **/home/rally** , **/home/crew** | 
 
 <br>
 
@@ -143,8 +157,9 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-# 😀 ADMIN
-### 🕵️‍♂️ ADMIN 메인 기능
+# 👩‍👩‍👦‍👦 - 전/후 간단 기능 설명 - 
+## 😀 ADMIN
+#### 🕵️‍♂️ ADMIN 메인 기능
 - DB정보 각종 정보 현황출력
 - 그래프 기능 추가 (주문현황 및 월별 매출 자동최신화)
 
@@ -154,7 +169,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-### 💂🏼‍♀️ ADMIN 배너 기능
+#### 💂🏼‍♀️ ADMIN 배너 기능
 - 슬라이드 기능 
 - 스크롤 onclick (좌측 해당 카테고리 클릭시 스크롤 자동이동)
 - 추가 삭제 수정
@@ -166,7 +181,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-### 👮🏼‍♀️ ADMIN 문의 기능
+#### 👮🏼‍♀️ ADMIN 문의 기능
 - search옵션 구현
 - 문의제목 클릭시 해당 문의상세내역 출력 및 답변등록 
 
@@ -176,7 +191,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-### 👨🏼‍🏫 ADMIN 교환/환불 기능
+#### 👨🏼‍🏫 ADMIN 교환/환불 기능
 - search옵션 구현
 - 문의제목 클릭시 해당 문의상세내역 출력 
 
@@ -186,7 +201,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-### 👷🏼‍♂️ ADMIN 상품 기능
+#### 👷🏼‍♂️ ADMIN 상품 기능
 - search옵션 구현 (주문번호(이름), 상태별, 날짜별) 
 - 문의제목 클릭시 해당 문의상세내역 출력 
 
@@ -196,7 +211,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-### 👩🏼‍⚕️ ADMIN 주문내역 기능
+#### 👩🏼‍⚕️ ADMIN 주문내역 기능
 - search옵션 구현 
 - 상품주문, 결제내역 확인 후 (배송처리,배송완료) 처리변환
 
@@ -206,7 +221,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-### 👨🏼‍💼 ADMIN 게시판 신고 기능
+#### 👨🏼‍💼 ADMIN 게시판 신고 기능
 - search옵션 구현 (제품별, 상태별, 날짜별) 
 - 신고자확인상태 클릭시 해당 신고자상세내역정보로 이동 삭제 처리기능 구현
 
@@ -216,7 +231,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-### 👨🏼‍🎨 ADMIN 회원관리 기능
+#### 👨🏼‍🎨 ADMIN 회원관리 기능
 - search옵션 구현  
 - 회원상세정보 및 처리
 
@@ -226,8 +241,91 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
+## 🧐 HOME
+#### 👨🏼‍🚒 HOME 메인 기능
+- DB정보 각종 정보 현황출력 (ADIMIN에 등록 된 배너 호출)
+- 메인슬라이드, 제품, 대회, 크루 광고(BANNER) 출력
 
+| Before | After |
+|--------|-------|
+|<img width="500" height="200" alt="메인화면" src="https://github.com/user-attachments/assets/c3cab946-47a6-426a-9b67-91d682727ea5" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/a56a8128-c26f-4089-8288-53cdfe78903c"/>|
 
+<br>
+
+####  🧛🏼‍♂️ HOME 로그인/회원가입/비밀번호 찾기 기능
+- 로그인, 회원가입, 아이디/비밀번호 찾기 구현
+- 회원가입 시 기입한 핸드폰번호로 인증번호 발송
+- 아이디찾기(이름, 전화번호, 생년월일)입력 시 DB정보에서 아이디 출력
+- 비밀번호찾기(아이디, 이름, 생년월일, 전화번호) 인증번호 발송 인증번호 입력 시 기존 비밀번호에서 새 비밀번호 변경
+
+##### - 회원가입
+| Before | After |
+|--------|-------|
+|<img width="500" height="200" alt="로그인" src="https://github.com/user-attachments/assets/b902aa38-3be4-447f-82d2-8110ccd26bcb" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/5faf363e-9564-4a8b-8621-4ee3925daa5b"/>|
+
+##### - 아이디/비밀번호 찾기
+| Before | After |
+|--------|-------|
+|<img width="500" height="200" alt="아이디_비밀번호찾기" src="https://github.com/user-attachments/assets/831a2553-9290-40dc-863e-e8fc3605d05d" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/0be25a68-5726-4d95-994c-045925dafe35"/>|
+
+<br>
+
+#### 🧚🏼‍♂️ HOME 쇼핑몰 기능
+- search옵션 구현 
+- 제품 구매(결제) 시스템 구현
+- 장바구니 시스템 구현
+- 상품문의 구현
+
+##### - 제품 장바구니 및 결제 
+| Before | After |
+|--------|-------|
+|<img width="500" height="200" alt="상품구매" src="https://github.com/user-attachments/assets/fe350251-2966-4bad-9d6d-95d0bc54640f" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/b6372f68-97dd-4bbe-8b57-85006e4a3708" />|
+
+<br>
+
+##### - 제품 문의 
+| Before | After |
+|--------|-------|
+|<img width="500" height="200" alt="상품문의" src="https://github.com/user-attachments/assets/c67f24f8-69b0-491f-bd31-35c304de383a" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/f6cc9032-274b-4cad-92b1-bd2bf846919a" />|
+
+<br>
+
+#### 🧕🏼 HOME 마이페이지 기능
+- 개인정보 수정
+- 상품리뷰, 문의 구현
+- 문의내역, 상품내역 보기
+- 교환, 환불 구현
+  
+##### - 개인정보 수정
+| Before | After |
+|--------|-------|
+|<img width="500" height="200" alt="마이페이지개인정보확인" src="https://github.com/user-attachments/assets/37cd86d0-e40c-4ed2-bb5d-83f31748fead" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/253eb978-a881-4260-bc52-cd6957b58b39" />|
+
+<br>
+
+##### - 주문배송내역, 반품/교환내역, 문의내역, 상품리뷰
+| Before | After |
+|--------|-------|
+|<img width="500" height="200" alt="합치기" src="https://github.com/user-attachments/assets/db1862dd-2c6e-4b5d-8741-ffc43c85cc2e" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/a781d650-e159-4504-b500-34113a38349e" />|
+
+<br>
+
+#### 🦸🏼‍♂️ HOME 커뮤니티 기능
+- search옵션 구현
+- 게시판 글 추가 수정
+- 신고기능 구현
+- 단체채팅방/ 1:1채팅방 구현
+- 같은방 유저 표시
+
+##### - 게시판, 대회정보
+| Before | After |
+|--------|-------|
+|<img width="500" height="200" alt="합치기2" src="https://github.com/user-attachments/assets/ff48e199-b5d5-41d2-8c32-6da1bf2e1a9e" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/911f7299-7700-41b2-adad-448c30b8bff1" />|
+
+##### - 크루찾기, 채팅방
+| Before | After |
+|--------|-------|
+|<img width="500" height="200" alt="합치기3" src="https://github.com/user-attachments/assets/6445e079-acd2-4431-ae32-22e5fa258eb0" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/184d2a5c-6cae-481e-b83e-07a5f3ca7a3f" />|
 
 
 

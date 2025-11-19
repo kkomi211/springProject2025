@@ -137,11 +137,12 @@
                         <div class="modal-section-title">주문 정보</div>
                         <p class="modal-info-item"><strong>주문번호:</strong> {{ selectedOrder.orderNo }}</p>
                         <p class="modal-info-item"><strong>상품명:</strong> {{ selectedOrder.productName }}</p>
+                        <p class="modal-info-item"><strong>사이즈:</strong> {{ selectedOrder.productSize }}</p>
                         <p class="modal-info-item"><strong>수량:</strong> {{ selectedOrder.quantity }}</p>
                         <p class="modal-info-item"><strong>신청자:</strong> {{ selectedOrder.name }} ({{
                             selectedOrder.userId }})</p>
                         <p class="modal-info-item"><strong>연락처:</strong> {{ selectedOrder.phone }}</p>
-                        <p class="modal-info-item"><strong>신청일:</strong> {{ selectedOrder.udate }}</p>
+                        <p class="modal-info-item"><strong>신청일:</strong> {{ selectedOrder.cDate }}</p>
                         <p class="modal-info-item"><strong>사유:</strong> {{ selectedOrder.because }}</p>
                         <p class="modal-info-item" v-if="selectedOrder.orderRequest"><strong>요청사항:</strong> {{
                             selectedOrder.orderRequest }}</p>
@@ -154,7 +155,7 @@
                                 <option value="">교환할 옵션 선택</option>
                                 <option v-for="option in productOptions" :value="option.productNo"
                                     :key="option.productNo" :disabled="option.quantity === 0">
-                                    {{ option.productName }} / {{ option.productSize }} (재고: {{ option.quantity }}) - {{
+                                    {{ option.productName }} / 사이즈: {{ option.productSize }} (재고: {{ option.quantity }}) - {{
                                     option.price.toLocaleString() }}원
                                 </option>
                             </select>

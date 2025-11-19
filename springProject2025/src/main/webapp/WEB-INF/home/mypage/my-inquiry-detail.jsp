@@ -462,7 +462,7 @@ html, body {
 
                     inquiryNo: "${inquiryNo}",
                     inquiry: null,
-                    userType : '${userType}',
+                    userType : '${userType}'
                 };
             },
             methods: {

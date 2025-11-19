@@ -425,25 +425,25 @@
                     let param = {
                         phone: self.pwd_phone
                     };
-                    // self.smsFlg = true;
-                    // self.fnTimer();
-                    $.ajax({
-                        url: "/send-one",
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-                            console.log(data);
-                            if (data.res.statusCode == "2000") {
-                                alert("문자 전송 완료");
-                                self.ranStr = data.ranStr;
-                                self.smsFlg = true;
-                                self.fnTimer();
-                            } else {
-                                alert("잠시 후 다시 시도해주세요.");
-                            }
-                        }
-                    });
+                    self.smsFlg = true;
+                    self.fnTimer();
+                    // $.ajax({
+                    //     url: "/send-one",
+                    //     dataType: "json",
+                    //     type: "POST",
+                    //     data: param,
+                    //     success: function (data) {
+                    //         console.log(data);
+                    //         if (data.res.statusCode == "2000") {
+                    //             alert("문자 전송 완료");
+                    //             self.ranStr = data.ranStr;
+                    //             self.smsFlg = true;
+                    //             self.fnTimer();
+                    //         } else {
+                    //             alert("잠시 후 다시 시도해주세요.");
+                    //         }
+                    //     }
+                    // });
                 },
                 fnSmsAuth: function () {
                     let self = this;

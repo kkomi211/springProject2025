@@ -431,7 +431,7 @@
                             <div v-if="sessionId != '' && userType != 'K'"><a href="/home/mypage/information.do"><i
                                         data-lucide="user" stroke-width="1.5"></i></a></div>
                             <div v-else-if="sessionId != '' && userType == 'K'"><a
-                                    href="home/mypage/information/change.do"><i data-lucide="user"
+                                    href="/home/mypage/information/change.do"><i data-lucide="user"
                                         stroke-width="1.5"></i></a></div>
                             <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart"
                                         stroke-width="1.5"></i></a></div>
@@ -564,7 +564,7 @@
                     keyword: "",
                     chatList: [],
 
-                    userType: '${userType}',
+                    userType: "${userType}"
 
                 };
             },
