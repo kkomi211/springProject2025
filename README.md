@@ -121,7 +121,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 ## 💡 **팀원별 역할 분담**
 | 팀원 | 역할분담 | 
 |------|------------|
-| 👨‍💼 **정은성(팀장)** | 제품 관리, 채팅, DB | 
+| 👨‍💼 **정은성(팀장)** | **제품 관리, 채팅, DB, 러닝코스 추천 AI**| 
 | 🧑‍💻 **아린** |  **공통 CSS (Header/Footer)** , **/home/community · board · info · login/signup** |  
 | 👟 **전경환** | **마이페이지 작성 및 수정** ,  **결제API, 할인적용계산**  | 
 | 🤖 **김지훈** | **/admin/inquiry · refund-return · orders · user-list** | 
