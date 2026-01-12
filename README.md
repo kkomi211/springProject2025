@@ -1,4 +1,4 @@
-# 3team 프로젝트
+# Spring 3team 프로젝트
 
 <div align="center">
   <img  src="media/KakaoTalk_20251107_114123012.gif" alt="GwasilZero 시연 영상" width="1200" height="500">
@@ -49,7 +49,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 <center>
 
 ## 📕 발표 PPT
-<a href="https://www.canva.com/design/DAG4WPzsIwg/mjJqcK0MVKL6ylQOnMct5Q/edit?utm_content=DAG4WPzsIwg&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank"><b>PPT발표</b></a>
+<a href="https://www.canva.com/design/DAG4WPzsIwg/4nd4B55efG55t5hddguiOQ/view?utm_content=DAG4WPzsIwg&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h58d9b844c1" target="_blank"><b>PPT발표</b></a>
 
 <br>
 
