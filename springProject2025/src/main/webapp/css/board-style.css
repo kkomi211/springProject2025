@@ -197,6 +197,12 @@ tr:hover {
   background-color: #fafafa;
 }
 
+.comment-column{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .write-btn-wrapper {
     display: flex;
     justify-content: flex-end; /* push button to the right */

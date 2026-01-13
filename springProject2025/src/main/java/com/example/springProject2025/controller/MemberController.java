@@ -118,7 +118,7 @@ public class MemberController {
 		System.out.println(map);
 		resultMap = memberService.pwdChange(map);
 		
-		return new Gson().toJson(resultMap);
+		return new Gson().toJson(resultMap);	
 	}
 
 }
