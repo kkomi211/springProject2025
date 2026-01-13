@@ -453,7 +453,7 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                width: 100%;
+                width: 79%;
             }
 
             /* 유저 클릭 시 뜨는 드롭다운 메뉴 */
@@ -628,17 +628,22 @@
                                         </button>
 
                                         <div class="dropdown-menu" v-if="showMenu">
-                                            <template v-if="ownerId == sessionId">
-                                                <div class="dropdown-item" @click="fnUpdateChatName">방 이름 변경</div>
-                                                <div class="dropdown-item" @click="fnTransferOwnerMode">방장 위임</div>
+                                            <template v-if="directFlg">
                                                 <div class="dropdown-item" @click="fnDeleteChatRoom" style="color:red;">
-                                                    방 삭제
-                                                </div>
+                                                    방 삭제</div>
                                             </template>
 
                                             <template v-else>
-                                                <div class="dropdown-item" @click="fnDeleteMember(sessionId)"
-                                                    style="color:red;">채팅방 탈퇴</div>
+                                                <template v-if="ownerId == sessionId">
+                                                    <div class="dropdown-item" @click="fnUpdateChatName">방 이름 변경</div>
+                                                    <div class="dropdown-item" @click="fnTransferOwnerMode">방장 위임</div>
+                                                    <div class="dropdown-item" @click="fnDeleteChatRoom"
+                                                        style="color:red;">방 삭제</div>
+                                                </template>
+                                                <template v-else>
+                                                    <div class="dropdown-item" @click="fnDeleteMember(sessionId)"
+                                                        style="color:red;">채팅방 탈퇴</div>
+                                                </template>
                                             </template>
                                         </div>
                                     </div>
@@ -654,8 +659,7 @@
                                         <div
                                             :class="['message-group', item.senderId == sessionId ? 'my-message' : 'other-message']">
                                             <div class="nickname-label" v-if="item.senderId != sessionId">{{
-                                                item.nickname
-                                                }}</div>
+                                                item.nickname }}</div>
 
                                             <div class="bubble-container">
                                                 <div class="chat-bubble">
@@ -666,7 +670,7 @@
                                                 </div>
                                             </div>
 
-                                            <a v-if="item.senderId == sessionId || sessionId == ownerId"
+                                            <a v-if="(directFlg && item.senderId == sessionId) || (!directFlg && (item.senderId == sessionId || sessionId == ownerId))"
                                                 class="delete-link" @click="fndeleteMessage(item.chatId)">삭제</a>
                                         </div>
                                     </template>
@@ -674,13 +678,30 @@
                                     <div v-if="chatbotFlg" class="bot-section"
                                         style="margin-top:20px; display: flex; flex-direction: column; width: 100%; gap: 20px;">
                                         <div class="date-divider"><span class="date-label">코스 추천 서비스</span></div>
+
                                         <div class="bot-buttons"
                                             style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;">
-                                            <button v-for="city in ['서울','인천','부산','대구','대전','광주','울산']"
-                                                @click="fnRunRoute(city)"
-                                                style="padding:5px 10px; border-radius:15px; border:none; background:#fff; cursor:pointer;">
-                                                {{city}}
-                                            </button>
+
+                                            <template v-if="chatStep === 1">
+                                                <button v-for="city in ['서울','인천','부산','대구','대전','광주','울산']"
+                                                    @click="fnRunRoute(city)"
+                                                    style="padding:5px 10px; border-radius:15px; border:none; background:#fff; cursor:pointer;">
+                                                    {{city}}
+                                                </button>
+                                            </template>
+
+                                            <template v-if="chatStep === 2">
+                                                <button v-for="level in ['초보자', '중급자', '상급자']"
+                                                    @click="fnSelectLevel(level)"
+                                                    style="padding:5px 10px; border-radius:15px; border:none; background:#e3f2fd; color:#007bff; font-weight:bold; cursor:pointer;">
+                                                    {{level}}
+                                                </button>
+                                                <button @click="chatStep = 1"
+                                                    style="padding:5px 10px; border-radius:15px; border:1px solid #ddd; background:#fff; cursor:pointer;">
+                                                    지역 다시 선택
+                                                </button>
+                                            </template>
+
                                         </div>
                                         <div v-for="msg in messages"
                                             :class="['message-group', msg.type == 'user' ? 'my-message' : 'other-message']">
@@ -691,6 +712,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="button-box" style="display: flex; gap: 10px;">
                                     <input type="text" id="message" placeholder="메시지를 입력하세요... (/코스추천, /종료)"
                                         @keyup.enter="sendMessage" class="chatInput"
@@ -830,7 +852,9 @@
                         confirmText: '확인',
                         cancelText: '취소'
                     },
-                    activeUserMenu: null
+                    activeUserMenu: null,
+                    chatStep: 1,      // 1: 지역 선택 단계, 2: 난이도 선택 단계
+                    selectedCity: "", // 사용자가 선택한 지역 저장
                 };
             },
             methods: {
@@ -871,6 +895,8 @@
                             self.chatInfo = data.chatlist[0];
                             if (self.chatInfo.roomType == 'DIRECT') {
                                 self.directFlg = true;
+                            } else {
+                                self.directFlg = false; // 명시적으로 false 설정 추가하면 더 안전함
                             }
                         }
                     });
@@ -1080,9 +1106,60 @@
                     });
                 },
                 fnRunRoute(local) {
-                    let self = this;
-                    self.userInput = local + "지역의 러닝코스 알려줘";
-                    self.sendMessageChatbot();
+                    // 1. 사용자 메시지 표시 (지역)
+                    this.messages.push({ text: local, type: 'user' });
+
+                    // 2. 지역 저장 및 단계 변경
+                    this.selectedCity = local;
+                    this.chatStep = 2; // 난이도 선택 단계로 이동
+
+                    // 3. 봇이 난이도를 물어보는 메시지 표시 (가짜 응답)
+                    setTimeout(() => {
+                        this.messages.push({
+                            text: local + " 지역이군요! 원하시는 난이도를 선택해주세요.",
+                            type: 'bot'
+                        });
+                        // 스크롤 하단 이동
+                        let chatBox = document.getElementById("chatBox");
+                        if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+                    }, 500);
+                },
+                fnSelectLevel(level) {
+                    // 1. 사용자 메시지 표시 (난이도)
+                    this.messages.push({ text: level, type: 'user' });
+
+                    // 2. 질문 조합 (예: "서울 초보자 러닝코스 추천해줘")
+                    // 백엔드 프롬프트가 [지역] [난이도] 구조를 기대하므로 이렇게 합칩니다.
+                    let finalInput = this.selectedCity + " " + level + " 러닝코스 추천해줘";
+
+                    // 3. 봇에게 진짜 요청 보내기 (sendMessageChatbot 재사용)
+                    // 주의: sendMessageChatbot 내부에서 this.userInput을 쓰므로 값을 넣어줍니다.
+                    this.userInput = finalInput;
+
+                    // 기존 sendMessageChatbot은 'userInput'을 화면에 또 뿌리므로, 
+                    // 화면 중복 표시를 막으려면 아래처럼 ajax만 따로 빼거나, 
+                    // sendMessageChatbot을 조금 수정해야 합니다. 
+                    // 편의상 여기서는 ajax를 직접 호출하는 방식으로 작성합니다.
+
+                    let chatBox = document.getElementById("chatBox");
+
+                    $.ajax({
+                        url: "/gemini/chat",
+                        type: "GET",
+                        data: { input: finalInput },
+                        success: (response) => {
+                            this.messages.push({ text: response, type: 'bot' });
+                            this.$nextTick(() => { chatBox.scrollTop = chatBox.scrollHeight; });
+                        },
+                        error: (xhr) => {
+                            this.messages.push({ text: "오류 발생", type: 'bot' });
+                        }
+                    });
+
+                    // 4. 단계 초기화 (다시 지역 선택으로)
+                    this.chatStep = 1;
+                    this.selectedCity = "";
+                    this.userInput = "";
                 },
                 fnLogout: function () {
                     let self = this;
