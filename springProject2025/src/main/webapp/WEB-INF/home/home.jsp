@@ -1412,74 +1412,13 @@
                     padding: 10px;
                 }
 
-                /* 장바구니 배찌 스타일 */
-                .cart-wrapper {
-                    position: relative; /* 배찌의 기준점 */
-                    display: inline-block;
-                }
-
-                .cart-badge {
-                    position: absolute;
-                    top: -8px;    /* 위쪽 위치 조절 */
-                    right: -10px; /* 오른쪽 위치 조절 */
-                    background-color: #ff0000; /* 빨간색 */
-                    color: white;
-                    font-size: 11px;
-                    font-weight: bold;
-                    min-width: 18px;
-                    height: 18px;
-                    border-radius: 50%; /* 동그랗게 */
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 2px;
-                    box-shadow: 0 0 2px rgba(0,0,0,0.5);
-                }
-
             </style>
-
         </head>
 
         <body>
             <div id="app">
-                <header>
-                    <div class="top-header">
-                        <div class="brand-name">
-                            <div><a href="/home.do" style="text-decoration: none;">RUNNERS' HOUSE</a></div>
-                        </div>
-                        <div id="right-items">
-                            <div>
-                                <!-- <template > -->
-                                    <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
-                                <!-- </template> -->
-                                <!-- <template > -->
-                                    <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
-                                <!-- </template> -->
-                            </div>
-                            <div v-if="sessionId == ''">
-                                <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
-                            </div>
-                            <div v-if="sessionId != '' && userType != 'K'"><a
-                                    href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
-                            <div v-else-if="sessionId != '' && userType == 'K'"><a
-                                    href="/home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
-                            <!-- <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div> -->
-                            <div v-if="sessionId != ''" class="cart-wrapper">
-                                <a href="/home/cart.do">
-                                    <i data-lucide="shopping-cart" stroke-width="1.5"></i>
-                                    <span class="cart-badge" v-if="cartCount > 0">{{ cartCount }}</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bottom-header">
-                        <!-- <div class="bottom-header-sub"> -->
-                            <div><a href="/home/product.do">제품</a></div>
-                            <div><a href="javascript:;" @click="fnSale">세일</a></div>
-                            <div><a href="/home/community/board.do">커뮤니티</a></div>
-                        <!-- </div> -->
-                    </div>
-                </header>
+                <%-- 공통 헤더 컴포넌트 --%>
+                <jsp:include page="/WEB-INF/header/header.jsp" />
                 <div class="container">
                     <main>
                         <!-- 메인 슬라이드 배너 -->
