@@ -1412,6 +1412,30 @@
                     padding: 10px;
                 }
 
+                /* 장바구니 배찌 스타일 */
+                .cart-wrapper {
+                    position: relative; /* 배찌의 기준점 */
+                    display: inline-block;
+                }
+
+                .cart-badge {
+                    position: absolute;
+                    top: -8px;    /* 위쪽 위치 조절 */
+                    right: -10px; /* 오른쪽 위치 조절 */
+                    background-color: #ff0000; /* 빨간색 */
+                    color: white;
+                    font-size: 11px;
+                    font-weight: bold;
+                    min-width: 18px;
+                    height: 18px;
+                    border-radius: 50%; /* 동그랗게 */
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 2px;
+                    box-shadow: 0 0 2px rgba(0,0,0,0.5);
+                }
+
             </style>
 
         </head>
@@ -1439,7 +1463,13 @@
                                     href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
                             <div v-else-if="sessionId != '' && userType == 'K'"><a
                                     href="/home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
-                            <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div>
+                            <!-- <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div> -->
+                            <div v-if="sessionId != ''" class="cart-wrapper">
+                                <a href="/home/cart.do">
+                                    <i data-lucide="shopping-cart" stroke-width="1.5"></i>
+                                    <span class="cart-badge" v-if="cartCount > 0">{{ cartCount }}</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -1697,9 +1727,38 @@
                         dragHandlersInitialized: false,
                         updateChartTimer: null,
                         dragUpdateTimer: null,
+                        cartCount: 0, // 장바구니 수량 변수 추가
                     };
                 },
                 methods: {
+
+                    
+                    // 장바구니 수량을 서버에서 가져오는 함수
+                    fetchCartCount() {
+                        // 세션 아이디가 없으면 실행하지 않음
+                        if (this.sessionId == '' || this.sessionId == null) return;
+                        
+                        let self = this;
+                        $.ajax({
+                            url: '/api/cartCount.dox', 
+                            method: 'GET',
+                            // ★ 서버의 @RequestParam HashMap map으로 전달될 데이터 ★
+                            data: { 
+                                sessionId: self.sessionId 
+                            }, 
+                            dataType: 'json',
+                            success: (response) => {
+                                console.log("서버 응답 데이터:", response);
+                                if (response.result === 'success') {
+                                    self.cartCount = response.count; // 서버에서 보낸 count 값을 Vue 변수에 저장
+                                }
+                            },
+                            error: (err) => {
+                                console.error("AJAX 호출 중 오류 발생:", err);
+                            }
+                        });
+                    },
+
                     // (이전과 동일한 fetchMainSlideImages, fetchRecommendedProducts, fetchLatestRallies, initMainSwiper, initRallySwiper)
                     fetchMainSlideImages() {
                         let self = this;
@@ -2855,6 +2914,10 @@
                 mounted() {
                     // 처음 시작할 때 실행되는 부분
                     let self = this;
+
+                    // 1. 세션 아이디가 진짜 있는지 콘솔에 찍어보세요
+                    console.log("현재 세션 아이디:", self.sessionId);
+
                     const queryParams = new URLSearchParams(window.location.search);
                     self.code = queryParams.get('code') || '';
                     if (self.code != "") {
@@ -2864,6 +2927,15 @@
                     this.fetchRecommendedProducts();
                     this.fetchLatestRallies();
                     lucide.createIcons();
+
+
+                    // 2. 조건문을 잠시 제거하거나, 로그를 찍어 확인합니다.
+                    if (self.sessionId && self.sessionId !== '') {
+                        console.log("장바구니 수량 조회를 시작합니다.");
+                        self.fetchCartCount();
+                    } else {
+                        console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
+                    }
                 }
             });
 
