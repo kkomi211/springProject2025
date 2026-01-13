@@ -5,13 +5,14 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
+        <title>상품 등록 - RUNNERS HOUSE</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <link rel="stylesheet" href="/css/style.css">
         <script src="/js/page-change.js"></script>
         <link rel="stylesheet" href="/css/jes.css">
+        <link rel="stylesheet" href="/css/admin-inquiry.css">
 
     </head>
 
@@ -41,8 +42,13 @@
             <div class="content">
                 <h2>상품 등록</h2>
 
+                <!-- 로딩 스피너 -->
+                <div v-if="loading" class="loading-container" style="text-align: center; padding: 40px;">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">처리 중...</div>
+                </div>
 
-                <div class="text-left">
+                <div class="text-left" v-if="!loading">
                     <table class="newtable addtable">
                         <tr>
                             <th>제품이름</th>
@@ -115,7 +121,8 @@
                     typeNo: "",
                     productDetail: "",
                     sizeNum: 1,
-                    sessionId: "${sessionId}"
+                    sessionId: "${sessionId}",
+                    loading: false // 로딩 상태
                 };
             },
             methods: {
@@ -215,12 +222,15 @@
                         return; // 파일이 없으면 등록 진행 중단
                     }
 
+                    self.loading = true; // 로딩 시작
+
                     for (let i = 0; i < self.sizeNum; i++) {
                         self.fnAddProduct(i + 1);
                     }
-                    alert("작성이 완료되었습니다!");
                     
                     setTimeout(function () {
+                        alert("작성이 완료되었습니다!");
+                        self.loading = false; // 로딩 종료
                         self.fnBack();
                     }, 850);
                 },

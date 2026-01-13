@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
+        <title>관리자 대시보드 - RUNNERS HOUSE</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -40,12 +40,16 @@
 
             <!-- 본문 -->
             <div class="content">
-                <div>
-                    <h2>대시보드 요약</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">대시보드 요약</h2>
+                    <div class="auto-refresh-toggle" :class="{'active': autoRefresh}" @click="toggleAutoRefresh">
+                        <span class="auto-refresh-indicator" v-if="autoRefresh"></span>
+                        <span>{{ autoRefresh ? '자동 새로고침 ON' : '자동 새로고침 OFF' }}</span>
+                    </div>
                 </div>
                 <div class="dashboard-grid">
-                    <!-- 주문 현황 (막대 그래프) -->
-                    <div class="dashboard-card" style="grid-column: span 2;">
+                    <!-- 주문 현황 (가로 막대 그래프) -->
+                    <div class="dashboard-card">
                         <h3>주문 현황</h3>
                         <div class="dashboard-chart-container">
                             <canvas id="orderStatusChart"></canvas>
@@ -53,7 +57,7 @@
                     </div>
 
                     <!-- 상품 정보 핵심 요약 표 -->
-                    <div class="dashboard-card">
+                    <div class="dashboard-card clickable" @click="goToPage('/admin/product.do')">
                         <h3>상품 요약</h3>
                         <div class="product-summary-section">
                             <div>
@@ -73,7 +77,12 @@
                                     </tr>
                                     <tr>
                                         <td>품절 임박 상품 수</td>
-                                        <td>{{ productSummary.lowStockProducts }} 개</td>
+                                        <td>
+                                            <span v-if="productSummary.lowStockProducts > 0" style="color: #ff9800; font-weight: bold;">
+                                                {{ productSummary.lowStockProducts }} 개 ⚠️
+                                            </span>
+                                            <span v-else>{{ productSummary.lowStockProducts }} 개</span>
+                                        </td>
                                     </tr>
                                 </table>
                             </div>
@@ -91,15 +100,172 @@
                                     </tr>
                                     <tr
                                         v-if="productSummary.topSellingProducts && productSummary.topSellingProducts.length === 0">
-                                        <td colspan="2">데이터 없음</td>
+                                        <td colspan="2" class="empty-state-message">판매 데이터가 없습니다</td>
                                     </tr>
                                 </table>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 회원 요약 -->
+                    <!-- 품절 임박 상품 알림 카드 -->
+                    <div class="dashboard-card" :class="{'stock-alert-card': lowStockProductsList.length > 0}">
+                        <h3>
+                            ⚠️ 품절 임박 상품
+                            <span v-if="lowStockProductsList.length > 0" style="color: #dc3545; font-size: 0.9em;">
+                                ({{ lowStockProductsList.length }}개)
+                            </span>
+                        </h3>
+                        <div v-if="lowStockProductsList.length > 0" class="low-stock-list-full">
+                            <table style="width: 100%; font-size: 0.9em;">
+                                <tr>
+                                    <th>상품명</th>
+                                    <th>사이즈</th>
+                                    <th>재고</th>
+                                </tr>
+                                <tr v-for="product in lowStockProductsList" :key="product.PRODUCT_NO" 
+                                    :class="product.QUANTITY === 0 ? 'stock-out-row' : 'stock-low-row'">
+                                    <td>{{ product.PRODUCT_NAME }}</td>
+                                    <td>{{ product.PRODUCT_SIZE || '-' }}</td>
+                                    <td>
+                                        <span :class="product.QUANTITY === 0 ? 'stock-badge-out' : 'stock-badge-low'">
+                                            {{ product.QUANTITY }}
+                                            <span class="stock-badge">{{ product.QUANTITY === 0 ? '품절' : '품절임박' }}</span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div v-else class="empty-state-message" style="padding: 20px; text-align: center;">
+                            품절 임박 상품이 없습니다.
+                        </div>
+                    </div>
+
+                    <!-- 미처리 요청 -->
+                    <div class="dashboard-card request-alert-card" :class="{'request-alert-card-active': requestSummary.totalPendingRequestsCount > 0}" @click="goToPage('/admin/orders.do')">
+                        <h3>
+                            ⚠️ 미처리 요청
+                            <span v-if="requestSummary.totalPendingRequestsCount > 0" style="color: #dc3545; font-size: 0.9em;">
+                                ({{ requestSummary.totalPendingRequestsCount }}건 대기)
+                            </span>
+                        </h3>
+                        <div class="product-summary-section">
+                            <div>
+                                <table>
+                                    <tr>
+                                        <th>항목</th>
+                                        <th>대기 수</th>
+                                    </tr>
+                                    <tr>
+                                        <td>배송 중 주문</td>
+                                        <td>{{ requestSummary.deliveryInProgress }} 건</td>
+                                    </tr>
+                                    <tr>
+                                        <td>신규 신고 게시물</td>
+                                        <td>{{ requestSummary.newReports }} 건</td>
+                                    </tr>
+                                    <tr>
+                                        <td>반품 요청 대기</td>
+                                        <td>{{ requestSummary.refundRequests }} 건</td>
+                                    </tr>
+                                    <tr>
+                                        <td>교환 요청 대기</td>
+                                        <td>{{ requestSummary.exchangeRequests }} 건</td>
+                                    </tr>
+                                    <tr>
+                                        <td>상품 문의 대기</td>
+                                        <td>{{ requestSummary.newProductInquiries }} 건</td>
+                                    </tr>
+                                    <tr>
+                                        <th>총 미처리 요청</th>
+                                        <th>{{ requestSummary.totalPendingRequestsCount }} 건</th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 매출 현황 (월별 라인 그래프 - 전년 대비) -->
                     <div class="dashboard-card">
+                        <h3>월별 매출 추이 (전년 대비)</h3>
+                        <div class="dashboard-chart-container">
+                            <canvas id="monthlySalesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 카테고리별 매출 비율 -->
+                    <div class="dashboard-card">
+                        <h3>카테고리별 매출 비율</h3>
+                        <div class="dashboard-chart-container">
+                            <canvas id="salesByCategoryChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 총 매출 현황 -->
+                    <div class="dashboard-card clickable" @click="goToPage('/admin/orders.do')">
+                        <h3>총 매출 현황</h3>
+                        <div class="product-summary-section">
+                            <div>
+                                <h4>주요 지표</h4>
+                                <table>
+                                    <tr>
+                                        <th>항목</th>
+                                        <th>값</th>
+                                    </tr>
+                                    <tr>
+                                        <td>총 매출</td>
+                                        <td>{{ formatCurrency(salesSummary.totalSales) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>월간 매출</td>
+                                        <td>{{ formatCurrency(salesSummary.monthlySales) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>전월 대비</td>
+                                        <td>
+                                            <span :style="getComparisonStyle(salesSummary.monthlySales, salesSummary.previousMonthSales)">
+                                                {{ getComparisonText(salesSummary.monthlySales, salesSummary.previousMonthSales) }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>전년 동월 대비</td>
+                                        <td>
+                                            <span :style="getComparisonStyle(salesSummary.monthlySales, salesSummary.previousYearSameMonthSales)">
+                                                {{ getComparisonText(salesSummary.monthlySales, salesSummary.previousYearSameMonthSales) }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>총 주문 건수</td>
+                                        <td>{{ salesSummary.totalOrdersCount }} 건</td>
+                                    </tr>
+                                    <tr>
+                                        <td>월간 주문 건수</td>
+                                        <td>{{ salesSummary.monthlyOrdersCount }} 건</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <!-- <div>
+                            <h4>결제 방법별 매출</h4>
+                            <table>
+                                <tr>
+                                    <th>방법</th>
+                                    <th>매출액</th>
+                                </tr>
+                                <tr v-for="method in salesSummary.salesByPaymentMethod" :key="method.PAYMENT_METHOD">
+                                    <td>{{ method.PAYMENT_METHOD }}</td>
+                                    <td>{{ formatCurrency(method.TOTAL_SALES) }}</td>
+                                </tr>
+                                <tr v-if="salesSummary.salesByPaymentMethod.length === 0">
+                                    <td colspan="2">데이터 없음</td>
+                                </tr>
+                            </table>
+                        </div> -->
+                        </div>
+                    </div>
+
+                    <!-- 회원 요약 -->
+                    <div class="dashboard-card clickable" @click="goToPage('/admin/user-list.do')">
                         <h3>회원 요약</h3>
                         <div class="product-summary-section">
                             <div>
@@ -140,103 +306,7 @@
                                         <td>{{ gender.USER_COUNT }} 명</td>
                                     </tr>
                                     <tr v-if="userSummary.usersByGender.length === 0">
-                                        <td colspan="2">데이터 없음</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 매출 현황 (월별 라인 그래프) -->
-                    <div class="dashboard-card" style="grid-column: span 2;">
-                        <h3>월별 매출 추이</h3>
-                        <div class="dashboard-chart-container">
-                            <canvas id="monthlySalesChart"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- 총 매출 현황 -->
-                    <div class="dashboard-card">
-                        <h3>총 매출 현황</h3>
-                        <div class="product-summary-section">
-                            <div>
-                                <h4>주요 지표</h4>
-                                <table>
-                                    <tr>
-                                        <th>항목</th>
-                                        <th>값</th>
-                                    </tr>
-                                    <tr>
-                                        <td>총 매출</td>
-                                        <td>{{ formatCurrency(salesSummary.totalSales) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>월간 매출</td>
-                                        <td>{{ formatCurrency(salesSummary.monthlySales) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>총 주문 건수</td>
-                                        <td>{{ salesSummary.totalOrdersCount }} 건</td>
-                                    </tr>
-                                    <tr>
-                                        <td>월간 주문 건수</td>
-                                        <td>{{ salesSummary.monthlyOrdersCount }} 건</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <!-- <div>
-                            <h4>결제 방법별 매출</h4>
-                            <table>
-                                <tr>
-                                    <th>방법</th>
-                                    <th>매출액</th>
-                                </tr>
-                                <tr v-for="method in salesSummary.salesByPaymentMethod" :key="method.PAYMENT_METHOD">
-                                    <td>{{ method.PAYMENT_METHOD }}</td>
-                                    <td>{{ formatCurrency(method.TOTAL_SALES) }}</td>
-                                </tr>
-                                <tr v-if="salesSummary.salesByPaymentMethod.length === 0">
-                                    <td colspan="2">데이터 없음</td>
-                                </tr>
-                            </table>
-                        </div> -->
-                        </div>
-                    </div>
-
-                    <!-- 요청/상태 요약 -->
-                    <div class="dashboard-card">
-                        <h3>요청/상태 요약</h3>
-                        <div class="product-summary-section">
-                            <div>
-                                <h4>미처리 요청</h4>
-                                <table>
-                                    <tr>
-                                        <th>항목</th>
-                                        <th>대기 수</th>
-                                    </tr>
-                                    <tr>
-                                        <td>배송 중 주문</td>
-                                        <td>{{ requestSummary.deliveryInProgress }} 건</td>
-                                    </tr>
-                                    <tr>
-                                        <td>신규 신고 게시물</td>
-                                        <td>{{ requestSummary.newReports }} 건</td>
-                                    </tr>
-                                    <tr>
-                                        <td>반품 요청 대기</td>
-                                        <td>{{ requestSummary.refundRequests }} 건</td>
-                                    </tr>
-                                    <tr>
-                                        <td>교환 요청 대기</td>
-                                        <td>{{ requestSummary.exchangeRequests }} 건</td>
-                                    </tr>
-                                    <tr>
-                                        <td>상품 문의 대기</td>
-                                        <td>{{ requestSummary.newProductInquiries }} 건</td>
-                                    </tr>
-                                    <tr>
-                                        <th>총 미처리 요청</th>
-                                        <th>{{ requestSummary.totalPendingRequestsCount }} 건</th>
+                                        <td colspan="2" class="empty-state-message">회원 데이터가 없습니다</td>
                                     </tr>
                                 </table>
                             </div>
@@ -262,8 +332,11 @@
                     salesSummary: { // 매출 현황 데이터
                         totalSales: 0,
                         monthlySales: 0,
+                        previousMonthSales: 0,
+                        previousYearSameMonthSales: 0,
                         monthlySalesChartLabels: [],
                         monthlySalesChartData: [],
+                        previousYearMonthlySalesChartData: [],
                         // salesByPaymentMethod: [], 
                         totalOrdersCount: 0,
                         monthlyOrdersCount: 0
@@ -289,7 +362,14 @@
                         newProductInquiries: 0,
                         totalPendingRequestsCount: 0,
                         lowStockProductsCount: 0      // (상품 요약에도 있지만 여기에 다시 배치)
-                    }
+                    },
+                    salesByCategory: { // 카테고리별 매출 비율
+                        labels: [],
+                        data: []
+                    },
+                    lowStockProductsList: [], // 품절 임박 상품 목록
+                    autoRefresh: false, // 자동 새로고침 상태
+                    autoRefreshInterval: null // 자동 새로고침 인터벌
                 };
             },
             methods: {
@@ -315,6 +395,8 @@
                     this.fetchProductSummaryData();
                     this.fetchUserSummaryData();
                     this.fetchRequestSummaryData();
+                    this.fetchSalesByCategoryData();
+                    this.fetchLowStockProductsData();
                 },
                 fetchOrderStatusData() {
                     let self = this;
@@ -342,6 +424,7 @@
                     if (this.orderStatusChart) {
                         this.orderStatusChart.destroy();
                     }
+                    // 가로 막대 그래프로 변경 (항목이 많을 때 더 적합)
                     this.orderStatusChart = new Chart(ctx, {
                         type: 'bar',
                         data: {
@@ -350,16 +433,39 @@
                                 label: '건수',
                                 data: this.orderStatus.data,
                                 backgroundColor: this.orderStatus.colors,
+                                borderColor: this.orderStatus.colors,
                                 borderWidth: 1
                             }]
                         },
                         options: {
+                            indexAxis: 'y', // 가로 막대 그래프로 변경
                             responsive: true,
                             maintainAspectRatio: false,
                             scales: {
-                                y: {
+                                x: {
                                     beginAtZero: true,
-                                    ticks: {} // stepSize 제거
+                                    ticks: {
+                                        stepSize: 1
+                                    }
+                                },
+                                y: {
+                                    ticks: {
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false // 범례 숨김 (색상이 각 막대에 표시되므로)
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return context.parsed.x + '건';
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -371,23 +477,49 @@
                         this.monthlySalesChart.destroy(); // 기존 차트 파괴 후 재생성
                     }
                     this.monthlySalesChart = new Chart(ctx, {
-                        type: 'line', // 라인 차트로 변경
+                        type: 'line',
                         data: {
                             labels: this.salesSummary.monthlySalesChartLabels,
-                            datasets: [{
-                                label: '월별 매출',
-                                data: this.salesSummary.monthlySalesChartData,
-                                borderColor: 'rgb(75, 192, 192)',
-                                tension: 0.1,
-                                fill: false
-                            }]
+                            datasets: [
+                                {
+                                    label: '올해 매출',
+                                    data: this.salesSummary.monthlySalesChartData,
+                                    borderColor: 'rgb(75, 192, 192)',
+                                    backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                                    tension: 0.1,
+                                    fill: true
+                                },
+                                {
+                                    label: '전년도 매출',
+                                    data: this.salesSummary.previousYearMonthlySalesChartData,
+                                    borderColor: 'rgb(255, 99, 132)',
+                                    backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                                    tension: 0.1,
+                                    fill: true,
+                                    borderDash: [5, 5] // 점선으로 표시
+                                }
+                            ]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
                             scales: {
                                 y: {
-                                    beginAtZero: true
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return value.toLocaleString('ko-KR') + '원';
+                                        }
+                                    }
+                                }
+                            },
+                            plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return context.dataset.label + ': ' + context.parsed.y.toLocaleString('ko-KR') + '원';
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -422,8 +554,11 @@
                             if (response.result === 'success') {
                                 self.salesSummary.totalSales = response.data.totalSales;
                                 self.salesSummary.monthlySales = response.data.monthlySales; // 이번 달 매출
+                                self.salesSummary.previousMonthSales = response.data.previousMonthSales || 0; // 전월 매출
+                                self.salesSummary.previousYearSameMonthSales = response.data.previousYearSameMonthSales || 0; // 전년 동월 매출
                                 self.salesSummary.monthlySalesChartLabels = response.data.monthlySalesList.map(item => item.SALES_MONTH); // 대문자
                                 self.salesSummary.monthlySalesChartData = response.data.monthlySalesList.map(item => item.MONTHLY_SALES);   // 대문자
+                                self.salesSummary.previousYearMonthlySalesChartData = (response.data.previousYearMonthlySalesList || []).map(item => item.MONTHLY_SALES); // 전년도 월별 매출
                                 // self.salesSummary.salesByPaymentMethod = response.data.salesByPaymentMethod;
                                 self.salesSummary.totalOrdersCount = response.data.totalOrdersCount;
                                 self.salesSummary.monthlyOrdersCount = response.data.monthlyOrdersCount;
@@ -513,10 +648,183 @@
                 formatCurrency(value) {
                     if (value === null || value === undefined) return '0 원';
                     return value.toLocaleString('ko-KR') + ' 원';
+                },
+                // 비교 텍스트 생성 (증감률)
+                getComparisonText(current, previous) {
+                    if (!previous || previous === 0) {
+                        return current > 0 ? '신규' : '0%';
+                    }
+                    const change = ((current - previous) / previous * 100).toFixed(1);
+                    const sign = change >= 0 ? '+' : '';
+                    return sign + change + '%';
+                },
+                // 비교 스타일 (증가: 초록색, 감소: 빨간색)
+                getComparisonStyle(current, previous) {
+                    if (!previous || previous === 0) {
+                        return current > 0 ? 'color: #28a745; font-weight: bold;' : 'color: #6c757d;';
+                    }
+                    const change = ((current - previous) / previous * 100);
+                    if (change > 0) {
+                        return 'color: #28a745; font-weight: bold;';
+                    } else if (change < 0) {
+                        return 'color: #dc3545; font-weight: bold;';
+                    } else {
+                        return 'color: #6c757d;';
+                    }
+                },
+                toggleAutoRefresh() {
+                    this.autoRefresh = !this.autoRefresh;
+                    if (this.autoRefresh) {
+                        // 자동 새로고침 시작 (30초마다)
+                        this.autoRefreshInterval = setInterval(() => {
+                            this.fetchDashboardData();
+                        }, 30000); // 30초
+                    } else {
+                        // 자동 새로고침 중지
+                        if (this.autoRefreshInterval) {
+                            clearInterval(this.autoRefreshInterval);
+                            this.autoRefreshInterval = null;
+                        }
+                    }
+                },
+                goToPage(url) {
+                    window.location.href = url;
+                },
+                // 카테고리별 매출 비율 데이터 가져오기
+                fetchSalesByCategoryData() {
+                    let self = this;
+                    $.ajax({
+                        url: '/admin/dashboard/salesByCategory.dox',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (response) {
+                            if (response.result === 'success') {
+                                self.salesByCategory.labels = response.data.map(item => item.CATEGORY_NAME);
+                                self.salesByCategory.data = response.data.map(item => item.TOTAL_SALES);
+                                self.renderSalesByCategoryChart();
+                            } else {
+                                console.error('카테고리별 매출 비율 데이터 로드 실패:', response.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('카테고리별 매출 비율 AJAX 오류:', error);
+                        }
+                    });
+                },
+                renderSalesByCategoryChart() {
+                    const ctx = document.getElementById('salesByCategoryChart').getContext('2d');
+                    if (this.salesByCategoryChart) {
+                        this.salesByCategoryChart.destroy();
+                    }
+                    
+                    // 파이 차트용 색상 생성 (다양한 색상)
+                    const colors = this.generateCategoryColors(this.salesByCategory.labels.length);
+                    
+                    this.salesByCategoryChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: this.salesByCategory.labels,
+                            datasets: [{
+                                label: '매출액',
+                                data: this.salesByCategory.data,
+                                backgroundColor: colors,
+                                borderColor: colors.map(color => color.replace('0.8', '1')),
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'right',
+                                    labels: {
+                                        padding: 15,
+                                        font: {
+                                            size: 12
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.label || '';
+                                            let value = context.parsed || 0;
+                                            let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                            let percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                            return label + ': ' + value.toLocaleString('ko-KR') + '원 (' + percentage + '%)';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                },
+                generateColors(count) {
+                    const colors = [];
+                    const hueStep = 360 / count;
+                    for (let i = 0; i < count; i++) {
+                        const hue = i * hueStep;
+                        colors.push(`hsla(${hue}, 70%, 50%, 0.7)`);
+                    }
+                    return colors;
+                },
+                // 카테고리별 매출 비율용 색상 생성 (더 선명한 색상)
+                generateCategoryColors(count) {
+                    // 미리 정의된 색상 팔레트 (카테고리별로 구분하기 쉽게)
+                    const colorPalette = [
+                        'rgba(54, 162, 235, 0.8)',   // 파란색
+                        'rgba(255, 99, 132, 0.8)',   // 빨간색
+                        'rgba(75, 192, 192, 0.8)',   // 청록색
+                        'rgba(255, 206, 86, 0.8)',   // 노란색
+                        'rgba(153, 102, 255, 0.8)',  // 보라색
+                        'rgba(255, 159, 64, 0.8)',   // 주황색
+                        'rgba(199, 199, 199, 0.8)',  // 회색
+                        'rgba(83, 102, 255, 0.8)',   // 남색
+                        'rgba(255, 99, 255, 0.8)',   // 자홍색
+                        'rgba(99, 255, 132, 0.8)'    // 연두색
+                    ];
+                    
+                    const colors = [];
+                    for (let i = 0; i < count; i++) {
+                        if (i < colorPalette.length) {
+                            colors.push(colorPalette[i]);
+                        } else {
+                            // 색상이 부족하면 HSL로 생성
+                            const hue = (i * 137.508) % 360; // 황금각을 이용한 색상 분산
+                            colors.push(`hsla(${hue}, 70%, 50%, 0.8)`);
+                        }
+                    }
+                    return colors;
+                },
+                // 품절 임박 상품 목록 데이터 가져오기
+                fetchLowStockProductsData() {
+                    let self = this;
+                    $.ajax({
+                        url: '/admin/dashboard/lowStockProducts.dox',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (response) {
+                            if (response.result === 'success') {
+                                self.lowStockProductsList = response.data;
+                            } else {
+                                console.error('품절 임박 상품 조회 실패:', response.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('품절 임박 상품 AJAX 오류:', error);
+                        }
+                    });
                 }
             },
             mounted() {
                 this.fetchDashboardData();
+            },
+            beforeUnmount() {
+                // 컴포넌트가 언마운트될 때 자동 새로고침 중지
+                if (this.autoRefreshInterval) {
+                    clearInterval(this.autoRefreshInterval);
+                }
             }
         });
 
