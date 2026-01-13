@@ -58,7 +58,7 @@ public class BoardController {
 		public String rallyBoardList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 			HashMap<String, Object> resultMap = new HashMap<String, Object>();
 			resultMap = boardService.getRallyBoardList(map);
-			System.out.println("/home/rally/board.dox에서 프론트로 주기직전 값" + map);
+//			System.out.println("/home/rally/board.dox에서 프론트로 주기직전 값" + map);
 			return new Gson().toJson(resultMap);
 		}
 			

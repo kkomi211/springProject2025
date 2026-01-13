@@ -165,6 +165,70 @@
             같은 스타일을 주어 배경색을 채울 수 있습니다.
             하지만 현재는 스위퍼 이미지 자체가 풀 너비이므로 display: none; 처리 */
             }
+
+            /* ========== 사이드바 메뉴 NEW 배지 스타일 ========== */
+            .mypage-menu li {
+                position: relative;
+            }
+
+            .sidebar-new-badge {
+                display: inline-block;
+                background: linear-gradient(135deg, #ff4444, #ff6b6b);
+                color: white;
+                padding: 2px 8px;
+                border-radius: 10px;
+                font-size: 0.7em;
+                font-weight: bold;
+                margin-left: 8px;
+                box-shadow: 0 2px 6px rgba(255, 68, 68, 0.5);
+                animation: badgePulse 2s infinite;
+                vertical-align: middle;
+            }
+
+            @keyframes badgePulse {
+                0%, 100% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.1);
+                }
+            }
+
+            /* ========== 게시글 목록 NEW 배지 스타일 ========== */
+            .new-post-badge {
+                display: inline-block;
+                background: linear-gradient(135deg, #ff4444, #ff6b6b);
+                color: white;
+                padding: 2px 8px;
+                border-radius: 10px;
+                font-size: 0.75em;
+                font-weight: bold;
+                margin-left: 6px;
+                box-shadow: 0 2px 6px rgba(255, 68, 68, 0.5);
+                animation: pulse 2s infinite;
+                vertical-align: middle;
+            }
+
+            @keyframes pulse {
+                0%, 100% {
+                    transform: scale(1);
+                    box-shadow: 0 2px 8px rgba(255, 68, 68, 0.4);
+                }
+                50% {
+                    transform: scale(1.05);
+                    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.6);
+                }
+            }
+
+            /* 신규 게시글 행 강조 */
+            table tr.new-post {
+                background-color: #fff5f5;
+                border-left: 3px solid #ff6b6b;
+            }
+
+            table tr.new-post:hover {
+                background-color: #ffe8e8;
+            }
         </style>
     </head>
 
@@ -248,7 +312,10 @@
                                 <ul>
                                     <li class="active" @click="moveToBoard">
                                         <span class="icon">📝</span>
-                                        <a href="/home/community/board.do">게시판</a>
+                                        <a href="javascript:void(0)">
+                                            게시판
+                                            <span v-if="hasNewPost" class="sidebar-new-badge">NEW</span>
+                                        </a>
                                     </li>
                                     <li @click="moveToCrew">
                                         <span class="icon">📦</span>
@@ -308,12 +375,13 @@
                                     <th>작성일</th>
                                     <th id="view-cnt">조회수</th>
                                 </tr>
-                                <tr v-for="item in boardList">
+                                <tr v-for="item in boardList" :class="{ 'new-post': isNewPost(item.boardNo) }">
                                     <td>{{item.boardNo}}</td>
                                     <td>
                                         <a href="javascript:;" @click="fnPostView(item.boardNo)">
                                             {{item.title}}
                                             <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
+                                            <span v-if="isNewPost(item.boardNo)" class="new-post-badge">NEW</span>
                                         </a>
 
                                     </td>
@@ -430,6 +498,10 @@
                     selectedPost: null,  // store the post object being clicked
                     keylock: "",
                     userType: '${userType}',
+
+                    // NEW 배지 관련
+                    hasNewPost: false,
+                    lastCheckedBoardNo: null
                 };
             },
             methods: {
@@ -475,6 +547,9 @@
                                 self.boardList = data.list;
                                 self.cnt = data.cnt;
                                 self.index = Math.ceil(self.cnt / self.pageSize);
+
+                                // NEW 게시글 체크
+                                self.checkNewPost();
                             } else {
                                 console.log("오류");
                             }
@@ -482,6 +557,43 @@
                         }
                     });
                 },
+
+                // 신규 게시글 체크
+                checkNewPost() {
+                    const self = this;
+                    
+                    // localStorage에서 마지막 확인한 게시글 번호 가져오기
+                    const savedBoardNo = localStorage.getItem("lastCheckedBoardNo");
+                    
+                    if (self.boardList.length > 0) {
+                        const latestBoardNo = self.boardList[0].boardNo;
+                        
+                        console.log("최신 게시글 번호:", latestBoardNo);
+                        console.log("마지막 확인 게시글 번호:", savedBoardNo);
+                        
+                        // 저장된 번호가 없거나, 최신 게시글 번호가 더 크면 NEW 표시
+                        if (!savedBoardNo || parseInt(latestBoardNo) > parseInt(savedBoardNo)) {
+                            self.hasNewPost = true;
+                            console.log("NEW 배지 표시!");
+                        } else {
+                            self.hasNewPost = false;
+                        }
+                    }
+                },
+
+                // 개별 게시글이 신규인지 체크 (사용자가 확인하지 않은 게시글)
+                isNewPost(boardNo) {
+                    const savedBoardNo = localStorage.getItem("lastCheckedBoardNo");
+                    
+                    // 저장된 번호가 없으면 모든 게시글이 신규
+                    if (!savedBoardNo) {
+                        return true;
+                    }
+                    
+                    // 현재 게시글 번호가 저장된 번호보다 크면 신규
+                    return parseInt(boardNo) > parseInt(savedBoardNo);
+                },
+
                 fnMove: function (num) {
                     let self = this;
                     self.page = num;
@@ -503,6 +615,9 @@
                     };
                     let post = self.boardList.find(item => item.boardNo === boardNo);
 
+                    // 게시글 클릭 시 NEW 배지 확인 처리
+                    self.updateLastCheckedPost(boardNo);
+
                     if (post.pwd && post.pwd.length > 0) {
                         // Show password modal
                         self.selectedPost = post;
@@ -514,6 +629,21 @@
                     }
 
                     // pageChange("board/view.do", {boardNo : boardNo});
+                },
+                
+                // 게시글 확인 처리 (NEW 배지 업데이트)
+                updateLastCheckedPost: function(boardNo) {
+                    let self = this;
+                    const savedBoardNo = localStorage.getItem("lastCheckedBoardNo");
+                    
+                    // 현재 클릭한 게시글이 저장된 번호보다 크면 업데이트
+                    if (!savedBoardNo || parseInt(boardNo) > parseInt(savedBoardNo)) {
+                        localStorage.setItem("lastCheckedBoardNo", boardNo);
+                        console.log("게시글 확인 완료, 저장된 번호:", boardNo);
+                        
+                        // NEW 배지 상태 다시 체크
+                        self.checkNewPost();
+                    }
                 },
                 fnKeylock: function () {
                     let self = this;
@@ -582,6 +712,14 @@
                 moveToBoard: function () {
                     let self = this;
                     
+                    // NEW 배지 클릭 시 확인 처리
+                    if (self.boardList.length > 0) {
+                        const latestBoardNo = self.boardList[0].boardNo;
+                        localStorage.setItem("lastCheckedBoardNo", latestBoardNo);
+                        self.hasNewPost = false;
+                        console.log("게시판 확인 완료, 저장된 번호:", latestBoardNo);
+                    }
+                    
                     pageChange("/home/community/board.do", {  });
                 },
                 moveToCrew: function () {
@@ -599,7 +737,6 @@
                     
                     pageChange("/home/community/chat.do", {  });
                 },
-
 
             }, // methods
             mounted() {

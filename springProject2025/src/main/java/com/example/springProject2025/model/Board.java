@@ -30,10 +30,12 @@ public class Board {
 	private String cDate;
 	private String imgPath;
 	
+
 	// BOARD_LIKE 테이블
 	private String likeCnt;
 	
 	// COMMENT_LIKE 테이블
 	private String likeCommentCnt;
+
 }
  
