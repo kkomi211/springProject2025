@@ -148,5 +148,15 @@
 			AND CART_NO = #{originalCartNo}
 			AND USER_ID = #{sessionId}
 		</update>
+		
+		
+		<select id="selectCartCount" parameterType="hashmap" resultType="int">
+		    SELECT 
+		        COUNT(*) 
+		    FROM 
+		        CART 
+		    WHERE 
+		        USER_ID = #{sessionId} 
+        </select>
 	
 	</mapper>
