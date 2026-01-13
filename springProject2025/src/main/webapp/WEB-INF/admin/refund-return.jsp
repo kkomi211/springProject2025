@@ -97,7 +97,7 @@
                             <td>{{item.userId}}</td>
                             <td>{{item.name}}</td>
                             <td>{{item.phone}}</td>
-                            <td>{{item.uDate}}</td>
+                            <td>{{item.cDate}}</td>
                             <td>
                                 <button :class="getStatusButtonClass(item.status)" @click="openModal(item)"
                                     :disabled="!isUpdatableStatus(item.status)">
