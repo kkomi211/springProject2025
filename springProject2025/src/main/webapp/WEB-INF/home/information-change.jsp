@@ -260,7 +260,7 @@
                                 Welcome,
                             </div>
                             <div class="header-user">
-                                {{ info.name }}님
+                                {{ info.name }}
                             </div>
                         </div>
 

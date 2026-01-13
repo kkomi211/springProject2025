@@ -261,8 +261,8 @@
                     joinFlg: false, // 문자 인증 유무
                     authFlag: false,
 
-                    ranStr: "111", // 문자 인증 번호 
-                    inputNum: "",
+                    ranStr: "", // 문자 인증 번호 
+                    inputNum: "111",
                     timer: "",
                     count: 180,
 
