@@ -110,6 +110,25 @@ public class CartService {
 		return resultMap;
 	}
 
+//	public HashMap<String, Object> getCartCount(HashMap<String, Object> map) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}	
+	public HashMap<String, Object> getCartCount(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+	    try {
+	        // DB에서 해당 유저의 장바구니 개수를 조회 (Mapper 호출)
+	        int count = cartMapper.selectCartCount(map); 
+	        System.out.println("장바구니 안 물건 개수" + count );
+	        resultMap.put("result", "success");
+	        resultMap.put("count", count);
+	    } catch (Exception e) {
+	        resultMap.put("result", "error");
+	        resultMap.put("message", e.getMessage());
+	    }
+	    return resultMap;
+	}
+
 	
 
 }
