@@ -43,5 +43,13 @@ public interface ChatMapper {
 	int deleteChatMessage(HashMap<String, Object> map);
 
 	int deleteChatImg(HashMap<String, Object> map);
+
+	int updateChatroomName(HashMap<String, Object> map);
+
+	int updateChatroomOwner(HashMap<String, Object> map);
+
+	int updateChatMemberToM(HashMap<String, Object> map);
+
+	int updateChatMemberToO(HashMap<String, Object> map);
 	
 }

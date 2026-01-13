@@ -19,7 +19,10 @@
         <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
         <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
         <script src="/js/page-change.js"></script>
-        <script src="https://unpkg.com/lucide@latest"></script>
+        <script src="https://unpkg.com/lucide@latest"></script> 
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+        
 
         <style>
             /* community top banner style */
@@ -519,7 +522,16 @@
                                             '게시판'
                                             }}
                                         </span>
-                                        <span class="post-date">{{ boardInfo.chardate }}</span>
+                                        <div class="post-meta-right">
+                                            <span class="post-date">{{ boardInfo.chardate }}</span>
+                                            <span 
+                                                v-if="sessionId != boardInfo.userId" 
+                                                @click="fnConfirmReport" 
+                                                class="material-icons-outlined report-icon" 
+                                                title="게시글 신고">
+                                                report
+                                            </span>
+                                        </div>
                                     </div>
                                     <h2 class="post-title">
                                         {{ boardInfo.title }}
@@ -530,42 +542,69 @@
                                 </div>
 
                                 <div class="post-content" v-html="boardInfo.contents"></div>
-                                <div class="bottom-btn">
+                                <div>
+                                    <div class="bottom-left-btn">
+                                        <span @click="fnLikePost(boardInfo.boardNo)" class="material-icons-outlined heart-post" :class="{ active: isLiked }" style="cursor: pointer; font-size: 22px;" title="이 게시글 좋아요">
+                                            {{isLiked ? 'favorite' : 'favorite_border'}}
+                                        </span>
+                                        <span>{{ likeCnt }}</span>
+                                        
+                                        <!-- Make comment icon clickable -->
+                                        <span @click="fnToggleComments" class="material-icons-outlined" style="cursor: pointer; font-size: 22px;" title="댓글 보기">
+                                            comment
+                                        </span>
+                                        <span @click="fnToggleComments" style="cursor: pointer;">{{ commentList.length }}</span>
+                                    </div>
+                                </div>
+                                <div class="bottom-right-btn">
                                     <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn"
                                         @click="fnMoveToEdit">✏️ 수정</button>
                                     <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn"
                                         @click="fnConfirmDelete">🗑️ 삭제</button>
-                                    <button v-if="sessionId != boardInfo.userId" class="edit-inline-btn"
-                                        @click="fnConfirmReport">🚨 신고</button>
-                                </div>
+                                    <!-- <button v-if="sessionId != boardInfo.userId" class="edit-inline-btn"
+                                        @click="fnConfirmReport">🚨 신고</button> -->
+                                </div>  
                             </div>
 
-                            <!-- 댓글 보기 -->
+                            <div v-show="showComments">
+                                <!-- 댓글 보기 -->
+                                <div class="comments-section">
+                                    <h3 class="comment-title"> 
+                                        <span @click="fnToggleComments" class="material-icons-outlined" style="cursor: pointer; font-size: 22px;" title="댓글 보기">
+                                            comment
+                                        </span>
+                                    </h3>
 
-                            <div class="comments-section">
-                                <h3 class="comment-title">
-                                    💬 {{ commentList.length }} Comments
-                                </h3>
+                                    <div class="comment-view" v-if="commentList.length > 0">
+                                        <div v-for="item in commentList" :key="item.commentNo" class="comment-card">
+                                            <div class="comment-header">
+                                                <div class="comment-author">{{ item.nickname }}</div>
+                                                <div class="comment-date-actions">
+                                                    <span class="comment-date">{{ item.chardate }}</span>
+                                                    <!-- Like button next to date -->
+                                                    <div @click="fnLikeComment(item.commentNo)" class="comment-like-btn">
+                                                        <span class="material-icons-outlined">
+                                                            {{ item.isLiked ? 'favorite' : 'favorite_border' }}
+                                                        </span>
+                                                        <span>{{ item.likeCnt || 0 }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="comment-body">
+                                                {{ item.contents }}
+                                            </div>
+                                            <!-- Delete button (only for comment author) -->
+                                            <div style="float: right;" v-if="sessionId == item.userId">
+                                                <button @click="fnDeleteComment(item.commentNo)">삭제</button>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                <div class="comment-view" v-if="commentList.length > 0">
-                                    <div v-for="item in commentList" :key="item.commentNo" class="comment-card">
-                                        <div class="comment-header">
-                                            <div class="comment-author">{{ item.nickname }}</div>
-                                            <div class="comment-date">{{ item.chardate }}</div>
-                                        </div>
-                                        <div class="comment-body">
-                                            {{ item.contents }}
-                                        </div>
-                                        <div style="float: right;" v-if="sessionId == item.userId"><button
-                                                @click="fnDeleteComment(item.commentNo)">삭제</button></div>
+                                    <div v-else class="no-comments">
+                                        아직 댓글이 없습니다. 첫 번째로 댓글을 남겨보세요!
                                     </div>
                                 </div>
-
-                                <div v-else class="no-comments">
-                                    아직 댓글이 없습니다. 첫 번째로 댓글을 남겨보세요!
-                                </div>
                             </div>
-
                             <!-- 댓글 쓰기 -->
                             <div v-if="sessionId != '' " class="comment-box">
                                 <div class="comment-header">
@@ -706,6 +745,13 @@
 
                     userType: '${userType}',
 
+                    // post section 'likes'
+                    isLiked :  false,
+                    likeCnt : 0,
+
+                    // comment section toggle
+                    showComments : false,
+
                 };
             },
             methods: {
@@ -768,20 +814,75 @@
                     let param = {
                         boardNo: self.boardNo
                     };
-                    console.log("boardNo ==>" + self.boardNo);
                     $.ajax({
                         url: "/board/comment.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            if (data.result == "success") {
-                                console.log("comment data == > ", data);
+                            if (data.result === "success") {
                                 self.commentList = data.list;
+                                // Fetch like info for each comment
+                                self.fnLoadCommentLikes();
                             } else {
                                 console.log("오류");
                             }
-
+                        }
+                    });
+                },
+                fnLoadCommentLikes: function() {
+                    let self = this;
+                    self.commentList.forEach((comment, index) => {
+                        let param = {
+                            commentNo: comment.commentNo,
+                            userId: self.sessionId
+                        };
+                        $.ajax({
+                            url: "/board/comment/like/info.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success: function (data) {
+                                if (data.result === "success") {
+                                    // Use Vue.set or directly assign since it's already reactive
+                                    self.commentList[index].likeCnt = data.likeCnt;
+                                    self.commentList[index].isLiked = data.isLiked;
+                                }
+                            }
+                        });
+                    });
+                },
+                fnLikeComment: function(commentNo) {
+                    let self = this;
+                    
+                    if (self.sessionId === '') {
+                        alert("로그인이 필요합니다.");
+                        return;
+                    }
+                    
+                    let param = {
+                        commentNo: commentNo,
+                        userId: self.sessionId
+                    };
+                    
+                    $.ajax({
+                        url: "/board/comment/like.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            // Find the comment and update its like info
+                            let commentIndex = self.commentList.findIndex(c => c.commentNo === commentNo);
+                            
+                            if (commentIndex !== -1) {
+                                if (data.result === "liked") {
+                                    self.commentList[commentIndex].isLiked = true;
+                                    self.commentList[commentIndex].likeCnt = (self.commentList[commentIndex].likeCnt || 0) + 1;
+                                } else if (data.result === "unliked") {
+                                    self.commentList[commentIndex].isLiked = false;
+                                    self.commentList[commentIndex].likeCnt = Math.max(0, (self.commentList[commentIndex].likeCnt || 0) - 1);
+                                }
+                            }
                         }
                     });
                 },
@@ -935,6 +1036,54 @@
                         }
                     })
                 },
+                fnLikePost: function (boardNo){
+                    let self = this;
+                    let param = {
+                        boardNo: boardNo,
+                        userId: self.sessionId
+                    };
+                    $.ajax({
+                        url: "/board/like.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "liked") {
+                                self.isLiked = true;
+                                self.likeCnt++;
+                            } else if(data.result == "unliked") {
+                                self.isLiked = false;
+                                self.likeCnt--; 
+                            }
+                        }
+                    })
+                },
+                fnGetLikeInfo: function (){
+                    let self = this;
+                    let param = {
+                        boardNo: self.boardNo,
+                        userId: self.sessionId  // ✅ Pass userId to check if current user liked it
+                    };
+                    $.ajax({
+                        url: "/board/like/cnt.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result === "success") {
+                                console.log("likes data => ", data);
+                                self.likeCnt = data.likeCnt;
+                                self.isLiked = data.isLiked;  // ✅ Set whether current user has liked it
+                            } else {
+                                console.log("오류");
+                            }
+                        }
+                    })
+                },
+                fnToggleComments: function() {
+                    let self = this;
+                    self.showComments = !self.showComments;  // Toggle between true/false
+                },
                 moveToBoard: function () {
                     let self = this;
 
@@ -962,6 +1111,7 @@
                 self.fnBoardInfo();
                 self.fnGetUserInfo();
                 self.fnViewComment();
+                self.fnGetLikeInfo();
             }
         });
 

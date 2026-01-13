@@ -101,5 +101,21 @@ public class CartController {
 		return new Gson().toJson(resultMap);
 	}
 	
+	
+	// 헤더 장바구니 배찌 수량 조회
+	@RequestMapping(value = "api/cartCount.dox", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String getCartCount(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	    System.out.println("장바구니 조회를 위해 서버로 넘어온 파라미터 " + map);
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+	    
+	    // sessionId가 map에 담겨 오거나, 세션 객체에서 직접 꺼낼 수 있습니다.
+	    // 프론트에서 { sessionId : sessionId }를 보낸다고 가정합니다.
+	    System.out.println("장바구니 수량 조회 진입: " + map);
+	    
+	    resultMap = cartService.getCartCount(map); 
+	    
+	    return new Gson().toJson(resultMap);
+	}
 
 }

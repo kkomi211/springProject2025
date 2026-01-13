@@ -115,4 +115,34 @@
 		DELETE CHATROOM_IMG
 		WHERE CHATROOM_NO = #{chatroomNo}
 	</delete>
+	
+	<update id="updateChatroomName" parameterType="hashmap">
+		UPDATE CHAT
+		SET 
+			NAME = #{name},
+			TITLE = #{name}
+		WHERE CHATROOM_NO = #{chatroomNo}
+	</update>
+	
+	<update id="updateChatroomOwner" parameterType="hashmap">
+		UPDATE CHAT
+		SET OWNER_ID = #{newOwnerId}
+		WHERE CHATROOM_NO = #{chatroomNo}
+	</update>
+	
+	<update id="updateChatMemberToM" parameterType="hashmap">
+		UPDATE CHAT_MEMBER
+		SET ROLE = 'M'
+		WHERE 
+			CHATROOM_NO = #{chatroomNo}
+			AND ROLE = 'O'
+	</update>
+	
+	<update id="updateChatMemberToO" parameterType="hashmap">
+		UPDATE CHAT_MEMBER
+		SET ROLE = 'O'
+		WHERE
+			CHATROOM_NO = #{chatroomNo}
+			AND USER_ID = #{newOwnerId}
+	</update>
 </mapper>
