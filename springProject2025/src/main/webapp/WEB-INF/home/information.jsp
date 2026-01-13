@@ -13,7 +13,8 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet">
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -126,31 +127,33 @@
                 color: #eee;
             }
 
-             .bottom-header {
-            display: flex;
-            justify-content: center;
-            font-size: 25px;
-            /* default bottom-header 폰트 사이즈 */
-            background-color: white;
-            /* bottom-header 배경색 추가 */
-            border-bottom: 1px solid #eee;
-            /* 하단 경계선 */
-            padding: 20px 0;
-            /* 세로 패딩 */
-            letter-spacing: 3px;
-        }
+            .bottom-header {
+                display: flex;
+                justify-content: center;
+                font-size: 25px;
+                /* default bottom-header 폰트 사이즈 */
+                background-color: white;
+                /* bottom-header 배경색 추가 */
+                border-bottom: 1px solid #eee;
+                /* 하단 경계선 */
+                padding: 20px 0;
+                /* 세로 패딩 */
+                letter-spacing: 3px;
+            }
 
-        .bottom-header a:hover {
-            text-decoration: none;
-            transform: scale(1.1);
-            transition: transform 0.3s ease-out; /* faster ease-out */
-        }
+            .bottom-header a:hover {
+                text-decoration: none;
+                transform: scale(1.1);
+                transition: transform 0.3s ease-out;
+                /* faster ease-out */
+            }
 
-        .bottom-header a {
-            color: black;
-            transition: transform 0.2s ease-in; /* slower ease-in */
-            display: inline-block;
-        }
+            .bottom-header a {
+                color: black;
+                transition: transform 0.2s ease-in;
+                /* slower ease-in */
+                display: inline-block;
+            }
 
             .bottom-header div {
                 display: inline-block;
@@ -265,19 +268,17 @@
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
             <div class="container">
-                <header>
+                <!-- <header>
                     <div class="top-header">
                         <div class="brand-name">
                             <div><a href="/home.do">RUNNERS' HOUSE</a></div>
                         </div>
                         <div id="right-items">
                             <div>
-                                <!-- <template > -->
                                     <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
-                                <!-- </template> -->
-                                <!-- <template > -->
+                            
                                     <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
-                                <!-- </template> -->
+                              
                             </div>
                             <div v-if="sessionId == ''">
                                 <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
@@ -300,129 +301,131 @@
                             <a href="/home/community/board.do">커뮤니티</a>
                         </div>
                     </div>
-                </header>
+                </header> -->
+                <%-- 공통 헤더 컴포넌트 --%>
+                    <jsp:include page="/WEB-INF/header/header.jsp" />
 
-                <main>
                     <main>
-                        <div class="header">
-                            <div class="header-welcome">
-                                Welcome,
-                            </div>
-                            <div class="header-user">
-                                {{ info.name }}
-                            </div>
-                        </div>
-
-                        <div class="page-container">
-                            <aside class="sidebar">
-                                <h2 class="sidebar-heading">MY PAGE ></h2>
-                                <nav class="mypage-menu">
-                                    <ul>
-                                        <li @click="moveToOrder">
-                                            <span class="icon">📝</span>
-                                            <a href="#">주문•배송 내역</a>
-                                        </li>
-                                        <li @click="moveToRefund">
-                                            <span class="icon">📦</span>
-                                            <a href="javascript:;">반품•교환 내역</a>
-                                        </li>
-                                        <li @click="moveToMyinquiry">
-                                            <span class="icon">💬</span>
-                                            <a href="#">문의 내역</a>
-                                        </li>
-                                        <li @click="mvInfo" class="active">
-                                            <span class="icon">👤</span>
-                                            <a href="#">나의 정보</a>
-                                        </li>
-                                        <li @click="moveToReview">
-                                            <span class="icon">⭐️</span>
-                                            <a href="#">상품 리뷰</a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </aside>
-
-                            <main class="main-content">
-                                <h1 class="main-title">나의 정보</h1>
-                                <h3 class="sub-title">
-                                    회원가입정보 확인
-                                    <div>
-                                        안전한 정보보호를 위해 비밀번호를 다시 한번 확인합니다. 다시 입력해주세요.
-                                    </div>
-                                </h3>
-                                <section class="check-info">
-                                    <table>
-                                        <tr>
-                                            <th>아이디</th>
-                                            <td>
-                                                <input type="text" v-model="info.userId" disabled>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>비밀번호</th>
-                                            <td>
-                                                <input type="password" v-model="pwd" id="pwd"
-                                                    @keyup.enter="fnMypage(info.userId)">
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </section>
-                                <div class="bottom-btn">
-                                    <button @click="fnMypage(info.userId)" class="btn">확인</button>
+                        <main>
+                            <div class="header">
+                                <div class="header-welcome">
+                                    Welcome,
                                 </div>
-
-                                <!-- Popup message confirming password is correct -->
-
-                                <div v-if="pwdMatch" class="modal-overlay">
-                                    <div class="modal-content">
-                                        <template v-if="pwdCorrect == true">
-                                            <h2>비밀번호가 확인되었습니다.</h2>
-                                            <button class="btn" @click="moveInfoPage">확인</button>
-                                        </template>
-                                        <template v-else-if="pwdCorrect == false">
-                                            <h2>비밀번호가 올바르지 않습니다.</h2>
-                                            <button class="btn" @click="closeModal">돌아가기</button>
-                                        </template>
-                                    </div>
+                                <div class="header-user">
+                                    {{ info.name }}
                                 </div>
+                            </div>
 
-                                <!-- Logout popup -->
-                                <div v-if="isLoggedOut" class="modal-overlay">
-                                    <div class="modal-content">
-                                        <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
-                                        <a href="/home.do"><button class="btn">메인 화면으로 가기</button></a>
+                            <div class="page-container">
+                                <aside class="sidebar">
+                                    <h2 class="sidebar-heading">MY PAGE ></h2>
+                                    <nav class="mypage-menu">
+                                        <ul>
+                                            <li @click="moveToOrder">
+                                                <span class="icon">📝</span>
+                                                <a href="#">주문•배송 내역</a>
+                                            </li>
+                                            <li @click="moveToRefund">
+                                                <span class="icon">📦</span>
+                                                <a href="javascript:;">반품•교환 내역</a>
+                                            </li>
+                                            <li @click="moveToMyinquiry">
+                                                <span class="icon">💬</span>
+                                                <a href="#">문의 내역</a>
+                                            </li>
+                                            <li @click="mvInfo" class="active">
+                                                <span class="icon">👤</span>
+                                                <a href="#">나의 정보</a>
+                                            </li>
+                                            <li @click="moveToReview">
+                                                <span class="icon">⭐️</span>
+                                                <a href="#">상품 리뷰</a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </aside>
+
+                                <main class="main-content">
+                                    <h1 class="main-title">나의 정보</h1>
+                                    <h3 class="sub-title">
+                                        회원가입정보 확인
+                                        <div>
+                                            안전한 정보보호를 위해 비밀번호를 다시 한번 확인합니다. 다시 입력해주세요.
+                                        </div>
+                                    </h3>
+                                    <section class="check-info">
+                                        <table>
+                                            <tr>
+                                                <th>아이디</th>
+                                                <td>
+                                                    <input type="text" v-model="info.userId" disabled>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>비밀번호</th>
+                                                <td>
+                                                    <input type="password" v-model="pwd" id="pwd"
+                                                        @keyup.enter="fnMypage(info.userId)">
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </section>
+                                    <div class="bottom-btn">
+                                        <button @click="fnMypage(info.userId)" class="btn">확인</button>
                                     </div>
+
+                                    <!-- Popup message confirming password is correct -->
+
+                                    <div v-if="pwdMatch" class="modal-overlay">
+                                        <div class="modal-content">
+                                            <template v-if="pwdCorrect == true">
+                                                <h2>비밀번호가 확인되었습니다.</h2>
+                                                <button class="btn" @click="moveInfoPage">확인</button>
+                                            </template>
+                                            <template v-else-if="pwdCorrect == false">
+                                                <h2>비밀번호가 올바르지 않습니다.</h2>
+                                                <button class="btn" @click="closeModal">돌아가기</button>
+                                            </template>
+                                        </div>
+                                    </div>
+
+                                    <!-- Logout popup -->
+                                    <div v-if="isLoggedOut" class="modal-overlay">
+                                        <div class="modal-content">
+                                            <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
+                                            <a href="/home.do"><button class="btn">메인 화면으로 가기</button></a>
+                                        </div>
+                                    </div>
+
+                                </main>
+                        </main>
+
+                        <footer>
+                            <div class="footer-left">
+                                <div class="company-info">
+                                    <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
+                                    <div><strong>대표:</strong> 김재</div>
+                                    <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
+                                    <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
+                                    <div><strong>부가세 번호:</strong> KR123456789</div>
                                 </div>
-
-                            </main>
-                    </main>
-
-                    <footer>
-                        <div class="footer-left">
-                            <div class="company-info">
-                                <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
-                                <div><strong>대표:</strong> 김재</div>
-                                <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
-                                <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
-                                <div><strong>부가세 번호:</strong> KR123456789</div>
+                                <div class="copyright">
+                                    COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                                </div>
                             </div>
-                            <div class="copyright">
-                                COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                            <div class="footer-right">
+                                <div class="other">
+                                    <span><a href="/home/about.do">회사소개</a></span>
+                                    <span><a @click="fnNotice">공지사항</a></span>
+                                    <span><a href="/home/terms.do">이용약관</a></span>
+                                    <span><a href="/home/privacy.do">개인정보처리방침</a></span>
+                                </div>
+                                <div class="socials">
+                                    <span>INSTAGRAM</span>
+                                    <span>NAVER</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="footer-right">
-                            <div class="other">
-                                <span><a href="/home/about.do">회사소개</a></span>
-                                <span><a @click="fnNotice">공지사항</a></span>
-                                <span><a href="/home/terms.do">이용약관</a></span>
-                                <span><a href="/home/privacy.do">개인정보처리방침</a></span>
-                            </div>
-                            <div class="socials">
-                                <span>INSTAGRAM</span>
-                                <span>NAVER</span>
-                            </div>
-                        </div>
-                    </footer>
+                        </footer>
             </div>
         </div>
     </body>
@@ -444,7 +447,7 @@
                     pwdCorrect: null,
                     isLoggedOut: false,
 
-                    userType : '${userType}',
+                    userType: '${userType}',
                 };
             },
             methods: {
@@ -498,6 +501,33 @@
                         }
                     });
                 },
+
+                // 장바구니 수량을 서버에서 가져오는 함수
+                fetchCartCount() {
+                    // 세션 아이디가 없으면 실행하지 않음
+                    if (this.sessionId == '' || this.sessionId == null) return;
+
+                    let self = this;
+                    $.ajax({
+                        url: '/api/cartCount.dox',
+                        method: 'GET',
+                        // ★ 서버의 @RequestParam HashMap map으로 전달될 데이터 ★
+                        data: {
+                            sessionId: self.sessionId
+                        },
+                        dataType: 'json',
+                        success: (response) => {
+                            console.log("서버 응답 데이터:", response);
+                            if (response.result === 'success') {
+                                self.cartCount = response.count; // 서버에서 보낸 count 값을 Vue 변수에 저장
+                            }
+                        },
+                        error: (err) => {
+                            console.error("AJAX 호출 중 오류 발생:", err);
+                        }
+                    });
+                },
+
                 moveInfoPage: function () {
                     let self = this;
                     pageChange("information/change.do", { sessionId: self.sessionId });
@@ -604,6 +634,15 @@
                 // 처음 시작할 때 실행되는 부분
                 let self = this;
                 self.fnInfo();
+
+                // 2. 조건문을 잠시 제거하거나, 로그를 찍어 확인합니다.
+                if (self.sessionId && self.sessionId !== '') {
+                    console.log("장바구니 수량 조회를 시작합니다.");
+                    self.fetchCartCount();
+                } else {
+                    console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
+                }
+
             }
         });
 

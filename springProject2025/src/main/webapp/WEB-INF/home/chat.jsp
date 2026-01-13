@@ -401,144 +401,111 @@
     <body>
         <div id="app">
             <div class="container">
-                <header>
-                    <div class="top-header">
-                        <div class="brand-name">
-                            <div><a href="/home.do">RUNNERS' HOUSE</a></div>
-                        </div>
-                        <div id="right-items">
-                            <div>
-                                <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i
-                                            data-lucide="log-out" stroke-width="1.5"></i></a></div>
-                                <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a>
+                <%-- 공통 헤더 컴포넌트 --%>
+                    <jsp:include page="/WEB-INF/header/header.jsp" />
+
+                    <div class="main-hero-slider-area">
+                        <section class="main-hero-slider">
+                            <div class="swiper-container mySwiper">
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide">
+                                        <img
+                                            src="https://as2.ftcdn.net/v2/jpg/02/34/65/76/1000_F_234657662_jQjqcHFWIh3oVh9DTXAXzKAXVZ5Zf6ko.jpg">
+                                    </div>
                                 </div>
+                                <div class="swiper-pagination"></div>
                             </div>
-                            <div v-if="sessionId == ''">
-                                <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
-                            </div>
-                            <div v-if="sessionId != '' && userType != 'K'"><a href="/home/mypage/information.do"><i
-                                        data-lucide="user" stroke-width="1.5"></i></a></div>
-                            <div v-else-if="sessionId != '' && userType == 'K'">
-                                href="/home/mypage/information/change.do"><i data-lucide="user"
-                                    stroke-width="1.5"></i></a></div>
-                            <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart"
-                                        stroke-width="1.5"></i></a></div>
-                        </div>
+                            <span class="crew-overlay-text">COMMUNITY</span>
+                        </section>
                     </div>
-                    <div class="bottom-header">
-                        <div>
-                            <a href="/home/product.do">제품</a>
-                        </div>
-                        <div>
-                            <a href="javascript:;" @click="fnSale">세일</a>
-                        </div>
-                        <div>
-                            <a href="/home/community/board.do">커뮤니티</a>
-                        </div>
-                    </div>
-                </header>
 
-                <div class="main-hero-slider-area">
-                    <section class="main-hero-slider">
-                        <div class="swiper-container mySwiper">
-                            <div class="swiper-wrapper">
-                                <div class="swiper-slide">
-                                    <img
-                                        src="https://as2.ftcdn.net/v2/jpg/02/34/65/76/1000_F_234657662_jQjqcHFWIh3oVh9DTXAXzKAXVZ5Zf6ko.jpg">
+                    <main>
+                        <div class="header">
+                            <div class="header-welcome">
+                                Welcome,
+                            </div>
+                            <div class="header-user">
+                                {{ userName }}
+                            </div>
+                        </div>
+                        <div class="page-container">
+                            <aside class="sidebar">
+                                <h2 class="sidebar-heading"> COMMUNITY ></h2>
+                                <nav class="mypage-menu">
+                                    <ul>
+                                        <li @click="moveToBoard">
+                                            <span class="icon">📝</span>
+                                            <a href="/home/community/board.do">게시판</a>
+                                        </li>
+                                        <li @click="moveToCrew">
+                                            <span class="icon">📦</span>
+                                            <a href="/home/community/crew.do">크루 찾기</a>
+                                        </li>
+                                        <li @click="moveToRally">
+                                            <span class="icon">💬</span>
+                                            <a href="/home/community/rally.do">대회정보</a>
+                                        </li>
+                                        <li @click="moveToChat" class="active">
+                                            <span class="icon">👤</span>
+                                            <a href="javascript:void(0)">
+                                                채팅방
+                                                <span v-if="hasNewChatroom" class="sidebar-new-badge">NEW</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </aside>
+                            <main class="main-content">
+                                <div class="board-header">
+                                    <h1 class="main-title">
+                                        나의 채팅방
+                                    </h1>
                                 </div>
-                            </div>
-                            <div class="swiper-pagination"></div>
+                                <table>
+                                    <tr>
+                                        <th>채팅방이름</th>
+                                        <th>생성날짜</th>
+                                    </tr>
+                                    <tr v-for="item in chatList" @click="fnShowChat(item.chatroomNo)"
+                                        :class="{ 'new-chatroom': isNewChatroom(item.chatroomNo) }">
+                                        <td>
+                                            {{item.name}}
+                                            <span v-if="isNewChatroom(item.chatroomNo)"
+                                                class="new-chat-badge">NEW</span>
+                                        </td>
+                                        <td>{{item.cdate}}</td>
+                                    </tr>
+                                </table>
+                            </main>
                         </div>
-                        <span class="crew-overlay-text">COMMUNITY</span>
-                    </section>
-                </div>
+                    </main>
 
-                <main>
-                    <div class="header">
-                        <div class="header-welcome">
-                            Welcome,
-                        </div>
-                        <div class="header-user">
-                            {{ userName }}
-                        </div>
-                    </div>
-                    <div class="page-container">
-                        <aside class="sidebar">
-                            <h2 class="sidebar-heading"> COMMUNITY ></h2>
-                            <nav class="mypage-menu">
-                                <ul>
-                                    <li @click="moveToBoard">
-                                        <span class="icon">📝</span>
-                                        <a href="/home/community/board.do">게시판</a>
-                                    </li>
-                                    <li @click="moveToCrew">
-                                        <span class="icon">📦</span>
-                                        <a href="/home/community/crew.do">크루 찾기</a>
-                                    </li>
-                                    <li @click="moveToRally">
-                                        <span class="icon">💬</span>
-                                        <a href="/home/community/rally.do">대회정보</a>
-                                    </li>
-                                    <li @click="moveToChat" class="active">
-                                        <span class="icon">👤</span>
-                                        <a href="javascript:void(0)">
-                                            채팅방
-                                            <span v-if="hasNewChatroom" class="sidebar-new-badge">NEW</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </aside>
-                        <main class="main-content">
-                            <div class="board-header">
-                                <h1 class="main-title">
-                                    나의 채팅방
-                                </h1>
+                    <footer>
+                        <div class="footer-left">
+                            <div class="company-info">
+                                <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
+                                <div><strong>대표:</strong> 김재</div>
+                                <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
+                                <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
+                                <div><strong>부가세 번호:</strong> KR123456789</div>
                             </div>
-                            <table>
-                                <tr>
-                                    <th>채팅방이름</th>
-                                    <th>생성날짜</th>
-                                </tr>
-                                <tr v-for="item in chatList" @click="fnShowChat(item.chatroomNo)"
-                                    :class="{ 'new-chatroom': isNewChatroom(item.chatroomNo) }">
-                                    <td>
-                                        {{item.name}}
-                                        <span v-if="isNewChatroom(item.chatroomNo)" class="new-chat-badge">NEW</span>
-                                    </td>
-                                    <td>{{item.cdate}}</td>
-                                </tr>
-                            </table>
-                        </main>
-                    </div>
-                </main>
-
-                <footer>
-                    <div class="footer-left">
-                        <div class="company-info">
-                            <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
-                            <div><strong>대표:</strong> 김재</div>
-                            <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
-                            <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
-                            <div><strong>부가세 번호:</strong> KR123456789</div>
+                            <div class="copyright">
+                                COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                            </div>
                         </div>
-                        <div class="copyright">
-                            COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                        <div class="footer-right">
+                            <div class="other">
+                                <span><a href="/home/about.do">회사소개</a></span>
+                                <span><a @click="fnNotice">공지사항</a></span>
+                                <span><a href="/home/terms.do">이용약관</a></span>
+                                <span><a href="/home/privacy.do">개인정보처리방침</a></span>
+                            </div>
+                            <div class="socials">
+                                <span>INSTAGRAM</span>
+                                <span>NAVER</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="footer-right">
-                        <div class="other">
-                            <span><a href="/home/about.do">회사소개</a></span>
-                            <span><a @click="fnNotice">공지사항</a></span>
-                            <span><a href="/home/terms.do">이용약관</a></span>
-                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
-                        </div>
-                        <div class="socials">
-                            <span>INSTAGRAM</span>
-                            <span>NAVER</span>
-                        </div>
-                    </div>
-                </footer>
+                    </footer>
             </div>
         </div>
     </body>
@@ -655,86 +622,122 @@
                 },
 
                 // 최신 채팅방까지 모두 확인 처리
-                    markAllChatroomsAsChecked() {
-                        let self = this;
-                        if (self.chatList.length > 0) {
-                            const latestChatroomNo = self.chatList[0].chatroomNo;
-                            localStorage.setItem(`lastCheckedChatroomNo_${self.sessionId}`, latestChatroomNo);
-                            self.hasNewChatroom = false;  // 즉시 배지 제거
-                            console.log("모든 채팅방 확인 완료, 저장된 번호:", latestChatroomNo);
-                        }
-                    },
-
-                    fnShowChat(chatroomNo) {
-                        let self = this;
-
-                        // 채팅방 확인 처리
-                        self.updateLastCheckedChatroom(chatroomNo);
-
-                        pageChange("/home/community/chat/show.do", { sessionId: self.sessionId, chatroomNo: chatroomNo });
-                    },
-                    fnCheckLogin() {
-                        let self = this;
-                        if (self.sessionId == "") {
-                            alert("로그인해주세요!");
-                            location.href = "/home/login.do";
-                        }
-                    },
-                    fnLogout: function () {
-                        let self = this;
-                        let param = {};
-                        $.ajax({
-                            url: "/member/logout.dox",
-                            dataType: "json",
-                            type: "POST",
-                            data: param,
-                            success: function (data) {
-                                if (data.result == "success") {
-                                    location.href = "/home.do";
-                                }
-                            }
-                        })
-                    },
-                    fnSale() {
-                        let self = this;
-                        self.saleYN = 'Y';
-                        pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
-                    },
-                    fnNotice() {
-                        let self = this;
-                        pageChange("/home/community/board.do", { type: "B" });
-                    },
-                    moveToBoard: function () {
-                        pageChange("/home/community/board.do", {});
-                    },
-                    moveToCrew: function () {
-                        pageChange("/home/community/crew.do", {});
-                    },
-                    moveToRally: function () {
-                        pageChange("/home/community/rally.do", {});
-                    },
-                    // 카테고리 클릭 시 - 최신 채팅방까지 확인 처리
-                    moveToChat: function () {
-                        let self = this;
-
-                        // 카테고리 클릭 시 모든 채팅방 확인 처리
-                        self.markAllChatroomsAsChecked();
-
-                        // 페이지 이동 (이미 chat.do에 있으면 새로고침)
-                        if (window.location.pathname === '/home/community/chat.do') {
-                            location.reload();
-                        } else {
-                            pageChange("/home/community/chat.do", {});
-                        }
-                    },
-                },
-                mounted() {
+                markAllChatroomsAsChecked() {
                     let self = this;
-                    self.fnCheckLogin();
-                    self.fnGetUserInfo();
-                    self.fnGetUserChatList();
+                    if (self.chatList.length > 0) {
+                        const latestChatroomNo = self.chatList[0].chatroomNo;
+                        localStorage.setItem(`lastCheckedChatroomNo_${self.sessionId}`, latestChatroomNo);
+                        self.hasNewChatroom = false;
+                        console.log("모든 채팅방 확인 완료, 저장된 번호:", latestChatroomNo);
+                    }
+                },
+
+                fnShowChat(chatroomNo) {
+                    let self = this;
+
+                    // 채팅방 확인 처리
+                    self.updateLastCheckedChatroom(chatroomNo);
+
+                    pageChange("/home/community/chat/show.do", { sessionId: self.sessionId, chatroomNo: chatroomNo });
+                },
+                fnCheckLogin() {
+                    let self = this;
+                    if (self.sessionId == "") {
+                        alert("로그인해주세요!");
+                        location.href = "/home/login.do";
+                    }
+                },
+                fnLogout: function () {
+                    let self = this;
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+                        }
+                    })
+                },
+                fnSale() {
+                    let self = this;
+                    self.saleYN = 'Y';
+                    pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                },
+                fnNotice() {
+                    let self = this;
+                    pageChange("/home/community/board.do", { type: "B" });
+                },
+                moveToBoard: function () {
+                    pageChange("/home/community/board.do", {});
+                },
+                moveToCrew: function () {
+                    pageChange("/home/community/crew.do", {});
+                },
+                moveToRally: function () {
+                    pageChange("/home/community/rally.do", {});
+                },
+                // 카테고리 클릭 시 - 최신 채팅방까지 확인 처리
+                moveToChat: function () {
+                    let self = this;
+
+                    // 카테고리 클릭 시 모든 채팅방 확인 처리
+                    self.markAllChatroomsAsChecked();
+
+                    // 페이지 이동 (이미 chat.do에 있으면 새로고침)
+                    if (window.location.pathname === '/home/community/chat.do') {
+                        location.reload();
+                    } else {
+                        pageChange("/home/community/chat.do", {});
+                    }
+                },
+
+                // 장바구니 수량을 서버에서 가져오는 함수
+                fetchCartCount() {
+                    // 세션 아이디가 없으면 실행하지 않음
+                    if (this.sessionId == '' || this.sessionId == null) return;
+
+                    let self = this;
+                    $.ajax({
+                        url: '/api/cartCount.dox',
+                        method: 'GET',
+                        // ★ 서버의 @RequestParam HashMap map으로 전달될 데이터 ★
+                        data: {
+                            sessionId: self.sessionId
+                        },
+                        dataType: 'json',
+                        success: (response) => {
+                            console.log("서버 응답 데이터:", response);
+                            if (response.result === 'success') {
+                                self.cartCount = response.count; // 서버에서 보낸 count 값을 Vue 변수에 저장
+                            }
+                        },
+                        error: (err) => {
+                            console.error("AJAX 호출 중 오류 발생:", err);
+                        }
+                    });
+                },
+
+            },
+            mounted() {
+                let self = this;
+                self.fnCheckLogin();
+                self.fnGetUserInfo();
+                self.fnGetUserChatList();
+
+                // 2. 조건문을 잠시 제거하거나, 로그를 찍어 확인합니다.
+                if (self.sessionId && self.sessionId !== '') {
+                    console.log("장바구니 수량 조회를 시작합니다.");
+                    self.fetchCartCount();
+                } else {
+                    console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                 }
-            });
+
+            }
+        });
 
         app.mount('#app');
     </script>

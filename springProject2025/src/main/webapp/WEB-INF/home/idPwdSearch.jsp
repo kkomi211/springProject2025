@@ -1,4 +1,4 @@
-    <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <!DOCTYPE html>
     <html lang="en">
 
@@ -27,204 +27,171 @@
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
             <div class="container">
-                <header>
-                    <div class="top-header">
-                        <div class="brand-name">
-                            <div><a href="/home.do">RUNNERS' HOUSE</a></div>
-                        </div>
-                        <div id="right-items">
-                            <div>
-                                <!-- <template > -->
-                                    <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
-                                <!-- </template> -->
-                                <!-- <template > -->
-                                    <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
-                                <!-- </template> -->
-                            </div>
-                            <div v-if="sessionId == ''">
-                                <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
-                            </div>
-                            <div v-if="sessionId != '' && userType != 'K'"><a
-                                    href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
-                            <div v-else-if="sessionId != '' && userType == 'K'"><a
-                                    href="home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
-                            <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div>
-                        </div>
-                    </div>
-                    <div class="bottom-header">
-                        <div>
-                            <a href="/home/product.do">제품</a>
-                        </div>
-                        <div>
-                            <a href="javascript:;" @click="fnSale">세일</a>
-                        </div>
-                        <div>
-                            <a href="/home/community/board.do">커뮤니티</a>
-                        </div>
-                    </div>
-                </header>
+                <%-- 공통 헤더 컴포넌트 --%>
+                    <jsp:include page="/WEB-INF/header/header.jsp" />
 
-                <main>
-                    <div v-if="!idFound && !pwdFound" class="search-container">
-                        <!-- 🔹 아이디 찾기 / 비밀번호 찾기 폼 -->
-                        <div class="id-search-container">
-                            <h2>아이디 찾기</h2>
-                            <div class="signup-form">
-                                <div class="form-row">
-                                    <input type="text" placeholder="이름" v-model="id_name" id="id_name">
-                                </div>
-                                <div class="form-row">
-                                    <input type="text" placeholder="- 없이 전화번호를 입력하세요" v-model="id_phone" id="id_phone">
-                                </div>
-                                <div class="form-row">
-                                    <input type="text" placeholder="생년월일  YYYY-MM-DD" v-model="id_birth"
-                                        @keyup.enter="fnSearchId" id="id_birth">
-                                </div>
-                                <div class="form-submit">
-                                    <button @click="fnSearchId" class="submit-btn">아이디 찾기</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="pwd-search-container">
-                            <h2>비밀번호 찾기</h2>
-                            <div class="signup-form">
-                                <div class="form-row">
-                                    <input type="text" placeholder="아이디" v-model="pwd_userId" id="pwd_userId">
-                                </div>
-                                <div class="form-row">
-                                    <input type="text" placeholder="이름" v-model="pwd_name" id="pwd_name">
-                                </div>
-                                <div class="form-row">
-                                    <input type="text" placeholder="생년월일  YYYY-MM-DD" v-model="pwd_birth"
-                                        @keyup.enter="fnSearchPwd" id="pwd_birth">
-                                </div>
-                                <div class="form-row">
-                                    <input type="text" placeholder="- 없이 전화번호를 입력하세요" v-model="pwd_phone"
-                                        id="pwd_phone">
-                                </div>
-
-                                <div v-if="!joinFlg" class="form-row">
-                                    <input type="text" v-model="inputNum" placeholder="문자인증" :placeholder="timer"
-                                        id="auth" :disabled="authFlag">
-                                    <template v-if="!smsFlg">
-                                        <button @click="fnSms">인증번호 전송</button>
-                                    </template>
-                                    <template v-else>
-                                        <button @click="fnSmsAuth">인증</button>
-                                    </template>
-                                </div>
-                                <!-- 인증완료 popup -->
-                                <div v-else class="modal-overlay">
-                                    <div class="modal-content">
-                                        <h2>문자인증이 완료되었습니다.</h2>
-                                        <button class="btn" @click="fnAuthChecked">확인</button>
+                    <main>
+                        <div v-if="!idFound && !pwdFound" class="search-container">
+                            <!-- 🔹 아이디 찾기 / 비밀번호 찾기 폼 -->
+                            <div class="id-search-container">
+                                <h2>아이디 찾기</h2>
+                                <div class="signup-form">
+                                    <div class="form-row">
+                                        <input type="text" placeholder="이름" v-model="id_name" id="id_name">
+                                    </div>
+                                    <div class="form-row">
+                                        <input type="text" placeholder="- 없이 전화번호를 입력하세요" v-model="id_phone"
+                                            id="id_phone">
+                                    </div>
+                                    <div class="form-row">
+                                        <input type="text" placeholder="생년월일  YYYY-MM-DD" v-model="id_birth"
+                                            @keyup.enter="fnSearchId" id="id_birth">
+                                    </div>
+                                    <div class="form-submit">
+                                        <button @click="fnSearchId" class="submit-btn">아이디 찾기</button>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="form-submit">
-                                    <button @click="fnSearchPwd" class="submit-btn">비밀번호 찾기</button>
+                            <div class="pwd-search-container">
+                                <h2>비밀번호 찾기</h2>
+                                <div class="signup-form">
+                                    <div class="form-row">
+                                        <input type="text" placeholder="아이디" v-model="pwd_userId" id="pwd_userId">
+                                    </div>
+                                    <div class="form-row">
+                                        <input type="text" placeholder="이름" v-model="pwd_name" id="pwd_name">
+                                    </div>
+                                    <div class="form-row">
+                                        <input type="text" placeholder="생년월일  YYYY-MM-DD" v-model="pwd_birth"
+                                            @keyup.enter="fnSearchPwd" id="pwd_birth">
+                                    </div>
+                                    <div class="form-row">
+                                        <input type="text" placeholder="- 없이 전화번호를 입력하세요" v-model="pwd_phone"
+                                            id="pwd_phone">
+                                    </div>
+
+                                    <div v-if="!joinFlg" class="form-row">
+                                        <input type="text" v-model="inputNum" placeholder="문자인증" :placeholder="timer"
+                                            id="auth" :disabled="authFlag">
+                                        <template v-if="!smsFlg">
+                                            <button @click="fnSms">인증번호 전송</button>
+                                        </template>
+                                        <template v-else>
+                                            <button @click="fnSmsAuth">인증</button>
+                                        </template>
+                                    </div>
+                                    <!-- 인증완료 popup -->
+                                    <div v-else class="modal-overlay">
+                                        <div class="modal-content">
+                                            <h2>문자인증이 완료되었습니다.</h2>
+                                            <button class="btn" @click="fnAuthChecked">확인</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-submit">
+                                        <button @click="fnSearchPwd" class="submit-btn">비밀번호 찾기</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div v-else-if="idFound" class="search-container">
-                        <!-- 🔹 아이디 찾기 완료 -->
-                        <div class="id-search-container">
-                            <h2>아이디 찾기 완료</h2>
-                            <span class="material-symbols-outlined" style="font-size: 60px;">check_circle</span>
-                            <div class="id-msg">
-                                <div>고객 님의 아이디는 <span style="font-weight: bold;">{{ info.userId }}</span> 입니다.</div>
-                                <div>{{ info.cdate }}에 가입함</div>
-                            </div>
-                            <div class="form-submit">
-                                <a href="/home/login.do"><button class="submit-btn">로그인 하기</button></a>
-                                <a href="/home/login/search.do"><button class="submit-btn">비밀번호 찾기</button></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div v-else-if="pwdFound" class="search-container">
-                        <!-- 🔹 비밀번호 변경 -->
-                        <div class="id-search-container">
-                            <h2>비밀번호 변경하기</h2>
-                            <ul>
-                                <li>기존 비밀번호는 이미 암호화되어 있으므로 새 비밀번호로 변경해야 합니다.</li>
-                                <li>비밀번호는 공백 없이 6자 이상의 영문자, 숫자, 특수문자 조합으로 지정해주세요.</li>
-                            </ul>
-                            <div class="pwd-form-row">
-                                <label>새 비밀번호 입력:</label>
-                                <input type="password" v-model="newPwd1">
-                            </div>
-                            <div class="pwd-form-row">
-                                <label>새 비밀번호 확인:</label>
-                                <input type="password" v-model="newPwd2">
-                            </div>
-                            <div class="form-submit">
-                                <button @click="fnChangePwd" class="pwd-submit-btn">비밀번호 변경완료</button>
+                        <div v-else-if="idFound" class="search-container">
+                            <!-- 🔹 아이디 찾기 완료 -->
+                            <div class="id-search-container">
+                                <h2>아이디 찾기 완료</h2>
+                                <span class="material-symbols-outlined" style="font-size: 60px;">check_circle</span>
+                                <div class="id-msg">
+                                    <div>고객 님의 아이디는 <span style="font-weight: bold;">{{ info.userId }}</span> 입니다.</div>
+                                    <div>{{ info.cdate }}에 가입함</div>
+                                </div>
+                                <div class="form-submit">
+                                    <a href="/home/login.do"><button class="submit-btn">로그인 하기</button></a>
+                                    <a href="/home/login/search.do"><button class="submit-btn">비밀번호 찾기</button></a>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- MODAL POPUP WINDOW -->
+                        <div v-else-if="pwdFound" class="search-container">
+                            <!-- 🔹 비밀번호 변경 -->
+                            <div class="id-search-container">
+                                <h2>비밀번호 변경하기</h2>
+                                <ul>
+                                    <li>기존 비밀번호는 이미 암호화되어 있으므로 새 비밀번호로 변경해야 합니다.</li>
+                                    <li>비밀번호는 공백 없이 6자 이상의 영문자, 숫자, 특수문자 조합으로 지정해주세요.</li>
+                                </ul>
+                                <div class="pwd-form-row">
+                                    <label>새 비밀번호 입력:</label>
+                                    <input type="password" v-model="newPwd1">
+                                </div>
+                                <div class="pwd-form-row">
+                                    <label>새 비밀번호 확인:</label>
+                                    <input type="password" v-model="newPwd2">
+                                </div>
+                                <div class="form-submit">
+                                    <button @click="fnChangePwd" class="pwd-submit-btn">비밀번호 변경완료</button>
+                                </div>
+                            </div>
+                        </div>
 
-                    <!-- When id or password can't be found -->
-                    <div v-if="showModal" class="modal-overlay">
-                        <div class="modal-content">
-                            <h2>아이디/비밀번호 찾기 실패</h2>
-                            <p>입력정보를 다시 확인해주세요. 입력하신 정보는 존재하지 않습니다.</p>
-                            <button @click="closeModal">돌아가기</button>
-                        </div>
-                    </div>
+                        <!-- MODAL POPUP WINDOW -->
 
-                    <!-- When password successfully changed -->
-                    <div v-if="pwdChangedModal" class="modal-overlay">
-                        <div class="modal-content">
-                            <h2>비밀번호 변경 성공</h2>
-                            <p>변경된 암호로 로그인 해보세요</p>
-                            <a href="/home/login.do"><button>로그인 화면 가기</button></a>
-                            <a href="/home.do"><button>메인 화면 가기</button></a>
+                        <!-- When id or password can't be found -->
+                        <div v-if="showModal" class="modal-overlay">
+                            <div class="modal-content">
+                                <h2>아이디/비밀번호 찾기 실패</h2>
+                                <p>입력정보를 다시 확인해주세요. 입력하신 정보는 존재하지 않습니다.</p>
+                                <button @click="closeModal">돌아가기</button>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- When password doesn't meet requirements -->
-                    <div v-if="pwdFailedModal" class="modal-overlay">
-                        <div class="modal-content">
-                            <h2>비밀번호 변경 실패</h2>
-                            <p>암호 생성 규칙을 다시 확인해주세요</p>
-                            <button @click="closeModal">돌아가기</button>
+                        <!-- When password successfully changed -->
+                        <div v-if="pwdChangedModal" class="modal-overlay">
+                            <div class="modal-content">
+                                <h2>비밀번호 변경 성공</h2>
+                                <p>변경된 암호로 로그인 해보세요</p>
+                                <a href="/home/login.do"><button>로그인 화면 가기</button></a>
+                                <a href="/home.do"><button>메인 화면 가기</button></a>
+                            </div>
                         </div>
-                    </div>
 
-                </main>
+                        <!-- When password doesn't meet requirements -->
+                        <div v-if="pwdFailedModal" class="modal-overlay">
+                            <div class="modal-content">
+                                <h2>비밀번호 변경 실패</h2>
+                                <p>암호 생성 규칙을 다시 확인해주세요</p>
+                                <button @click="closeModal">돌아가기</button>
+                            </div>
+                        </div>
 
-                <footer>
-                    <div class="footer-left">
-                        <div class="company-info">
-                            <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
-                            <div><strong>대표:</strong> 김재</div>
-                            <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
-                            <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
-                            <div><strong>부가세 번호:</strong> KR123456789</div>
+                    </main>
+
+                    <footer>
+                        <div class="footer-left">
+                            <div class="company-info">
+                                <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
+                                <div><strong>대표:</strong> 김재</div>
+                                <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
+                                <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
+                                <div><strong>부가세 번호:</strong> KR123456789</div>
+                            </div>
+                            <div class="copyright">
+                                COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                            </div>
                         </div>
-                        <div class="copyright">
-                            COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                        <div class="footer-right">
+                            <div class="other">
+                                <span><a href="/home/about.do">회사소개</a></span>
+                                <span><a @click="fnNotice">공지사항</a></span>
+                                <span><a href="/home/terms.do">이용약관</a></span>
+                                <span><a href="/home/privacy.do">개인정보처리방침</a></span>
+                            </div>
+                            <div class="socials">
+                                <span>INSTAGRAM</span>
+                                <span>NAVER</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="footer-right">
-                        <div class="other">
-                            <span><a href="/home/about.do">회사소개</a></span>
-                            <span><a @click="fnNotice">공지사항</a></span>
-                            <span><a href="/home/terms.do">이용약관</a></span>
-                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
-                        </div>
-                        <div class="socials">
-                            <span>INSTAGRAM</span>
-                            <span>NAVER</span>
-                        </div>
-                    </div>
-                </footer>
+                    </footer>
             </div>
         </div>
     </body>
@@ -266,7 +233,7 @@
                     timer: "",
                     count: 180,
 
-                    userType : '${userType}',
+                    userType: '${userType}',
                 };
             },
             methods: {
@@ -457,8 +424,6 @@
                     }
                 },
 
-
-
                 fnTimer: function () {
                     let self = this;
                     let interval = setInterval(function () {
@@ -505,11 +470,46 @@
 
                         }
                     })
-                }
+                },
+
+                // 장바구니 수량을 서버에서 가져오는 함수
+                fetchCartCount() {
+                    // 세션 아이디가 없으면 실행하지 않음
+                    if (this.sessionId == '' || this.sessionId == null) return;
+
+                    let self = this;
+                    $.ajax({
+                        url: '/api/cartCount.dox',
+                        method: 'GET',
+                        // ★ 서버의 @RequestParam HashMap map으로 전달될 데이터 ★
+                        data: {
+                            sessionId: self.sessionId
+                        },
+                        dataType: 'json',
+                        success: (response) => {
+                            console.log("서버 응답 데이터:", response);
+                            if (response.result === 'success') {
+                                self.cartCount = response.count; // 서버에서 보낸 count 값을 Vue 변수에 저장
+                            }
+                        },
+                        error: (err) => {
+                            console.error("AJAX 호출 중 오류 발생:", err);
+                        }
+                    });
+                },
+
             }, // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분
                 let self = this;
+
+                // 2. 조건문을 잠시 제거하거나, 로그를 찍어 확인합니다.
+                if (self.sessionId && self.sessionId !== '') {
+                    console.log("장바구니 수량 조회를 시작합니다.");
+                    self.fetchCartCount();
+                } else {
+                    console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
+                }
             }
         });
 
