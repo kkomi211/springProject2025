@@ -110,6 +110,22 @@ public class ChatController {
 		resultMap = chatService.ChatroomDelete(map);
 		return new Gson().toJson(resultMap);
 	}
+	
+	@RequestMapping(value = "/home/mypage/chat/rename.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String ChatroomNameChange(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = chatService.ChatroomNameChange(map);
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/home/mypage/chat/transfer.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String ChatroomOwnerChange(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = chatService.ChatroomOwnerChange(map);
+		return new Gson().toJson(resultMap);
+	}
 
 	@MessageMapping("/sendMessage") // 클라이언트에서 "/app/sendMessage"로 요청 시 실행
 	@SendTo("/topic/public") // 메시지를 "/topic/public"을 구독하는 모든 사용자에게 전송

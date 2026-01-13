@@ -134,6 +134,34 @@ public class ChatService {
 		}
 		return resultMap;
 	}
+
+	public HashMap<String, Object> ChatroomNameChange(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
+		try {
+			int cnt = chatMapper.updateChatroomName(map);
+			resultMap.put("result", "success");
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+
+	public HashMap<String, Object> ChatroomOwnerChange(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
+		try {
+			int cnt = chatMapper.updateChatroomOwner(map);
+			int cnt2 = chatMapper.updateChatMemberToM(map);
+			int cnt3 = chatMapper.updateChatMemberToO(map);
+			resultMap.put("result", "success");
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
 	
 	
 	
