@@ -5,13 +5,14 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
+        <title>상품 수정 - RUNNERS HOUSE</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <link rel="stylesheet" href="/css/style.css">
         <script src="/js/page-change.js"></script>
         <link rel="stylesheet" href="/css/jes.css">
+        <link rel="stylesheet" href="/css/admin-inquiry.css">
 
     </head>
 
@@ -41,8 +42,13 @@
             <div class="content">
                 <h2>상품 수정</h2>
 
+                <!-- 로딩 스피너 -->
+                <div v-if="loading" class="loading-container" style="text-align: center; padding: 40px;">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">데이터를 불러오는 중...</div>
+                </div>
 
-                <div class="table text-left">
+                <div class="table text-left" v-if="!loading">
                     <table class="newtable">
                         <tr>
                             <th>제품이름</th>
@@ -123,8 +129,8 @@
                     info: {},
                     img: {},
                     salePrice: 0,
-                    quantityFlg: false
-
+                    quantityFlg: false,
+                    loading: true // 로딩 상태 (초기값 true)
                 };
             },
             methods: {
@@ -159,7 +165,9 @@
                             console.log(data);                      
                             self.info = data.info;
                             self.img = data.img;
-
+                        },
+                        complete: function() {
+                            self.loading = false; // 로딩 종료
                         }
                     });
                 },
@@ -188,6 +196,9 @@
                            
                             self.upload(form);
                             self.fnBack();
+                        },
+                        error: function() {
+                            alert("수정 중 오류가 발생했습니다.");
                         }
                     });
                 },

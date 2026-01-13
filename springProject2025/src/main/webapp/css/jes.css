@@ -46,8 +46,16 @@ h1 {
     transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
+.addtable {
+    table-layout: fixed;
+}
+
 .addtable th {
-    width: 20%;
+    width: 10% !important;
+}
+
+.addtable td {
+    width: 90% !important;
 }
 
 table,
@@ -215,7 +223,7 @@ td input {
 }
 
 .newtable {
-    table-layout: fixed;
+    table-layout: fixed !important;
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 25px;
@@ -225,6 +233,9 @@ td input {
 }
 
 .newtable th {
+    width: 10% !important;
+    min-width: 10% !important;
+    max-width: 10% !important;
     background-color: black;
     color: white;
     font-weight: bold;
@@ -236,6 +247,12 @@ td input {
 .newtable td {
     padding: 15px;
     border: 1px solid #e9ecef;
+}
+
+.newtable td {
+    width: 90% !important;
+    min-width: 90% !important;
+    max-width: 90% !important;
 }
 
 .newtable tr:hover {

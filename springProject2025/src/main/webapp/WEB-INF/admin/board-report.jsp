@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
+        <title>게시판 신고 관리 - RUNNERS HOUSE</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -74,18 +74,32 @@
                             <option value="15">15개씩</option>
                         </select>
                     </div>
+
+                    <!-- 엑셀 다운로드 버튼 -->
+                    <div class="filter-group">
+                        <button @click="downloadExcel()" style="background-color: #28a745; color: white; padding: 8px 18px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
+                            📥 엑셀 다운로드
+                        </button>
+                    </div>
                 </div>
 
                 <div>
-                    <table id="board-report-list-table">
+                    <!-- 로딩 스피너 -->
+                    <div v-if="loading" class="loading-container" style="text-align: center; padding: 40px;">
+                        <div class="loading-spinner"></div>
+                        <div class="loading-text">데이터를 불러오는 중...</div>
+                    </div>
+                    
+                    <!-- 테이블 -->
+                    <table id="board-report-list-table" v-if="!loading && list.length > 0">
                         <tr>
-                            <th>신고식별번호</th>
-                            <th>신고게시물번호</th>
-                            <th>신고자 아이디 (이름)</th>
-                            <th>신고 날짜</th>
-                            <th>신고확인상태</th>
+                            <th class="sortable-header" @click="sortTable('reportBoardNo')" :class="{'sort-asc': sortColumn === 'reportBoardNo' && sortDirection === 'asc', 'sort-desc': sortColumn === 'reportBoardNo' && sortDirection === 'desc'}">신고식별번호</th>
+                            <th class="sortable-header" @click="sortTable('reportedBoardNo')" :class="{'sort-asc': sortColumn === 'reportedBoardNo' && sortDirection === 'asc', 'sort-desc': sortColumn === 'reportedBoardNo' && sortDirection === 'desc'}">신고게시물번호</th>
+                            <th class="sortable-header" @click="sortTable('reporterId')" :class="{'sort-asc': sortColumn === 'reporterId' && sortDirection === 'asc', 'sort-desc': sortColumn === 'reporterId' && sortDirection === 'desc'}">신고자 아이디 (이름)</th>
+                            <th class="sortable-header" @click="sortTable('cDate')" :class="{'sort-asc': sortColumn === 'cDate' && sortDirection === 'asc', 'sort-desc': sortColumn === 'cDate' && sortDirection === 'desc'}">신고 날짜</th>
+                            <th class="sortable-header" @click="sortTable('reportStatus')" :class="{'sort-asc': sortColumn === 'reportStatus' && sortDirection === 'asc', 'sort-desc': sortColumn === 'reportStatus' && sortDirection === 'desc'}">신고확인상태</th>
                         </tr>
-                        <tr v-for="item in list" :key="item.reportBoardNo">
+                        <tr v-for="item in sortedList" :key="item.reportBoardNo">
                             <td>{{item.reportBoardNo}}</td>
                             <td>{{item.reportedBoardNo}} <br> ({{item.boardTitle}})</td>
                             <td>{{item.reporterId}} <br> ({{item.reporterName}})</td>
@@ -99,6 +113,13 @@
                             </td>
                         </tr>
                     </table>
+                    
+                    <!-- 빈 데이터 메시지 -->
+                    <div v-if="!loading && list.length === 0" class="empty-state-card">
+                        <div class="empty-icon">🚨</div>
+                        <div class="empty-title">신고된 게시물이 없습니다</div>
+                        <div class="empty-description">검색 조건을 변경하거나 다른 기간을 선택해보세요.</div>
+                    </div>
 
                     <!-- 페이징 컴포넌트 -->
                     <div class="pagination">
@@ -135,10 +156,13 @@
                     reportStatus: "N", // 기본값 '처리 요망'
                     startDate: "",
                     endDate: "",
-                    pageSize: "5",
+                    pageSize: "10",
                     currentPage: 1,
                     totalItems: 0,
-                    totalPages: 1
+                    totalPages: 1,
+                    loading: false, // 로딩 상태
+                    sortColumn: '', // 정렬 컬럼
+                    sortDirection: 'asc' // 정렬 방향
                 };
             },
             computed: {
@@ -155,6 +179,34 @@
                         pages.push(i);
                     }
                     return pages;
+                },
+                // 정렬된 리스트
+                sortedList() {
+                    if (!this.sortColumn) return this.list;
+                    
+                    const sorted = [...this.list];
+                    sorted.sort((a, b) => {
+                        let aVal = a[this.sortColumn];
+                        let bVal = b[this.sortColumn];
+                        
+                        // 날짜 정렬
+                        if (this.sortColumn === 'cDate') {
+                            aVal = new Date(aVal);
+                            bVal = new Date(bVal);
+                        }
+                        
+                        // 숫자 정렬
+                        if (this.sortColumn === 'reportBoardNo' || this.sortColumn === 'reportedBoardNo') {
+                            aVal = parseInt(aVal);
+                            bVal = parseInt(bVal);
+                        }
+                        
+                        if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
+                        if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
+                        return 0;
+                    });
+                    
+                    return sorted;
                 }
             },
             methods: {
@@ -179,6 +231,8 @@
                     if (page) {
                         self.currentPage = page;
                     }
+
+                    self.loading = true; // 로딩 시작
 
                     let param = {
                         keyword: self.keyword,
@@ -209,8 +263,21 @@
                         error: function (xhr, status, error) {
                             console.error("AJAX Error:", status, error, xhr.responseText);
                             alert("신고 게시물 리스트 로드 중 오류가 발생했습니다.");
+                        },
+                        complete: function() {
+                            self.loading = false; // 로딩 종료
                         }
                     });
+                },
+                sortTable: function(column) {
+                    if (this.sortColumn === column) {
+                        // 같은 컬럼 클릭 시 정렬 방향 전환
+                        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        // 다른 컬럼 클릭 시 오름차순으로 설정
+                        this.sortColumn = column;
+                        this.sortDirection = 'asc';
+                    }
                 },
                 fnChangePage: function (page) {
                     if (page < 1 || page > this.totalPages) {
@@ -220,6 +287,16 @@
                 },
                 goToDetail(reportBoardNo) {
                     pageChange("/admin/board-report-view.do", { reportBoardNo: reportBoardNo });
+                },
+                downloadExcel: function() {
+                    let self = this;
+                    let params = new URLSearchParams();
+                    if (self.keyword) params.append('keyword', self.keyword);
+                    if (self.reportStatus) params.append('reportStatus', self.reportStatus);
+                    if (self.startDate) params.append('startDate', self.startDate);
+                    if (self.endDate) params.append('endDate', self.endDate);
+                    
+                    window.location.href = '/admin/board-report/excel.dox?' + params.toString();
                 }
             },
             mounted() {
@@ -230,7 +307,7 @@
                 thirtyDaysAgo.setDate(today.getDate() - 30);
                 self.startDate = thirtyDaysAgo.toISOString().split('T')[0];
 
-                self.pageSize = "5";
+                self.pageSize = "10";
                 self.fnGetBoardReportList();
             }
         });

@@ -280,6 +280,13 @@
 		    WHERE RN > #{startIndex} AND RN &lt;= #{startIndex} + #{pageSize}
 		</select>
 		
+		<!-- 주문의 현재 상태 조회 -->
+		<select id="selectOrderCurrentStatus" parameterType="hashmap" resultType="string">
+		    SELECT STATUS
+		    FROM ORDERS
+		    WHERE ORDER_NO = #{orderNo}
+		</select>
+		
 		<!-- 주문 상태 업데이트 -->
 		<update id="updateOrderStatus" parameterType="hashmap">
 		    UPDATE ORDERS
@@ -711,10 +718,10 @@
 	        SELECT COUNT(PRODUCT_NO) FROM PRODUCT WHERE QUANTITY > 0
 	    </select>
 	
-	    <!-- 품절 임박 상품 수 (재고 1~9개) -->
-	    <select id="selectLowStockProductCount" resultType="int">
-	        SELECT COUNT(PRODUCT_NO) FROM PRODUCT WHERE QUANTITY BETWEEN 1 AND 9
-	    </select>
+    <!-- 품절 임박 상품 수 (재고 1~4개) -->
+    <select id="selectLowStockProductCount" resultType="int">
+        SELECT COUNT(PRODUCT_NO) FROM PRODUCT WHERE QUANTITY BETWEEN 1 AND 4
+    </select>
 	
 	    <!-- 판매량 Top N 상품 (LIMIT 대신 FETCH FIRST ROWS ONLY 사용) -->
 	    <select id="selectTopSellingProducts" parameterType="int" resultType="com.example.springProject2025.model.Admin">
@@ -812,4 +819,96 @@
 	            (SELECT COUNT(INQUIRY_NO) FROM PRODUCT_INQUIRY WHERE STATUS = 'N')
 	        FROM DUAL
 	    </select>
+	    
+	    <!-- 시간대별 주문 통계 (0시~23시) -->
+	    <select id="selectOrdersByHour" resultType="hashmap">
+	        SELECT 
+	            TO_NUMBER(TO_CHAR(CDATE, 'HH24')) AS HOUR,
+	            COUNT(ORDER_NO) AS ORDER_COUNT
+	        FROM ORDERS
+	        WHERE STATUS IN ('신규주문', '배송중', '배송완료', '교환완료')
+	        GROUP BY TO_NUMBER(TO_CHAR(CDATE, 'HH24'))
+	        ORDER BY HOUR ASC
+	    </select>
+	    
+	    <!-- 카테고리별 매출 비율 -->
+	    <select id="selectSalesByCategory" resultType="hashmap">
+	        SELECT 
+	            NVL(T.TYPE_NAME, '미분류') AS CATEGORY_NAME,
+	            NVL(SUM(O.PAYMENT_AMOUNT), 0) AS TOTAL_SALES,
+	            COUNT(O.ORDER_NO) AS ORDER_COUNT
+	        FROM ORDERS O
+	        INNER JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
+	        LEFT JOIN PRODUCT_TYPE T ON P.TYPE_NO = T.TYPE_NO
+	        WHERE O.STATUS IN ('배송완료', '교환완료')
+	        GROUP BY T.TYPE_NAME
+	        ORDER BY TOTAL_SALES DESC
+	    </select>
+	    
+	    <!-- 회원 가입 추이 (최근 6개월) -->
+	    <select id="selectUserRegistrationTrend" resultType="hashmap">
+	        WITH MONTH_DATA AS (
+	            SELECT
+	                TO_CHAR(ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1 - LEVEL), 'YYYY-MM') AS REG_MONTH,
+	                ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1 - LEVEL) AS MONTH_START_DATE
+	            FROM DUAL
+	            CONNECT BY LEVEL <![CDATA[<=]]> 6
+	        )
+	        SELECT
+	            MD.REG_MONTH,
+	            NVL(COUNT(U.USER_ID), 0) AS USER_COUNT
+	        FROM MONTH_DATA MD
+	        LEFT JOIN USERS U ON TO_CHAR(U.CDATE, 'YYYY-MM') = MD.REG_MONTH
+	                          AND (U.USERTYPE = 'U' OR U.USERTYPE = 'K')
+	        GROUP BY MD.REG_MONTH, MD.MONTH_START_DATE
+	        ORDER BY MD.MONTH_START_DATE ASC
+	    </select>
+	    
+    <!-- 품절 임박 상품 목록 (재고 5개 미만, 재고가 적은 순으로 정렬) -->
+    <select id="selectLowStockProducts" parameterType="int" resultType="hashmap">
+        SELECT 
+            PRODUCT_NO,
+            PRODUCT_NAME,
+            QUANTITY,
+            PRODUCT_SIZE
+        FROM PRODUCT
+        WHERE QUANTITY <![CDATA[<]]> 5 AND QUANTITY >= 0
+        ORDER BY QUANTITY ASC
+        FETCH FIRST #{limit} ROWS ONLY
+    </select>
+    
+    <!-- 전월 매출 (배송완료, 교환완료 상태만 합산) -->
+    <select id="selectPreviousMonthSales" resultType="long">
+        SELECT NVL(SUM(PAYMENT_AMOUNT), 0)
+        FROM ORDERS
+        WHERE STATUS IN ('배송완료', '교환완료')
+        AND TO_CHAR(CDATE, 'YYYYMM') = TO_CHAR(ADD_MONTHS(SYSDATE, -1), 'YYYYMM')
+    </select>
+    
+    <!-- 전년 동월 매출 (배송완료, 교환완료 상태만 합산) -->
+    <select id="selectPreviousYearSameMonthSales" resultType="long">
+        SELECT NVL(SUM(PAYMENT_AMOUNT), 0)
+        FROM ORDERS
+        WHERE STATUS IN ('배송완료', '교환완료')
+        AND TO_CHAR(CDATE, 'YYYYMM') = TO_CHAR(ADD_MONTHS(SYSDATE, -12), 'YYYYMM')
+    </select>
+    
+    <!-- 전년도 월별 매출 (최근 6개월, 비교용) -->
+    <select id="selectPreviousYearMonthlySales" resultType="hashmap">
+        WITH MONTH_DATA AS (
+            SELECT
+                TO_CHAR(ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1 - LEVEL), 'YYYY-MM') AS SALES_MONTH,
+                ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1 - LEVEL) AS MONTH_START_DATE
+            FROM DUAL
+            CONNECT BY LEVEL <![CDATA[<=]]> 6
+        )
+        SELECT
+            MD.SALES_MONTH,
+            NVL(SUM(O.PAYMENT_AMOUNT), 0) AS MONTHLY_SALES
+        FROM MONTH_DATA MD
+        LEFT JOIN ORDERS O ON TO_CHAR(O.CDATE, 'YYYY-MM') = TO_CHAR(ADD_MONTHS(MD.MONTH_START_DATE, -12), 'YYYY-MM')
+                           AND O.STATUS IN ('배송완료', '교환완료')
+        GROUP BY MD.SALES_MONTH, MD.MONTH_START_DATE
+        ORDER BY MD.MONTH_START_DATE ASC
+    </select>
 	</mapper>
