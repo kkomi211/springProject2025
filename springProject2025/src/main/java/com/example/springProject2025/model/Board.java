@@ -30,6 +30,7 @@ public class Board {
 	private String cDate;
 	private String imgPath;
 	
+	
 	// 
 }
  

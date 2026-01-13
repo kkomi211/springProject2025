@@ -460,7 +460,7 @@
                         success: function (data) {
                             if (data.result == "success") {
                                 alert("채팅방이 개설되었습니다!");
-                                location.href = "/home/community/chat.do";
+                                location.href = "/home/community/crew.do";
                             } else {
                                 alert("채팅방 개설에 실패했습니다.");
                             }

@@ -166,6 +166,76 @@
             하지만 현재는 스위퍼 이미지 자체가 풀 너비이므로 display: none; 처리 */
             }
 
+            /* ========== 사이드바 메뉴 NEW 배지 스타일 ========== */
+            .mypage-menu li {
+                position: relative;
+            }
+
+            .sidebar-new-badge {
+                display: inline-block;
+                background: linear-gradient(135deg, #ff4444, #ff6b6b);
+                color: white;
+                padding: 2px 8px;
+                border-radius: 10px;
+                font-size: 0.7em;
+                font-weight: bold;
+                margin-left: 8px;
+                box-shadow: 0 2px 6px rgba(255, 68, 68, 0.5);
+                animation: badgePulse 2s infinite;
+                vertical-align: middle;
+            }
+
+            @keyframes badgePulse {
+
+                0%,
+                100% {
+                    transform: scale(1);
+                }
+
+                50% {
+                    transform: scale(1.1);
+                }
+            }
+
+            /* ========== 크루 목록 NEW 배지 스타일 ========== */
+            .new-crew-badge {
+                display: inline-block;
+                background: linear-gradient(135deg, #ff4444, #ff6b6b);
+                color: white;
+                padding: 2px 8px;
+                border-radius: 10px;
+                font-size: 0.75em;
+                font-weight: bold;
+                margin-left: 6px;
+                box-shadow: 0 2px 6px rgba(255, 68, 68, 0.5);
+                animation: pulse 2s infinite;
+                vertical-align: middle;
+            }
+
+            @keyframes pulse {
+
+                0%,
+                100% {
+                    transform: scale(1);
+                    box-shadow: 0 2px 8px rgba(255, 68, 68, 0.4);
+                }
+
+                50% {
+                    transform: scale(1.05);
+                    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.6);
+                }
+            }
+
+            /* 신규 크루 행 강조 */
+            table tr.new-crew {
+                background-color: #fff5f5;
+                border-left: 3px solid #ff6b6b;
+            }
+
+            table tr.new-crew:hover {
+                background-color: #ffe8e8;
+            }
+
             /* New CSS from homepage */
 
             html,
@@ -499,7 +569,10 @@
                                         </li>
                                         <li @click="moveToCrew" class="active">
                                             <span class="icon">📦</span>
-                                            <a href="/home/community/crew.do">크루 찾기</a>
+                                            <a href="javascript:void(0)">
+                                                크루 찾기
+                                                <span v-if="hasNewCrew" class="sidebar-new-badge">NEW</span>
+                                            </a>
                                         </li>
                                         <li @click="moveToRally">
                                             <span class="icon">💬</span>
@@ -536,12 +609,14 @@
                                         <th>채팅방 소개</th>
                                         <th>채널</th>
                                     </tr>
-                                    <tr v-for="item in list">
+                                    <tr v-for="item in list" :class="{ 'new-crew': isNewCrew(item.chatroomNo) }">
                                         <td>{{item.chatroomNo}}</td>
                                         <td>
                                             <a href="javascript:;">
                                                 {{item.title}}
                                                 <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
+                                                <span v-if="isNewCrew(item.chatroomNo)"
+                                                    class="new-crew-badge">NEW</span>
                                             </a>
 
                                         </td>
@@ -636,8 +711,11 @@
                         page: 1,
                         pageSize: 10,
                         index: 0,
-
                         userType: '${userType}',
+
+                        // NEW 배지 관련
+                        hasNewCrew: false,
+                        lastCheckedCrewNo: null
                     };
                 },
                 methods: {
@@ -662,12 +740,66 @@
                                     self.list = data.list;
                                     self.cnt = data.cnt;
                                     self.index = Math.ceil(self.cnt / self.pageSize);
+
+                                    // NEW 크루 체크
+                                    self.checkNewCrew();
                                 } else {
                                     console.log("오류");
                                 }
                             }
 
                         });
+                    },
+
+                    // 신규 크루 체크
+                    checkNewCrew() {
+                        const self = this;
+
+                        // localStorage에서 마지막 확인한 크루 번호 가져오기
+                        const savedCrewNo = localStorage.getItem("lastCheckedCrewNo");
+
+                        if (self.list.length > 0) {
+                            const latestCrewNo = self.list[0].chatroomNo;
+
+                            console.log("최신 크루 번호:", latestCrewNo);
+                            console.log("마지막 확인 크루 번호:", savedCrewNo);
+
+                            // 저장된 번호가 없거나, 최신 크루 번호가 더 크면 NEW 표시
+                            if (!savedCrewNo || parseInt(latestCrewNo) > parseInt(savedCrewNo)) {
+                                self.hasNewCrew = true;
+                                console.log("NEW 배지 표시!");
+                            } else {
+                                self.hasNewCrew = false;
+                            }
+                        }
+                    },
+
+                    // 개별 크루가 신규인지 체크 (사용자가 확인하지 않은 크루)
+                    isNewCrew(chatroomNo) {
+                        const savedCrewNo = localStorage.getItem("lastCheckedCrewNo");
+
+                        // 저장된 번호가 없으면 모든 크루가 신규
+                        if (!savedCrewNo) {
+                            return true;
+                        }
+
+                        // 현재 크루 번호가 저장된 번호보다 크면 신규
+                        return parseInt(chatroomNo) > parseInt(savedCrewNo);
+                    },
+
+                    // 크루 확인 처리 (NEW 배지 업데이트)
+                    updateLastCheckedCrew: function (chatroomNo) {
+                        let self = this;
+                        const savedCrewNo = localStorage.getItem("lastCheckedCrewNo");
+
+                        // 현재 클릭한 크루가 저장된 번호보다 크면 업데이트
+                        if (!savedCrewNo || parseInt(chatroomNo) > parseInt(savedCrewNo)) {
+                            localStorage.setItem("lastCheckedCrewNo", chatroomNo);
+                            console.log("크루 확인 완료, 저장된 번호:", chatroomNo);
+
+                            // NEW 배지 상태 다시 체크
+                            self.checkNewCrew();
+                        }
                     },
                     fnLogout: function () {
                         let self = this;
@@ -719,8 +851,12 @@
                     // 프론트엔드 - 입장하기 버튼 클릭 시 JavaScript
                     fnEnterChat: function (chatroomNo) {
                         let self = this;
+
+                        // 크루 확인 처리 (NEW 배지 업데이트)
+                        self.updateLastCheckedCrew(chatroomNo);
+
                         $.ajax({
-                            url: "/home/crew/chatMove.dox", // 서버에서 DB에 유저 정보 저장 요청
+                            url: "/home/crew/chatMove.dox",
                             dataType: "json",
                             type: "POST",
                             data: {
@@ -729,7 +865,6 @@
                             },
                             success: function (response) {
                                 if (response.result == 'success') {
-                                    // DB 저장 성공 확인 후, 이제 존재하는 채팅방 페이지로 이동!
                                     location.href = "/home/community/chat/show.do?chatroomNo=" + chatroomNo;
                                 } else {
                                     alert("채팅방 입장 실패: " + (response.message || "권한이 없거나 오류 발생"));
@@ -740,6 +875,19 @@
                                 console.error(xhr.responseText);
                             }
                         });
+                    },
+
+                    // moveToCrew 메서드 수정 (카테고리 클릭 시)
+                    moveToCrew: function () {
+                        let self = this;
+
+                        // 크루 페이지 방문 시, 현재 최신 크루를 확인한 것으로 처리
+                        if (self.list.length > 0) {
+                            const latestCrewNo = self.list[0].chatroomNo;
+                            self.updateLastCheckedCrew(latestCrewNo);
+                        }
+
+                        pageChange("/home/community/crew.do", {});
                     },
                     fnNotice() {
                         let self = this;
