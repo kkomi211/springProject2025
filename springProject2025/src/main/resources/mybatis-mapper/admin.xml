@@ -413,10 +413,11 @@
 		            SELECT
 		                O.ORDER_NO,
 		                NVL(P.PRODUCT_NAME, '삭제된상품') AS PRODUCT_NAME,
+		                PRODUCT_SIZE,
 		                O.USER_ID,
 		                NVL(U.NAME, '삭제된유저') AS NAME,
             			NVL(U.PHONE, '삭제된유저번호') AS PHONE,
-		                TO_CHAR(O.UDATE, 'YYYY-MM-DD') AS UDATE,
+		                TO_CHAR(O.CDATE, 'YYYY-MM-DD') AS CDATE,
 		                O.STATUS,
 		                O.PRODUCT_NO, <!-- 교환 처리 시 필요 -->
 		                O.QUANTITY,   <!-- 교환 처리 시 필요 -->
@@ -527,6 +528,7 @@
 		    SELECT
 		        PRODUCT_NO,
 		        PRODUCT_NAME,
+		        PRODUCT_SIZE,
 		        QUANTITY,
 		        PRICE
 		    FROM PRODUCT

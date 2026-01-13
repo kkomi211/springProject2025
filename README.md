@@ -1,4 +1,4 @@
-# 3team 프로젝트
+# Spring 3team 프로젝트
 
 <div align="center">
   <img  src="media/KakaoTalk_20251107_114123012.gif" alt="GwasilZero 시연 영상" width="1200" height="500">
@@ -35,7 +35,6 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-
 ## 🖥️ **기술 스택**
 | 구분 | 기술 |
 |------|------|
@@ -47,7 +46,19 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-## 🧠 **핵심 기능 소개**
+<center>
+
+## 📕 발표 PPT
+<a href="https://www.canva.com/design/DAG4WPzsIwg/4nd4B55efG55t5hddguiOQ/view?utm_content=DAG4WPzsIwg&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h58d9b844c1" target="_blank"><b>PPT발표</b></a>
+
+<br>
+
+## 🎞 시연 영상
+<a href="https://www.youtube.com/watch?v=bl0sKT2c7AM" target="_blank"><b>영상링크</b></a>
+
+</center>
+
+<br>
 
 ## 🎆 파일 흐름 구조 (Mermaid)
     - subgraph Home[🏡 사용자 페이지] -
@@ -86,6 +97,9 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
         admin_main --> user_list --> user_list_view
     end
 
+<br>
+
+## 🧠 **핵심 기능 소개**
 ### 🏡 **1. 사용자 페이지 (User Page)**
 - **홈 화면:** 감각적인 Black & White 컨셉 디자인  
 - **회원 관리:** 회원가입, 로그인, 정보 수정  
@@ -107,11 +121,11 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 ## 💡 **팀원별 역할 분담**
 | 팀원 | 역할분담 | 
 |------|------------|
-| 👨‍💼 **정은성(팀장)** | 제품 관리, 채팅, DB | 
+| 👨‍💼 **정은성(팀장)** | **제품 관리, 채팅, DB, 러닝코스 추천 AI**| 
 | 🧑‍💻 **아린** |  **공통 CSS (Header/Footer)** , **/home/community · board · info · login/signup** |  
 | 👟 **전경환** | **마이페이지 작성 및 수정** ,  **결제API, 할인적용계산**  | 
 | 🤖 **김지훈** | **/admin/inquiry · refund-return · orders · user-list** | 
-| 🎨 **김반석** | **/admin/banner** , **/home/rally** ,  | 
+| 🎨 **김반석** | **/admin/banner** , **/home/rally** , **/home/crew** | 
 
 <br>
 
@@ -143,91 +157,175 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
-# 😀 ADMIN
-### 🕵️‍♂️ ADMIN 메인 기능
+# 👩‍👩‍👦‍👦 - 전/후 간단 기능 설명 - 
+## 😀 ADMIN
+#### 🕵️‍♂️ ADMIN 메인 기능
 - DB정보 각종 정보 현황출력
 - 그래프 기능 추가 (주문현황 및 월별 매출 자동최신화)
 
-| Before | After |
+| Before(Figma) | After(완성) |
 |------|------|
 |<img width="500" height="200" alt="관리자메인" src="https://github.com/user-attachments/assets/122a3d2e-aba3-41c0-82c1-00ec032c57fb" />|<img width="500" height="200" alt="관리자메인최종" src="https://github.com/user-attachments/assets/c1376fb2-4dc3-4f59-9620-8d3e374160c6" />|
 
 <br>
 
-### 💂🏼‍♀️ ADMIN 배너 기능
+#### 💂🏼‍♀️ ADMIN 배너 기능
 - 슬라이드 기능 
 - 스크롤 onclick (좌측 해당 카테고리 클릭시 스크롤 자동이동)
 - 추가 삭제 수정
 - Title 클릭시 해당 제품 및 광고 이미지 출력
 
-| Before | After |
+| Before(Figma)| After(완성)|
 |------|------|
 |<img width="500" height="200" alt="관리자베너" src="https://github.com/user-attachments/assets/7ddee7d4-5c16-4106-89cf-064a97ed0f6a" /> |<img width="500" height="200" alt="관리자배너 최종" src="https://github.com/user-attachments/assets/d5a8f1f2-2e8c-43a6-a989-92e05e9dd426" />|
 
 <br>
 
-### 👮🏼‍♀️ ADMIN 문의 기능
+#### 👮🏼‍♀️ ADMIN 문의 기능
 - search옵션 구현
 - 문의제목 클릭시 해당 문의상세내역 출력 및 답변등록 
 
-| Before | After |
+| Before(Figma) | After(완성) |
 |------|------|
 |<img width="500" height="200" alt="관리자문의" src="https://github.com/user-attachments/assets/f7d6091b-559f-469c-834f-8059a583a6a1" />|<img width="500" height="200" alt="관리자문의최종" src="https://github.com/user-attachments/assets/a79e1793-141b-4a00-9b96-69e723bdafb3" />|
 
 <br>
 
-### 👨🏼‍🏫 ADMIN 교환/환불 기능
+#### 👨🏼‍🏫 ADMIN 교환/환불 기능
 - search옵션 구현
 - 문의제목 클릭시 해당 문의상세내역 출력 
 
-| Before | After |
+| Before(Figma) | After(완성) |
 |------|------|
 |<img width="500" height="200" alt="관리자교환환불" src="https://github.com/user-attachments/assets/7899ee90-c4be-4f53-abe6-104f14ff2e5e" /> |<img width="500" height="200" alt="관리자교환한불최종" src="https://github.com/user-attachments/assets/374518b6-9bc9-4963-ba3f-983c23d7858c" />|
 
 <br>
 
-### 👷🏼‍♂️ ADMIN 상품 기능
+#### 👷🏼‍♂️ ADMIN 상품 기능
 - search옵션 구현 (주문번호(이름), 상태별, 날짜별) 
 - 문의제목 클릭시 해당 문의상세내역 출력 
 
-| Before | After |
+| Before(Figma) | After(완성) |
 |------|------|
 |<img width="500" height="200" alt="관리자상품" src="https://github.com/user-attachments/assets/919453bb-6825-477d-8aea-9c43c8138ec6" />|<img width="500" height="200" alt="관리자상품최종" src="https://github.com/user-attachments/assets/51f55bea-91d4-414c-bcfd-7c1c1669e7e3" />|
 
 <br>
 
-### 👩🏼‍⚕️ ADMIN 주문내역 기능
+#### 👩🏼‍⚕️ ADMIN 주문내역 기능
 - search옵션 구현 
 - 상품주문, 결제내역 확인 후 (배송처리,배송완료) 처리변환
 
-| Before | After |
+| Before(Figma) | After(완성) |
 |------|------|
 |<img width="500" height="200" alt="관리자주문내역" src="https://github.com/user-attachments/assets/384303cf-0b89-4528-af6d-75e7396d3e88" /> |<img width="500" height="200" alt="관리자주문내역최종" src="https://github.com/user-attachments/assets/eb6ec4ad-e4e0-45f6-91f7-cd7cdbd2834d" />|
 
 <br>
 
-### 👨🏼‍💼 ADMIN 게시판 신고 기능
+#### 👨🏼‍💼 ADMIN 게시판 신고 기능
 - search옵션 구현 (제품별, 상태별, 날짜별) 
 - 신고자확인상태 클릭시 해당 신고자상세내역정보로 이동 삭제 처리기능 구현
 
-| Before | After |
+| Before(Figma) | After(완성) |
 |------|------|
 |<img width="500" height="200" alt="관리자게시판신고" src="https://github.com/user-attachments/assets/7b57bee7-98e7-46e5-b940-05c30bcf4e32" />|<img width="500" height="200" alt="관리자게시판신고최종" src="https://github.com/user-attachments/assets/7037abac-0299-4e57-996a-a73dc5ada88f" />|
 
 <br>
 
-### 👨🏼‍🎨 ADMIN 회원관리 기능
+#### 👨🏼‍🎨 ADMIN 회원관리 기능
 - search옵션 구현  
 - 회원상세정보 및 처리
 
-| Before | After |
+| Before(Figma) | After(완성) |
 |------|------|
 |<img width="500" height="200" alt="관리자회원관리" src="https://github.com/user-attachments/assets/7e171352-1eae-4aa7-bd0a-473a8b2195e5" />|<img width="500" height="200" alt="관리자회원관리최종" src="https://github.com/user-attachments/assets/b81b2f3f-c8e2-49ae-9cd4-ea45dc695709" />|
 
 <br>
 
+## 🧐 HOME
+#### 👨🏼‍🚒 HOME 메인 기능
+- DB정보 각종 정보 현황출력 (ADIMIN에 등록 된 배너 호출)
+- 메인슬라이드, 제품, 대회, 크루 광고(BANNER) 출력
 
+| Before(Figma) | After(완성) |
+|--------|-------|
+|<img width="500" height="200" alt="메인화면" src="https://github.com/user-attachments/assets/c3cab946-47a6-426a-9b67-91d682727ea5" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/a56a8128-c26f-4089-8288-53cdfe78903c"/>|
 
+<br>
+
+####  🧛🏼‍♂️ HOME 로그인/회원가입/비밀번호 찾기 기능
+- 로그인, 회원가입, 아이디/비밀번호 찾기 구현
+- 회원가입 시 기입한 핸드폰번호로 인증번호 발송
+- 아이디찾기(이름, 전화번호, 생년월일)입력 시 DB정보에서 아이디 출력
+- 비밀번호찾기(아이디, 이름, 생년월일, 전화번호) 인증번호 발송 인증번호 입력 시 기존 비밀번호에서 새 비밀번호 변경
+
+##### - 회원가입
+| Before(Figma) | After(완성) |
+|--------|-------|
+|<img width="500" height="200" alt="로그인" src="https://github.com/user-attachments/assets/b902aa38-3be4-447f-82d2-8110ccd26bcb" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/5faf363e-9564-4a8b-8621-4ee3925daa5b"/>|
+
+##### - 아이디/비밀번호 찾기
+| Before(Figma) | After(완성) |
+|--------|-------|
+|<img width="500" height="200" alt="아이디_비밀번호찾기" src="https://github.com/user-attachments/assets/831a2553-9290-40dc-863e-e8fc3605d05d" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/0be25a68-5726-4d95-994c-045925dafe35"/>|
+
+<br>
+
+#### 🧚🏼‍♂️ HOME 쇼핑몰 기능
+- search옵션 구현 
+- 제품 구매(결제) 시스템 구현
+- 장바구니 시스템 구현
+- 상품문의 구현
+
+##### - 제품 장바구니 및 결제 
+| Before(Figma) | After(완성) |
+|--------|-------|
+|<img width="500" height="200" alt="상품구매" src="https://github.com/user-attachments/assets/fe350251-2966-4bad-9d6d-95d0bc54640f" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/b6372f68-97dd-4bbe-8b57-85006e4a3708" />|
+
+<br>
+
+##### - 제품 문의 
+| Before(Figma) | After(완성) |
+|--------|-------|
+|<img width="500" height="200" alt="상품문의" src="https://github.com/user-attachments/assets/c67f24f8-69b0-491f-bd31-35c304de383a" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/f6cc9032-274b-4cad-92b1-bd2bf846919a" />|
+
+<br>
+
+#### 🧕🏼 HOME 마이페이지 기능
+- 개인정보 수정
+- 상품리뷰, 문의 구현
+- 문의내역, 상품내역 보기
+- 교환, 환불 구현
+  
+##### - 개인정보 수정
+| Before(Figma) | After(완성) |
+|--------|-------|
+|<img width="500" height="200" alt="마이페이지개인정보확인" src="https://github.com/user-attachments/assets/37cd86d0-e40c-4ed2-bb5d-83f31748fead" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/253eb978-a881-4260-bc52-cd6957b58b39" />|
+
+<br>
+
+##### - 주문배송내역, 반품/교환내역, 문의내역, 상품리뷰
+| Before(Figma) | After(완성) |
+|--------|-------|
+|<img width="500" height="200" alt="합치기" src="https://github.com/user-attachments/assets/db1862dd-2c6e-4b5d-8741-ffc43c85cc2e" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/a781d650-e159-4504-b500-34113a38349e" />|
+
+<br>
+
+#### 🦸🏼‍♂️ HOME 커뮤니티 기능
+- search옵션 구현
+- 게시판 글 추가 수정
+- 신고기능 구현
+- 단체채팅방/ 1:1채팅방 구현
+- 같은방 유저 표시
+
+##### - 게시판, 대회정보
+| Before(Figma) | After(완성) |
+|--------|-------|
+|<img width="500" height="200" alt="합치기2" src="https://github.com/user-attachments/assets/ff48e199-b5d5-41d2-8c32-6da1bf2e1a9e" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/911f7299-7700-41b2-adad-448c30b8bff1" />|
+
+##### - 크루찾기, 채팅방
+| Before(Figma) | After(완성) |
+|--------|-------|
+|<img width="500" height="200" alt="합치기3" src="https://github.com/user-attachments/assets/6445e079-acd2-4431-ae32-22e5fa258eb0" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/184d2a5c-6cae-481e-b83e-07a5f3ca7a3f" />|
 
 
 

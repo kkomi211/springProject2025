@@ -9,9 +9,12 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-        
+        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+            rel="stylesheet">
+
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -23,21 +26,21 @@
 
         <style>
             html,
-                body {
-                    height: 100%;
-                    margin: 0;
-                    padding: 0;
-                    font-family: Arial, sans-serif;
-                    color: #333;
-                    line-height: 1.6;
-                }
+            body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                color: #333;
+                line-height: 1.6;
+            }
 
-                #app {
-                    /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
-                    display: flex;
-                    flex-direction: column;
-                    min-height: 100vh;
-                }
+            #app {
+                /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
         </style>
     </head>
 
@@ -52,20 +55,24 @@
                     <div id="right-items">
                         <div>
                             <!-- <template > -->
-                                <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
+                            <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i
+                                        data-lucide="log-out" stroke-width="1.5"></i></a></div>
                             <!-- </template> -->
                             <!-- <template > -->
-                                <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
+                            <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a>
+                            </div>
                             <!-- </template> -->
                         </div>
                         <div v-if="sessionId == ''">
                             <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
                         </div>
-                        <div v-if="sessionId != '' && userType != 'K'"><a
-                                href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                        <div v-if="sessionId != '' && userType != 'K'"><a href="/home/mypage/information.do"><i
+                                    data-lucide="user" stroke-width="1.5"></i></a></div>
                         <div v-else-if="sessionId != '' && userType == 'K'"><a
-                                href="home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
-                        <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div>
+                                href="home/mypage/information/change.do"><i data-lucide="user"
+                                    stroke-width="1.5"></i></a></div>
+                        <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart"
+                                    stroke-width="1.5"></i></a></div>
                     </div>
                 </div>
                 <div class="bottom-header">
@@ -124,7 +131,8 @@
                                 src="/img/shoe-img.png" 
                                 class="big-img" 
                                 alt="Running shoes for sale"> -->
-                            <img :src="imgByProduct[String(productNo)] || '/img/no-image.png'" class="big-img" :alt="info.productName">
+                            <img :src="imgByProduct[String(productNo)] || '/img/no-image.png'" class="big-img"
+                                :alt="info.productName">
                         </div>
                         <!-- 수정 부분 -->
                         <div class="infoText-box">
@@ -132,13 +140,18 @@
                             <div class="product-name">{{info.productName}}</div>
                             <div class="product-type">{{info.typeName}}</div>
                             <!-- <div class="margin80 font30" v-if="info.saleYN == 'N'">{{info.price}} 원</div> -->
-                            <div class="product-price">{{Number(info.price).toLocaleString()}} 원</div>
+                            <div class="product-price" v-if="info.saleYN == 'N'">{{Number(info.price).toLocaleString()}}
+                                원</div>
                             <!-- <div class="margin80 font30" v-else><del>{{info.price}}</del> {{info.salePrice}} 원</div> -->
+                            <div class="product-price" v-else><del
+                                    style="font-weight: lighter;">{{Number(info.price).toLocaleString()}}</del>
+                                {{Number(info.salePrice).toLocaleString()}} 원</div>
                             <div class="product-size">
                                 <!-- 사이즈 -->
                                 <div>사이즈</div>
                                 <div>
-                                    <select class="select-box" v-model="size" @change="fnMaxQuantityChange" style="text-align: center;">
+                                    <select class="select-box" v-model="size" @change="fnMaxQuantityChange"
+                                        style="text-align: center;">
                                         <option v-for="item in sizeList" :value="item.productSize">사이즈 :
                                             {{item.productSize}} 재고 : {{item.quantity}}
                                         </option>
@@ -155,7 +168,7 @@
                                 </div>
                             </div>
                             <div class="check-out">
-                                <button class="bluebutton margin30 height40" @click="fnCart">장바구니 담기  </button>
+                                <button class="bluebutton margin30 height40" @click="fnCart">장바구니 담기 </button>
                                 <button class="bluebutton margin30 height40" @click="fnPayment">결제하기</button>
                             </div>
                         </div>
@@ -177,7 +190,8 @@
                                         @click="fnProductInquiryAdd(productNo)">작성하기</button>
                                 </div> -->
                                 <div class="inquiry-search-box">
-                                    <input class="search" placeholder="문의 검색" v-model="inquiryKeyword" @keyup.enter="fnInquiry">
+                                    <input class="search" placeholder="문의 검색" v-model="inquiryKeyword"
+                                        @keyup.enter="fnInquiry">
                                     <a href="javascript:;" @click="fnInquiry">
                                         <div><i data-lucide="search" stroke-width="1"></i></div>
                                     </a>
@@ -192,8 +206,9 @@
                                             <!-- <td id="inquiry-title">이거 뭐할때 쓰는 물건이에요?</td> -->
                                             <td id="inquiry-title" @click="openInquiry(item)">
                                                 <span class="cursor">{{item.title}}</span>
-                                                <span class="material-symbols-outlined" v-if="item.pwd != undefined && item.pwd != null">key</span>
-                                            </td> 
+                                                <span class="material-symbols-outlined"
+                                                    v-if="item.pwd != undefined && item.pwd != null">key</span>
+                                            </td>
                                             <!-- <td id="inquiry-status">답변완료</td> -->
                                             <td id="inquiry-status">{{item.status === 'Y' ? '답변완료' : '미답변'}}</td>
                                         </tr>
@@ -207,7 +222,7 @@
                                         v-for="num in inquiryTotalPage" @click="fnInquiryPage(num)">{{num}}</span>
                                 </div>
                             </div>
-                            <div v-if="status == 2" class="review-container" >
+                            <div v-if="status == 2" class="review-container">
                                 <!-- <div class="inquirySearch-box">
                                     <span class="margin30 cursor" :class="{bold: reviewArray == 1}"
                                         @click="fnReviewArray(1)">도움돼요순</span>
@@ -217,15 +232,16 @@
                                     <button class="bluebutton height40" @click="fnReviewList">검색</button>
                                 </div> -->
                                 <div class="review-section">
-                                     <div class="review-search-box">
-                                        <input class="search" placeholder="리뷰 검색" v-model="reviewKeyword" @keyup.enter="fnReviewArray(reviewArray)">
-                                        <a href="javascript:;" @click="fnReviewArray(reviewArray)" >
+                                    <div class="review-search-box">
+                                        <input class="search" placeholder="리뷰 검색" v-model="reviewKeyword"
+                                            @keyup.enter="fnReviewArray(reviewArray)">
+                                        <a href="javascript:;" @click="fnReviewArray(reviewArray)">
                                             <div><i data-lucide="search" stroke-width="1"></i></div>
                                         </a>
                                     </div>
                                     <div class="helpful-section">
                                         <span class="margin30 cursor" :class="{bold: reviewArray == 1}"
-                                        @click="fnReviewArray(1)">도움돼요순</span>
+                                            @click="fnReviewArray(1)">도움돼요순</span>
                                         <span class="margin30 cursor" :class="{bold: reviewArray == 2}"
                                             @click="fnReviewArray(2)">최신순</span>
                                     </div>
@@ -235,16 +251,17 @@
                                         <div class="post-meta">
                                             <div>
                                                 <span class="post-category">
-                                                도움돼요 수 : 
-                                                <span style="font-size: 18px; margin-left: 5px; margin-right: 0px;">{{item.helpfulCnt}}</span>
+                                                    도움돼요 수 :
+                                                    <span
+                                                        style="font-size: 18px; margin-left: 5px; margin-right: 0px;">{{item.helpfulCnt}}</span>
                                                     <!-- <span class="material-symbols-outlined heart"
                                                         @click="fnHeartUp(item.reviewNo)" style="margin-left: 10px; ">
                                                         heart_plus
                                                     </span> -->
                                                 </span>
                                                 <span class="material-symbols-outlined heart"
-                                                        @click="fnHeartUp(item.reviewNo)" style="margin-left: 10px;">
-                                                        heart_plus
+                                                    @click="fnHeartUp(item.reviewNo)" style="margin-left: 10px;">
+                                                    heart_plus
                                                 </span>
                                             </div>
                                             <div>
@@ -324,11 +341,12 @@
                     <div v-if="showInquiryModal" class="modal-backdrop" @click.self="closeInquiry">
                         <div class="modal-card">
                             <!-- 잠금 글: 비밀번호 확인 화면 -->
+
                             <div v-if="needPwd && !authorized">
                                 <h3 class="modal-title">비공개 문의</h3>
                                 <p class="modal-desc">비밀번호를 입력하세요.</p>
-                                <input style="width: 700px;" type="password" v-model="pwdInput" class="modal-input" placeholder="비밀번호"
-                                    @keyup.enter="confirmPwd">
+                                <input style="width: 700px;" type="password" v-model="pwdInput" class="modal-input"
+                                    placeholder="비밀번호" @keyup.enter="confirmPwd">
                                 <div class="modal-actions">
                                     <button class="bluebutton height40" @click="confirmPwd"
                                         :disabled="loading">확인</button>
@@ -336,6 +354,7 @@
                                 </div>
                                 <div class="error" v-if="pwdError">{{ pwdError }}</div>
                             </div>
+
 
                             <!-- 상세 내용 화면 -->
                             <div v-else>
@@ -372,23 +391,23 @@
                     </div>
                     <div class="copyright">
                         COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
-                     </div>
-                </div>
-                     <div class="footer-right">
-                        <div class="other">
-                            <span><a href="/home/about.do">회사소개</a></span>
-                            <span><a @click="fnNotice">공지사항</a></span>
-                            <span><a href="/home/terms.do">이용약관</a></span>
-                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
-                        </div>
-                        <div class="socials">
-                            <span>INSTAGRAM</span>
-                            <span>NAVER</span>
-                        </div>
-                    
                     </div>
-                
-                
+                </div>
+                <div class="footer-right">
+                    <div class="other">
+                        <span><a href="/home/about.do">회사소개</a></span>
+                        <span><a @click="fnNotice">공지사항</a></span>
+                        <span><a href="/home/terms.do">이용약관</a></span>
+                        <span><a href="/home/privacy.do">개인정보처리방침</a></span>
+                    </div>
+                    <div class="socials">
+                        <span>INSTAGRAM</span>
+                        <span>NAVER</span>
+                    </div>
+
+                </div>
+
+
             </footer>
         </div>
     </body>
@@ -437,7 +456,7 @@
                     sessionId: "${sessionId}", // HARDCODING for test purposes 
                     userName: "",
 
-                    userType : '${userType}',
+                    userType: '${userType}',
                 };
             },
             computed: {
@@ -655,13 +674,13 @@
                 },
                 fnHeartUp(reviewNo) {
                     let self = this;
-                    if(!self.fnLoginCheck()){
+                    if (!self.fnLoginCheck()) {
                         alert("로그인후 시도해주세요!")
-                        location.href="/home/login.do";
+                        location.href = "/home/login.do";
                     }
                     let param = {
                         reviewNo: reviewNo,
-                        userId : self.sessionId
+                        userId: self.sessionId
                     };
                     $.ajax({
                         url: "/product/review/1up.dox",
@@ -670,7 +689,7 @@
                         data: param,
                         success: function (data) {
                             console.log(data);
-                            if(data.result == "same"){
+                            if (data.result == "same") {
                                 alert("이미 추천한 리뷰입니다!");
                                 return;
                             }
@@ -692,19 +711,19 @@
                 },
                 fnProductInquiryAdd(proNo) {
                     let self = this;
-                    if(!self.fnLoginCheck()){
+                    if (!self.fnLoginCheck()) {
                         alert("로그인후 시도해주세요!")
-                        location.href="/home/login.do";
+                        location.href = "/home/login.do";
                         return;
                     }
                     pageChange("/home/product/inquiry/add.do", { productNo: proNo, sessionId: self.sessionId });
                 },
                 fnCart() {
                     let self = this;
-                    if(!self.fnLoginCheck()){
+                    if (!self.fnLoginCheck()) {
                         alert("로그인후 시도해주세요!")
-                        location.href="/home/login.do";
-                    }   
+                        location.href = "/home/login.do";
+                    }
                     let param = {
                         productNo: self.productNo,
                         size: self.size,
@@ -759,9 +778,9 @@
                 },
                 fnPayment() {
                     let self = this;
-                    if(!self.fnLoginCheck()){
+                    if (!self.fnLoginCheck()) {
                         alert("로그인후 시도해주세요!")
-                        location.href="/home/login.do";
+                        location.href = "/home/login.do";
                     }
                     pageChange("/home/payment/paybefore.do", {
                         productNo: self.productNo,
@@ -769,7 +788,7 @@
                         productSize: self.size
                     });
                 },
-                fnLogout : function(){
+                fnLogout: function () {
                     let self = this;
                     let param = {};
                     $.ajax({
@@ -778,30 +797,30 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            if(data.result == "success"){
-                                location.href="/home.do";
+                            if (data.result == "success") {
+                                location.href = "/home.do";
                             }
 
                         }
                     })
                 },
-                fnLoginCheck(){
+                fnLoginCheck() {
                     let self = this;
-                    if(self.sessionId == '' || self.sessionId == 'undefined' || self.sessionId == null){
+                    if (self.sessionId == '' || self.sessionId == 'undefined' || self.sessionId == null) {
                         return false;
                     }
                     return true;
                 },
-                fnSale(){
+                fnSale() {
                     let self = this;
                     self.saleYN = 'Y';
                     pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN, keyword: "" });
                 },
-                fnNotice(){
+                fnNotice() {
                     let self = this;
-                    pageChange("/home/community/board.do", {type : "B"});
+                    pageChange("/home/community/board.do", { type: "B" });
                 },
-                fnSearch(){
+                fnSearch() {
                     let self = this;
                     pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN, keyword: self.keyword });
                 }
