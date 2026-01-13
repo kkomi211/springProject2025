@@ -310,6 +310,13 @@
                                     {{ info.name }}
                                 </div>
                             </div>
+<<<<<<< HEAD
+=======
+                            <div class="header-user">
+                                {{ info.name }}
+                            </div>
+                        </div>
+>>>>>>> branch 'main' of https://github.com/kkomi211/springProject2025.git
 
                             <div class="page-container">
                                 <aside class="sidebar">

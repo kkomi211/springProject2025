@@ -229,7 +229,11 @@
                     authFlag: false,
 
                     ranStr: "", // 문자 인증 번호 
+<<<<<<< HEAD
                     inputNum: "111",
+=======
+                    inputNum: "",
+>>>>>>> branch 'main' of https://github.com/kkomi211/springProject2025.git
                     timer: "",
                     count: 180,
 
@@ -342,6 +346,11 @@
                     if (self.newPwd1 !== self.newPwd2) {
                         alert("비밀번호가 서로 다릅니다."); // alert if mismatch
                         return; // stop function
+                    }
+                    if (self.inputNum == "") {
+                        alert("인증 절차를 먼저 완료해주세요.");
+                        document.querySelector("#auth").focus();
+                        return;
                     }
                     let param = {
                         userId: self.pwd_userId,

@@ -212,5 +212,137 @@ public class BoardService {
 		}
 		return resultMap;
 	}
+	
+	
+	
+	// 좋아요 toggle
+	public HashMap<String, Object> toggleLike(HashMap<String, Object> map) {
+
+	    HashMap<String, Object> resultMap = new HashMap<>();
+
+	    // Check if already liked
+	    int count = boardMapper.checkBoardLike(map);
+
+	    if (count == 0) {
+	        // Not liked → INSERT
+	        int insertCnt = boardMapper.likeBoard(map);
+
+	        if (insertCnt > 0) {
+	            resultMap.put("result", "liked");
+	        } else {
+	            resultMap.put("result", "fail");
+	        }
+
+	    } else {
+	        // 3️⃣ Already liked → DELETE
+	        int deleteCnt = boardMapper.unlikeBoard(map);
+
+	        if (deleteCnt > 0) {
+	            resultMap.put("result", "unliked");
+	        } else {
+	            resultMap.put("result", "fail");
+	        }
+	    }
+
+	    return resultMap;
+	}
+	
+	public HashMap<String, Object> getLikeCnt(HashMap<String, Object> map) {
+
+	    HashMap<String, Object> resultMap = new HashMap<>();
+
+	    // Check if already liked
+	    int count = boardMapper.checkBoardLike(map);
+
+	    if (count == 0) {
+	        // Not liked → INSERT
+	        int insertCnt = boardMapper.likeBoard(map);
+
+	        if (insertCnt > 0) {
+	            resultMap.put("result", "liked");
+	        } else {
+	            resultMap.put("result", "fail");
+	        }
+
+	    } else {
+	        // 3️⃣ Already liked → DELETE
+	        int deleteCnt = boardMapper.unlikeBoard(map);
+
+	        if (deleteCnt > 0) {
+	            resultMap.put("result", "unliked");
+	        } else {
+	            resultMap.put("result", "fail");
+	        }
+	    }
+
+	    return resultMap;
+	}
+	
+	public HashMap<String, Object> getBoardLike(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+	    
+	    // Get total like count
+	    int likeCnt = boardMapper.likeCnt(map);
+	    
+	    // Check if current user has liked this post
+	    int isLikedCount = 0;
+	    if (map.containsKey("userId") && map.get("userId") != null && !map.get("userId").toString().isEmpty()) {
+	        isLikedCount = boardMapper.checkBoardLike(map);  // Uses your existing checkBoardLike query
+	    }
+	    
+	    resultMap.put("result", "success");
+	    resultMap.put("likeCnt", likeCnt);
+	    resultMap.put("isLiked", isLikedCount > 0);  // true if user has liked, false otherwise
+	    
+	    return resultMap;
+	}
+	
+	public HashMap<String, Object> toggleCommentLike(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<>();
+	    
+	    // Check if already liked
+	    int count = boardMapper.checkCommentLike(map);
+	    
+	    if (count == 0) {
+	        // Not liked → INSERT
+	        int insertCnt = boardMapper.likeComment(map);
+	        
+	        if (insertCnt > 0) {
+	            resultMap.put("result", "liked");
+	        } else {
+	            resultMap.put("result", "fail");
+	        }
+	    } else {
+	        // Already liked → DELETE
+	        int deleteCnt = boardMapper.unlikeComment(map);
+	        
+	        if (deleteCnt > 0) {
+	            resultMap.put("result", "unliked");
+	        } else {
+	            resultMap.put("result", "fail");
+	        }
+	    }
+	    
+	    return resultMap;
+	}
+
+	public HashMap<String, Object> getCommentLikeInfo(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<>();
+	    
+	    // Get like count
+	    int likeCnt = boardMapper.getCommentLikeCnt(map);
+	    
+	    // Check if current user liked it
+	    int isLikedCount = 0;
+	    if (map.containsKey("userId") && map.get("userId") != null && !map.get("userId").toString().isEmpty()) {
+	        isLikedCount = boardMapper.checkCommentLike(map);
+	    }
+	    
+	    resultMap.put("result", "success");
+	    resultMap.put("likeCnt", likeCnt);
+	    resultMap.put("isLiked", isLikedCount > 0);
+	    
+	    return resultMap;
+	}
 
 }

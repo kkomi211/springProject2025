@@ -19,9 +19,11 @@
         <script src="/js/page-change.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-        <script src="/js/page-change.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <script src="/js/header-component.js"></script>
+
         <style>
+            /* 기본 레이아웃 및 폰트 설정 */
             html,
             body {
                 height: 100%;
@@ -33,13 +35,112 @@
             }
 
             #app {
-                /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
                 display: flex;
                 flex-direction: column;
                 min-height: 100vh;
             }
 
-            /* Main Hero Slider styles (메인 상단 배너) */
+            a {
+                text-decoration: none;
+                color: inherit;
+            }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+            /* Header & Footer 공통 영역 */
+            header {
+                width: 100%;
+                background-color: black;
+                color: white;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .top-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                height: 150px;
+                padding: 0 40px;
+                box-sizing: border-box;
+            }
+
+            .top-header input {
+                height: 25px;
+                border-radius: 8px;
+                width: 200px;
+            }
+
+            .brand-name div {
+                font-family: 'Jost', sans-serif;
+                font-size: 60px;
+                font-weight: 900;
+                letter-spacing: 3px;
+                display: block;
+                color: white;
+            }
+
+            #right-items {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .bottom-header {
+                display: flex;
+                justify-content: center;
+                font-size: 25px;
+                background-color: white;
+                border-bottom: 1px solid #eee;
+                padding: 20px 0;
+                letter-spacing: 3px;
+            }
+
+            .bottom-header div {
+                display: inline-block;
+                margin-right: 100px;
+                text-align: center;
+            }
+
+            .bottom-header a {
+                color: black;
+            }
+
+            footer {
+                width: 100%;
+                height: 200px;
+                background-color: black;
+                color: white;
+                align-items: center;
+                display: flex;
+                justify-content: space-between;
+                font-size: 12px;
+                padding: 0 40px;
+                box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+                margin-top: auto;
+                box-sizing: border-box;
+            }
+
+            /* 메인 배너 슬라이더 */
+            .main-hero-slider-area {
+                width: 100vw;
+                position: relative;
+                left: 50%;
+                right: 50%;
+                margin-left: -50vw;
+                margin-right: -50vw;
+                overflow: hidden;
+                background-color: #f8f8f8;
+                height: 300px;
+            }
+
+            .main-hero-slider {
+                width: 100%;
+                height: 100%;
+                position: relative;
+            }
+
             .main-hero-slider .crew-overlay-text {
                 position: absolute;
                 top: 50%;
@@ -55,275 +156,342 @@
                 z-index: 10;
             }
 
-            .main-hero-slider img {
-                width: 100%;
-                height: 400px;
-                /* adjust to your design */
-                object-fit: cover;
-            }
-
-            .main-hero-slider-area {
-                /* 이 영역이 브라우저 너비 전체를 차지하도록 */
-                width: 100vw;
-                /* 뷰포트 너비 전체 */
-                position: relative;
-                left: 50%;
-                right: 50%;
-                margin-left: -50vw;
-                /* 왼쪽으로 50vw 밀고 */
-                margin-right: -50vw;
-                /* 오른쪽으로 50vw 밀어서 풀 너비 확장 */
-                overflow: hidden;
-                /* 영역 밖으로 나가는 콘텐츠 숨김 */
-                background-color: #f8f8f8;
-                /* 로드 전/후 배경색 */
-                height: 300px;
-                /* 이미지 높이를 지정 */
-            }
-
-            .main-hero-slider {
-                /* 이 section은 풀 브라우저 너비를 차지하도록 만듭니다. */
-                width: 100%;
-                height: 100%;
-                /* 부모와 동일한 높이 */
-                padding: 0;
-                /* 상하 패딩 제거 */
-                position: relative;
-            }
-
-            .main-hero-slider .swiper-container {
-                width: 100%;
-                /* 부모 section의 너비를 꽉 채움 */
-                height: 100%;
-                /* 부모 section의 높이를 꽉 채움 */
-                margin: 0;
-                /* Swiper 기본 마진 제거 */
-            }
-
-            .main-hero-slider .swiper-slide {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                position: relative;
-                /* 텍스트 오버레이를 위한 기준점 */
-            }
-
-            .main-hero-slider .swiper-slide a {
-                display: block;
-                /* 링크 전체 클릭 가능 */
-                width: 100%;
-                height: 100%;
-            }
-
             .main-hero-slider .swiper-slide img {
                 width: 100%;
-                /* 슬라이드 너비를 꽉 채움 */
                 height: 100%;
-                /* 슬라이드 높이를 꽉 채움 */
                 object-fit: cover;
-                /* 이미지가 잘려도 비율 유지하며 채움 */
                 object-position: center;
-                /* 이미지의 중앙이 보이도록 */
                 display: block;
             }
 
-            /* Swiper 페이지네이션 (하단 점 스타일) */
-            .main-hero-slider .swiper-pagination {
-                bottom: 30px !important;
-                /* 이미지 위에 오도록 위치 조정 */
-                z-index: 10;
-                /* 이미지 위에 표시되도록 z-index 부여 */
+            /* 채팅창 메인 컨테이너 (최하단 설정 기준) */
+            #chatBox {
+                flex: 1;
+                overflow-y: auto;
+                padding: 20px;
+                background-color: #f3f2f2;
+                /* 회색 배경 적용 */
+                border-radius: 8px;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                height: 600px;
+                width: 800px;
             }
 
-            .main-hero-slider .swiper-pagination-bullet {
+            /* 날짜 구분선 */
+            .date-divider {
+                display: flex;
+                justify-content: center;
+                margin: 10px 0;
+            }
+
+            .date-label {
+                background-color: rgba(0, 0, 0, 0.1);
+                color: #fff;
+                padding: 4px 15px;
+                border-radius: 20px;
+                font-size: 13px;
+            }
+
+            /* 메시지 그룹 레이아웃 */
+            .message-group {
+                display: flex;
+                flex-direction: column;
+                max-width: 85%;
+            }
+
+            .my-message {
+                align-self: flex-end;
+                align-items: flex-end;
+            }
+
+            .other-message {
+                align-self: flex-start;
+                align-items: flex-start;
+            }
+
+            .nickname-label {
+                font-size: 13px;
+                font-weight: bold;
+                margin-bottom: 5px;
+                color: #333;
+            }
+
+            .bubble-container {
+                display: flex;
+                align-items: flex-end;
+                gap: 6px;
+            }
+
+            .my-message .bubble-container {
+                flex-direction: row-reverse;
+                /* 내 메시지는 시간이 왼쪽 */
+            }
+
+            /* 말풍선 디자인 */
+            .chat-bubble {
+                padding: 10px 14px;
+                border-radius: 15px;
+                font-size: 14px;
+                line-height: 1.4;
+                word-break: break-all;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+                /* ★★★ 이 줄을 추가하세요! ★★★ */
+                white-space: pre-wrap;
+            }
+
+            .my-message .chat-bubble {
+                background-color: #DCCCFF;
+                /* 연보라색 적용 */
+                color: #000;
+            }
+
+            .other-message .chat-bubble {
                 background-color: #fff;
-                /* 흰색 점 */
-                opacity: 0.7;
-                margin: 0 8px !important;
-                width: 12px;
-                /* 점 크기 조절 */
-                height: 12px;
-                transition: opacity 0.3s ease, background-color 0.3s ease;
+                color: #000;
             }
 
-            .main-hero-slider .swiper-pagination-bullet-active {
-                background-color: #007bff;
-                /* 활성 점은 ASICS스러운 블루 계열 */
-                opacity: 1;
+            .time-label {
+                font-size: 11px;
+                color: #555;
+                white-space: nowrap;
             }
 
-            /* ★★★ 양쪽 사이드를 가릴 div 처리 ★★★ */
-            /* 메인 슬라이더를 풀 너비로 확장했으므로, 이 div들은 이제 필요 없을 가능성이 높습니다. */
-            /* 만약 이 div들이 특정 배경색으로 사이드를 채우는 역할을 한다면 다음과 같이 처리할 수 있습니다. */
-            /* 하지만 메인 배너 이미지가 풀 너비라면 이 div들은 보이지 않습니다. */
-            .main-hero-slider-area .swiper-side-cover {
-                display: none;
-                /* 현재는 풀 너비 배너이므로 숨김 */
-                /* 만약 swiper-container에 max-width를 주고 양 옆을 이 div로 채우는 디자인이라면,
-            main-hero-slider-area에 position: relative;를 주고,
-            left/right 커버에 position: absolute, top/bottom/left/right 0, z-index -1
-            같은 스타일을 주어 배경색을 채울 수 있습니다.
-            하지만 현재는 스위퍼 이미지 자체가 풀 너비이므로 display: none; 처리 */
+            /* 버튼 및 기타 요소 */
+            .bot-buttons {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+                gap: 8px;
+                margin-bottom: 15px;
+                background: white;
+                padding: 15px;
+                border-radius: 12px;
+                border: 1px dashed #007bff;
+            }
+
+            .bot-buttons button {
+                background-color: #f0f7ff;
+                border: 1px solid #b3d7ff;
+                color: #0056b3;
+                padding: 5px;
+                border-radius: 6px;
+                font-size: 12px;
+                cursor: pointer;
             }
 
             button:hover {
                 background-color: rgb(53, 54, 54);
             }
 
-            /* New CSS from homepage */
-            html,
-            body {
+            .delete-link {
+                font-size: 11px;
+                color: #e74c3c;
+                cursor: pointer;
+                margin-top: 2px;
+                text-decoration: none;
+            }
+
+            /* 드롭다운 메뉴 컨테이너 */
+            .menu-container {
+                position: relative;
+                display: inline-block;
+            }
+
+            /* 드롭다운 박스 */
+            .dropdown-menu {
+                position: absolute;
+                top: 100%;
+                right: 0;
+                width: 150px;
+                background-color: white;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                z-index: 100;
+                display: flex;
+                flex-direction: column;
+                margin-top: 5px;
+                overflow: hidden;
+            }
+
+            /* 메뉴 아이템 */
+            .dropdown-item {
+                padding: 10px 15px;
+                font-size: 14px;
+                cursor: pointer;
+                border-bottom: 1px solid #f0f0f0;
+                text-align: left;
+            }
+
+            .dropdown-item:hover {
+                background-color: #f7f9fc;
+                color: #007bff;
+                font-weight: bold;
+            }
+
+            .dropdown-item:last-child {
+                border-bottom: none;
+            }
+
+            /* 방장 위임 모드일 때 사이드바 깜빡임 효과 */
+            .transfer-mode li {
+                border: 2px dashed #007bff;
+                background-color: #e3f2fd;
+                animation: blink 1.5s infinite;
+            }
+
+            @keyframes blink {
+                50% {
+                    border-color: transparent;
+                }
+            }
+
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
                 height: 100%;
-                margin: 0;
-                padding: 0;
-                font-family: Arial, sans-serif;
+                background-color: rgba(0, 0, 0, 0.5);
+                /* 반투명 배경 */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 2000;
+            }
+
+            .modal-content {
+                background: white;
+                padding: 30px 40px;
+                /* 내부 여백 */
+                border: 3px solid #555;
+                /* 진한 회색 테두리 */
+                border-radius: 30px;
+                /* 둥근 모서리 */
+                width: 400px;
+                /* 너비 고정 */
+                text-align: center;
+                position: relative;
+                box-shadow: none;
+                /* 그림자 제거 */
+            }
+
+            /* 모달 메시지 (본문) */
+            .modal-body {
+                margin-bottom: 30px;
+                font-size: 20px;
+                /* 큰 글씨 */
+                font-weight: bold;
                 color: #333;
             }
 
-            #app {
-                /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
-                display: flex;
-                flex-direction: column;
-                min-height: 100vh;
-            }
-
-            a {
-                text-decoration: none;
-                color: inherit;
-            }
-
-            a:hover {
-                text-decoration: underline;
-            }
-
-            /* --- Header Section (화면 전체 너비) --- */
-            header {
-                /* default 헤더 스타일이 header 태그에 직접 적용되도록 재구성 */
+            /* 입력창 스타일 (필요한 경우) */
+            .modal-input {
                 width: 100%;
-                background-color: black;
-                /* default top-header의 배경색을 header 전체로 */
-                color: white;
-                /* default top-header의 글자색을 header 전체로 */
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            }
-
-            .top-header {
-                /* default top-header가 header의 유일한 자식이 됨 */
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                height: 150px;
-                /* default top-header의 높이 */
-                padding: 0 40px;
-                /* default footer padding과 맞춤 */
+                padding: 12px;
+                border: 2px solid #555;
+                border-radius: 15px;
+                font-size: 16px;
+                margin-top: 10px;
                 box-sizing: border-box;
-                /* 패딩이 width에 포함되도록 */
-            }
-
-            .top-header div {
-                display: inline-block;
-                text-align: left;
-                font-size: 15px;
-                margin-right: 0;
-                /* flex gap 사용을 위해 개별 div 마진 제거 */
-            }
-
-            .top-header input {
-                height: 25px;
-                border-radius: 8px;
-                width: 200px;
-            }
-
-            .brand-name {
-                /* top-header 내 brand-name */
-                margin-right: 0;
-                /* top-header div의 default margin-right 상쇄 */
-            }
-
-            .brand-name div {
-                font-family: 'Jost', sans-serif;
-                font-size: 60px;
-                font-weight: 900;
-                letter-spacing: 3px;
-                margin-left: 0;
-                /* top-header div의 default margin-left 상쇄 */
-                display: block;
-                color: white;
-                /* default 유지 */
-            }
-
-            .brand-name a {
-                color: white;
-            }
-
-            .brand-name a:hover {
-                text-decoration: none;
-            }
-
-            #right-items {
-                display: flex;
-                align-items: center;
-                gap: 20px;
-                /* 요소들 간 간격 */
-            }
-
-            #right-items div {
-                font-size: 15px;
-                white-space: nowrap;
-            }
-
-            #right-items div a {
-                color: white;
-                /* default top-header의 글자색 */
-            }
-
-            #right-items div a:hover {
-                color: #eee;
-            }
-
-            .bottom-header {
-                display: flex;
-                justify-content: center;
-                font-size: 25px;
-                /* default bottom-header 폰트 사이즈 */
-                background-color: white;
-                /* bottom-header 배경색 추가 */
-                border-bottom: 1px solid #eee;
-                /* 하단 경계선 */
-                padding: 20px 0;
-                /* 세로 패딩 */
-                letter-spacing: 3px;
-            }
-
-            .bottom-header div {
-                display: inline-block;
-                margin-right: 100px;
-                /* default bottom-header div의 마진 */
-                margin-top: 0;
-                /* flex-align으로 중앙 정렬 */
                 text-align: center;
             }
 
-            .bottom-header a:hover {
-                text-decoration: none;
+            /* 버튼 영역 */
+            .modal-actions {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                /* 버튼 사이 간격 */
             }
 
-            .bottom-header div:last-child {
-                margin-right: 0;
+            /* 공통 버튼 스타일 */
+            .btn-modal {
+                padding: 12px 40px;
+                border-radius: 30px;
+                /* 둥근 버튼 */
+                border: 2px solid #555;
+                background-color: #fff;
+                color: #555;
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                /* 부드러운 전환 효과 */
             }
 
-            .bottom-header a {
-                color: black;
-                /* default bottom-header 링크색 */
+            /* 마우스 오버 시 강조 효과 (검정 배경, 흰색 글씨) */
+            .btn-modal:hover {
+                background-color: #000;
+                color: #fff;
+                border-color: #000;
             }
 
-            /* .bottom-header a:hover {
-            color: #007bff;
-        } */
+            .modal-select {
+                width: 100%;
+                padding: 12px;
+                border: 2px solid #555;
+                border-radius: 15px;
+                font-size: 16px;
+                margin-top: 10px;
+                box-sizing: border-box;
+                text-align: center;
+                background-color: #fff;
+                cursor: pointer;
+            }
 
-            /* --- Footer Section (화면 전체 너비) --- */
+            .modal-select:focus {
+                outline: none;
+                border-color: #007bff;
+            }
+
+            /* 유저 목록 아이템 (position 기준점) */
+            .user-list-item {
+                position: relative;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 79%;
+            }
+
+            /* 유저 클릭 시 뜨는 드롭다운 메뉴 */
+            .user-dropdown-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                /* 또는 right: 0 */
+                width: 120px;
+                background: white;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                z-index: 50;
+                overflow: hidden;
+            }
+
+            .user-dropdown-item {
+                padding: 8px 12px;
+                font-size: 13px;
+                cursor: pointer;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            .user-dropdown-item:hover {
+                background-color: #f7f9fc;
+                color: #007bff;
+            }
+
+            .user-dropdown-item.delete {
+                color: #e74c3c;
+            }
+
+            .user-dropdown-item.delete:hover {
+                background-color: #fff5f5;
+            }
+
             footer {
-                /* default 푸터 스타일 */
                 width: 100%;
                 height: 200px;
                 background-color: black;
@@ -333,32 +501,26 @@
                 justify-content: space-between;
                 font-size: 12px;
                 padding: 0 40px;
-                /* default footer의 padding */
                 box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
                 margin-top: auto;
-                /* #app이 flex-direction: column일 때 푸터를 아래로 밀어냄 */
                 box-sizing: border-box;
-                /* 패딩이 width에 포함되도록 */
             }
 
             .footer-left {
-                margin-left: 0;
-                /* padding이 있으므로 margin-left 제거 */
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
             }
 
-            .footer-left .company-info div {
+            .company-info div {
                 margin-bottom: 5px;
-                white-space: nowrap;
+                /* 줄 간격 */
             }
 
             .copyright {
-                margin-top: 8px;
-                font-size: 0.9em;
-                color: #bbb;
-                white-space: nowrap;
+                margin-top: 10px;
+                color: #888;
+                /* 약간 흐린 색상 */
             }
 
             .footer-right {
@@ -366,37 +528,33 @@
                 flex-direction: column;
                 justify-content: center;
                 align-items: flex-end;
+                /* 오른쪽 정렬 */
+                gap: 15px;
+                /* 위아래 요소 간격 */
             }
 
             .other {
-                margin-bottom: 10px;
-                white-space: nowrap;
+                display: flex;
+                gap: 20px;
+                /* 링크 사이 간격 */
             }
 
-            .other span {
-                margin-left: 20px;
+            .other span a {
+                color: #ccc;
+                text-decoration: none;
                 cursor: pointer;
             }
 
-            .other span:hover {
+            .other span a:hover {
+                color: white;
                 text-decoration: underline;
             }
 
-            .other span:first-child {
-                margin-left: 0;
-            }
-
-            .socials span {
-                margin-left: 20px;
-                cursor: pointer;
-            }
-
-            .socials span:hover {
-                text-decoration: underline;
-            }
-
-            .socials span:first-child {
-                margin-left: 0;
+            .socials {
+                display: flex;
+                gap: 15px;
+                font-weight: bold;
+                color: #ccc;
             }
         </style>
     </head>
@@ -404,189 +562,257 @@
     <body>
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-            <div class="container">
-                <header>
-                    <div class="top-header">
-                        <div class="brand-name">
-                            <div><a href="/home.do">RUNNERS' HOUSE</a></div>
-                        </div>
-                        <div id="right-items">
-                            <div>
-                                <!-- <template > -->
-                                <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i
-                                            data-lucide="log-out" stroke-width="1.5"></i></a></div>
-                                <!-- </template> -->
-                                <!-- <template > -->
-                                <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a>
-                                </div>
-                                <!-- </template> -->
-                            </div>
-                            <div v-if="sessionId == ''">
-                                <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
-                            </div>
-                            <div v-if="sessionId != '' && userType != 'K'"><a href="/home/mypage/information.do"><i
-                                        data-lucide="user" stroke-width="1.5"></i></a></div>
-                            <div v-else-if="sessionId != '' && userType == 'K'"><a
-                                    href="home/mypage/information/change.do"><i data-lucide="user"
-                                        stroke-width="1.5"></i></a></div>
-                            <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart"
-                                        stroke-width="1.5"></i></a></div>
-                        </div>
-                    </div>
-                    <div class="bottom-header">
-                        <div>
-                            <a href="/home/product.do">제품</a>
-                        </div>
-                        <div>
-                            <a href="javascript:;" @click="fnSale">세일</a>
-                        </div>
-                        <div>
-                            <a href="/home/community/board.do">커뮤니티</a>
-                        </div>
-                    </div>
-                </header>
+            <%-- 공통 헤더 컴포넌트 --%>
+                <jsp:include page="/WEB-INF/header/header.jsp" />
+                <div class="container">
+                    <div class="main-hero-slider-area">
+                        <section class="main-hero-slider">
+                            <div class="swiper-container mySwiper">
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide">
 
-                <div class="main-hero-slider-area">
-                    <section class="main-hero-slider">
-                        <div class="swiper-container mySwiper">
-                            <div class="swiper-wrapper">
-                                <div class="swiper-slide">
+                                        <img
+                                            src="https://as2.ftcdn.net/v2/jpg/02/34/65/76/1000_F_234657662_jQjqcHFWIh3oVh9DTXAXzKAXVZ5Zf6ko.jpg">
 
-                                    <img
-                                        src="https://as2.ftcdn.net/v2/jpg/02/34/65/76/1000_F_234657662_jQjqcHFWIh3oVh9DTXAXzKAXVZ5Zf6ko.jpg">
-
-                                </div>
-                            </div>
-                            <div class="swiper-pagination"></div>
-                        </div>
-                        <span class="crew-overlay-text">COMMUNITY</span> <!-- 텍스트는 항상 보임, 중앙 위치 -->
-                    </section>
-                </div>
-
-                <main>
-
-                    <div class="header">
-                        <div class="header-welcome">
-                            Welcome,
-                        </div>
-                        <div class="header-user">
-                            {{ userName }}
-                        </div>
-                    </div>
-                    <div class="page-container">
-                        <aside class="sidebar">
-                            <h2 class="sidebar-heading"> COMMUNITY ></h2>
-                            <nav class="mypage-menu">
-                                <ul>
-                                    <li @click="moveToBoard">
-                                        <span class="icon">📝</span>
-                                        <a href="/home/community/board.do">게시판</a>
-                                    </li>
-                                    <li @click="moveToCrew">
-                                        <span class="icon">📦</span>
-                                        <a href="/home/community/crew.do">크루 찾기</a>
-                                    </li>
-                                    <li @click="moveToRally">
-                                        <span class="icon">💬</span>
-                                        <a href="/home/community/rally.do">대회정보</a>
-                                    </li>
-                                    <li @click="moveToChat" class="active">
-                                        <span class="icon">👤</span>
-                                        <a href="/home/community/chat.do">채팅방</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </aside>
-                        <main class="main-content">
-                            <div class="board-header">
-                                <h1 class="main-title">
-                                    {{chatInfo.name}} 채팅방
-                                </h1>
-                                <button v-if="ownerId == sessionId" class="redbutton" @click="fnDeleteChatRoom">채팅방
-                                    삭제</button>
-                            </div>
-                            <div id="chatBox">
-                                <div v-for="item in messageList" class="margin30">
-                                    <a class="bold">{{item.nickname}}</a> :
-                                    {{item.message}}
-                                    <button class="red" v-if="item.senderId == sessionId || sessionId == ownerId"
-                                        @click="fndeleteMessage(item.chatId)">삭제</button>
-                                    <div class="text-right">{{item.cdate}}</div>
-                                </div>
-                                <div v-if="chatbotFlg" class="margin30">
-                                    <button @click="fnRunRoute('서울')">서울</button>
-                                    <button @click="fnRunRoute('인천')">인천</button>
-                                    <button @click="fnRunRoute('부산')">부산</button>
-                                    <button @click="fnRunRoute('대구')">대구</button>
-                                    <button @click="fnRunRoute('대전')">대전</button>
-                                    <button @click="fnRunRoute('광주')">광주</button>
-                                    <button @click="fnRunRoute('울산')">울산</button>
-                                    <button @click="fnRunRoute('경기도')">경기도</button>
-                                    <button @click="fnRunRoute('충청도')">충청도</button>
-                                    <button @click="fnRunRoute('경상도')">경상도</button>
-                                    <button @click="fnRunRoute('전라도')">전라도</button>
-                                    <button @click="fnRunRoute('강원도')">강원도</button>
-                                    <button @click="fnRunRoute('제주도')">제주도</button>
-                                    <div v-for="msg in messages" :class="['message', msg.type]" class="margin30">
-                                        <a class="bold" v-if="msg.type == 'user'">사용자 : </a>
-                                        <a class="bold" v-if="msg.type == 'bot'">코스추천봇 : </a>
-                                        <a>{{ msg.text }}</a>
                                     </div>
                                 </div>
+                                <div class="swiper-pagination"></div>
                             </div>
-                            <div class="button-box">
-                                <input type="text" id="message" placeholder="/코스추천을 입력하면 코스추천봇이 나오고 /종료를 누르면 종료됩니다."
-                                    @keyup.enter="sendMessage" class="chatInput">
-                                <button @click="sendMessage">전송</button>
-                            </div>
-                            <div class="button-box">
-                                <button class="margin30" @click="fnChat">돌아가기</button>
-                                <button class="margin30 redbutton" @click="fnDeleteMember(sessionId)">탈퇴하기</button>
-                            </div>
-                        </main>
-                        <aside class="sidebar" v-if="!directFlg">
-                            <h2 class="sidebar-heading"> 채팅방 유저 목록</h2>
-                            <nav class="mypage-menu">
-                                <ul>
-                                    <li v-for="item in memberList">
-                                        <a :class="{bold: item.userId == ownerId}"
-                                            @click="fnDirectChat(item.userId)">{{item.nickname}}</a>
-                                        <button class="red" v-if="sessionId == ownerId && item.userId != ownerId"
-                                            @click="fnDeleteMember(item.userId)">x</button>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </aside>
+                            <span class="crew-overlay-text">COMMUNITY</span> <!-- 텍스트는 항상 보임, 중앙 위치 -->
+                        </section>
                     </div>
-                </main>
 
-                <footer>
-                    <div class="footer-left">
-                        <div class="company-info">
-                            <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
-                            <div><strong>대표:</strong> 김재</div>
-                            <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
-                            <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
-                            <div><strong>부가세 번호:</strong> KR123456789</div>
+                    <main>
+
+                        <div class="header">
+                            <div class="header-welcome">
+                                Welcome,
+                            </div>
+                            <div class="header-user">
+                                {{ userName }}
+                            </div>
                         </div>
-                        <div class="copyright">
-                            COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                        <div class="page-container">
+                            <aside class="sidebar">
+                                <h2 class="sidebar-heading"> COMMUNITY ></h2>
+                                <nav class="mypage-menu">
+                                    <ul>
+                                        <li @click="moveToBoard">
+                                            <span class="icon">📝</span>
+                                            <a href="/home/community/board.do">게시판</a>
+                                        </li>
+                                        <li @click="moveToCrew">
+                                            <span class="icon">📦</span>
+                                            <a href="/home/community/crew.do">크루 찾기</a>
+                                        </li>
+                                        <li @click="moveToRally">
+                                            <span class="icon">💬</span>
+                                            <a href="/home/community/rally.do">대회정보</a>
+                                        </li>
+                                        <li @click="moveToChat" class="active">
+                                            <span class="icon">👤</span>
+                                            <a href="/home/community/chat.do">채팅방</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </aside>
+                            <main class="main-content">
+                                <div class="board-header">
+                                    <h1 class="main-title">
+                                        {{chatInfo.name}} <span style="font-size: 0.5em; color: #666;">Chat Room</span>
+                                    </h1>
+
+                                    <div class="menu-container">
+                                        <button class="icon-btn" @click.stop="toggleMenu" title="설정">
+                                            <i data-lucide="align-justify"></i>
+                                        </button>
+
+                                        <div class="dropdown-menu" v-if="showMenu">
+                                            <template v-if="directFlg">
+                                                <div class="dropdown-item" @click="fnDeleteChatRoom" style="color:red;">
+                                                    방 삭제</div>
+                                            </template>
+
+                                            <template v-else>
+                                                <template v-if="ownerId == sessionId">
+                                                    <div class="dropdown-item" @click="fnUpdateChatName">방 이름 변경</div>
+                                                    <div class="dropdown-item" @click="fnTransferOwnerMode">방장 위임</div>
+                                                    <div class="dropdown-item" @click="fnDeleteChatRoom"
+                                                        style="color:red;">방 삭제</div>
+                                                </template>
+                                                <template v-else>
+                                                    <div class="dropdown-item" @click="fnDeleteMember(sessionId)"
+                                                        style="color:red;">채팅방 탈퇴</div>
+                                                </template>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="chatBox">
+                                    <template v-for="(item, index) in messageList" :key="item.chatId">
+                                        <div class="date-divider"
+                                            v-if="index === 0 || (item.cdate.split(' ')[0] !== messageList[index-1].cdate.split(' ')[0])">
+                                            <span class="date-label">{{ item.cdate.split(' ')[0] }}</span>
+                                        </div>
+
+                                        <div
+                                            :class="['message-group', item.senderId == sessionId ? 'my-message' : 'other-message']">
+                                            <div class="nickname-label" v-if="item.senderId != sessionId">{{
+                                                item.nickname }}</div>
+
+                                            <div class="bubble-container">
+                                                <div class="chat-bubble">
+                                                    {{ item.message }}
+                                                </div>
+                                                <div class="time-label">
+                                                    {{ item.cdate.split(' ')[1].substring(0, 5) }}
+                                                </div>
+                                            </div>
+
+                                            <a v-if="(directFlg && item.senderId == sessionId) || (!directFlg && (item.senderId == sessionId || sessionId == ownerId))"
+                                                class="delete-link" @click="fndeleteMessage(item.chatId)">삭제</a>
+                                        </div>
+                                    </template>
+
+                                    <div v-if="chatbotFlg" class="bot-section"
+                                        style="margin-top:20px; display: flex; flex-direction: column; width: 100%; gap: 20px;">
+                                        <div class="date-divider"><span class="date-label">코스 추천 서비스</span></div>
+
+                                        <div class="bot-buttons"
+                                            style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;">
+
+                                            <template v-if="chatStep === 1">
+                                                <button v-for="city in ['서울','인천','부산','대구','대전','광주','울산']"
+                                                    @click="fnRunRoute(city)"
+                                                    style="padding:5px 10px; border-radius:15px; border:none; background:#fff; cursor:pointer;">
+                                                    {{city}}
+                                                </button>
+                                            </template>
+
+                                            <template v-if="chatStep === 2">
+                                                <button v-for="level in ['초보자', '중급자', '상급자']"
+                                                    @click="fnSelectLevel(level)"
+                                                    style="padding:5px 10px; border-radius:15px; border:none; background:#e3f2fd; color:#007bff; font-weight:bold; cursor:pointer;">
+                                                    {{level}}
+                                                </button>
+                                                <button @click="chatStep = 1"
+                                                    style="padding:5px 10px; border-radius:15px; border:1px solid #ddd; background:#fff; cursor:pointer;">
+                                                    지역 다시 선택
+                                                </button>
+                                            </template>
+
+                                        </div>
+                                        <div v-for="msg in messages"
+                                            :class="['message-group', msg.type == 'user' ? 'my-message' : 'other-message']">
+                                            <div class="chat-bubble"
+                                                :style="msg.type == 'bot' ? 'background:#e1f5fe' : ''">
+                                                {{ msg.text }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="button-box" style="display: flex; gap: 10px;">
+                                    <input type="text" id="message" placeholder="메시지를 입력하세요... (/코스추천, /종료)"
+                                        @keyup.enter="sendMessage" class="chatInput"
+                                        style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
+                                    <button @click="sendMessage"
+                                        style="padding: 0 25px; border-radius: 8px; background: #000; color: #fff; cursor: pointer;">전송</button>
+                                </div>
+                            </main>
+                            <aside :class="['sidebar', { 'transfer-mode': isTransferring }]" v-if="!directFlg">
+                                <h2 class="sidebar-heading">
+                                    채팅방 유저 목록
+                                    <span v-if="isTransferring" style="font-size:12px; color:red; display:block;">(위임할
+                                        유저
+                                        선택)</span>
+                                </h2>
+                                <nav class="mypage-menu">
+                                    <ul>
+                                        <li v-for="item in memberList" :key="item.userId" class="user-list-item">
+
+                                            <a :class="{bold: item.userId == ownerId}"
+                                                @click.stop="handleUserClick(item.userId)"
+                                                style="cursor: pointer; flex-grow: 1;">
+                                                {{item.nickname}}
+                                                <span v-if="item.userId == ownerId" style="font-size:12px">👑</span>
+                                            </a>
+
+                                            <div v-if="activeUserMenu === item.userId" class="user-dropdown-menu">
+                                                <div class="user-dropdown-item" @click.stop="fnDirectChat(item.userId)">
+                                                    1:1
+                                                    채팅</div>
+                                                <div class="user-dropdown-item delete"
+                                                    @click.stop="fnDeleteMember(item.userId)">강퇴하기</div>
+                                            </div>
+
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </aside>
+                        </div>
+                    </main>
+
+                    <footer>
+                        <div class="footer-left">
+                            <div class="company-info">
+                                <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
+                                <div><strong>대표:</strong> 김재</div>
+                                <div><strong>사업자등록번호:</strong> 123-45-67890</div>
+                                <div><strong>통신판매업 신고번호:</strong> 2025-서울-00987</div>
+                                <div><strong>부가세 번호:</strong> KR123456789</div>
+                            </div>
+                            <div class="copyright">
+                                COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                            </div>
+                        </div>
+                        <div class="footer-right">
+                            <div class="other">
+                                <span><a href="/home/about.do">회사소개</a></span>
+                                <span><a @click="fnNotice">공지사항</a></span>
+                                <span><a href="/home/terms.do">이용약관</a></span>
+                                <span><a href="/home/privacy.do">개인정보처리방침</a></span>
+                            </div>
+                            <div class="socials">
+                                <span>INSTAGRAM</span>
+                                <span>NAVER</span>
+                            </div>
+                        </div>
+                    </footer>
+                    <div class="modal-overlay" v-if="modal.show">
+                        <div class="modal-content">
+                            <div class="modal-title" v-if="modal.title"
+                                style="font-weight:bold; font-size:18px; margin-bottom:10px;">
+                                {{ modal.title }}
+                            </div>
+                            <div class="modal-body">
+                                <div v-if="!modal.inputMode && !modal.selectMode">{{ modal.message }}</div>
+
+                                <div v-else-if="modal.inputMode">
+                                    <label style="display:block; margin-bottom:10px;">{{ modal.message }}</label>
+                                    <input type="text" v-model="modal.inputValue" class="modal-input"
+                                        @keyup.enter="modalConfirm" autofocus>
+                                </div>
+
+                                <div v-else-if="modal.selectMode">
+                                    <label style="display:block; margin-bottom:10px;">{{ modal.message }}</label>
+                                    <select v-model="modal.inputValue" class="modal-select">
+                                        <option v-for="user in modal.options" :key="user.userId" :value="user.userId">
+                                            {{ user.nickname }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="modal-actions">
+                                <button class="btn-modal" @click="closeModal">{{ modal.cancelText || '뒤로가기' }}</button>
+                                <button class="btn-modal" @click="modalConfirm">{{ modal.confirmText || '확인' }}</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="footer-right">
-                        <div class="other">
-                            <span><a href="/home/about.do">회사소개</a></span>
-                            <span><a @click="fnNotice">공지사항</a></span>
-                            <span><a href="/home/terms.do">이용약관</a></span>
-                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
-                        </div>
-                        <div class="socials">
-                            <span>INSTAGRAM</span>
-                            <span>NAVER</span>
-                        </div>
-                    </div>
-                </footer>
-            </div>
+                </div>
+
         </div>
     </body>
 
@@ -611,8 +837,24 @@
                     chatbotFlg: false,
                     userInput: "",
                     messages: [],
-
+                    showMenu: false,      // 메뉴 보임/숨김 상태
+                    isTransferring: false, // 방장 위임 모드 상태
                     userType: '${userType}',
+                    modal: {
+                        show: false,
+                        title: '',        // 제목 추가
+                        message: '',
+                        inputMode: false,
+                        selectMode: false, // [NEW] 셀렉트 모드 플래그
+                        options: [],       // [NEW] 셀렉트 박스 옵션 리스트
+                        inputValue: '',
+                        callback: null,
+                        confirmText: '확인',
+                        cancelText: '취소'
+                    },
+                    activeUserMenu: null,
+                    chatStep: 1,      // 1: 지역 선택 단계, 2: 난이도 선택 단계
+                    selectedCity: "", // 사용자가 선택한 지역 저장
                 };
             },
             methods: {
@@ -653,6 +895,8 @@
                             self.chatInfo = data.chatlist[0];
                             if (self.chatInfo.roomType == 'DIRECT') {
                                 self.directFlg = true;
+                            } else {
+                                self.directFlg = false; // 명시적으로 false 설정 추가하면 더 안전함
                             }
                         }
                     });
@@ -663,15 +907,33 @@
                     let param = {
                         chatroomNo: self.chatroomNo
                     }
+
+                    // [추가] 현재 스크롤이 맨 아래인지 확인 (오차 범위 10px 허용)
+                    let isAtBottom = false;
+                    if (chatBox) {
+                        isAtBottom = (chatBox.scrollTop + chatBox.clientHeight >= chatBox.scrollHeight - 10);
+                    }
+
                     $.ajax({
                         url: "/home/mypage/message/list.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data);
+                            // 메시지 개수가 다를 때만 갱신하거나, Vue가 알아서 처리하므로 데이터만 교체
+                            let oldLength = self.messageList.length;
                             self.messageList = data.messagelist;
-                            chatBox.scrollTop = chatBox.scrollHeight;
+                            let newLength = self.messageList.length;
+
+                            // [수정] 스크롤 조건 처리
+                            // 1. 새로운 메시지가 추가되었거나 (개수 증가)
+                            // 2. 사용자가 이미 스크롤을 맨 아래에 두고 있었다면
+                            // => 스크롤을 다시 맨 아래로 내림
+                            if (newLength > oldLength || isAtBottom) {
+                                self.$nextTick(() => {
+                                    chatBox.scrollTop = chatBox.scrollHeight;
+                                });
+                            }
                         }
                     });
                 },
@@ -771,6 +1033,8 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
+                            console.log("==>");
+
                             console.log(data);
                             self.memberList = data.memberList;
                             self.ownerId = data.owner.userId;
@@ -778,32 +1042,29 @@
                     });
                 },
                 fnDeleteMember(userId) {
-                    let self = this;
-                    let param = {
-                        userId: userId,
-                        chatroomNo: self.chatroomNo
-                    }
-                    $.ajax({
-                        url: "/home/mypage/member/delete.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-                            console.log(data);
-                            alert("삭제되었습니다!");
-                            self.fnMemberList();
-                            if (userId == self.sessionId) {
-                                self.fnChat();
-                            }
+                    let isSelf = (userId == this.sessionId);
+                    let msg = isSelf ? "정말 채팅방을 나가시겠습니까?" : "유저를 강퇴시키겠습니까?"; // 이미지 문구 적용
+                    let confirmBtnText = isSelf ? "나가기" : "유저 강퇴"; // 이미지 버튼 텍스트 적용
+
+                    this.openModal({
+                        message: msg,
+                        confirmText: confirmBtnText,
+                        callback: () => {
+                            let param = { userId: userId, chatroomNo: this.chatroomNo };
+                            $.ajax({
+                                url: "/home/mypage/member/delete.dox",
+                                dataType: "json", type: "POST", data: param,
+                                success: (data) => {
+                                    if (isSelf) this.fnChat();
+                                    else this.fnMemberList();
+                                }
+                            });
                         }
                     });
                 },
                 fnDirectChat(userId) {
                     let self = this;
                     if (userId == self.sessionId) {
-                        return;
-                    }
-                    if (!confirm("1ㄷ1 채팅을 하시겠습니까?")) {
                         return;
                     }
                     let param = {
@@ -845,9 +1106,60 @@
                     });
                 },
                 fnRunRoute(local) {
-                    let self = this;
-                    self.userInput = local + "지역의 러닝코스 알려줘";
-                    self.sendMessageChatbot();
+                    // 1. 사용자 메시지 표시 (지역)
+                    this.messages.push({ text: local, type: 'user' });
+
+                    // 2. 지역 저장 및 단계 변경
+                    this.selectedCity = local;
+                    this.chatStep = 2; // 난이도 선택 단계로 이동
+
+                    // 3. 봇이 난이도를 물어보는 메시지 표시 (가짜 응답)
+                    setTimeout(() => {
+                        this.messages.push({
+                            text: local + " 지역이군요! 원하시는 난이도를 선택해주세요.",
+                            type: 'bot'
+                        });
+                        // 스크롤 하단 이동
+                        let chatBox = document.getElementById("chatBox");
+                        if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+                    }, 500);
+                },
+                fnSelectLevel(level) {
+                    // 1. 사용자 메시지 표시 (난이도)
+                    this.messages.push({ text: level, type: 'user' });
+
+                    // 2. 질문 조합 (예: "서울 초보자 러닝코스 추천해줘")
+                    // 백엔드 프롬프트가 [지역] [난이도] 구조를 기대하므로 이렇게 합칩니다.
+                    let finalInput = this.selectedCity + " " + level + " 러닝코스 추천해줘";
+
+                    // 3. 봇에게 진짜 요청 보내기 (sendMessageChatbot 재사용)
+                    // 주의: sendMessageChatbot 내부에서 this.userInput을 쓰므로 값을 넣어줍니다.
+                    this.userInput = finalInput;
+
+                    // 기존 sendMessageChatbot은 'userInput'을 화면에 또 뿌리므로, 
+                    // 화면 중복 표시를 막으려면 아래처럼 ajax만 따로 빼거나, 
+                    // sendMessageChatbot을 조금 수정해야 합니다. 
+                    // 편의상 여기서는 ajax를 직접 호출하는 방식으로 작성합니다.
+
+                    let chatBox = document.getElementById("chatBox");
+
+                    $.ajax({
+                        url: "/gemini/chat",
+                        type: "GET",
+                        data: { input: finalInput },
+                        success: (response) => {
+                            this.messages.push({ text: response, type: 'bot' });
+                            this.$nextTick(() => { chatBox.scrollTop = chatBox.scrollHeight; });
+                        },
+                        error: (xhr) => {
+                            this.messages.push({ text: "오류 발생", type: 'bot' });
+                        }
+                    });
+
+                    // 4. 단계 초기화 (다시 지역 선택으로)
+                    this.chatStep = 1;
+                    this.selectedCity = "";
+                    this.userInput = "";
                 },
                 fnLogout: function () {
                     let self = this;
@@ -866,23 +1178,21 @@
                     })
                 },
                 fnDeleteChatRoom() {
-                    let self = this;
-                    if (!confirm("정말 삭제하시겠습니까?")) {
-                        return;
-                    }
-                    let param = {
-                        chatroomNo: self.chatroomNo
-                    };
-                    $.ajax({
-                        url: "/home/mypage/chat/delete.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-                            console.log(data);
-                            self.fnChat();
+                    this.showMenu = false;
+                    this.openModal({
+                        message: '정말 방을 삭제하시겠습니까?\n모든 대화 내용이 사라집니다.',
+                        confirmText: '방 삭제',
+                        callback: () => {
+                            let param = { chatroomNo: this.chatroomNo };
+                            $.ajax({
+                                url: "/home/mypage/chat/delete.dox",
+                                dataType: "json", type: "POST", data: param,
+                                success: (data) => {
+                                    this.fnChat();
+                                }
+                            });
                         }
-                    })
+                    });
                 },
                 fnSale() {
                     let self = this;
@@ -913,6 +1223,151 @@
 
                     pageChange("/home/community/chat.do", {});
                 },
+                toggleMenu() {
+                    this.showMenu = !this.showMenu;
+                },
+
+                // [추가] 방 이름 변경
+                fnUpdateChatName() {
+                    this.showMenu = false;
+                    this.openModal({
+                        message: '새로운 방 이름을 입력해주세요.',
+                        inputMode: true,
+                        inputValue: this.chatInfo.name,
+                        confirmText: '변경',
+                        callback: (newName) => {
+                            if (!newName || newName.trim() === "") return;
+                            $.ajax({
+                                url: "/home/mypage/chat/rename.dox",
+                                type: "POST",
+                                data: { chatroomNo: this.chatroomNo, name: newName },
+                                success: (data) => {
+                                    console.log("이름 변경");
+
+                                    this.fnGetUserChatList(); // 정보 갱신
+                                }
+                            });
+                        }
+                    });
+                },
+
+                // [추가] 방장 위임 모드 시작
+                fnTransferOwnerMode() {
+                    this.showMenu = false;
+
+                    // 나(방장)를 제외한 멤버 리스트 생성
+                    let candidates = this.memberList.filter(member => member.userId !== this.sessionId);
+
+                    if (candidates.length === 0) {
+                        this.openModal({ message: '위임할 다른 유저가 없습니다.', confirmText: '확인', cancelText: '닫기' });
+                        return;
+                    }
+
+                    // 모달 열기 (Select Mode)
+                    this.openModal({
+                        title: '방장 권한 위임',
+                        message: '방장 권한을 넘길 유저를 선택하세요.',
+                        selectMode: true,                 // 셀렉트 박스 활성화
+                        options: candidates,              // 후보 리스트 전달
+                        inputValue: candidates[0].userId, // 첫 번째 유저 기본 선택
+                        confirmText: '위임하기',
+                        callback: (targetUserId) => {
+                            // AJAX 실행
+                            $.ajax({
+                                url: "/home/mypage/chat/transfer.dox",
+                                type: "POST",
+                                data: { chatroomNo: this.chatroomNo, newOwnerId: targetUserId },
+                                success: (data) => {
+                                    this.fnMemberList();
+                                    this.fnGetUserChatList();
+                                }
+                            });
+                        }
+                    });
+                },
+
+                // [추가] 유저 클릭 핸들러 (위임 모드인지 1:1 채팅인지 구분)
+                handleUserClick(targetUserId) {
+                    if (targetUserId == this.sessionId) return; // 나 자신 클릭 무시
+
+                    // 1. 내가 방장(Owner)인 경우 -> 드롭다운 메뉴 토글
+                    if (this.sessionId == this.ownerId) {
+                        if (this.activeUserMenu === targetUserId) {
+                            this.activeUserMenu = null; // 이미 열려있으면 닫기
+                        } else {
+                            this.activeUserMenu = targetUserId; // 해당 유저 메뉴 열기
+                        }
+                    }
+                    // 2. 일반 유저인 경우 -> 바로 1:1 채팅 모달 띄우기
+                    else {
+                        this.openModal({
+                            message: '1:1 채팅을 하시겠습니까?',
+                            confirmText: '채팅하기',
+                            callback: () => {
+                                this.fnDirectChat(targetUserId);
+                            }
+                        });
+                    }
+                },
+                openModal(options) {
+                    this.modal = {
+                        show: true,
+                        title: options.title || '',
+                        message: options.message || '',
+                        inputMode: options.inputMode || false,
+                        selectMode: options.selectMode || false, // [NEW]
+                        options: options.options || [],          // [NEW]
+                        inputValue: options.inputValue || '',
+                        callback: options.callback || null,
+                        confirmText: options.confirmText || '확인',
+                        cancelText: options.cancelText || '뒤로가기'
+                    };
+
+                    // 입력창 포커스
+                    if (this.modal.inputMode) {
+                        setTimeout(() => {
+                            const input = document.querySelector('.modal-input');
+                            if (input) input.focus();
+                        }, 100);
+                    }
+                },
+                // [추가] 모달 닫기
+                closeModal() {
+                    this.modal.show = false;
+                },
+
+                // [추가] 모달 확인 버튼 클릭 시 실행
+                modalConfirm() {
+                    if (this.modal.callback) {
+                        this.modal.callback(this.modal.inputValue);
+                    }
+                    this.closeModal();
+                },
+                // 장바구니 수량을 서버에서 가져오는 함수
+                fetchCartCount() {
+                    // 세션 아이디가 없으면 실행하지 않음
+                    if (this.sessionId == '' || this.sessionId == null) return;
+
+                    let self = this;
+                    $.ajax({
+                        url: '/api/cartCount.dox',
+                        method: 'GET',
+                        // ★ 서버의 @RequestParam HashMap map으로 전달될 데이터 ★
+                        data: {
+                            sessionId: self.sessionId
+                        },
+                        dataType: 'json',
+                        success: (response) => {
+                            console.log("서버 응답 데이터:", response);
+                            if (response.result === 'success') {
+                                self.cartCount = response.count; // 서버에서 보낸 count 값을 Vue 변수에 저장
+                            }
+                        },
+                        error: (err) => {
+                            console.error("AJAX 호출 중 오류 발생:", err);
+                        }
+                    });
+                },
 
             }, // methods
             mounted() {
@@ -924,6 +1379,13 @@
                 self.fnMessageList();
                 self.fnMemberList();
                 self.connect();
+                // 2. 조건문을 잠시 제거하거나, 로그를 찍어 확인합니다.
+                if (self.sessionId && self.sessionId !== '') {
+                    console.log("장바구니 수량 조회를 시작합니다.");
+                    self.fetchCartCount();
+                } else {
+                    console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
+                }
                 // --- 새로 추가: 3초마다 메시지 갱신 (사용자가 로그인해서 채팅방에 있을 때만 실행)
                 // sessionId가 비어있지 않으면 폴링 시작
                 if (self.sessionId && self.sessionId !== '') {
@@ -939,6 +1401,18 @@
                     if (self.pollTimer) {
                         clearInterval(self.pollTimer);
                         self.pollTimer = null;
+                    }
+                });
+
+
+                document.addEventListener('click', (e) => {
+                    // 1. 상단 햄버거 메뉴 닫기
+                    if (!e.target.closest('.menu-container')) {
+                        this.showMenu = false;
+                    }
+                    // 2. [추가] 유저 목록 드롭다운 메뉴 닫기
+                    if (!e.target.closest('.user-list-item')) {
+                        this.activeUserMenu = null;
                     }
                 });
             }

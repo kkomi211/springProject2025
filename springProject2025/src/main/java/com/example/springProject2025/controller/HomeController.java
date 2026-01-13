@@ -80,6 +80,11 @@ public class HomeController {
 		return "home/inquiry"; // .jsp빠진형태
 	}
 	
+	@RequestMapping("home/community/map.do")
+	public String map(Model model) throws Exception {
+		return "home/map"; // .jsp빠진형태
+	}
+	
 	
 	@RequestMapping("home/mypage/information.do")
 	public String information(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {

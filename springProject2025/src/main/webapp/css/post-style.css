@@ -183,13 +183,49 @@ button:hover {
     justify-content: center ; /* align left */
     margin-top: 10px;
 }
-.bottom-btn, .list-btn  {
+.bottom-right-btn, .list-btn  {
     display: flex;               /* arrange children horizontally */
     gap: 5px;                   /* space between buttons */
     justify-content: flex-end ; /* align left */
     margin-top: 20px;
 }
 
+.bottom-left-btn {
+  display: flex;
+  gap: 10px;
+  font-size: 15px;
+}
+
+.material-symbols-outlined {
+  font-size: 18px;
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24,
+}
+
+.heart-post {
+  font-size: 22px;
+  cursor: pointer;
+  color: black;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 22;
+  transition: color 0.2s ease;
+}
+
+.heart-post:hover, .heart-post.active:hover{
+  color: #e74c3c;
+}
+
+.heart-post.active {
+  color: black;
+  font-variation-settings:
+    'FILL' 1;
+}
 
  /* 텍스트 에디터 */
 
@@ -432,11 +468,34 @@ button:hover {
 }
 
 .post-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
-  color: #888;
-  margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.post-meta-right {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Space between date and icon */
+}
+
+.post-date {
+    font-size: 14px;
+    color: #666;
+}
+
+.report-icon {
+    cursor: pointer;
+    font-size: 20px;
+    color: #333;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.report-icon:hover {
+    color: #e74c3c; /* Red color on hover */
 }
 
 .post-category {
@@ -476,6 +535,7 @@ button:hover {
   line-height: 1.8;
   color: #333;
   word-break: break-word;
+  padding-bottom: 30px;
 }
 
 .post-content img {
@@ -535,6 +595,10 @@ button:hover {
 }
 
 .comment-date {
+  display:flex; 
+  align-items: center;
+  gap:8px;
+  font-weight: 300;
   font-size: 0.85rem;
   color: #999;
 }
@@ -552,6 +616,40 @@ button:hover {
   font-size: 0.95rem;
   margin-top: 15px;
   font-style: italic;
+}
+
+.comment-date-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Space between date and like button */
+    font-weight: 300;
+    font-size: 0.85rem;
+}
+
+.comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+.comment-like-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    color: black;
+    transition: color 0.2s;
+}
+
+.comment-like-btn:hover {
+    color: #e74c3c;
+}
+
+.comment-like-btn .material-icons-outlined {
+    font-size: 18px;
 }
 
 /* 수정 */

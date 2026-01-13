@@ -123,6 +123,59 @@
 		FROM REPORT_BOARD
 		WHERE REPORTER_ID = #{reporterId} AND BOARD_NO = #{boardNo}
 	</select>
+	
+	<select id="checkBoardLike" parameterType="hashmap" resultType="int">
+	  SELECT COUNT(*)
+	  FROM BOARD_LIKE
+	  WHERE BOARD_ID = #{boardNo}
+	    AND USER_ID = #{userId}
+	</select>
+	
+	<insert id="likeBoard" parameterType="hashmap">
+		INSERT INTO BOARD_LIKE (ID, BOARD_ID, USER_ID, CREATED_AT)
+		VALUES(BOARD_LIKE_SEQ.NEXTVAL, #{boardNo}, #{userId}, SYSDATE)
+	</insert>
+	
+	<delete id="unlikeBoard" parameterType="hashmap">
+		DELETE FROM BOARD_LIKE
+		WHERE BOARD_ID = #{boardNo}
+		AND USER_ID = #{userId}
+	</delete>
+	
+	<select id="likeCnt" parameterType="hashmap" resultType="int">
+	  SELECT COUNT(*) AS LIKE_CNT
+	  FROM BOARD_LIKE
+	  WHERE BOARD_ID = #{boardNo}
+	</select>
+	
+		
+	<select id="checkCommentLike" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*)
+	    FROM COMMENT_LIKE
+	    WHERE COMMENT_ID = #{commentNo}
+	      AND USER_ID = #{userId}
+	</select>
+	
+	
+	<select id="getCommentLikeCnt" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*) AS LIKE_COMMENT_CNT
+	    FROM COMMENT_LIKE
+	    WHERE COMMENT_ID = #{commentNo}
+	</select>
+	
+	
+	<insert id="likeComment" parameterType="hashmap">
+	    INSERT INTO COMMENT_LIKE (COMMENT_LIKE_ID, COMMENT_ID, USER_ID, CREATED_AT)
+	    VALUES(COMMENT_LIKE_SEQ.NEXTVAL, #{commentNo}, #{userId}, SYSDATE)
+	</insert>
+	
+	
+	<delete id="unlikeComment" parameterType="hashmap">
+	    DELETE FROM COMMENT_LIKE
+	    WHERE COMMENT_ID = #{commentNo}
+	      AND USER_ID = #{userId}
+	</delete>
+	
 </mapper>
 
 
