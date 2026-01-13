@@ -75,6 +75,31 @@ public interface BoardMapper {
 	
 	// 신고 개수
 	int reportCnt(HashMap<String, Object> map);
+	
+	// 게시글 좋아요 존재 확인
+	int checkBoardLike(HashMap<String, Object> map);
+	
+	// 게시글 좋아요 insert
+	int likeBoard(HashMap<String, Object> map);
+	
+	// 게시글 좋아요 삭제
+	int unlikeBoard(HashMap<String, Object> map);
+	
+	// 게시글 좋아요 개수
+	int likeCnt(HashMap<String, Object> map);
+	
+	// 댓글 좋아요 존재 확인
+	int checkCommentLike(HashMap<String, Object> map);
+	
+	// 댓글 좋아요 개수
+    int getCommentLikeCnt(HashMap<String, Object> map);
+    
+    // 댓글 좋아요 insert
+    int likeComment(HashMap<String, Object> map);
+    
+    // 댓글 좋아요 삭제
+    int unlikeComment(HashMap<String, Object> map);
+	
 }
 
 

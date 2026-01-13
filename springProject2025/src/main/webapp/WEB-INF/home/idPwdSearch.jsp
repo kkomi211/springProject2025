@@ -261,7 +261,7 @@
                     joinFlg: false, // 문자 인증 유무
                     authFlag: false,
 
-                    ranStr: "111", // 문자 인증 번호 
+                    ranStr: "", // 문자 인증 번호 
                     inputNum: "",
                     timer: "",
                     count: 180,
@@ -375,6 +375,11 @@
                     if (self.newPwd1 !== self.newPwd2) {
                         alert("비밀번호가 서로 다릅니다."); // alert if mismatch
                         return; // stop function
+                    }
+                    if (self.inputNum == "") {
+                        alert("인증 절차를 먼저 완료해주세요.");
+                        document.querySelector("#auth").focus();
+                        return;
                     }
                     let param = {
                         userId: self.pwd_userId,

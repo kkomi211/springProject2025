@@ -19,6 +19,8 @@
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
         <style>
             html,
             body {
@@ -315,7 +317,14 @@
                                         </a>
 
                                     </td>
-                                    <td>💬 {{item.commentCnt}} </td>
+                                    <td >
+                                        <div class="comment-column">
+                                            <span class="material-icons-outlined" style="font-size: 18px;">
+                                            comment
+                                            </span>
+                                            <span>{{item.commentCnt}}</span> 
+                                        </div>
+                                    </td>
                                     <td>{{item.userId}}</td>
                                     <td>{{item.chardate}}</td>
                                     <td id="view-cnt">{{item.viewCnt}}</td>
