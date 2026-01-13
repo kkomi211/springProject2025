@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
+        <title>교환/환불 관리 - RUNNERS HOUSE</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -78,20 +78,34 @@
                             <option value="15">15개씩</option>
                         </select>
                     </div>
+
+                    <!-- 엑셀 다운로드 버튼 -->
+                    <div class="filter-group">
+                        <button @click="downloadExcel()" style="background-color: #28a745; color: white; padding: 8px 18px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
+                            📥 엑셀 다운로드
+                        </button>
+                    </div>
                 </div>
 
                 <div>
-                    <table id="refund-return-list-table">
+                    <!-- 로딩 스피너 -->
+                    <div v-if="loading" class="loading-container" style="text-align: center; padding: 40px;">
+                        <div class="loading-spinner"></div>
+                        <div class="loading-text">데이터를 불러오는 중...</div>
+                    </div>
+                    
+                    <!-- 테이블 -->
+                    <table id="refund-return-list-table" v-if="!loading && list.length > 0">
                         <tr>
-                            <th>주문번호</th>
-                            <th>상품명</th>
-                            <th>유저ID</th>
-                            <th>유저이름</th>
-                            <th>연락처</th>
-                            <th>신청일</th>
-                            <th>상태</th>
+                            <th class="sortable-header" @click="sortTable('orderNo')" :class="{'sort-asc': sortColumn === 'orderNo' && sortDirection === 'asc', 'sort-desc': sortColumn === 'orderNo' && sortDirection === 'desc'}">주문번호</th>
+                            <th class="sortable-header" @click="sortTable('productName')" :class="{'sort-asc': sortColumn === 'productName' && sortDirection === 'asc', 'sort-desc': sortColumn === 'productName' && sortDirection === 'desc'}">상품명</th>
+                            <th class="sortable-header" @click="sortTable('userId')" :class="{'sort-asc': sortColumn === 'userId' && sortDirection === 'asc', 'sort-desc': sortColumn === 'userId' && sortDirection === 'desc'}">유저ID</th>
+                            <th class="sortable-header" @click="sortTable('name')" :class="{'sort-asc': sortColumn === 'name' && sortDirection === 'asc', 'sort-desc': sortColumn === 'name' && sortDirection === 'desc'}">유저이름</th>
+                            <th class="sortable-header" @click="sortTable('phone')" :class="{'sort-asc': sortColumn === 'phone' && sortDirection === 'asc', 'sort-desc': sortColumn === 'phone' && sortDirection === 'desc'}">연락처</th>
+                            <th class="sortable-header" @click="sortTable('cDate')" :class="{'sort-asc': sortColumn === 'cDate' && sortDirection === 'asc', 'sort-desc': sortColumn === 'cDate' && sortDirection === 'desc'}">신청일</th>
+                            <th class="sortable-header" @click="sortTable('status')" :class="{'sort-asc': sortColumn === 'status' && sortDirection === 'asc', 'sort-desc': sortColumn === 'status' && sortDirection === 'desc'}">상태</th>
                         </tr>
-                        <tr v-for="item in list" :key="item.orderNo">
+                        <tr v-for="item in sortedList" :key="item.orderNo">
                             <td>{{item.orderNo}}</td>
                             <td>{{item.productName}}</td>
                             <td>{{item.userId}}</td>
@@ -106,6 +120,13 @@
                             </td>
                         </tr>
                     </table>
+                    
+                    <!-- 빈 데이터 메시지 -->
+                    <div v-if="!loading && list.length === 0" class="empty-state-card">
+                        <div class="empty-icon">🔄</div>
+                        <div class="empty-title">교환/환불 내역이 없습니다</div>
+                        <div class="empty-description">검색 조건을 변경하거나 다른 기간을 선택해보세요.</div>
+                    </div>
 
                     <!-- 페이징 컴포넌트 -->
                     <div class="pagination">
@@ -207,10 +228,13 @@
                     statusOption: "",
                     startDate: "",
                     endDate: "",
-                    pageSize: "5",
+                    pageSize: "10",
                     currentPage: 1,
                     totalItems: 0,
                     totalPages: 1,
+                    loading: false, // 로딩 상태
+                    sortColumn: '', // 정렬 컬럼
+                    sortDirection: 'asc', // 정렬 방향
 
                     // 모달 관련 데이터
                     showModal: false,
@@ -239,6 +263,34 @@
                         pages.push(i);
                     }
                     return pages;
+                },
+                // 정렬된 리스트
+                sortedList() {
+                    if (!this.sortColumn) return this.list;
+                    
+                    const sorted = [...this.list];
+                    sorted.sort((a, b) => {
+                        let aVal = a[this.sortColumn];
+                        let bVal = b[this.sortColumn];
+                        
+                        // 날짜 정렬
+                        if (this.sortColumn === 'cDate') {
+                            aVal = new Date(aVal);
+                            bVal = new Date(bVal);
+                        }
+                        
+                        // 숫자 정렬
+                        if (this.sortColumn === 'orderNo') {
+                            aVal = parseInt(aVal);
+                            bVal = parseInt(bVal);
+                        }
+                        
+                        if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
+                        if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
+                        return 0;
+                    });
+                    
+                    return sorted;
                 }
             },
             methods: {
@@ -263,6 +315,8 @@
                     if (page) {
                         self.currentPage = page;
                     }
+
+                    self.loading = true; // 로딩 시작
 
                     let param = {
                         keyword: self.keyword,
@@ -291,8 +345,21 @@
                         error: function (xhr, status, error) {
                             console.error("AJAX Error:", status, error, xhr.responseText);
                             alert("데이터 로드 중 오류가 발생했습니다.");
+                        },
+                        complete: function() {
+                            self.loading = false; // 로딩 종료
                         }
                     });
+                },
+                sortTable: function(column) {
+                    if (this.sortColumn === column) {
+                        // 같은 컬럼 클릭 시 정렬 방향 전환
+                        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        // 다른 컬럼 클릭 시 오름차순으로 설정
+                        this.sortColumn = column;
+                        this.sortDirection = 'asc';
+                    }
                 },
                 fnChangePage: function (page) {
                     if (page < 1 || page > this.totalPages) {
@@ -507,6 +574,16 @@
                             alert("요청 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
                         }
                     });
+                },
+                downloadExcel: function() {
+                    let self = this;
+                    let params = new URLSearchParams();
+                    if (self.keyword) params.append('keyword', self.keyword);
+                    if (self.statusOption) params.append('statusOption', self.statusOption);
+                    if (self.startDate) params.append('startDate', self.startDate);
+                    if (self.endDate) params.append('endDate', self.endDate);
+                    
+                    window.location.href = '/admin/refund-return/excel.dox?' + params.toString();
                 }
             },
             mounted() {
@@ -517,7 +594,16 @@
                 thirtyDaysAgo.setDate(today.getDate() - 30);
                 self.startDate = thirtyDaysAgo.toISOString().split('T')[0];
 
-                self.pageSize = "5";
+                self.pageSize = "10";
+                
+                // 모달 초기화 보장
+                self.showModal = false;
+                self.selectedOrder = {};
+                self.productOptions = [];
+                self.selectedNewProductNo = "";
+                self.newProductDetails = null;
+                self.exchangeQuantity = 1;
+                
                 self.fnGetRefundReturnList();
             }
         });

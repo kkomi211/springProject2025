@@ -98,6 +98,57 @@ public class AdminService {
 		return resultMap;
 	}
 
+	// 관리자 일괄 답변 등록 메소드
+	public HashMap<String, Object> batchRegisterInquiryAnswer(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			String inquiryNosStr = (String) map.get("inquiryNos");
+			String answer = (String) map.get("answer");
+			
+			if (inquiryNosStr == null || inquiryNosStr.isEmpty()) {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "선택된 문의가 없습니다.");
+				return resultMap;
+			}
+			
+			String[] inquiryNos = inquiryNosStr.split(",");
+			int successCount = 0;
+			int failCount = 0;
+			
+			for (String inquiryNo : inquiryNos) {
+				HashMap<String, Object> paramMap = new HashMap<>();
+				paramMap.put("inquiryNo", inquiryNo.trim());
+				paramMap.put("answer", answer);
+				
+				try {
+					int result = adminMapper.updateInquiryAnswer(paramMap);
+					if (result > 0) {
+						successCount++;
+					} else {
+						failCount++;
+					}
+				} catch (Exception e) {
+					failCount++;
+					System.out.println("문의번호 " + inquiryNo + " 답변 등록 실패: " + e.getMessage());
+				}
+			}
+			
+			if (successCount > 0) {
+				resultMap.put("result", "success");
+				resultMap.put("message", successCount + "개의 문의에 답변이 등록되었습니다." + (failCount > 0 ? " (" + failCount + "개 실패)" : ""));
+			} else {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "답변 등록에 실패했습니다.");
+			}
+		} catch (Exception e) {
+			resultMap.put("result", "fail");
+			resultMap.put("message", "일괄 답변 처리 중 오류가 발생했습니다: " + e.getMessage());
+			System.out.println(e.getMessage());
+		}
+		
+		return resultMap;
+	}
+
 	// 주문 내역 리스트(검색 필터, 페이징 포함)
 	public HashMap<String, Object> getOrdersList(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
@@ -147,18 +198,178 @@ public class AdminService {
 	public HashMap<String, Object> updateOrderStatus(HashMap<String, Object> map) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
+			String orderNo = (String) map.get("orderNo");
+			String newStatus = (String) map.get("newStatus");
+			
+			if (orderNo == null || newStatus == null) {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "주문번호 또는 상태 정보가 없습니다.");
+				return resultMap;
+			}
+			
+			// 현재 상태 조회
+			HashMap<String, Object> statusMap = new HashMap<>();
+			statusMap.put("orderNo", orderNo);
+			String currentStatus = adminMapper.selectOrderCurrentStatus(statusMap);
+			
+			if (currentStatus == null) {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "주문을 찾을 수 없습니다.");
+				return resultMap;
+			}
+			
+			// 상태 변경 유효성 검사
+			if (currentStatus.equals("신규주문") && newStatus.equals("배송완료")) {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "신규주문은 배송완료로 직접 변경할 수 없습니다. 먼저 배송중으로 변경해주세요.");
+				return resultMap;
+			}
+			
+			if (currentStatus.equals("배송중") && newStatus.equals("배송중")) {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "이미 배송중 상태입니다.");
+				return resultMap;
+			}
+			
+			if (currentStatus.equals("배송완료")) {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "배송완료된 주문은 상태를 변경할 수 없습니다.");
+				return resultMap;
+			}
+			
+			// 유효한 상태 변경만 허용
+			if (currentStatus.equals("신규주문") && !newStatus.equals("배송중")) {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "신규주문은 배송중으로만 변경할 수 있습니다.");
+				return resultMap;
+			}
+			
+			if (currentStatus.equals("배송중") && !newStatus.equals("배송완료")) {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "배송중 주문은 배송완료로만 변경할 수 있습니다.");
+				return resultMap;
+			}
+			
 			int result = adminMapper.updateOrderStatus(map);
 
 			if (result > 0) {
 				resultMap.put("result", "success");
 			} else {
 				resultMap.put("result", "fail");
+				resultMap.put("message", "상태 변경에 실패했습니다.");
 			}
 		} catch (Exception e) {
 			resultMap.put("result", "fail");
+			resultMap.put("message", "상태 변경 중 오류가 발생했습니다: " + e.getMessage());
 			System.out.println(e.getMessage());
 		}
 
+		return resultMap;
+	}
+
+	// 주문내역 일괄 상태 변경
+	public HashMap<String, Object> batchUpdateOrderStatus(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			String orderNosStr = (String) map.get("orderNos");
+			String newStatus = (String) map.get("newStatus");
+			
+			if (orderNosStr == null || orderNosStr.isEmpty()) {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "선택된 주문이 없습니다.");
+				return resultMap;
+			}
+			
+			if (newStatus == null || newStatus.isEmpty()) {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "변경할 상태를 선택해주세요.");
+				return resultMap;
+			}
+			
+			String[] orderNos = orderNosStr.split(",");
+			int successCount = 0;
+			int failCount = 0;
+			StringBuilder failMessages = new StringBuilder();
+			
+			for (String orderNo : orderNos) {
+				HashMap<String, Object> paramMap = new HashMap<>();
+				paramMap.put("orderNo", orderNo.trim());
+				paramMap.put("newStatus", newStatus);
+				
+				try {
+					// 현재 상태 조회
+					HashMap<String, Object> statusMap = new HashMap<>();
+					statusMap.put("orderNo", orderNo.trim());
+					String currentStatus = adminMapper.selectOrderCurrentStatus(statusMap);
+					
+					if (currentStatus == null) {
+						failCount++;
+						failMessages.append("주문번호 ").append(orderNo).append(": 주문을 찾을 수 없습니다. ");
+						continue;
+					}
+					
+					// 상태 변경 유효성 검사
+					if (currentStatus.equals("신규주문") && newStatus.equals("배송완료")) {
+						failCount++;
+						failMessages.append("주문번호 ").append(orderNo).append(": 신규주문은 배송완료로 직접 변경할 수 없습니다. ");
+						continue;
+					}
+					
+					if (currentStatus.equals("배송중") && newStatus.equals("배송중")) {
+						failCount++;
+						failMessages.append("주문번호 ").append(orderNo).append(": 이미 배송중 상태입니다. ");
+						continue;
+					}
+					
+					if (currentStatus.equals("배송완료")) {
+						failCount++;
+						failMessages.append("주문번호 ").append(orderNo).append(": 배송완료된 주문은 상태를 변경할 수 없습니다. ");
+						continue;
+					}
+					
+					// 유효한 상태 변경만 허용
+					if (currentStatus.equals("신규주문") && !newStatus.equals("배송중")) {
+						failCount++;
+						failMessages.append("주문번호 ").append(orderNo).append(": 신규주문은 배송중으로만 변경할 수 있습니다. ");
+						continue;
+					}
+					
+					if (currentStatus.equals("배송중") && !newStatus.equals("배송완료")) {
+						failCount++;
+						failMessages.append("주문번호 ").append(orderNo).append(": 배송중 주문은 배송완료로만 변경할 수 있습니다. ");
+						continue;
+					}
+					
+					int result = adminMapper.updateOrderStatus(paramMap);
+					if (result > 0) {
+						successCount++;
+					} else {
+						failCount++;
+						failMessages.append("주문번호 ").append(orderNo).append(": 상태 변경에 실패했습니다. ");
+					}
+				} catch (Exception e) {
+					failCount++;
+					failMessages.append("주문번호 ").append(orderNo).append(": ").append(e.getMessage()).append(" ");
+					System.out.println("주문번호 " + orderNo + " 상태 변경 실패: " + e.getMessage());
+				}
+			}
+			
+			if (successCount > 0) {
+				resultMap.put("result", "success");
+				resultMap.put("message", successCount + "개의 주문 상태가 변경되었습니다." + (failCount > 0 ? " (" + failCount + "개 실패)" : ""));
+				if (failCount > 0 && failMessages.length() > 0) {
+					resultMap.put("failDetails", failMessages.toString());
+				}
+			} else {
+				resultMap.put("result", "fail");
+				resultMap.put("message", "상태 변경에 실패했습니다. " + (failMessages.length() > 0 ? failMessages.toString() : ""));
+			}
+		} catch (Exception e) {
+			resultMap.put("result", "fail");
+			resultMap.put("message", "일괄 상태 변경 중 오류가 발생했습니다: " + e.getMessage());
+			System.out.println(e.getMessage());
+		}
+		
 		return resultMap;
 	}
 
@@ -683,14 +894,20 @@ public class AdminService {
         
         long totalSales = adminMapper.selectTotalSales(); // 총 매출
         long monthlySales = adminMapper.selectMonthlySales(); // 이번 달 매출
+        long previousMonthSales = adminMapper.selectPreviousMonthSales(); // 전월 매출
+        long previousYearSameMonthSales = adminMapper.selectPreviousYearSameMonthSales(); // 전년 동월 매출
         List<HashMap<String, Object>> monthlySalesList = adminMapper.selectLastSixMonthsSales(); // 지난 6개월 월별 매출
+        List<HashMap<String, Object>> previousYearMonthlySalesList = adminMapper.selectPreviousYearMonthlySales(); // 전년도 월별 매출
         // List<HashMap<String, Object>> salesByPaymentMethod = adminMapper.selectSalesByPaymentMethod(); 결제 방법별 매출
         int totalOrdersCount = adminMapper.selectTotalOrdersCount(); // 총 주문 건수
         int monthlyOrdersCount = adminMapper.selectMonthlyOrdersCount(); // 이번 달 주문 건수
 
         summary.put("totalSales", totalSales);
         summary.put("monthlySales", monthlySales);
+        summary.put("previousMonthSales", previousMonthSales);
+        summary.put("previousYearSameMonthSales", previousYearSameMonthSales);
         summary.put("monthlySalesList", monthlySalesList);
+        summary.put("previousYearMonthlySalesList", previousYearMonthlySalesList);
         // summary.put("salesByPaymentMethod", salesByPaymentMethod);
         summary.put("totalOrdersCount", totalOrdersCount);
         summary.put("monthlyOrdersCount", monthlyOrdersCount);
@@ -764,6 +981,38 @@ public class AdminService {
         return summary;
     }
     
+    /**
+     * 시간대별 주문 통계 조회
+     * @return List<HashMap<String, Object>> (HOUR, ORDER_COUNT)
+     */
+    public List<HashMap<String, Object>> getOrdersByHour() {
+        return adminMapper.selectOrdersByHour();
+    }
+    
+    /**
+     * 카테고리별 매출 비율 조회
+     * @return List<HashMap<String, Object>> (CATEGORY_NAME, TOTAL_SALES, ORDER_COUNT)
+     */
+    public List<HashMap<String, Object>> getSalesByCategory() {
+        return adminMapper.selectSalesByCategory();
+    }
+    
+    /**
+     * 회원 가입 추이 조회 (최근 6개월)
+     * @return List<HashMap<String, Object>> (REG_MONTH, USER_COUNT)
+     */
+    public List<HashMap<String, Object>> getUserRegistrationTrend() {
+        return adminMapper.selectUserRegistrationTrend();
+    }
+    
+    /**
+     * 품절 임박 상품 목록 조회 (재고 10개 이하)
+     * @param limit 조회할 상품 수
+     * @return List<HashMap<String, Object>> (PRODUCT_NO, PRODUCT_NAME, QUANTITY, PRODUCT_SIZE)
+     */
+    public List<HashMap<String, Object>> getLowStockProducts(int limit) {
+        return adminMapper.selectLowStockProducts(limit);
+    }
     
     
 

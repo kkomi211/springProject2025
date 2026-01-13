@@ -5,12 +5,13 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
+        <title>상품 리스트 - RUNNERS HOUSE</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/jes.css">
+        <link rel="stylesheet" href="/css/admin-inquiry.css">
         <script src="/js/page-change.js"></script>
 
     </head>
@@ -42,47 +43,82 @@
                 <div>
                     <h2>상품 리스트</h2>
                 </div>
-                <div class="search-box search-filters">
-                    <input class="search margin30" placeholder="검색" v-model="keyword" @keyup.enter="fnList">
-                    <select class="margin30 height40" v-model="keytype">
-                        <option value="no">제품번호</option>
-                        <option value="name">제품이름</option>
-                    </select>
-                    <button class="margin30 height40 bluebutton" @click="fnList">검색</button>
+                <div class="search-filters">
+                    <!-- 키워드 검색 -->
+                    <div class="filter-group">
+                        <input type="text" v-model="keyword" @keyup.enter="fnList()" placeholder="검색">
+                        <button @click="fnList()">검색</button>
+                    </div>
+
+                    <!-- 검색 유형 필터 -->
+                    <div class="filter-group">
+                        <span>검색 유형:</span>
+                        <select v-model="keytype" @change="fnList()">
+                            <option value="no">제품번호</option>
+                            <option value="name">제품이름</option>
+                        </select>
+                    </div>
+
+                    <!-- 엑셀 다운로드 버튼 -->
+                    <div class="filter-group">
+                        <button @click="downloadExcel()" style="background-color: #28a745; color: white; padding: 8px 18px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
+                            📥 엑셀 다운로드
+                        </button>
+                    </div>
                 </div>
 
                 <div class="table">
-                    <table class="newtable">
+                    <!-- 로딩 스피너 -->
+                    <div v-if="loading" class="loading-container" style="text-align: center; padding: 40px;">
+                        <div class="loading-spinner"></div>
+                        <div class="loading-text">데이터를 불러오는 중...</div>
+                    </div>
+                    
+                    <!-- 테이블 -->
+                    <table class="newtable" v-if="!loading && list.length > 0">
                         <tr>
-                            <th>제품번호</th>
-                            <th>제품이름</th>
-                            <th>제품가격</th>
-                            <th>
+                            <th class="sortable-header" @click="sortTable('productNo')" :class="{'sort-asc': sortColumn === 'productNo' && sortDirection === 'asc', 'sort-desc': sortColumn === 'productNo' && sortDirection === 'desc'}">제품번호</th>
+                            <th class="sortable-header" @click="sortTable('productName')" :class="{'sort-asc': sortColumn === 'productName' && sortDirection === 'asc', 'sort-desc': sortColumn === 'productName' && sortDirection === 'desc'}">제품이름</th>
+                            <th class="sortable-header" @click="sortTable('price')" :class="{'sort-asc': sortColumn === 'price' && sortDirection === 'asc', 'sort-desc': sortColumn === 'price' && sortDirection === 'desc'}">제품가격</th>
+                            <th class="sortable-header" @click="sortTable('quantity')" :class="{'sort-asc': sortColumn === 'quantity' && sortDirection === 'asc', 'sort-desc': sortColumn === 'quantity' && sortDirection === 'desc'}">
                                 제품재고
-                                <div class="stock-btns">
-                                    <button v-if="orderBy == 'down'" @click="fnOrderBy('up')">△</button>
-                                    <button v-if="orderBy == 'up'" @click="fnOrderBy('down')">▽</button>
+                                <div class="stock-btns" style="display: inline-block; margin-left: 5px;">
+                                    <button v-if="orderBy == 'down'" @click.stop="fnOrderBy('up')" style="background: none; border: none; padding: 0; font-size: 0.8em;">△</button>
+                                    <button v-if="orderBy == 'up'" @click.stop="fnOrderBy('down')" style="background: none; border: none; padding: 0; font-size: 0.8em;">▽</button>
                                 </div>
                             </th>
-                            <th>사이즈</th>
-                            <th>등록/수정일자</th>
+                            <th class="sortable-header" @click="sortTable('productSize')" :class="{'sort-asc': sortColumn === 'productSize' && sortDirection === 'asc', 'sort-desc': sortColumn === 'productSize' && sortDirection === 'desc'}">사이즈</th>
+                            <th class="sortable-header" @click="sortTable('udate')" :class="{'sort-asc': sortColumn === 'udate' && sortDirection === 'asc', 'sort-desc': sortColumn === 'udate' && sortDirection === 'desc'}">등록/수정일자</th>
                         </tr>
-                        <tr v-for="item in list">
+                        <tr v-for="item in sortedList" :class="getStockClass(item.quantity)">
                             <td>{{item.productNo}}</td>
                             <td><a href="javascript:;" @click="fnInfoProduct(item.productNo)">{{item.productName}}</a>
                             </td>
                             <td>
-                                <span v-if="item.saleYN == 'N'">{{item.price}}</span>
+                                <span v-if="item.saleYN == 'N'">{{item.price.toLocaleString()}}원</span>
                                 <span v-else>
-                                    <del>{{item.price}}</del>
-                                    {{item.salePrice}}
+                                    <del>{{item.price.toLocaleString()}}원</del>
+                                    {{item.salePrice.toLocaleString()}}원
                                 </span>
                             </td>
-                            <td>{{item.quantity}}</td>
+                            <td>
+                                <span :class="getStockBadgeClass(item.quantity)">
+                                    {{item.quantity}}
+                                    <span v-if="item.quantity === 0" class="stock-badge">품절</span>
+                                    <span v-else-if="item.quantity < 5" class="stock-badge">품절임박</span>
+                                </span>
+                            </td>
                             <td>{{item.productSize}}</td>
                             <td>{{item.udate}}</td>
                         </tr>
                     </table>
+                    
+                    <!-- 빈 데이터 메시지 -->
+                    <div v-if="!loading && list.length === 0" class="empty-state-card">
+                        <div class="empty-icon">📦</div>
+                        <div class="empty-title">상품이 없습니다</div>
+                        <div class="empty-description">검색 조건을 변경하거나 새로운 상품을 등록해보세요.</div>
+                    </div>
                 </div>
                 <div class="pagination">
                     <a href="javascript:;" @click="fnPage(1)"
@@ -122,7 +158,10 @@
                     pageSize: 15,
                     page: "1",
                     totalPage: "",
-                    orderBy: "down"
+                    orderBy: "down",
+                    loading: false, // 로딩 상태
+                    sortColumn: '', // 정렬 컬럼
+                    sortDirection: 'asc' // 정렬 방향
                 };
             },
             computed: {
@@ -142,6 +181,34 @@
                     }
 
                     return pages;
+                },
+                // 정렬된 리스트
+                sortedList() {
+                    if (!this.sortColumn) return this.list;
+                    
+                    const sorted = [...this.list];
+                    sorted.sort((a, b) => {
+                        let aVal = a[this.sortColumn];
+                        let bVal = b[this.sortColumn];
+                        
+                        // 날짜 정렬
+                        if (this.sortColumn === 'udate') {
+                            aVal = new Date(aVal);
+                            bVal = new Date(bVal);
+                        }
+                        
+                        // 숫자 정렬
+                        if (this.sortColumn === 'productNo' || this.sortColumn === 'quantity' || this.sortColumn === 'price') {
+                            aVal = parseFloat(aVal);
+                            bVal = parseFloat(bVal);
+                        }
+                        
+                        if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
+                        if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
+                        return 0;
+                    });
+                    
+                    return sorted;
                 }
             },
             methods: {
@@ -164,6 +231,8 @@
                 },
                 fnList() {
                     let self = this;
+                    self.loading = true; // 로딩 시작
+                    
                     let param = {
                         keyword: self.keyword,
                         keytype: self.keytype,
@@ -180,9 +249,24 @@
                             console.log(data);
                             self.list = data.list;
                             self.totalPage = Math.ceil(data.total / self.pageSize);
-
+                        },
+                        error: function() {
+                            alert("데이터를 불러오는 중 오류가 발생했습니다.");
+                        },
+                        complete: function() {
+                            self.loading = false; // 로딩 종료
                         }
                     });
+                },
+                sortTable: function(column) {
+                    if (this.sortColumn === column) {
+                        // 같은 컬럼 클릭 시 정렬 방향 전환
+                        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        // 다른 컬럼 클릭 시 오름차순으로 설정
+                        this.sortColumn = column;
+                        this.sortDirection = 'asc';
+                    }
                 },
                 fnPage(num) {
                     let self = this;
@@ -199,6 +283,27 @@
                     let self = this;
                     self.orderBy = status;
                     self.fnList();
+                },
+                downloadExcel: function() {
+                    let self = this;
+                    let params = new URLSearchParams();
+                    if (self.keyword) params.append('keyword', self.keyword);
+                    if (self.keytype) params.append('keytype', self.keytype);
+                    if (self.orderBy) params.append('orderBy', self.orderBy);
+                    
+                    window.location.href = '/admin/product/excel.dox?' + params.toString();
+                },
+                // 재고 상태에 따른 CSS 클래스 반환
+                getStockClass: function(quantity) {
+                    if (quantity === 0) return 'stock-out-row';
+                    if (quantity < 5) return 'stock-low-row';
+                    return '';
+                },
+                // 재고 배지 클래스 반환
+                getStockBadgeClass: function(quantity) {
+                    if (quantity === 0) return 'stock-badge-out';
+                    if (quantity < 5) return 'stock-badge-low';
+                    return '';
                 }
             }, // methods
             mounted() {

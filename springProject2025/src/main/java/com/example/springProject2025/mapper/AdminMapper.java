@@ -67,6 +67,9 @@ public interface AdminMapper {
 	// 주문 상태 업데이트
 	int updateOrderStatus(HashMap<String, Object> map);
 	
+	// 주문의 현재 상태 조회
+	String selectOrderCurrentStatus(HashMap<String, Object> map);
+	
 	// 회원 목록 조회
 	List<Admin> selectUserList(HashMap<String, Object> map);
 
@@ -198,4 +201,25 @@ public interface AdminMapper {
 
     // 총 미처리 요청 건수 (신고 + 반품요청 + 교환요청 + 상품문의 대기)
     int selectTotalPendingRequestsCount();
+    
+    // 시간대별 주문 통계 (0시~23시)
+    List<HashMap<String, Object>> selectOrdersByHour();
+    
+    // 카테고리별 매출 비율
+    List<HashMap<String, Object>> selectSalesByCategory();
+    
+    // 회원 가입 추이 (최근 6개월)
+    List<HashMap<String, Object>> selectUserRegistrationTrend();
+    
+    // 품절 임박 상품 목록 (재고 10개 이하)
+    List<HashMap<String, Object>> selectLowStockProducts(@Param("limit") int limit);
+    
+    // 전월 매출 조회
+    Long selectPreviousMonthSales();
+    
+    // 전년 동월 매출 조회
+    Long selectPreviousYearSameMonthSales();
+    
+    // 전년도 월별 매출 (비교용)
+    List<HashMap<String, Object>> selectPreviousYearMonthlySales();
 }
