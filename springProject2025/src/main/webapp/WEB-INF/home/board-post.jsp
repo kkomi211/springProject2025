@@ -301,7 +301,7 @@
                             </table> -->
 
                             <!-- 글쓰기 다른 디자인 테스트 -->
-                            <div class="comments-section">
+                            <div class="write-section">
                                 <div class="sub-section">
                                     <h3 class="comment-title">
                                         아이디

@@ -558,9 +558,9 @@
                                 </div>
                                 <div class="bottom-right-btn">
                                     <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn"
-                                        @click="fnMoveToEdit">✏️ 수정</button>
+                                        @click="fnMoveToEdit">수정</button>
                                     <button v-if="sessionId === boardInfo.userId" class="edit-inline-btn"
-                                        @click="fnConfirmDelete">🗑️ 삭제</button>
+                                        @click="fnConfirmDelete">삭제</button>
                                     <!-- <button v-if="sessionId != boardInfo.userId" class="edit-inline-btn"
                                         @click="fnConfirmReport">🚨 신고</button> -->
                                 </div>  

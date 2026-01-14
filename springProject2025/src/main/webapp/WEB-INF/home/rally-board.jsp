@@ -270,21 +270,16 @@
                                 </h1>
 
                                 <div class="search-bar">
-                                    <div class="search-wrapper">
-                                        <select v-model="type" @change="fnList">
-                                            <option value="">전체</option>
-                                            <option value="B">공지사항</option>
-                                            <option value="Q">문의게시판</option>
-                                            <option value="F">자유게시판</option>
-                                            <option value="R">대회게시판</option>
-                                        </select>
-                                        <input type="text" placeholder="검색어" v-model="keyword" @keyup.enter="fnList">
-                                        <button class="search-btn" @click="fnList">🔍</button>
+                                    <div class="search-box">
+                                        <input class="search" type="text" placeholder="검색어를 입력하세요" v-model="keyword" @keyup.enter="fnList">
+                                        <a href="javascript:;" @click="fnBoardList">
+                                            <div><i data-lucide="search" stroke-width="1.5"></i></div>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
 
-                            <select class="btn" v-model="pageSize" @change="fnList">
+                            <select class="page-size-select" v-model="pageSize" @change="fnList">
                                 <option value="5">5개씩</option>
                                 <option value="10">10개씩</option>
                                 <option value="20">20개씩</option>

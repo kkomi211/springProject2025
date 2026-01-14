@@ -159,12 +159,12 @@ button {
   padding: 10px 20px;
   padding: 8px 18px;
   border: none;
-  border-radius: 5px;
-  background-color: rgb(233, 233, 233);
+  border-radius: 8px;
+  background-color: black;
   font-size: 0.95rem;
   cursor: pointer;
   font-size: 14px;
-  color: black;
+  color: white;
   transition: all 0.2s;
   min-width: 100px;
   margin-right: 10px;
@@ -172,7 +172,6 @@ button {
 }
 
 button:hover {
-  background-color: gray;
   transform: scale(1.02);
   /* 살짝 커지는 느낌 */
 }
@@ -504,6 +503,7 @@ button:hover {
   background: #f3f3f3;
   padding: 4px 10px;
   border-radius: 5px;
+  font-size: 13px;
 }
 
 .post-title {
@@ -512,10 +512,11 @@ button:hover {
   color: #222;
   margin: 10px 0;
   word-break: break-word;
+  margin-top: 30px;
 }
 
 .post-author, .post-type {
-  font-size: 0.95rem;
+  font-size: 13px;
   color: #666;
 }
 
@@ -546,13 +547,17 @@ button:hover {
 
 /* 댓글 보기 */
 
-.comments-section {
+.comments-section, .write-section {
   margin-top: 40px;
   background-color: #fff;
   padding: 25px 30px;
   border: 1px solid #ddd;
   border-radius: 10px;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.03);
+}
+
+.write-section{
+  margin-bottom: 20px;
 }
 
 .comment-title {
@@ -667,6 +672,10 @@ button:hover {
 #keylock{
   width: 100px;
   text-align: center;
+}
+
+#keylock{
+  cursor: pointer;
 }
 
 .title-input{
