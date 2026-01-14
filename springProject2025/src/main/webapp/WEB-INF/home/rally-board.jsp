@@ -227,61 +227,57 @@
                                 {{ userName }}
                             </div>
                         </div>
-                        <div class="page-container">
-                            <aside class="sidebar">
-                                <h2 class="sidebar-heading"> COMMUNITY ></h2>
-                                <nav class="mypage-menu">
-                                    <ul>
-                                        <li @click="moveToBoard">
-                                            <span class="icon">📝</span>
-                                            <a href="/home/community/board.do">게시판</a>
-                                        </li>
-                                        <li @click="moveToCrew">
-                                            <span class="icon">📦</span>
-                                            <a href="/home/community/crew.do">크루 찾기</a>
-                                        </li>
-                                        <li @click="moveToRally" class="active">
-                                            <span class="icon">💬</span>
-                                            <a href="javascript:void(0)">
-                                                대회정보
-                                                <span v-if="hasNewRally" class="sidebar-new-badge">NEW</span>
-                                            </a>
-                                        </li>
-                                        <li @click="moveToChat">
-                                            <span class="icon">👤</span>
-                                            <a href="/home/community/chat.do">채팅방</a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </aside>
+                    
+                    <div class="page-container">
+                        <aside class="sidebar">
+                            <h2 class="sidebar-heading"> COMMUNITY ></h2>
+                            <nav class="mypage-menu">
+                                <ul>
+                                    <li @click="moveToBoard">
+                                        <span class="icon">📝</span>
+                                        <a href="/home/community/board.do">게시판</a>
+                                    </li>
+                                    <li @click="moveToCrew">
+                                        <span class="icon">📦</span>
+                                        <a href="/home/community/crew.do">크루 찾기</a>
+                                    </li>
+                                    <li @click="moveToRally" class="active">
+                                        <span class="icon">💬</span>
+                                        <a href="/home/community/rally.do">대회정보</a>
+                                    </li>
+                                    <li @click="moveToChat">
+                                        <span class="icon">👤</span>
+                                        <a href="/home/community/chat.do">채팅방</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </aside>
 
-                            <main class="main-content">
-                                <div class="board-header">
-                                    <h1 class="main-title">
-                                        대회 정보
-                                    </h1>
 
-                                    <div class="search-bar">
-                                        <div class="search-wrapper">
-                                            <select v-model="type" @change="fnList">
-                                                <option value="">전체</option>
-                                                <option value="B">공지사항</option>
-                                                <option value="Q">문의게시판</option>
-                                                <option value="F">자유게시판</option>
-                                                <option value="R">대회게시판</option>
-                                            </select>
-                                            <input type="text" placeholder="검색어" v-model="keyword"
-                                                @keyup.enter="fnList">
-                                            <button class="search-btn" @click="fnList">🔍</button>
-                                        </div>
+
+                        <main class="main-content">
+                            <div class="board-header">
+                                <h1 class="main-title">
+                                    대회 정보
+                                </h1>
+
+                                <div class="search-bar">
+                                    <div class="search-box">
+                                        <input class="search" type="text" placeholder="검색어를 입력하세요" v-model="keyword" @keyup.enter="fnList">
+                                        <a href="javascript:;" @click="fnBoardList">
+                                            <div><i data-lucide="search" stroke-width="1.5"></i></div>
+                                        </a>
                                     </div>
                                 </div>
+                            </div>
 
-                                <select class="btn" v-model="pageSize" @change="fnList">
-                                    <option value="5">5개씩</option>
-                                    <option value="10">10개씩</option>
-                                    <option value="20">20개씩</option>
-                                </select>
+                            <select class="page-size-select" v-model="pageSize" @change="fnList">
+                                <option value="5">5개씩</option>
+                                <option value="10">10개씩</option>
+                                <option value="20">20개씩</option>
+                            </select>
+
+                                
 
                                 <div class="rally-list">
                                     <div class="rally-item" v-for="item in list" :key="item.rallyNo"

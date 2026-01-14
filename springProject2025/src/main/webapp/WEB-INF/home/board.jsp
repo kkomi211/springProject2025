@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
     <!DOCTYPE html>
     <html lang="en">
 
@@ -21,6 +22,8 @@
         <script src="https://unpkg.com/lucide@latest"></script>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
         <style>
             html,
             body {
@@ -236,46 +239,8 @@
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
             <div class="container">
-                <header>
-                    <div class="top-header">
-                        <div class="brand-name">
-                            <div><a href="/home.do">RUNNERS' HOUSE</a></div>
-                        </div>
-                        <div id="right-items">
-                            <div>
-                                <!-- <template > -->
-                                <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i
-                                            data-lucide="log-out" stroke-width="1.5"></i></a></div>
-                                <!-- </template> -->
-                                <!-- <template > -->
-                                <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a>
-                                </div>
-                                <!-- </template> -->
-                            </div>
-                            <div v-if="sessionId == ''">
-                                <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
-                            </div>
-                            <div v-if="sessionId != '' && userType != 'K'"><a href="/home/mypage/information.do"><i
-                                        data-lucide="user" stroke-width="1.5"></i></a></div>
-                            <div v-else-if="sessionId != '' && userType == 'K'"><a
-                                    href="home/mypage/information/change.do"><i data-lucide="user"
-                                        stroke-width="1.5"></i></a></div>
-                            <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart"
-                                        stroke-width="1.5"></i></a></div>
-                        </div>
-                    </div>
-                    <div class="bottom-header">
-                        <div>
-                            <a href="/home/product.do">제품</a>
-                        </div>
-                        <div>
-                            <a href="javascript:;" @click="fnSale">세일</a>
-                        </div>
-                        <div>
-                            <a href="/home/community/board.do">커뮤니티</a>
-                        </div>
-                    </div>
-                </header>
+                <%-- 공통 헤더 컴포넌트 --%>
+                    <jsp:include page="/WEB-INF/header/header.jsp" />
 
                 <div class="main-hero-slider-area">
                     <section class="main-hero-slider">
@@ -347,43 +312,58 @@
                                     }}
                                 </h1>
                                 <div class="search-bar">
-                                    <div class="search-wrapper">
-                                        <select v-model="type" @change="fnBoardList">
+                                    <div class="search-box">
+                                        <select v-model="type" @change="fnBoardList" class="board-select">
                                             <option value="">전체</option>
                                             <option value="B">공지사항</option>
                                             <option value="Q">문의게시판</option>
                                             <option value="F">자유게시판</option>
                                             <option value="R">대회게시판</option>
                                         </select>
-                                        <input type="text" placeholder="검색어" v-model="keyword"
+                                        <input 
+                                            class="search" 
+                                            type="text" 
+                                            placeholder="검색어를 입력하세요" 
+                                            v-model="keyword"
                                             @keyup.enter="fnBoardList">
-                                        <button class="search-btn" @click="fnBoardList">🔍</button>
+                                        <a href="javascript:;" @click="fnBoardList">
+                                            <div><i data-lucide="search" stroke-width="1.5"></i></div>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
-                            <select class="btn" v-model="pageSize" @change="fnBoardList">
-                                <option class="btn" value="5">5개씩</option>
-                                <option class="btn" value="10">10개씩</option>
-                                <option class="btn" value="20">20개씩</option>
+                            <select class="page-size-select" v-model="pageSize" @change="fnBoardList">
+                                <option value="5">5개씩</option>
+                                <option value="10">10개씩</option>
+                                <option value="20">20개씩</option>
                             </select>
                             <table>
                                 <tr>
                                     <th>번호</th>
                                     <th>제목</th>
                                     <th>댓글</th>
-                                    <th>작정자</th>
+                                    <!-- <th>작정자</th> -->
                                     <th>작성일</th>
                                     <th id="view-cnt">조회수</th>
                                 </tr>
                                 <tr v-for="item in boardList" :class="{ 'new-post': isNewPost(item.boardNo) }">
                                     <td>{{item.boardNo}}</td>
-                                    <td>
+                                    <td class="title-cell">
                                         <a href="javascript:;" @click="fnPostView(item.boardNo)">
-                                            {{item.title}}
-                                            <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
-                                            <span v-if="isNewPost(item.boardNo)" class="new-post-badge">NEW</span>
+                                            <div class="title-row">
+                                            <span class="post-title">{{ item.title }}</span>
+                                            <span
+                                                v-if="item.pwd"
+                                                class="material-symbols-outlined lock-icon"
+                                                title="비밀글"
+                                            >
+                                                lock
+                                            </span>
+                                            </div>
+                                            <div class="sub-meta">
+                                            <span>{{ item.userId }}</span>
+                                            </div>
                                         </a>
-
                                     </td>
                                     <td >
                                         <div class="comment-column">
@@ -393,7 +373,7 @@
                                             <span>{{item.commentCnt}}</span> 
                                         </div>
                                     </td>
-                                    <td>{{item.userId}}</td>
+                                    <!-- <td>{{item.userId}}</td> -->
                                     <td>{{item.chardate}}</td>
                                     <td id="view-cnt">{{item.viewCnt}}</td>
                                 </tr>
@@ -410,7 +390,7 @@
                             </div>
 
                             <div class="write-btn-wrapper">
-                                <button @click="moveToPost" class="btn">글쓰기</button>
+                                <button @click="moveToPost" class="write-btn">글쓰기</button>
                             </div>
 
                             <!-- Popup asking for the user post's password -->
@@ -737,6 +717,31 @@
                     
                     pageChange("/home/community/chat.do", {  });
                 },
+                // 장바구니 수량을 서버에서 가져오는 함수
+                fetchCartCount() {
+                    // 세션 아이디가 없으면 실행하지 않음
+                    if (this.sessionId == '' || this.sessionId == null) return;
+
+                    let self = this;
+                    $.ajax({
+                        url: '/api/cartCount.dox',
+                        method: 'GET',
+                        // ★ 서버의 @RequestParam HashMap map으로 전달될 데이터 ★
+                        data: {
+                            sessionId: self.sessionId
+                        },
+                        dataType: 'json',
+                        success: (response) => {
+                            console.log("서버 응답 데이터:", response);
+                            if (response.result === 'success') {
+                                self.cartCount = response.count; // 서버에서 보낸 count 값을 Vue 변수에 저장
+                            }
+                        },
+                        error: (err) => {
+                            console.error("AJAX 호출 중 오류 발생:", err);
+                        }
+                    });
+                },
 
             }, // methods
             mounted() {
@@ -744,6 +749,14 @@
                 let self = this;
                 self.fnBoardList();   //보드리스트정보게시판정보 가져오기
                 self.fnGetUserInfo(); //유저정보가져오기
+
+                // 2. 조건문을 잠시 제거하거나, 로그를 찍어 확인합니다.
+                if (self.sessionId && self.sessionId !== '') {
+                    console.log("장바구니 수량 조회를 시작합니다.");
+                    self.fetchCartCount();
+                } else {
+                    console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
+                }
             }
         });
 
