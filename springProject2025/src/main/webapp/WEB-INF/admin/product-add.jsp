@@ -143,7 +143,7 @@
                     });
 
                 },
-                fnAddProduct(i) {
+                fnAddProduct(i, fileObject) {
                     let self = this;
                     let param = {
                         userId: self.sessionId,
@@ -158,6 +158,8 @@
                     };
                     console.log(self.productSize[i]);
                     console.log(self.quantity[i]);
+                    console.log(param);
+                    
 
                     $.ajax({
                         url: "/product/add.dox",
@@ -165,22 +167,16 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            // alert("파일저장 성공확인1");
                             console.log(data.productNo);
-                            // alert("파일저장 성공확인2");
                             var form = new FormData();
-                            // alert("파일저장 성공확인3");
-                            form.append("file1", $("#file1")[0].files[0]);
-                            // alert("파일저장 성공확인4");
+                            form.append("file1", fileObject);
                             form.append("productNo", data.productNo); // 임시 pk
-                            // alert("파일저장 성공확인5");
                             self.upload(form);
-                            // setTimeout(function() {
-                            //     alert("파일저장 성공확인6");
-                            //     alert("form 내용확인 " + JSON.stringify(form));
-                            //     self.upload(form);
-                            // }, 100);
-                          
+                            //setTimeout(function () {
+                            //    alert("form 내용확인 " + JSON.stringify(form));
+                            //    self.upload(form);
+                            //}, 100);
+
 
                         }
                     });
@@ -217,21 +213,25 @@
                     let self = this;
 
                     // 이미지 파일이 선택되었는지 확인
-                    if (!self.fnimgexist()) { //false면 true로 보이게 해서 그냥 여기서 중단
+                    if (!self.fnimgexist()) {
                         alert("이미지 파일을 선택해 주세요.");
-                        return; // 파일이 없으면 등록 진행 중단
+                        return;
                     }
 
-                    self.loading = true; // 로딩 시작
+                    // ★ 1. 로딩 시작 전에 파일 객체를 미리 변수에 저장해둡니다.
+                    let fileObject = $("#file1")[0].files[0];
+
+                    self.loading = true; // 로딩 시작 (이제 태그가 사라져도 상관없음)
 
                     for (let i = 0; i < self.sizeNum; i++) {
-                        self.fnAddProduct(i + 1);
+                        // ★ 2. 저장해둔 fileObject를 함수에 전달합니다.
+                        self.fnAddProduct(i + 1, fileObject);
                     }
-                    
+
                     setTimeout(function () {
                         alert("작성이 완료되었습니다!");
                         self.loading = false; // 로딩 종료
-                        self.fnBack();
+                        // self.fnBack();
                     }, 850);
                 },
                 //이미지정보 존재하나 확인하는 함수 추가 251107
