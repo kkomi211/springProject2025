@@ -177,7 +177,7 @@
                 gap: 20px;
                 height: 600px;
                 width: 800px;
-                background: linear-gradient(180deg, #fce5e5 0%, #ebedee 100%);
+                background: linear-gradient(180deg, #d3fafc 0%, #ebedee 100%);
                 /* 그라데이션 배경 */
                 border: none;
                 /* 기존 테두리 제거 */
@@ -256,11 +256,13 @@
                 box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
                 /* 그림자 */
                 border: none;
+                font-weight: bold;
             }
 
             .other-message .chat-bubble {
                 background-color: #fff;
                 color: #000;
+                font-weight: bold;
             }
 
             .time-label {
@@ -713,13 +715,16 @@
                                             <div class="nickname-label" v-if="item.senderId != sessionId">{{
                                                 item.nickname }}</div>
 
-                                            <div class="bubble-container">
-                                                <div class="chat-bubble">
+                                            <div class="chat-bubble">
+                                                <template v-if="isImageFile(item.message)">
+                                                    <img :src="item.message"
+                                                        style="max-width: 250px; max-height: 300px; border-radius: 10px; cursor: pointer; display: block; margin: 5px 0;"
+                                                        @click="window.open(item.message)">
+                                                </template>
+
+                                                <template v-else>
                                                     {{ item.message }}
-                                                </div>
-                                                <div class="time-label">
-                                                    {{ item.cdate.split(' ')[1].substring(0, 5) }}
-                                                </div>
+                                                </template>
                                             </div>
 
                                             <a v-if="(directFlg && item.senderId == sessionId) || (!directFlg && (item.senderId == sessionId || sessionId == ownerId))"
@@ -765,12 +770,25 @@
                                     </div>
                                 </div>
 
-                                <div class="button-box" style="display: flex; gap: 10px;">
-                                    <input type="text" id="message" placeholder="메시지를 입력하세요... (/코스추천, /종료)"
-                                        @keyup.enter="sendMessage" class="chatInput"
-                                        style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
+                                <div class="button-box"
+                                    style="display: flex; gap: 5px; align-items: center; padding: 10px;">
+
+                                    <input type="file" id="chatImgInput" accept="image/*" style="display: none;"
+                                        @change="fnUploadImage">
+
+                                    <input type="text" id="message" placeholder="메시지를 입력하세요..."
+                                        @keyup.enter="sendMessage" class="chatInput" v-model="userInput"
+                                        style="flex: 1; height: 50px; padding: 0 20px; border-radius: 8px; border: 1px solid #ddd; outline: none; box-sizing: border-box; font-size: 15px;">
+
                                     <button @click="sendMessage"
-                                        style="padding: 0 25px; border-radius: 8px; background: #000; color: #fff; cursor: pointer;">전송</button>
+                                        style="padding: 0 25px; height: 50px; border-radius: 8px; background: #000; color: #fff; cursor: pointer; border: none; font-weight: bold; flex-shrink: 0;">
+                                        전송
+                                    </button>
+
+                                    <button class="icon-btn" @click="fnTriggerFile" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; 
+                   background: transparent; border: none; cursor: pointer; flex-shrink: 0;">
+                                        <i data-lucide="camera" style="width: 24px; height: 24px; color: #888;"></i>
+                                    </button>
                                 </div>
                             </main>
                             <aside :class="['sidebar', { 'transfer-mode': isTransferring }]" v-if="!directFlg">
@@ -1419,6 +1437,84 @@
                             console.error("AJAX 호출 중 오류 발생:", err);
                         }
                     });
+                },
+                fnTriggerFile() {
+                    // HTML에 작성한 id="chatImgInput"을 클릭시킴
+                    document.getElementById("chatImgInput").click();
+                },
+
+                // [2] 파일이 선택되면 서버로 업로드
+                fnUploadImage(event) {
+                    let self = this;
+                    let file = event.target.files[0];
+                    if (!file) return; // 파일 선택 취소 시 중단
+
+                    let formData = new FormData();
+                    formData.append("file", file); // 자바에서 받을 이름
+
+                    $.ajax({
+                        url: "/chat/uploadFile.dox", // ★ 2단계에서 만들 자바 주소
+                        type: "POST",
+                        data: formData,
+                        contentType: false, // 필수: 파일 전송 시 false
+                        processData: false, // 필수: 파일 전송 시 false
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.result === "success") {
+                                // 업로드 성공 시, 이미지 경로를 채팅 메시지로 전송
+                                self.sendImageMessage(data.path);
+                            } else {
+                                alert("이미지 전송 실패");
+                            }
+                        },
+                        error: function () {
+                            console.log("파일 업로드 오류");
+                        }
+                    });
+
+                    // 같은 파일을 연속으로 보낼 수 있게 input값 초기화
+                    event.target.value = '';
+                },
+
+                // [3] 이미지 경로를 채팅 메시지로 전송 (DB 저장 + 소켓 전송)
+                sendImageMessage(imagePath) {
+                    let self = this;
+                    let param = {
+                        chatroomNo: self.chatroomNo,
+                        senderId: self.sessionId,
+                        message: imagePath // 메시지 내용에 "경로"가 들어감
+                    }
+
+                    $.ajax({
+                        url: "/home/mypage/message/add.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            // 상대방에게 알림 (소켓)
+                            if (self.stompClient) {
+                                let chatMessage = { content: "IMAGE" };
+                                self.stompClient.send('/app/sendMessage', {}, JSON.stringify(chatMessage));
+                            }
+                            // 내 화면 갱신
+                            self.fnMessageList();
+                        }
+                    });
+                },
+
+                // [4] 화면에 뿌릴 때 이미지인지 텍스트인지 구별하는 함수
+                isImageFile(msg) {
+                    if (!msg) return false;
+
+                    const lowerMsg = msg.toLowerCase();
+                    // 1. 확장자가 이미지 포맷인지 확인
+                    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'];
+                    const hasImageExtension = imageExtensions.some(ext => lowerMsg.endsWith(ext));
+
+                    // 2. 경로에 /img/chat/ 이 포함되어 있는지 확인 (우리가 설정한 경로)
+                    const isChatImgPath = lowerMsg.includes('/img/chat/');
+
+                    return hasImageExtension || isChatImgPath;
                 },
 
             }, // methods
