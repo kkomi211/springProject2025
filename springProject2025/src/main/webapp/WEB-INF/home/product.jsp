@@ -68,6 +68,78 @@
                 top: 8px;
                 right: 18px;
             }
+
+            /* NEW 배지 스타일 (게시판과 동일 디자인) */
+            .new-product-badge {
+                display: inline-block;
+                background: linear-gradient(135deg, #ff4444, #ff6b6b);
+                color: white;
+                padding: 2px 6px;
+                border-radius: 10px;
+                font-size: 10px;
+                font-weight: bold;
+                margin-left: 6px;
+                box-shadow: 0 2px 6px rgba(255, 68, 68, 0.5);
+                animation: pulse 2s infinite;
+                vertical-align: middle;
+                line-height: 1.2;
+            }
+
+            .sidebar .new-product-badge {
+                font-size: 9px;
+                /* 폰트 더 작게 */
+                padding: 1px 5px;
+                /* 패딩 줄임 */
+                margin-left: auto;
+                /* 오른쪽 끝으로 밀기 (Flex일 경우 유용) */
+                float: right;
+                /* 오른쪽 정렬 */
+                margin-top: 4px;
+                /* 높이 보정 */
+            }
+
+            @keyframes pulse {
+                0% {
+                    transform: scale(1);
+                    box-shadow: 0 2px 8px rgba(255, 68, 68, 0.4);
+                }
+
+                50% {
+                    transform: scale(1.1);
+                    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.6);
+                }
+
+                100% {
+                    transform: scale(1);
+                    box-shadow: 0 2px 8px rgba(255, 68, 68, 0.4);
+                }
+            }
+
+            /* 정렬 선택 박스 스타일 */
+            .sort-select {
+                padding: 10px 15px;
+                border-radius: 20px;
+                /* 둥글게 */
+                border: 1px solid #ddd;
+                font-size: 14px;
+                background-color: #fff;
+                cursor: pointer;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+                /* 은은한 그림자 */
+                transition: all 0.3s ease;
+                outline: none;
+                color: #555;
+                font-weight: 500;
+            }
+
+            .sort-select:hover,
+            .sort-select:focus {
+                border-color: #a18cd1;
+                /* 포커스 시 보라색 톤 */
+                box-shadow: 0 4px 10px rgba(161, 140, 209, 0.2);
+                /* 떠오르는 효과 */
+                transform: translateY(-1px);
+            }
         </style>
     </head>
 
@@ -78,12 +150,17 @@
 
                 <div class="container">
                     <main>
-                        <div class="newcontent">
-                            <!-- <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword">
-                        <button class="height40 bluebutton" @click="fnList">검색</button> -->
-                            <div class="search-box">
-                                <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword"
-                                    @keyup.enter="fnList">
+                        <div class="newcontent"
+                            style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 10px;">
+
+                            <select v-model="orderType" @change="fnList" class="sort-select">
+                                <option value="RECENT">최신순</option>
+                                <option value="PRICE_DESC">가격비싼순</option>
+                                <option value="PRICE_ASC">가격저렴한순</option>
+                            </select>
+
+                            <div class="search-box" style="margin: 0;"> <input class="search" placeholder="제품 이름을 입력하세요"
+                                    v-model="keyword" @keyup.enter="fnList">
                                 <a href="javascript:;" @click="fnList">
                                     <div><i data-lucide="search" stroke-width="1"></i></div>
                                 </a>
@@ -112,6 +189,8 @@
                                             :class="{ active: String(p.typeNo) === currentActiveParentNo || String(p.typeNo) === category }"
                                             @click="selectCategory(p.typeNo)">
                                             {{ p.typeName }}
+                                            <span v-if="newCategorySet.has(String(p.typeNo))"
+                                                class="new-product-badge">N</span>
                                         </div>
 
                                         <div class="subcategory-children"
@@ -121,6 +200,8 @@
                                                 :class="{ active: String(c.typeNo) === category }"
                                                 @click="selectCategory(c.typeNo)">
                                                 {{ c.typeName }}
+                                                <span v-if="newCategorySet.has(String(c.typeNo))"
+                                                    class="new-product-badge">N</span>
                                             </div>
                                             <div v-if="!childrenByParent[String(p.typeNo)] || childrenByParent[String(p.typeNo)].length === 0"
                                                 class="subcategory child empty">
@@ -141,7 +222,11 @@
                                             </div>
                                             <div class="product-info-text">
                                                 <div class="brandText product-margin">{{item.brand}}</div>
-                                                <div class="product-margin">{{item.productName}}</div>
+                                                <div class="product-margin">
+                                                    {{item.productName}}
+                                                    <span v-if="isNewProduct(item.udate)"
+                                                        class="new-product-badge">NEW</span>
+                                                </div>
                                                 <p class="price product-margin" v-if="item.saleYN == 'N'">
                                                     {{formatCurrency(item.price)}}</p>
                                                 <p class="price product-margin" v-else>
@@ -224,6 +309,8 @@
                     userType: '${userType}',
 
                     cartCount: 0, // 장바구니 수량 변수 추가
+                    newCategorySet: new Set(),
+                    orderType: "RECENT",
                 };
             },
             computed: {
@@ -277,11 +364,6 @@
                 }
             },
             methods: {
-
-
-
-
-
                 // 함수(메소드) - (key : function())
                 fnList: function () {
                     let self = this;
@@ -291,7 +373,8 @@
                         keyword: self.keyword,
                         keytype: "name",
                         category: self.category,
-                        saleYN: self.saleYN
+                        saleYN: self.saleYN,
+                        orderType: self.orderType
                     };
                     $.ajax({
                         url: "/product/user/list.dox",
@@ -452,6 +535,114 @@
                         }
                     });
                 },
+                isNewProduct(dateString) {
+                    // 1. 데이터가 없으면 무조건 false (에러 방지)
+                    if (!dateString || dateString.length < 10) return false;
+
+                    // 2. DB 날짜에서 [월-일]만 추출 (예: "2026-01-14" -> "01-14")
+                    // substring(5, 10)은 5번째 글자부터 10번째 글자 앞까지 자릅니다.
+                    let dbDate = String(dateString).substring(5, 10);
+
+                    // 3. 내 컴퓨터 날짜에서 [월-일]만 추출
+                    let now = new Date();
+                    let month = ('0' + (now.getMonth() + 1)).slice(-2);
+                    let day = ('0' + now.getDate()).slice(-2);
+                    let pcDate = month + '-' + day;
+
+                    // 4. 디버깅 로그 (F12 콘솔에서 값이 제대로 찍히는지 확인해보세요)
+                    // console.log("DB날짜:", dbDate, " / 내PC날짜:", pcDate);
+
+                    // 5. 비교 (연도 상관없이 오늘 날짜면 true)
+                    return dbDate === pcDate;
+                },
+                checkNewCategories() {
+                    const self = this;
+                    self.newCategorySet = new Set(); // 초기화
+
+                    console.log("--- NEW 카테고리 체크 시작 ---");
+
+                    // 현재 페이지에 있는 상품 리스트 순회
+                    self.list.forEach(item => {
+                        // 이 상품이 NEW라면 (cdate나 udate가 오늘 날짜라면)
+                        if (self.isNewProduct(item.cdate) || self.isNewProduct(item.udate)) {
+                            console.log(`NEW 상품 발견: ${item.productName} (typeNo: ${item.typeNo})`);
+
+                            // 1. 해당 상품의 카테고리(2차) ID 추가
+                            self.newCategorySet.add(String(item.typeNo));
+
+                            // 2. 그 카테고리의 부모(1차) ID도 찾아서 추가
+                            // typeList에서 현재 상품의 typeNo와 일치하는 정보를 찾음
+                            if (!self.typeList) {
+                                console.warn("typeList가 비어있음!");
+                                return;
+                            }
+
+                            const typeInfo = self.typeList.find(t => String(t.typeNo) === String(item.typeNo));
+
+                            if (typeInfo) {
+                                console.log(` -> 카테고리 정보 찾음: ${typeInfo.typeName}, 부모ID(typePart): ${typeInfo.typePart}`);
+                                if (typeInfo.typePart) {
+                                    self.newCategorySet.add(String(typeInfo.typePart));
+                                } else {
+                                    console.log(" -> 부모 ID(typePart)가 없음 (1차 카테고리이거나 데이터 누락)");
+                                }
+                            } else {
+                                console.warn(` -> typeList에서 typeNo [${item.typeNo}]를 찾을 수 없음`);
+                            }
+                        }
+                    });
+
+                    console.log("최종 NEW 카테고리 목록:", Array.from(self.newCategorySet));
+                },
+                fnCheckAllNewCategories() {
+                    let self = this;
+                    // 배지 확인용으로 최신 상품을 넉넉히 가져옵니다 (예: 100개)
+                    // 실제 운영 시에는 '최근 3일간 등록된 상품의 카테고리 ID 목록'만 반환하는 API를 만드는 게 좋습니다.
+                    let param = {
+                        page: 0,
+                        pageSize: 500, // 충분히 많은 수
+                        keyword: "",
+                        keytype: "",
+                        category: "", // 전체 대상
+                        saleYN: ""
+                    };
+
+                    $.ajax({
+                        url: "/product/user/list.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            // 여기서 받아온 리스트는 화면 표시용이 아니라, 배지 확인용입니다.
+                            // data.list를 순회하며 NEW 상품이 있는지 확인
+
+                            // typeList 정보도 필요하므로 data.typeList가 있다면 활용, 
+                            // 없다면 기존 fnList에서 받아온 typeList를 써야 하는데 비동기 시점 문제가 있을 수 있음.
+                            // 보통 list.dox가 typeList도 같이 주므로 그것을 임시로 씁니다.
+                            const allTypes = data.typeList || self.typeList;
+
+                            if (!allTypes) return; // 타입 정보 없으면 중단
+
+                            const tempSet = new Set();
+
+                            data.list.forEach(item => {
+                                if (self.isNewProduct(item.cdate) || self.isNewProduct(item.udate)) {
+                                    // 1. 해당 상품 카테고리(2차)
+                                    tempSet.add(String(item.typeNo));
+
+                                    // 2. 부모 카테고리(1차)
+                                    const typeInfo = allTypes.find(t => String(t.typeNo) === String(item.typeNo));
+                                    if (typeInfo && typeInfo.typePart) {
+                                        tempSet.add(String(typeInfo.typePart));
+                                    }
+                                }
+                            });
+
+                            self.newCategorySet = tempSet;
+                            console.log("전체 상품 스캔 완료, NEW 카테고리:", Array.from(self.newCategorySet));
+                        }
+                    });
+                },
 
             }, // methods
             watch: {
@@ -482,9 +673,12 @@
                         this.fnList();
                     }
                 },
-
-
-
+                orderType(newVal, oldVal) {
+                    if (newVal !== oldVal) {
+                        this.page = 1;
+                        this.fnList();
+                    }
+                },
             },
             mounted() {
                 // 처음 시작할 때 실행되는 부분
@@ -493,6 +687,7 @@
                 self.fnImgList();
                 self.fnReviewList();
                 self.fnUserInfo();
+                self.fnCheckAllNewCategories();
 
                 // 2. 조건문을 잠시 제거하거나, 로그를 찍어 확인합니다.
                 if (self.sessionId && self.sessionId !== '') {
