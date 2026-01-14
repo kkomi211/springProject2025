@@ -266,111 +266,195 @@
             .socials span:first-child {
                 margin-left: 0;
             }
+
+            /* 모달 스타일 (채팅/장바구니와 통일) */
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 3000;
+                /* z-index 높임 */
+                backdrop-filter: blur(3px);
+            }
+
+            .modal-content {
+                background: white;
+                padding: 30px 40px;
+                border: none;
+                border-radius: 20px;
+                width: 400px;
+                text-align: center;
+                position: relative;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+                animation: fadeIn 0.3s ease;
+            }
+
+            .modal-body {
+                margin-bottom: 30px;
+                font-size: 18px;
+                font-weight: bold;
+                color: #333;
+                line-height: 1.5;
+            }
+
+            .modal-actions {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            /* 버튼 스타일 (평소 흰색 -> 호버 검은색) */
+            .btn-modal {
+                padding: 10px 35px;
+                border-radius: 30px;
+                border: 2px solid #333;
+                font-size: 15px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                background-color: #fff;
+                color: #333;
+            }
+
+            .btn-modal:hover {
+                background-color: #000;
+                color: #fff;
+                border-color: #000;
+                transform: translateY(-2px);
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
         </style>
     </head>
 
     <body>
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-           <div class="container">
-            <%-- 공통 헤더 컴포넌트 --%>
-                <jsp:include page="/WEB-INF/header/header.jsp" />
+            <div class="container">
+                <%-- 공통 헤더 컴포넌트 --%>
+                    <jsp:include page="/WEB-INF/header/header.jsp" />
 
-                <main>
-                    <div class="newcontent">
-                        <!-- <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword"> -->
-                        <div class="search-box">
-                            <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword"
-                                @keyup.enter="fnProductSearch(keyword)">
-                            <a href="javascript:;" @click="fnProductSearch(keyword)">
-                                <div><i data-lucide="search" stroke-width="1"></i></div>
-                            </a>
-                        </div>
-                        <!-- <button class="height40 bluebutton" @click="fnProductSearch(keyword)">검색</button> -->
-                    </div>
-                    <div class="side-bar">
-                        <div class="category-box">
-                            <div class="category">카테고리</div>
-                            <div class="subcategory" @click="selectCategory('')">전체
+                    <main>
+                        <div class="newcontent">
+                            <!-- <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword"> -->
+                            <div class="search-box">
+                                <input class="search" placeholder="제품 이름을 입력하세요" v-model="keyword"
+                                    @keyup.enter="fnProductSearch(keyword)">
+                                <a href="javascript:;" @click="fnProductSearch(keyword)">
+                                    <div><i data-lucide="search" stroke-width="1"></i></div>
+                                </a>
                             </div>
-                            <div v-for="p in parents" :key="p.typeNo" class="subcategory-wrapper"
-                                @mouseenter="hoverParent = String(p.typeNo)" @mouseleave="hoverParent = null">
-                                <div class="subcategory" @click="selectCategory(p.typeNo)">
-                                    {{ p.typeName }}
+                            <!-- <button class="height40 bluebutton" @click="fnProductSearch(keyword)">검색</button> -->
+                        </div>
+                        <div class="side-bar">
+                            <div class="category-box">
+                                <div class="category">카테고리</div>
+                                <div class="subcategory" @click="selectCategory('')">전체
                                 </div>
-
-                                <!-- 호버 시 depth=2 목록 -->
-                                <div class="subcategory-children" v-if="hoverParent === String(p.typeNo)">
-                                    <div v-for="c in childrenByParent[String(p.typeNo)]" :key="c.typeNo"
-                                        class="subcategory child" @click="selectCategory(c.typeNo)">
-                                        {{ c.typeName }}
+                                <div v-for="p in parents" :key="p.typeNo" class="subcategory-wrapper"
+                                    @mouseenter="hoverParent = String(p.typeNo)" @mouseleave="hoverParent = null">
+                                    <div class="subcategory" @click="selectCategory(p.typeNo)">
+                                        {{ p.typeName }}
                                     </div>
-                                    <div v-if="!childrenByParent[String(p.typeNo)] || childrenByParent[String(p.typeNo)].length === 0"
-                                        class="subcategory child empty">
-                                        하위 없음
+
+                                    <!-- 호버 시 depth=2 목록 -->
+                                    <div class="subcategory-children" v-if="hoverParent === String(p.typeNo)">
+                                        <div v-for="c in childrenByParent[String(p.typeNo)]" :key="c.typeNo"
+                                            class="subcategory child" @click="selectCategory(c.typeNo)">
+                                            {{ c.typeName }}
+                                        </div>
+                                        <div v-if="!childrenByParent[String(p.typeNo)] || childrenByParent[String(p.typeNo)].length === 0"
+                                            class="subcategory child empty">
+                                            하위 없음
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="infoMain-container">
-                        <h1>제품 문의 작성 </h1>
-                        <div class="img-box"><img :src="imgByProduct[String(productNo)] || '/img/no-image.png'"
-                                class="big-img" :alt="info.productName"></div>
-                        <div class="infoText-box">
-                            <div class="product-name">{{info.productName}}</div>
-                            <!-- <div class="margin80 font20">상품명 : {{info.productName}}</div> -->
-                            <!-- <div class="margin80 font20">브랜드 : {{info.brand}}</div> -->
-                            <div class="product-type">{{info.brand}}</div>
-                            <!-- <div class="margin80 font20">가격 : {{info.price}} 원</div> -->
-                            <div class="product-price">{{Number(info.price).toLocaleString()}} 원</div>
+                        <div class="infoMain-container">
+                            <h1>제품 문의 작성 </h1>
+                            <div class="img-box"><img :src="imgByProduct[String(productNo)] || '/img/no-image.png'"
+                                    class="big-img" :alt="info.productName"></div>
+                            <div class="infoText-box">
+                                <div class="product-name">{{info.productName}}</div>
+                                <!-- <div class="margin80 font20">상품명 : {{info.productName}}</div> -->
+                                <!-- <div class="margin80 font20">브랜드 : {{info.brand}}</div> -->
+                                <div class="product-type">{{info.brand}}</div>
+                                <!-- <div class="margin80 font20">가격 : {{info.price}} 원</div> -->
+                                <div class="product-price">{{Number(info.price).toLocaleString()}} 원</div>
 
-                        </div>
-                        <div class="container-foot">
-                            <div class="editor-box">
-                                <div class="margin30 fontGray">문의 제목</div>
-                                <div><input v-model="title" id="title"></div>
-                                <div class="margin30 fontGray">잠금 설정</div>
-                                <div><input v-model="pwd" placeholder="값을 입력하면 글이 잠깁니다"></div>
-                                <div class="margin30 fontGray">문의 내용</div>
-                                <div id="editor"></div>
-                                <div class="text-right">
-                                    <button class="inquiry-btn" @click="fnBack">돌아가기</button>
-                                    <button @click="fnAddInquiry">작성하기</button>
+                            </div>
+                            <div class="container-foot">
+                                <div class="editor-box">
+                                    <div class="margin30 fontGray">문의 제목</div>
+                                    <div><input v-model="title" id="title"></div>
+                                    <div class="margin30 fontGray">잠금 설정</div>
+                                    <div><input v-model="pwd" placeholder="값을 입력하면 글이 잠깁니다"></div>
+                                    <div class="margin30 fontGray">문의 내용</div>
+                                    <div id="editor"></div>
+                                    <div class="text-right">
+                                        <button class="inquiry-btn" @click="fnBack">돌아가기</button>
+                                        <button @click="fnAddInquiry">작성하기</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                </main>
-
-                <footer>
-                    <div class="footer-left">
-                        <div class="company-info">
-                            <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
-                            <div><strong>대표:</strong> 김재</div>
-                            <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
-                            <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
-                            <div><strong>부가세 번호:</strong> KR123456789</div>
-                        </div>
-                        <div class="copyright">
-                            COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                    </main>
+                    <div class="modal-overlay" v-if="showAlertModal" @click.self="showAlertModal = false">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                {{ alertMsg }}
+                            </div>
+                            <div class="modal-actions">
+                                <button class="btn-modal" @click="closeAlertModal">확인</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="footer-right">
-                        <div class="other">
-                            <span><a href="/home/about.do">회사소개</a></span>
-                            <span><a @click="fnNotice">공지사항</a></span>
-                            <span><a href="/home/terms.do">이용약관</a></span>
-                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
+                    <footer>
+                        <div class="footer-left">
+                            <div class="company-info">
+                                <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
+                                <div><strong>대표:</strong> 김재</div>
+                                <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
+                                <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
+                                <div><strong>부가세 번호:</strong> KR123456789</div>
+                            </div>
+                            <div class="copyright">
+                                COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                            </div>
                         </div>
-                        <div class="socials">
-                            <span>INSTAGRAM</span>
-                            <span>NAVER</span>
+                        <div class="footer-right">
+                            <div class="other">
+                                <span><a href="/home/about.do">회사소개</a></span>
+                                <span><a @click="fnNotice">공지사항</a></span>
+                                <span><a href="/home/terms.do">이용약관</a></span>
+                                <span><a href="/home/privacy.do">개인정보처리방침</a></span>
+                            </div>
+                            <div class="socials">
+                                <span>INSTAGRAM</span>
+                                <span>NAVER</span>
+                            </div>
                         </div>
-                    </div>
-                </footer>
-        </div>
+                    </footer>
+            </div>
         </div>
     </body>
 
@@ -398,6 +482,8 @@
                     sessionId: "${sessionId}",
 
                     userType: '${userType}',
+                    showAlertModal: false,
+                    alertMsg: "",
                 };
             },
             computed: {
@@ -527,17 +613,34 @@
                     let self = this;
                     pageChange("/home/product-info.do", { productNo: self.productNo, sessionId: self.sessionId });
                 },
+                closeAlertModal() {
+                    this.showAlertModal = false;
+                    // 제목이 비어서 떴던 거면 제목창에 포커스
+                    if (this.alertMsg.includes("제목")) {
+                        setTimeout(() => document.querySelector("#title").focus(), 100);
+                    }
+                },
+
+                // [수정] 문의 작성 함수
                 fnAddInquiry() {
                     let self = this;
+
+                    // 1. 제목 체크 -> 모달 띄우기
                     if (self.title == "") {
-                        alert("제목이 비어있습니다!");
-                        document.querySelector("#title").focus();
+                        self.alertMsg = "제목이 비어있습니다!";
+                        self.showAlertModal = true;
                         return;
                     }
-                    if (self.content == "") {
-                        alert("내용이 비어있습니다!");
+
+                    // 2. 내용 체크 -> 모달 띄우기
+                    // Quill 에디터의 경우 태그가 포함될 수 있어 텍스트만 체크하거나 trim 필요할 수 있음
+                    // 여기서는 기존 로직대로 빈 문자열 체크
+                    if (self.content == "" || self.content == "<p><br></p>") {
+                        self.alertMsg = "내용이 비어있습니다!";
+                        self.showAlertModal = true;
                         return;
                     }
+
                     let param = {
                         productNo: self.productNo,
                         title: self.title,
@@ -545,6 +648,7 @@
                         userId: self.sessionId,
                         pwd: self.pwd
                     };
+
                     $.ajax({
                         url: "/product/inquiry/add.dox",
                         dataType: "json",
@@ -552,7 +656,8 @@
                         data: param,
                         success: function (data) {
                             console.log(data);
-                            alert("작성 완료!");
+                            // 3. 성공 시 alert("작성 완료!") 제거함
+                            // 바로 목록으로 돌아가기
                             self.fnBack();
                         }
                     });
@@ -583,7 +688,7 @@
                     pageChange("/home/community/board.do", { type: "B" });
                 },
 
-                
+
 
             }, // methods
             mounted() {
