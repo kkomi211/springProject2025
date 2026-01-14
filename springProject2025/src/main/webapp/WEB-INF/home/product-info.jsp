@@ -465,6 +465,8 @@
                     userName: "",
 
                     userType: '${userType}',
+
+                    cartCount: 0, // 장바구니 수량 변수 추가 (jgh260114)
                 };
             },
             computed: {

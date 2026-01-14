@@ -330,42 +330,8 @@ html, body {
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
             <div class="container">
-                <header>
-                    <div class="top-header">
-                        <div class="brand-name">
-                            <div><a href="/home.do">RUNNERS' HOUSE</a></div>
-                        </div>
-                        <div id="right-items">
-                            <div>
-                                <!-- <template > -->
-                                    <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
-                                <!-- </template> -->
-                                <!-- <template > -->
-                                    <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
-                                <!-- </template> -->
-                            </div>
-                            <div v-if="sessionId == ''">
-                                <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
-                            </div>
-                            <div v-if="sessionId != '' && userType != 'K'"><a
-                                    href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
-                            <div v-else-if="sessionId != '' && userType == 'K'"><a
-                                    href="home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
-                            <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div>
-                        </div>
-                    </div>
-                    <div class="bottom-header">
-                        <div>
-                            <a href="/home/product.do">제품</a>
-                        </div>
-                        <div>
-                            <a href="javascript:;" @click="fnSale">세일</a>
-                        </div>
-                        <div>
-                            <a href="/home/community/board.do">커뮤니티</a>
-                        </div>
-                    </div>
-                </header>
+                <%-- 공통 헤더 컴포넌트 (jgh260114) --%>
+                <jsp:include page="/WEB-INF/header/header.jsp" />
 
                 <main>
                     <div class="header">
@@ -571,6 +537,8 @@ html, body {
                     unitPrice: 156000,
 
                     userType : '${userType}',
+
+                    cartCount: 0, // 장바구니 수량 변수 추가 (jgh260114)
                 };
             },
             computed: {
@@ -584,6 +552,26 @@ html, body {
                 }
             },
             methods: {
+                // 장바구니 수량을 서버에서 가져오는 함수 (jgh260114)
+                fetchCartCount() {
+                    if (this.sessionId == '' || this.sessionId == null) return;
+                    let self = this;
+                    $.ajax({
+                        url: '/api/cartCount.dox', 
+                        method: 'GET',
+                        data: { sessionId: self.sessionId }, 
+                        dataType: 'json',
+                        success: (response) => {
+                            if (response.result === 'success') {
+                                self.cartCount = response.count;
+                            }
+                        },
+                        error: (err) => {
+                            console.error("AJAX 호출 중 오류 발생:", err);
+                        }
+                    });
+                },
+
                 // 이미지 경로 정규화
                 getImagePath(imgPath) {
                     // null, undefined, 빈 문자열 체크
@@ -1038,6 +1026,11 @@ html, body {
                 let self = this;
                 self.fnGetUserInfo(); // 사용자 정보 조회
                 self.fnList();
+
+                // 장바구니 수량 조회 (jgh260114)
+                if (self.sessionId && self.sessionId !== '') {
+                    self.fetchCartCount();
+                }
             }
         });
 
