@@ -136,6 +136,14 @@
 
                         <!-- MODAL POPUP WINDOW -->
 
+                        <!-- When fields are empty -->
+                         <div v-if="emptyId || emptyPhone || emptyBirth" class="modal-overlay">
+                            <div class="modal-content">
+                                <h2 >아이디를 입력해주세요.</h2>
+                                <button @click="closeModal">닫기</button>
+                            </div>
+                        </div>
+
                         <!-- When id or password can't be found -->
                         <div v-if="showModal" class="modal-overlay">
                             <div class="modal-content">
@@ -146,12 +154,12 @@
                         </div>
 
                         <!-- When password successfully changed -->
-                        <div v-if="pwdChangedModal" class="modal-overlay">
+                        <div v-if="emptyId" class="modal-overlay">
                             <div class="modal-content">
-                                <h2>비밀번호 변경 성공</h2>
-                                <p>변경된 암호로 로그인 해보세요</p>
-                                <a href="/home/login.do"><button>로그인 화면 가기</button></a>
-                                <a href="/home.do"><button>메인 화면 가기</button></a>
+                                <h2 v-if="emptyId">아이디를 입력해주세요.</h2>
+                                <h2 v-if="emptyPhone && emptyBirth">전화번호를 입력해주세요.</h2>
+                                <h2 v-if="emptyBirth">생년월일을 입력해주세요.</h2>
+                                <button @click="closeModal">닫기</button>
                             </div>
                         </div>
 
@@ -219,21 +227,21 @@
                     newPwd1: "",
                     newPwd2: "",
 
+                    // modals
                     showModal: false,
                     pwdChangedModal: false,
                     pwdFailedModal: false,
+                    emptyId : false,
+                    emptyPhone : false,
+                    emptyBirth : false,
 
                     // 인증
                     smsFlg: false,
                     joinFlg: false, // 문자 인증 유무
                     authFlag: false,
 
-                    ranStr: "", // 문자 인증 번호 
-<<<<<<< HEAD
-                    inputNum: "111",
-=======
+                    ranStr: 111, // 문자 인증 번호 
                     inputNum: "",
->>>>>>> branch 'main' of https://github.com/kkomi211/springProject2025.git
                     timer: "",
                     count: 180,
 
@@ -245,17 +253,20 @@
                 fnSearchId: function () {
                     let self = this;
                     if (self.id_name == "") {
-                        alert("이름을 입력해주세요.");
+                        // alert("이름을 입력해주세요.");
+                        self.emptyId = true;
                         document.querySelector("#id_name").focus();
                         return;
                     }
                     if (self.id_phone == "") {
-                        alert("전화번호를 입력해주세요.");
+                        // alert("전화번호를 입력해주세요.");
+                        self.emptyPhone = true;
                         document.querySelector("#id_phone").focus();
                         return;
                     }
                     if (self.id_birth == "") {
-                        alert("생년월일을 입력해주세요.");
+                        // alert("생년월일을 입력해주세요.");
+                        self.emptyBirth = true;
                         document.querySelector("#id_birth").focus();
                         return;
                     }
@@ -377,6 +388,9 @@
                     let self = this;
                     self.showModal = false;
                     self.pwdFailedModal = false;
+                    self.emptyId = false;
+                    self.emptyPhone = false;
+                    self.emptyBirth = false;
                     self.id_name = "";
                     self.id_phone = "";
                     self.id_birth = "";

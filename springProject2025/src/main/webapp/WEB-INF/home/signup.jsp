@@ -94,8 +94,10 @@
                                 <div class="form-row">
                                     <label>성별</label>
                                     <label>
-                                        <input type="radio" v-model="gender" value="F"> F
-                                        <input type="radio" v-model="gender" value="M"> M
+                                        <div class="gender-section">
+                                        <div class="gender-radio-btn"><input type="radio" v-model="gender" value="F"> <span>F</span></div>
+                                        <div class="gender-radio-btn"><input type="radio" v-model="gender" value="M"> <span>M</span></div>
+                                        </div>
                                     </label>
                                 </div>
                                 <div class="form-row">
@@ -136,9 +138,8 @@
                                         <button class="btn" @click="closeModal">확인</button>
                                     </div>
                                 </div>
-
                                 <div class="form-submit">
-                                    <button @click="fnSignup" class="submit-btn">회원 가입 완료</button>
+                                    <button @click="fnSignup" class="submit-btn">회원 가입</button>
                                 </div>
                             </div>
                         </div>
