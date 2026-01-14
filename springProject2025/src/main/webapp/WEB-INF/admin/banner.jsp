@@ -22,8 +22,10 @@
         <div id="app">
             <div class="topbar">
                 <div><strong>관리자 메인화면</strong></div>
-                <div>관리자 ${sessionId} 님 안녕하세요 &nbsp;
-                    <a href="javascript:;" class="text-white text-decoration-none" @click="fnLogout">로그오프</a>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="line-height: 1.2;">관리자 ${sessionId} 님 안녕하세요 &nbsp;
+                        <a href="javascript:;" class="text-white text-decoration-none" @click="fnLogout">로그오프</a>
+                    </div>
                 </div>
             </div>
 
@@ -36,6 +38,7 @@
                 <a href="/admin/orders.do">주문 내역</a>
                 <a href="/admin/board-report.do">게시판 신고 리스트</a>
                 <a href="/admin/user-list.do">회원 관리 화면</a>
+                <a href="/admin/activity-log.do">활동 로그</a>
             </div>
 
             <div class="banner-layout-container">
@@ -256,8 +259,8 @@
                 </div>
             </div>
 
-            <div v-if="showMainAddModal" class="modal-overlay">
-                <div class="modal-content">
+            <div v-if="showMainAddModal" class="modal-overlay" @click.self="closeMainAddModal">
+                <div class="modal-content" @click.stop>
                     <h3>배너 추가</h3>
                     <div class="modal-input">
                         <input v-model="newMainBanner.title" placeholder="배너 제목 입력">
@@ -277,8 +280,8 @@
                 <img :src="selectedImage" alt="배너 이미지">
             </div>
 
-            <div v-if="showProductDeleteModal" class="modal-overlay">
-                <div class="modal-content">
+            <div v-if="showProductDeleteModal" class="modal-overlay" @click.self="closeProductDeleteModal">
+                <div class="modal-content" @click.stop>
                     <h3>삭제 확인</h3>
                     <p>"{{ productDeleteItem.title }}" 배너를 정말 삭제하시겠습니까?</p>
                     <div class="modal-buttons">
@@ -304,8 +307,8 @@
             </div>
 
             <!-- 대회 배너 삭제 모달 -->
-            <div v-if="showRallyDeleteModal" class="modal-overlay">
-                <div class="modal-content">
+            <div v-if="showRallyDeleteModal" class="modal-overlay" @click.self="closeRallyDeleteModal">
+                <div class="modal-content" @click.stop>
                     <h3>삭제 확인</h3>
                     <p>"{{ rallyDeleteItem.rallyName }}" 배너를 정말 삭제하시겠습니까?</p>
                     <div class="modal-buttons">
@@ -316,8 +319,8 @@
             </div>
 
             <!-- 대회 배너 추가 모달 -->
-            <div v-if="showRallyAddModal" class="modal-overlay">
-                <div class="modal-content">
+            <div v-if="showRallyAddModal" class="modal-overlay" @click.self="closeRallyAddModal" v-show="showRallyAddModal">
+                <div class="modal-content" @click.stop>
                     <h3>대회 배너 추가</h3>
                     <div class="modal-input">
                         <input v-model="newRallyBanner.rallyName" placeholder="대회 이름 입력">
@@ -362,7 +365,6 @@
                     list2: [], // 대회 배너
                     editFlg: false,
                     selectedImage: "", // 클릭된 이미지 저장 변수
-
                     // 메인 슬라이드 배너 (list)
                     showMainDeleteModal: false,
                     showMainAddModal: false,
@@ -395,9 +397,8 @@
                         applicationPeriod: "",
                         price: "",
                         phone: "",
-                        phone: "",
-                        host: "",
-
+                        type: "",
+                        host: ""
                     }
                 };
             },
@@ -476,6 +477,8 @@
                     this.list.forEach((item, i) => {
                         if (i !== index) item.showImage = false;
                     });
+                },
+                toggleImage: function(index) {
                     this.list[index].showImage = !this.list[index].showImage;
                 },
                 openMainDeleteModal(item) {
@@ -753,8 +756,53 @@
 
 
             },
+            created() {
+                // 컴포넌트 생성 시 즉시 모달 상태 초기화
+                this.showMainAddModal = false;
+                this.showMainDeleteModal = false;
+                this.showProductAddModal = false;
+                this.showProductDeleteModal = false;
+                this.showRallyAddModal = false;
+                this.showRallyDeleteModal = false;
+            },
+            watch: {
+                // showRallyAddModal 값이 변경될 때 로그 출력 (디버깅용)
+                showRallyAddModal(newVal) {
+                    if (newVal === true) {
+                        console.log('showRallyAddModal이 true로 변경됨 - 스택 트레이스:', new Error().stack);
+                    }
+                }
+            },
             mounted() {
-                this.fnList();
+                let self = this;
+                // 모달 상태 명시적으로 초기화
+                self.showMainAddModal = false;
+                self.showMainDeleteModal = false;
+                self.showProductAddModal = false;
+                self.showProductDeleteModal = false;
+                self.showRallyAddModal = false;
+                self.showRallyDeleteModal = false;
+                
+                // DOM 업데이트 후 다시 확인
+                self.$nextTick(() => {
+                    self.showRallyAddModal = false;
+                });
+                
+                // 추가 안전장치: 여러 번 확인
+                setTimeout(() => {
+                    self.showRallyAddModal = false;
+                }, 10);
+                setTimeout(() => {
+                    self.showRallyAddModal = false;
+                }, 50);
+                setTimeout(() => {
+                    if (self.showRallyAddModal === true) {
+                        console.warn('showRallyAddModal이 예상치 못하게 true입니다. false로 재설정합니다.');
+                        self.showRallyAddModal = false;
+                    }
+                }, 100);
+                
+                self.fnList();
             }
         });
         app.mount('#app');

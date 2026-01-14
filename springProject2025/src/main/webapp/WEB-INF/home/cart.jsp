@@ -381,6 +381,7 @@
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
             <div class="container">
+<<<<<<< HEAD
                 <%-- 공통 헤더 컴포넌트 --%>
                     <jsp:include page="/WEB-INF/header/header.jsp" />
 
@@ -397,6 +398,10 @@
                             <h1 class="main-title"
                                 style="text-align: center; font-size: 32px; font-weight: 500; margin-bottom: 50px; border-bottom: 1px solid #ccc; padding-bottom: 20px;">
                                 장바구니</h1>
+=======
+                <%-- 공통 헤더 컴포넌트 (jgh260114) --%>
+                <jsp:include page="/WEB-INF/header/header.jsp" />
+>>>>>>> branch 'main' of https://github.com/kkomi211/springProject2025.git
 
                             <div class="cart-layout" style="display: flex; justify-content: space-between; gap: 40px;">
                                 <div class="cart-list-container" style="flex: 3; min-width: 60%;">
@@ -589,7 +594,13 @@
                     currentQty: 1,
                     unitPrice: 156000,
 
+
                     userType: '${userType}',
+
+                    userType : '${userType}',
+
+                    cartCount: 0, // 장바구니 수량 변수 추가 (jgh260114)
+
                 };
             },
             computed: {
@@ -603,6 +614,26 @@
                 }
             },
             methods: {
+                // 장바구니 수량을 서버에서 가져오는 함수 (jgh260114)
+                fetchCartCount() {
+                    if (this.sessionId == '' || this.sessionId == null) return;
+                    let self = this;
+                    $.ajax({
+                        url: '/api/cartCount.dox', 
+                        method: 'GET',
+                        data: { sessionId: self.sessionId }, 
+                        dataType: 'json',
+                        success: (response) => {
+                            if (response.result === 'success') {
+                                self.cartCount = response.count;
+                            }
+                        },
+                        error: (err) => {
+                            console.error("AJAX 호출 중 오류 발생:", err);
+                        }
+                    });
+                },
+
                 // 이미지 경로 정규화
                 getImagePath(imgPath) {
                     // null, undefined, 빈 문자열 체크
@@ -1083,6 +1114,11 @@
                 let self = this;
                 self.fnGetUserInfo(); // 사용자 정보 조회
                 self.fnList();
+
+                // 장바구니 수량 조회 (jgh260114)
+                if (self.sessionId && self.sessionId !== '') {
+                    self.fetchCartCount();
+                }
             }
         });
 
