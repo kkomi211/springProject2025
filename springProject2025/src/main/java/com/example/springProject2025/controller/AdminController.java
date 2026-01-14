@@ -1153,4 +1153,46 @@ public class AdminController {
     HashMap<String, Object> resultMap = adminService.getAdminActivityLogList(map);
     return new Gson().toJson(resultMap);
   }
+
+  // 알림 개수 조회
+  @RequestMapping(value = "admin/notifications.dox", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+  @ResponseBody
+  public String getNotifications(HttpServletRequest request) throws Exception {
+    HttpSession session = request.getSession();
+    String adminId = (String) session.getAttribute("sessionId");
+
+    // 세션에 관리자 ID가 없으면 빈 결과 반환
+    if (adminId == null || adminId.trim().isEmpty()) {
+      HashMap<String, Object> resultMap = new HashMap<String, Object>();
+      resultMap.put("result", "fail");
+      resultMap.put("message", "로그인이 필요합니다.");
+      resultMap.put("newInquiryCount", 0);
+      resultMap.put("newOrderCount", 0);
+      resultMap.put("newBoardReportCount", 0);
+      resultMap.put("totalCount", 0);
+      return new Gson().toJson(resultMap);
+    }
+
+    HashMap<String, Object> resultMap = adminService.getNotificationCounts(adminId);
+    return new Gson().toJson(resultMap);
+  }
+
+  // 알림 읽음 처리
+  @RequestMapping(value = "admin/notifications/read.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+  @ResponseBody
+  public String markNotificationAsRead(HttpServletRequest request, @RequestParam String type) throws Exception {
+    HttpSession session = request.getSession();
+    String adminId = (String) session.getAttribute("sessionId");
+
+    // 세션에 관리자 ID가 없으면 실패 반환
+    if (adminId == null || adminId.trim().isEmpty()) {
+      HashMap<String, Object> resultMap = new HashMap<String, Object>();
+      resultMap.put("result", "fail");
+      resultMap.put("message", "로그인이 필요합니다.");
+      return new Gson().toJson(resultMap);
+    }
+
+    HashMap<String, Object> resultMap = adminService.markNotificationAsRead(adminId, type);
+    return new Gson().toJson(resultMap);
+  }
 }
