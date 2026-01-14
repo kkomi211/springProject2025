@@ -227,57 +227,58 @@
                                 {{ userName }}
                             </div>
                         </div>
-                    
-                    <div class="page-container">
-                        <aside class="sidebar">
-                            <h2 class="sidebar-heading"> COMMUNITY ></h2>
-                            <nav class="mypage-menu">
-                                <ul>
-                                    <li @click="moveToBoard">
-                                        <span class="icon">📝</span>
-                                        <a href="/home/community/board.do">게시판</a>
-                                    </li>
-                                    <li @click="moveToCrew">
-                                        <span class="icon">📦</span>
-                                        <a href="/home/community/crew.do">크루 찾기</a>
-                                    </li>
-                                    <li @click="moveToRally" class="active">
-                                        <span class="icon">💬</span>
-                                        <a href="/home/community/rally.do">대회정보</a>
-                                    </li>
-                                    <li @click="moveToChat">
-                                        <span class="icon">👤</span>
-                                        <a href="/home/community/chat.do">채팅방</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </aside>
+
+                        <div class="page-container">
+                            <aside class="sidebar">
+                                <h2 class="sidebar-heading"> COMMUNITY ></h2>
+                                <nav class="mypage-menu">
+                                    <ul>
+                                        <li @click="moveToBoard">
+                                            <span class="icon">📝</span>
+                                            <a href="/home/community/board.do">게시판</a>
+                                        </li>
+                                        <li @click="moveToCrew">
+                                            <span class="icon">📦</span>
+                                            <a href="/home/community/crew.do">크루 찾기</a>
+                                        </li>
+                                        <li @click="moveToRally" class="active">
+                                            <span class="icon">💬</span>
+                                            <a href="/home/community/rally.do">대회정보</a>
+                                        </li>
+                                        <li @click="moveToChat">
+                                            <span class="icon">👤</span>
+                                            <a href="/home/community/chat.do">채팅방</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </aside>
 
 
 
-                        <main class="main-content">
-                            <div class="board-header">
-                                <h1 class="main-title">
-                                    대회 정보
-                                </h1>
+                            <main class="main-content">
+                                <div class="board-header">
+                                    <h1 class="main-title">
+                                        대회 정보
+                                    </h1>
 
-                                <div class="search-bar">
-                                    <div class="search-box">
-                                        <input class="search" type="text" placeholder="검색어를 입력하세요" v-model="keyword" @keyup.enter="fnList">
-                                        <a href="javascript:;" @click="fnBoardList">
-                                            <div><i data-lucide="search" stroke-width="1.5"></i></div>
-                                        </a>
+                                    <div class="search-bar">
+                                        <div class="search-box">
+                                            <input class="search" type="text" placeholder="검색어를 입력하세요" v-model="keyword"
+                                                @keyup.enter="fnList">
+                                            <a href="javascript:;" @click="fnBoardList">
+                                                <div><i data-lucide="search" stroke-width="1.5"></i></div>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <select class="page-size-select" v-model="pageSize" @change="fnList">
-                                <option value="5">5개씩</option>
-                                <option value="10">10개씩</option>
-                                <option value="20">20개씩</option>
-                            </select>
+                                <select class="page-size-select" v-model="pageSize" @change="fnList">
+                                    <option value="5">5개씩</option>
+                                    <option value="10">10개씩</option>
+                                    <option value="20">20개씩</option>
+                                </select>
 
-                                
+
 
                                 <div class="rally-list">
                                     <div class="rally-item" v-for="item in list" :key="item.rallyNo"
@@ -378,8 +379,10 @@
                     pageSize: 10,
                     index: 0,
                     userType: '${userType}',
+
+                    // NEW 배지 관련
                     hasNewRally: false,
-                    lastCheckedRallyNo: null
+                    checkedRallies: [] // 확인한 대회 목록
                 };
             },
             methods: {
@@ -403,6 +406,9 @@
                                 self.cnt = data.cnt;
                                 self.index = Math.ceil(self.cnt / self.pageSize);
 
+                                // 확인한 대회 목록 로드
+                                self.loadCheckedRallies();
+
                                 // NEW 대회 체크
                                 self.checkNewRally();
                             } else {
@@ -412,52 +418,120 @@
                     });
                 },
 
-                // 신규 대회 체크
+                // localStorage에서 확인한 대회 목록 불러오기
+                loadCheckedRallies() {
+                    const self = this;
+                    const storageKey = `checkedRallies_${self.sessionId}`;
+                    const saved = localStorage.getItem(storageKey);
+
+                    if (saved) {
+                        try {
+                            self.checkedRallies = JSON.parse(saved);
+                            console.log("확인한 대회 목록:", self.checkedRallies);
+                        } catch (e) {
+                            self.checkedRallies = [];
+                        }
+                    } else {
+                        self.checkedRallies = [];
+                    }
+                },
+
+                // 확인한 대회 목록 저장
+                saveCheckedRallies() {
+                    const self = this;
+                    const storageKey = `checkedRallies_${self.sessionId}`;
+                    localStorage.setItem(storageKey, JSON.stringify(self.checkedRallies));
+                    console.log("확인한 대회 저장 완료:", self.checkedRallies);
+                },
+
+                // 신규 대회 체크 (24시간 이내 등록 + 확인하지 않은 대회)
                 checkNewRally() {
                     const self = this;
 
-                    // localStorage에서 마지막 확인한 대회 번호 가져오기
-                    const savedRallyNo = localStorage.getItem("lastCheckedRallyNo");
+                    if (self.list.length === 0) {
+                        self.hasNewRally = false;
+                        return;
+                    }
 
-                    if (self.list.length > 0) {
-                        const latestRallyNo = self.list[0].rallyNo;
+                    const now = new Date();
+                    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
-                        console.log("최신 대회번호:", latestRallyNo);
-                        console.log("마지막 확인 대회번호:", savedRallyNo);
+                    // 24시간 이내 등록되고 확인하지 않은 대회가 있는지 체크
+                    const hasNew = self.list.some(rally => {
+                        // cdate가 있는 경우 사용, 없으면 rallyDate 사용
+                        const dateStr = rally.cdate || rally.rallyDate;
 
-                        // 저장된 번호가 없거나, 최신 대회번호가 더 크면 NEW 표시
-                        if (!savedRallyNo || parseInt(latestRallyNo) > parseInt(savedRallyNo)) {
-                            self.hasNewRally = true;
-                            console.log("NEW 배지 표시!");
+                        // 날짜 형식 파싱 (YY/MM/DD 또는 YYYY-MM-DD 형식 지원)
+                        let rallyDate;
+                        if (dateStr && dateStr.includes('/')) {
+                            const parts = dateStr.split('/');
+                            const year = parts[0].length === 2 ? '20' + parts[0] : parts[0];
+                            rallyDate = new Date(year, parseInt(parts[1]) - 1, parseInt(parts[2]));
+                        } else if (dateStr && dateStr.includes('-')) {
+                            rallyDate = new Date(dateStr);
                         } else {
-                            self.hasNewRally = false;
+                            return false;
                         }
-                    }
+
+                        const isRecent = rallyDate > oneDayAgo;
+                        const isNotChecked = !self.checkedRallies.includes(rally.rallyNo);
+
+                        return isRecent && isNotChecked;
+                    });
+
+                    self.hasNewRally = hasNew;
+                    console.log("NEW 배지 표시 여부:", hasNew);
                 },
 
-                // 개별 대회 항목이 신규인지 체크 (사용자가 확인하지 않은 대회)
+                // 개별 대회 항목이 신규인지 체크 (24시간 이내 등록 + 확인하지 않음)
                 isNewRallyItem(rallyNo) {
-                    const savedRallyNo = localStorage.getItem("lastCheckedRallyNo");
+                    const self = this;
 
-                    // 저장된 번호가 없으면 모든 대회가 신규
-                    if (!savedRallyNo) {
-                        return true;
+                    // 이미 확인한 대회면 NEW 표시 안함
+                    if (self.checkedRallies.includes(rallyNo)) {
+                        return false;
                     }
 
-                    // 현재 대회번호가 저장된 번호보다 크면 신규
-                    return parseInt(rallyNo) > parseInt(savedRallyNo);
+                    // 해당 대회 찾기
+                    const rally = self.list.find(r => r.rallyNo === rallyNo);
+                    if (!rally) {
+                        return false;
+                    }
+
+                    // 24시간 이내에 등록되었는지 확인
+                    const now = new Date();
+                    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+                    // cdate가 있는 경우 사용, 없으면 rallyDate 사용
+                    const dateStr = rally.cdate || rally.rallyDate;
+
+                    // 날짜 형식 파싱
+                    let rallyDate;
+                    if (dateStr && dateStr.includes('/')) {
+                        const parts = dateStr.split('/');
+                        const year = parts[0].length === 2 ? '20' + parts[0] : parts[0];
+                        rallyDate = new Date(year, parseInt(parts[1]) - 1, parseInt(parts[2]));
+                    } else if (dateStr && dateStr.includes('-')) {
+                        rallyDate = new Date(dateStr);
+                    } else {
+                        return false;
+                    }
+
+                    return rallyDate > oneDayAgo;
                 },
 
-                // 오늘 등록된 대회인지 확인 (날짜 기준)
-                isNewItem(cdate) {
-                    if (!cdate) return false;
+                // 대회 클릭 시 확인 처리
+                markRallyAsChecked(rallyNo) {
+                    const self = this;
 
-                    const today = new Date();
-                    const todayStr = today.getFullYear().toString().substr(2, 2) + '/' +
-                        String(today.getMonth() + 1).padStart(2, '0') + '/' +
-                        String(today.getDate()).padStart(2, '0');
+                    // 확인한 대회로 표시
+                    if (!self.checkedRallies.includes(rallyNo)) {
+                        self.checkedRallies.push(rallyNo);
+                        self.saveCheckedRallies();
 
-                    return cdate === todayStr;
+                        // NEW 배지 상태 업데이트
+                        self.checkNewRally();
+                    }
                 },
 
                 fnLogout: function () {
@@ -534,44 +608,47 @@
                 },
 
                 moveToBoard: function () {
-                    let self = this;
                     pageChange("/home/community/board.do", {});
                 },
 
                 moveToCrew: function () {
-                    let self = this;
                     pageChange("/home/community/crew.do", {});
                 },
 
+                // 사이드바 대회정보 메뉴 클릭 시 - 모든 대회 확인 처리
                 moveToRally: function () {
                     let self = this;
 
-                    // NEW 배지 클릭 시 확인 처리
-                    if (self.list.length > 0) {
-                        const latestRallyNo = self.list[0].rallyNo;
-                        localStorage.setItem("lastCheckedRallyNo", latestRallyNo);
-                        self.hasNewRally = false;
-                        console.log("대회정보 확인 완료, 저장된 번호:", latestRallyNo);
-                    }
+                    // 현재 표시된 모든 대회를 확인 처리
+                    self.list.forEach(rally => {
+                        if (!self.checkedRallies.includes(rally.rallyNo)) {
+                            self.checkedRallies.push(rally.rallyNo);
+                        }
+                    });
 
-                    pageChange("/home/community/rally.do", {});
+                    self.saveCheckedRallies();
+                    self.hasNewRally = false;
+
+                    // 페이지 이동
+                    if (window.location.pathname === '/home/community/rally.do') {
+                        location.reload();
+                    } else {
+                        pageChange("/home/community/rally.do", {});
+                    }
                 },
 
                 moveToChat: function () {
-                    let self = this;
                     pageChange("/home/community/chat.do", {});
                 },
 
                 // 장바구니 수량을 서버에서 가져오는 함수
                 fetchCartCount() {
-                    // 세션 아이디가 없으면 실행하지 않음
                     if (this.sessionId == '' || this.sessionId == null) return;
 
                     let self = this;
                     $.ajax({
                         url: '/api/cartCount.dox',
                         method: 'GET',
-                        // ★ 서버의 @RequestParam HashMap map으로 전달될 데이터 ★
                         data: {
                             sessionId: self.sessionId
                         },
@@ -579,7 +656,7 @@
                         success: (response) => {
                             console.log("서버 응답 데이터:", response);
                             if (response.result === 'success') {
-                                self.cartCount = response.count; // 서버에서 보낸 count 값을 Vue 변수에 저장
+                                self.cartCount = response.count;
                             }
                         },
                         error: (err) => {
@@ -590,10 +667,9 @@
             },
             mounted() {
                 let self = this;
-                self.fnList(); // 목록 로드 및 NEW 체크
+                self.fnList();
                 self.fnGetUserInfo();
 
-                // 2. 조건문을 잠시 제거하거나, 로그를 찍어 확인합니다.
                 if (self.sessionId && self.sessionId !== '') {
                     console.log("장바구니 수량 조회를 시작합니다.");
                     self.fetchCartCount();
