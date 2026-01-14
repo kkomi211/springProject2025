@@ -129,22 +129,95 @@ body {
             }
             body.adminbody #app > table:nth-of-type(2) th:nth-child(10),
             body.adminbody #app > table:nth-of-type(2) td:nth-child(10) {
-                width: 7%;
+                width: 10%;
+               	min-width: 80px;
             }
 
-            /* 버튼 스타일 유지 */
-            button {
-                background-color: #555;
-                color: white;
-                border: none;
-                padding: 5px 12px;
-                cursor: pointer;
-                border-radius: 4px;
-            }
+			/* 버튼 스타일 - 검색 버튼과 동일한 스타일 */
+			.banner-btn-primary {
+				padding: 10px 20px !important;
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+				color: white !important;
+				border: none !important;
+				border-radius: 8px !important;
+				cursor: pointer !important;
+				font-size: 0.85rem !important;
+				font-weight: 600 !important;
+				transition: all 0.3s ease !important;
+				box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
+				letter-spacing: 0.3px !important;
+				white-space: nowrap !important;
+				min-width: fit-content !important;
+			}
+			
+			.banner-btn-primary:hover {
+				transform: translateY(-2px) !important;
+				box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4) !important;
+			}
+			
+			.banner-btn-primary:active {
+				transform: translateY(0) !important;
+			}
+			
+			.banner-btn-secondary {
+				padding: 10px 24px !important;
+				background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%) !important;
+				color: white !important;
+				border: none !important;
+				border-radius: 8px !important;
+				cursor: pointer !important;
+				font-size: 0.95rem !important;
+				font-weight: 600 !important;
+				transition: all 0.3s ease !important;
+				box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3) !important;
+				letter-spacing: 0.3px !important;
+			}
+			
+			.banner-btn-secondary:hover {
+				transform: translateY(-2px) !important;
+				box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4) !important;
+			}
+			
+			.banner-btn-secondary:active {
+				transform: translateY(0) !important;
+			}
+			
+			.banner-btn-danger {
+				padding: 10px 24px !important;
+				background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+				color: white !important;
+				border: none !important;
+				border-radius: 8px !important;
+				cursor: pointer !important;
+				font-size: 0.95rem !important;
+				font-weight: 600 !important;
+				transition: all 0.3s ease !important;
+				box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3) !important;
+				letter-spacing: 0.3px !important;
+			}
+			
+			.banner-btn-danger:hover {
+				transform: translateY(-2px) !important;
+				box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4) !important;
+			}
+			
+			.banner-btn-danger:active {
+				transform: translateY(0) !important;
+			}
+			
+			/* 기본 버튼 스타일 (기존 호환성 유지) */
+			button:not(.banner-btn-primary):not(.banner-btn-secondary):not(.banner-btn-danger) {
+				background-color: #555;
+				color: white;
+				border: none;
+				padding: 5px 12px;
+				cursor: pointer;
+				border-radius: 4px;
+			}
 
-            button:hover {
-                background-color: #8e44ad;
-            }
+			button:not(.banner-btn-primary):not(.banner-btn-secondary):not(.banner-btn-danger):hover {
+				background-color: #8e44ad;
+			}
 
             /* 반응형 (화면이 좁을 때) */
             @media (max-width: 1200px) {
@@ -296,5 +369,162 @@ body {
                 text-align: center;
                 /* 버튼이 가운데 정렬되도록 */
             }
+			
+			/* 배너 레이아웃 컨테이너 */
+			.banner-layout-container {
+				display: flex;
+				gap: 30px;
+				max-width: 95%;
+				margin: 30px auto;
+				padding: 0 20px;
+			}
+			
+			/* 왼쪽 영역: 메인 슬라이드 배너 관리 & 제품 배너 관리 */
+			.banner-left-section {
+				flex: 0 0 40%;
+				display: flex;
+				flex-direction: column;
+				gap: 40px;
+			}
+			
+			/* 오른쪽 영역: 대회 배너 관리 */
+			.banner-right-section {
+				flex: 1;
+				min-width: 0; /* flexbox에서 텍스트 오버플로우 방지 */
+			}
+			
+			/* 각 배너 섹션 */
+			.banner-section {
+				width: 100%;
+			}
+			
+			/* 배너 헤더: 제목과 버튼을 같은 줄에 배치 */
+			.banner-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 20px;
+			}
+			
+			.banner-section h2 {
+				margin-top: 0;
+				margin-bottom: 0;
+				flex: 1;
+			}
+			
+			.banner-header button {
+				margin-left: 20px;
+			}
+			
+			/* 배너 섹션 내부의 content-wrapper */
+			.banner-section .content-wrapper {
+				padding-top: 0;
+			}
+			
+			/* 배너 섹션 내부의 테이블 */
+			.banner-section table {
+				width: 100% !important;
+				max-width: 100% !important;
+				margin: 0 auto !important;
+			}
+			
+			/* 대회 배너 관리 테이블 헤더 텍스트 줄바꿈 방지 */
+			.banner-right-section table th {
+				white-space: nowrap;
+				padding: 20px 18px !important; /* 왼쪽 테이블과 동일한 높이 */
+				font-size: 1rem !important; /* 왼쪽 테이블과 동일한 크기 */
+			}
+			
+			.banner-right-section table td {
+				padding: 20px 18px !important; /* 왼쪽 테이블과 동일한 높이 */
+				font-size: 0.95rem !important; /* 왼쪽 테이블과 동일한 크기 */
+			}
+			
+			/* 모든 배너 테이블 행 높이 고정 */
+			.banner-section table tbody tr:not([style*="background-color"]) {
+				height: 60px !important;
+				max-height: 60px !important;
+			}
+			
+			/* 모든 배너 테이블 셀 높이 고정 및 텍스트 오버플로우 처리 */
+			.banner-section table td {
+				height: 60px !important; /* 행 높이 고정 */
+				max-height: 60px !important;
+				min-height: 60px !important;
+				overflow: hidden !important;
+				line-height: 1.4 !important;
+				word-break: break-word !important;
+				vertical-align: middle !important;
+				display: table-cell !important; /* 테이블 셀 유지 */
+				position: relative !important;
+				padding: 8px 18px !important; /* 패딩 줄여서 두 줄 공간 확보 */
+			}
+			
+			/* 텍스트가 두 줄을 넘지 않도록 처리 */
+			.banner-section table td {
+				/* line-height 1.4 * 2줄 = 약 44px, 패딩 16px 포함하여 60px */
+				max-height: 60px !important;
+			}
+			
+			/* 수정 모드의 input은 높이 제한 없음 */
+			.banner-section table td input {
+				height: auto !important;
+				max-height: none !important;
+				min-height: auto !important;
+				display: block !important;
+				overflow: visible !important;
+				padding: 10px !important;
+			}
+			
+			/* 이미지 표시 행은 높이 제한 없음 */
+			.banner-section table tr[style*="background-color:#f9f9f9"] td,
+			.banner-section table tr[style*="background-color: #f9f9f9"] td {
+				height: auto !important;
+				max-height: none !important;
+				min-height: auto !important;
+				overflow: visible !important;
+				padding: 20px 18px !important; /* 이미지 행은 원래 패딩 유지 */
+			}
+			
+			/* 테이블 레이아웃 고정 */
+			.banner-section table {
+				table-layout: fixed !important;
+			}
+			
+			/* 텍스트 오버플로우를 위한 추가 처리 - 셀 내부 span 요소에 적용 */
+			.banner-section table td .text-clamp {
+				display: -webkit-box !important;
+				-webkit-line-clamp: 2 !important;
+				-webkit-box-orient: vertical !important;
+				overflow: hidden !important;
+				text-overflow: ellipsis !important;
+				line-height: 1.4 !important;
+				max-height: calc(1.4em * 2) !important;
+				word-break: break-word !important;
+			}
+			
+			/* 클릭 가능한 텍스트도 동일하게 처리 */
+			.banner-section table td[style*="cursor:pointer"] .text-clamp {
+				display: -webkit-box !important;
+				-webkit-line-clamp: 2 !important;
+				-webkit-box-orient: vertical !important;
+				overflow: hidden !important;
+				text-overflow: ellipsis !important;
+			}
+			
+			/* 반응형: 화면이 좁을 때 세로로 배치 */
+			@media (max-width: 1400px) {
+				.banner-layout-container {
+					flex-direction: column;
+				}
+				
+				.banner-left-section {
+					flex: 1;
+				}
+				
+				.banner-right-section {
+					flex: 1;
+				}
+			}
 			
 			
