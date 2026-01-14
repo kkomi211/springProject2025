@@ -41,51 +41,104 @@
                 flex-direction: column;
                 min-height: 100vh;
             }
+
+            /* 모달 스타일 (채팅방 모달과 동일) */
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                /* 반투명 배경 */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 2000;
+                backdrop-filter: blur(3px);
+                /* 배경 블러 효과 */
+            }
+
+            .modal-content {
+                background: white;
+                padding: 30px 40px;
+                border: none;
+                border-radius: 20px;
+                width: 400px;
+                text-align: center;
+                position: relative;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+                animation: fadeIn 0.3s ease;
+            }
+
+            .modal-body {
+                margin-bottom: 30px;
+                font-size: 18px;
+                font-weight: bold;
+                color: #333;
+                line-height: 1.5;
+            }
+
+            .modal-actions {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .btn-modal {
+                padding: 10px 35px;
+                /* 버튼 크기 */
+                border-radius: 30px;
+                /* 둥근 모서리 */
+                font-size: 15px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                /* 부드러운 전환 효과 */
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                /* 그림자 */
+
+                /* ★★★ [기본 상태] 흰색 배경 + 검은 테두리 + 검은 글씨 ★★★ */
+                background-color: #fff;
+                color: #333;
+                border: 2px solid #333;
+            }
+
+            /* ★★★ [마우스 오버 상태] 검은 배경 + 흰 글씨 ★★★ */
+            .btn-modal:hover {
+                background-color: #000;
+                /* 검은색 배경 */
+                color: #fff;
+                /* 흰색 글씨 */
+                border-color: #000;
+                /* 테두리도 검게 */
+                transform: translateY(-2px);
+                /* 살짝 떠오르는 효과 */
+            }
+
+            /* 기존 색상 클래스 무력화 (통일) */
+            .btn-confirm,
+            .btn-cancel {
+                background-color: #fff;
+                color: #333;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
         </style>
     </head>
 
     <body>
         <div id="app">
-            <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-            <!-- <header>
-                <div class="top-header">
-                    <div class="brand-name">
-                        <div><a href="/home.do">RUNNERS' HOUSE</a></div>
-                    </div>
-                    <div id="right-items">
-                        <div>
-                            
-                            <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i
-                                        data-lucide="log-out" stroke-width="1.5"></i></a></div>
-                            
-                            <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a>
-                            </div>
-                            
-                        </div>
-                        <div v-if="sessionId == ''">
-                            <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
-                        </div>
-                        <div v-if="sessionId != '' && userType != 'K'"><a href="/home/mypage/information.do"><i
-                                    data-lucide="user" stroke-width="1.5"></i></a></div>
-                        <div v-else-if="sessionId != '' && userType == 'K'"><a
-                                href="home/mypage/information/change.do"><i data-lucide="user"
-                                    stroke-width="1.5"></i></a></div>
-                        <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart"
-                                    stroke-width="1.5"></i></a></div>
-                    </div>
-                </div>
-                <div class="bottom-header">
-                    <div>
-                        <a href="javascript:;" @click="fnProduct">제품</a>
-                    </div>
-                    <div>
-                        <a href="javascript:;" @click="fnSale">세일</a>
-                    </div>
-                    <div>
-                        <a href="/home/community/board.do">커뮤니티</a>
-                    </div>
-                </div>
-            </header> -->
 
             <%-- 공통 헤더 컴포넌트 --%>
                 <jsp:include page="/WEB-INF/header/header.jsp" />
@@ -387,6 +440,18 @@
                         </div>
 
                     </main>
+                    <div class="modal-overlay" v-if="showCartModal" @click.self="showCartModal = false">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                장바구니에 상품을 담았습니다.<br>
+                                장바구니로 이동하시겠습니까?
+                            </div>
+                            <div class="modal-actions">
+                                <button class="btn-modal btn-cancel" @click="showCartModal = false">계속 쇼핑</button>
+                                <button class="btn-modal btn-confirm" @click="moveToCartPage">장바구니 이동</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <footer>
                     <div class="footer-left">
@@ -465,6 +530,7 @@
                     userName: "",
 
                     userType: '${userType}',
+                    showCartModal: false
                 };
             },
             computed: {
@@ -731,7 +797,7 @@
                         }
                     });
                 },
-                
+
                 fnCategoryProduct(category) {
                     let self = this;
                     pageChange("/home/product.do", { keyword: "", category: category, sessionId: self.sessionId, keyword: "" });
@@ -771,13 +837,8 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data);
-                            if (confirm("장바구니로 이동하시겠습니까?")) {
-                                pageChange("/home/cart.do", { sessionId: self.sessionId });
-                            } else {
-                                self.fnProduct();
-                            }
-
+                            self.showCartModal = true;
+                            self.fetchCartCount();
                         }
                     });
                 },
@@ -858,6 +919,11 @@
                 fnSearch() {
                     let self = this;
                     pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN, keyword: self.keyword });
+                },
+                moveToCartPage() {
+                    let self = this;
+                    self.showCartModal = false; // 모달 닫기
+                    pageChange("/home/cart.do", { sessionId: self.sessionId });
                 },
 
             }, // methods

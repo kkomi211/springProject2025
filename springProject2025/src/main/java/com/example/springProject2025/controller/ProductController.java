@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -285,6 +286,37 @@ public class ProductController {
             res.put("msg", e.getMessage());
             return new Gson().toJson(res);
         }
+    }
+    
+    @RequestMapping(value = "/chat/uploadFile.dox", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> uploadChatFile(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            // 1. 실제 파일이 저장될 경로 (webapp/img/chat 폴더)
+            String path = request.getSession().getServletContext().getRealPath("/img/chat/");
+            
+            File dir = new File(path);
+            if (!dir.exists()) dir.mkdirs(); // 폴더 없으면 생성
+
+            // 2. 파일명 중복 방지 (UUID 사용)
+            String originalFileName = file.getOriginalFilename();
+            String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
+            String newFileName = UUID.randomUUID().toString() + ext;
+
+            // 3. 서버에 파일 저장
+            File targetFile = new File(path + newFileName);
+            file.transferTo(targetFile);
+
+            // 4. 프론트엔드에 저장된 경로 전달
+            map.put("result", "success");
+            map.put("path", "/img/chat/" + newFileName); 
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("result", "fail");
+        }
+        return map;
     }
 
     // 현재 시간을 기준으로 파일 이름 생성
