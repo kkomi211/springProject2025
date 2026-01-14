@@ -165,7 +165,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 | Before(Figma) | After(완성) |
 |------|------|
-|<img width="500" height="200" alt="관리자메인" src="https://github.com/user-attachments/assets/122a3d2e-aba3-41c0-82c1-00ec032c57fb" />|<img width="500" height="200" alt="관리자메인최종" src="https://github.com/user-attachments/assets/c1376fb2-4dc3-4f59-9620-8d3e374160c6" />|
+|<img width="500" height="200" alt="관리자메인" src="https://github.com/user-attachments/assets/122a3d2e-aba3-41c0-82c1-00ec032c57fb" />|<img width="500" height="200" alt="메인대시보드" src="https://github.com/user-attachments/assets/40800fff-adf4-4f4a-9a19-0d0eee69d9cc" />|
 
 <br>
 
@@ -177,7 +177,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 | Before(Figma)| After(완성)|
 |------|------|
-|<img width="500" height="200" alt="관리자베너" src="https://github.com/user-attachments/assets/7ddee7d4-5c16-4106-89cf-064a97ed0f6a" /> |<img width="500" height="200" alt="관리자배너 최종" src="https://github.com/user-attachments/assets/d5a8f1f2-2e8c-43a6-a989-92e05e9dd426" />|
+|<img width="500" height="200" alt="관리자베너" src="https://github.com/user-attachments/assets/7ddee7d4-5c16-4106-89cf-064a97ed0f6a" /> |<img width="500" height="200" alt="배너페이지 수정" src="https://github.com/user-attachments/assets/0cfeea9d-4d8e-4fbd-9f99-e0eb9445be94" />|
 
 <br>
 
@@ -187,7 +187,8 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 | Before(Figma) | After(완성) |
 |------|------|
-|<img width="500" height="200" alt="관리자문의" src="https://github.com/user-attachments/assets/f7d6091b-559f-469c-834f-8059a583a6a1" />|<img width="500" height="200" alt="관리자문의최종" src="https://github.com/user-attachments/assets/a79e1793-141b-4a00-9b96-69e723bdafb3" />|
+|<img width="500" height="200" alt="관리자문의" src="https://github.com/user-attachments/assets/f7d6091b-559f-469c-834f-8059a583a6a1" />|<img width="500" height="200" alt="상품문의내역관리" src="https://github.com/user-attachments/assets/d738d030-9408-4edc-96d9-d9e8499d8a3d" />
+|
 
 <br>
 
@@ -197,7 +198,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 | Before(Figma) | After(완성) |
 |------|------|
-|<img width="500" height="200" alt="관리자교환환불" src="https://github.com/user-attachments/assets/7899ee90-c4be-4f53-abe6-104f14ff2e5e" /> |<img width="500" height="200" alt="관리자교환한불최종" src="https://github.com/user-attachments/assets/374518b6-9bc9-4963-ba3f-983c23d7858c" />|
+|<img width="500" height="200" alt="관리자교환환불" src="https://github.com/user-attachments/assets/7899ee90-c4be-4f53-abe6-104f14ff2e5e" /> |<img width="500" height="200" alt="교환반품관리" src="https://github.com/user-attachments/assets/fe32fbe6-e5ba-4138-ba2d-85878ee34cbe" />|
 
 <br>
 
@@ -207,7 +208,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 | Before(Figma) | After(완성) |
 |------|------|
-|<img width="500" height="200" alt="관리자상품" src="https://github.com/user-attachments/assets/919453bb-6825-477d-8aea-9c43c8138ec6" />|<img width="500" height="200" alt="관리자상품최종" src="https://github.com/user-attachments/assets/51f55bea-91d4-414c-bcfd-7c1c1669e7e3" />|
+|<img width="500" height="200" alt="관리자상품" src="https://github.com/user-attachments/assets/919453bb-6825-477d-8aea-9c43c8138ec6" />|<img width="500" height="200" alt="상품리스트관리" src="https://github.com/user-attachments/assets/36a41142-5f97-4fa9-b2d3-d84256a2d7db" />|
 
 <br>
 
@@ -217,7 +218,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 | Before(Figma) | After(완성) |
 |------|------|
-|<img width="500" height="200" alt="관리자주문내역" src="https://github.com/user-attachments/assets/384303cf-0b89-4528-af6d-75e7396d3e88" /> |<img width="500" height="200" alt="관리자주문내역최종" src="https://github.com/user-attachments/assets/eb6ec4ad-e4e0-45f6-91f7-cd7cdbd2834d" />|
+|<img width="500" height="200" alt="관리자주문내역" src="https://github.com/user-attachments/assets/384303cf-0b89-4528-af6d-75e7396d3e88" /> |<img width="500" height="200" alt="주문내역관리" src="https://github.com/user-attachments/assets/92dd474c-ef51-47b0-8609-6ce2e559c0bf" />|
 
 <br>
 
@@ -227,7 +228,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 | Before(Figma) | After(완성) |
 |------|------|
-|<img width="500" height="200" alt="관리자게시판신고" src="https://github.com/user-attachments/assets/7b57bee7-98e7-46e5-b940-05c30bcf4e32" />|<img width="500" height="200" alt="관리자게시판신고최종" src="https://github.com/user-attachments/assets/7037abac-0299-4e57-996a-a73dc5ada88f" />|
+|<img width="500" height="200" alt="관리자게시판신고" src="https://github.com/user-attachments/assets/7b57bee7-98e7-46e5-b940-05c30bcf4e32" />|<img width="500" height="200" alt="신고관리" src="https://github.com/user-attachments/assets/d486b46a-bd21-4e5f-9ec6-2a5cde8f5b08" />|
 
 <br>
 
@@ -237,7 +238,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 | Before(Figma) | After(완성) |
 |------|------|
-|<img width="500" height="200" alt="관리자회원관리" src="https://github.com/user-attachments/assets/7e171352-1eae-4aa7-bd0a-473a8b2195e5" />|<img width="500" height="200" alt="관리자회원관리최종" src="https://github.com/user-attachments/assets/b81b2f3f-c8e2-49ae-9cd4-ea45dc695709" />|
+|<img width="500" height="200" alt="관리자회원관리" src="https://github.com/user-attachments/assets/7e171352-1eae-4aa7-bd0a-473a8b2195e5" />|<img width="500" height="200" alt="회원관리" src="https://github.com/user-attachments/assets/9b68dcf6-bc4d-449d-b974-ba43c21be4b8" />|
 
 <br>
 
