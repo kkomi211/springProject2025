@@ -107,4 +107,13 @@ public class Admin {
 	private String reporterName; // 조회를 위한 USERS 테이블의 신고자 이름
 	private String boardAuthorName; // 조회를 위한 USERS 테이블의 게시글 작성자 이름
 	
+	// ADMIN_ACTIVITY_LOG 테이블
+	private int logNo;
+	private String adminId;
+	private String actionType; // 'ORDER_UPDATE', 'INQUIRY_ANSWER', 'BOARD_DELETE', 'USER_DELETE', 'BANNER_UPDATE' 등
+	private String actionDescription; // 상세 설명
+	private String targetId; // 대상 ID (주문번호, 문의번호, 게시물번호 등)
+	private String targetType; // 대상 타입 ('ORDER', 'INQUIRY', 'BOARD', 'USER' 등)
+	private String ipAddress;
+	
 }

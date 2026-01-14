@@ -234,4 +234,15 @@ public interface AdminMapper {
     
     // 전년 연간 매출 (배송완료, 교환완료)
     Long selectPreviousYearAnnualSales();
+    
+    // --- 관리자 활동 로그 관련 ---
+    
+    // 활동 로그 기록
+    int insertAdminActivityLog(HashMap<String, Object> map);
+    
+    // 활동 로그 목록 조회
+    List<Admin> selectAdminActivityLogList(HashMap<String, Object> map);
+    
+    // 활동 로그 총 개수 조회
+    int selectAdminActivityLogCount(HashMap<String, Object> map);
 }

@@ -1042,5 +1042,52 @@ public class AdminService {
 			// TODO Auto-generated method stub
 			int cnt = adminMapper.insertRallyImg(map);
 		}
+		
+		// 관리자 활동 로그 기록
+		public void logAdminActivity(HashMap<String, Object> map) {
+			try {
+				adminMapper.insertAdminActivityLog(map);
+			} catch (Exception e) {
+				System.err.println("활동 로그 기록 중 오류: " + e.getMessage());
+				// 로그 기록 실패해도 메인 작업은 계속 진행
+			}
+		}
+		
+		// 관리자 활동 로그 목록 조회
+		public HashMap<String, Object> getAdminActivityLogList(HashMap<String, Object> map) {
+			HashMap<String, Object> resultMap = new HashMap<String, Object>();
+			try {
+				int totalItems = adminMapper.selectAdminActivityLogCount(map);
+				
+				int pageSize = 10;
+				int currentPage = 1;
+				
+				if (map.get("pageSize") != null && !map.get("pageSize").equals("")) {
+					pageSize = Integer.parseInt(map.get("pageSize").toString());
+				}
+				
+				if (map.get("currentPage") != null && !map.get("currentPage").equals("")) {
+					currentPage = Integer.parseInt(map.get("currentPage").toString());
+				}
+				
+				int totalPages = (int) Math.ceil((double) totalItems / pageSize);
+				int startIndex = (currentPage - 1) * pageSize;
+				
+				map.put("startIndex", startIndex);
+				map.put("pageSize", pageSize);
+				
+				List<Admin> list = adminMapper.selectAdminActivityLogList(map);
+				
+				resultMap.put("list", list);
+				resultMap.put("totalItems", totalItems);
+				resultMap.put("totalPages", totalPages);
+				resultMap.put("currentPage", currentPage);
+				resultMap.put("result", "success");
+			} catch (Exception e) {
+				resultMap.put("result", "fail");
+				System.err.println("활동 로그 조회 중 오류: " + e.getMessage());
+			}
+		return resultMap;
+	}
 
 }

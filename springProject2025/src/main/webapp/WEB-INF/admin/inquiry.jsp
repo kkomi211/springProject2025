@@ -21,8 +21,10 @@
             <!-- 상단 검은색 바 -->
             <div class="topbar">
                 <div><strong>관리자 메인화면</strong></div>
-                <div>관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
-                        @click="fnLogout">로그오프</a></div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="line-height: 1.2;">관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
+                            @click="fnLogout">로그오프</a></div>
+                </div>
             </div>
 
             <!-- 메뉴 바 (검은색) -->
@@ -35,6 +37,7 @@
                 <a href="/admin/orders.do">주문 내역</a>
                 <a href="/admin/board-report.do">게시판 신고 리스트</a>
                 <a href="/admin/user-list.do">회원 관리 화면</a>
+                <a href="/admin/activity-log.do">활동 로그</a>
             </div>
 
             <!-- 본문 -->
@@ -90,27 +93,9 @@
                         <div class="loading-text">데이터를 불러오는 중...</div>
                     </div>
                     
-                    <!-- 일괄 처리 버튼 -->
-                    <div v-if="!loading && list.length > 0" style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
-                        <button @click="selectAll" style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                            전체 선택
-                        </button>
-                        <button @click="deselectAll" style="padding: 8px 15px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                            전체 해제
-                        </button>
-                        <button @click="batchAnswer" :disabled="selectedInquiries.length === 0" 
-                            style="padding: 8px 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;"
-                            :style="{'opacity': selectedInquiries.length === 0 ? 0.5 : 1, 'cursor': selectedInquiries.length === 0 ? 'not-allowed' : 'pointer'}">
-                            선택 항목 일괄 답변 ({{ selectedInquiries.length }})
-                        </button>
-                    </div>
-
                     <!-- 테이블 -->
                     <table id="inquiry-list-table" v-if="!loading && list.length > 0">
                         <tr>
-                            <th style="width: 50px;">
-                                <input type="checkbox" @change="toggleSelectAll" :checked="isAllSelected">
-                            </th>
                             <th class="sortable-header" @click="sortTable('inquiryNo')" :class="{'sort-asc': sortColumn === 'inquiryNo' && sortDirection === 'asc', 'sort-desc': sortColumn === 'inquiryNo' && sortDirection === 'desc'}">문의번호</th>
                             <th class="sortable-header" @click="sortTable('productName')" :class="{'sort-asc': sortColumn === 'productName' && sortDirection === 'asc', 'sort-desc': sortColumn === 'productName' && sortDirection === 'desc'}">상품명</th>
                             <th class="sortable-header" @click="sortTable('title')" :class="{'sort-asc': sortColumn === 'title' && sortDirection === 'asc', 'sort-desc': sortColumn === 'title' && sortDirection === 'desc'}">문의제목</th>
@@ -120,10 +105,6 @@
                             <th class="sortable-header" @click="sortTable('status')" :class="{'sort-asc': sortColumn === 'status' && sortDirection === 'asc', 'sort-desc': sortColumn === 'status' && sortDirection === 'desc'}">상태</th>
                         </tr>
                         <tr v-for="item in sortedList" :key="item.inquiryNo">
-                            <td>
-                                <input type="checkbox" :value="item.inquiryNo" v-model="selectedInquiries" 
-                                    v-if="item.status === 'N'">
-                            </td>
                             <td>{{item.inquiryNo}}</td>
                             <td>{{item.productName}}</td>
                             <td>
@@ -167,6 +148,71 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- 문의 상세보기 모달 -->
+            <div v-if="showInquiryModal" class="modal-overlay" @click.self="closeInquiryModal">
+                <div class="modal-content inquiry-modal">
+                    <div class="modal-header">
+                        <h3>상품 문의내역 상세</h3>
+                        <button @click="closeInquiryModal" class="modal-close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body" v-if="inquiryDetail">
+                        <table class="detail-table">
+                            <tr>
+                                <th>문의번호</th>
+                                <td>{{inquiryDetail.inquiryNo}}</td>
+                            </tr>
+                            <tr>
+                                <th>상품명</th>
+                                <td>{{inquiryDetail.productName}}</td>
+                            </tr>
+                            <tr>
+                                <th>고객명</th>
+                                <td>{{inquiryDetail.name}}</td>
+                            </tr>
+                            <tr>
+                                <th>상태</th>
+                                <td>
+                                    <span v-if="inquiryDetail.status === 'N'" class="status-waiting">답변 대기</span>
+                                    <span v-else-if="inquiryDetail.status === 'Y'" class="status-completed">답변 완료</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>작성자</th>
+                                <td>{{inquiryDetail.userId}}</td>
+                            </tr>
+                            <tr>
+                                <th>제목</th>
+                                <td>{{inquiryDetail.title}}</td>
+                            </tr>
+                            <tr>
+                                <th>내용</th>
+                                <td v-html="inquiryDetail.content"></td>
+                            </tr>
+                        </table>
+                        <table class="detail-table">
+                            <tr>
+                                <th>관리자 답변</th>
+                                <td>
+                                    <!-- inquiryDetail.status가 'N'일 때만 답변 입력 필드와 버튼 표시 -->
+                                    <div v-if="inquiryDetail.status === 'N'">
+                                        <textarea v-model="newAnswer" rows="5" cols="50" placeholder="답변을 입력하세요" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"></textarea>
+                                    </div>
+                                    <!-- inquiryDetail.status가 'Y'일 때는 기존 답변 내용만 표시 -->
+                                    <div v-else>
+                                        {{inquiryDetail.answer}}
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <!-- 상태가 'N'일 때만 답변 등록 버튼 표시 -->
+                        <button v-if="inquiryDetail && inquiryDetail.status === 'N'" @click="fnRegisterAnswer" class="btn-register-answer">답변 등록</button>
+                        <button @click="closeInquiryModal" class="btn-back">닫기</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 
@@ -190,7 +236,10 @@
                     currentPage: 1, // 현재 페이지
                     totalItems: 0,  // 전체 아이템 수
                     totalPages: 1,   // 전체 페이지 수
-                    selectedInquiries: [] // 선택된 문의 번호 리스트
+                    showInquiryModal: false, // 모달 표시 여부
+                    inquiryDetail: null, // 문의 상세 정보
+                    newAnswer: "", // 새 답변을 저장할 변수
+                    // 알림 관련
                 };
             },
             computed: {
@@ -238,12 +287,6 @@
                     });
                     
                     return sorted;
-                },
-                // 전체 선택 여부
-                isAllSelected() {
-                    const unansweredList = this.list.filter(item => item.status === 'N');
-                    return unansweredList.length > 0 && unansweredList.every(item => 
-                        this.selectedInquiries.includes(item.inquiryNo));
                 }
             },
             methods: {
@@ -323,7 +366,70 @@
                     this.fnInquiryList(page);
                 },
                 fnInquiryView: function (inquiryNo) {
-                    pageChange("/admin/inquiry/view.do", { inquiryNo: inquiryNo });
+                    let self = this;
+                    self.showInquiryModal = true;
+                    self.newAnswer = "";
+                    
+                    let param = {
+                        inquiryNo: inquiryNo
+                    };
+                    $.ajax({
+                        url: "/admin/inquiry/view.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            self.inquiryDetail = data.info;
+                        },
+                        error: function() {
+                            alert("문의 상세 정보를 불러오는 중 오류가 발생했습니다.");
+                            self.closeInquiryModal();
+                        }
+                    });
+                },
+                closeInquiryModal: function() {
+                    this.showInquiryModal = false;
+                    this.inquiryDetail = null;
+                    this.newAnswer = "";
+                },
+                fnRegisterAnswer: function() {
+                    let self = this;
+                    if (!self.inquiryDetail) return;
+                    
+                    // 답변 내용이 비어있는지 확인
+                    if (!self.newAnswer.trim()) {
+                        alert("답변 내용을 입력해주세요.");
+                        return;
+                    }
+
+                    let param = {
+                        inquiryNo: self.inquiryDetail.inquiryNo,
+                        answer: self.newAnswer,
+                        status: 'Y' // 답변 등록 시 상태를 'Y'로 변경
+                    };
+
+                    $.ajax({
+                        url: "/admin/inquiry/registerAnswer.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result === "success") {
+                                alert("답변이 성공적으로 등록되었습니다.");
+                                // 답변 등록 후 최신 정보로 갱신
+                                self.fnInquiryView(self.inquiryDetail.inquiryNo);
+                                // 리스트 새로고침
+                                self.fnInquiryList(self.currentPage);
+                            } else {
+                                alert("답변 등록에 실패했습니다.");
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("답변 등록 실패:", status, error);
+                            alert("답변 등록 중 오류가 발생했습니다.");
+                        }
+                    });
                 },
                 downloadExcel: function() {
                     let self = this;
@@ -335,60 +441,10 @@
                     
                     window.location.href = '/admin/inquiry/excel.dox?' + params.toString();
                 },
-                selectAll: function() {
-                    const unansweredList = this.list.filter(item => item.status === 'N');
-                    this.selectedInquiries = unansweredList.map(item => item.inquiryNo);
-                },
-                deselectAll: function() {
-                    this.selectedInquiries = [];
-                },
-                toggleSelectAll: function(event) {
-                    if (event.target.checked) {
-                        this.selectAll();
-                    } else {
-                        this.deselectAll();
-                    }
-                },
-                batchAnswer: function() {
-                    let self = this;
-                    if (self.selectedInquiries.length === 0) {
-                        alert("선택된 문의가 없습니다.");
-                        return;
-                    }
-                    
-                    let answer = prompt("일괄 답변 내용을 입력하세요:");
-                    if (!answer || answer.trim() === "") {
-                        alert("답변 내용을 입력해주세요.");
-                        return;
-                    }
-                    
-                    if (!confirm(self.selectedInquiries.length + "개의 문의에 동일한 답변을 등록하시겠습니까?")) {
-                        return;
-                    }
-                    
-                    let param = {
-                        inquiryNos: self.selectedInquiries.join(','),
-                        answer: answer
-                    };
-                    
-                    $.ajax({
-                        url: "/admin/inquiry/batchAnswer.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-                            if (data.result === "success") {
-                                alert("일괄 답변이 완료되었습니다.");
-                                self.selectedInquiries = [];
-                                self.fnInquiryList(self.currentPage);
-                            } else {
-                                alert("일괄 답변 처리 중 오류가 발생했습니다: " + (data.message || ""));
-                            }
-                        },
-                        error: function() {
-                            alert("일괄 답변 처리 중 오류가 발생했습니다.");
-                        }
-                    });
+                // 실시간 알림 개수 가져오기
+                // 페이지 이동
+                goToPage: function(url) {
+                    window.location.href = url;
                 }
             }, // methods
             mounted() {
