@@ -525,7 +525,7 @@
 
                     // NEW 배지 관련
                     hasNewChatroom: false,
-                    lastCheckedChatroomNo: null
+                    checkedChatrooms: [] // 확인한 채팅방 목록
                 };
             },
             methods: {
@@ -564,82 +564,130 @@
                             console.log(data);
                             self.chatList = data.chatlist;
 
+                            // 확인한 채팅방 목록 로드
+                            self.loadCheckedChatrooms();
+
                             // NEW 채팅방 체크
                             self.checkNewChatroom();
                         }
                     });
                 },
 
-                // 신규 채팅방 체크
+                // localStorage에서 확인한 채팅방 목록 불러오기
+                loadCheckedChatrooms() {
+                    const self = this;
+                    const storageKey = `checkedChatrooms_${self.sessionId}`;
+                    const saved = localStorage.getItem(storageKey);
+
+                    if (saved) {
+                        try {
+                            self.checkedChatrooms = JSON.parse(saved);
+                            console.log("확인한 채팅방 목록:", self.checkedChatrooms);
+                        } catch (e) {
+                            self.checkedChatrooms = [];
+                        }
+                    } else {
+                        self.checkedChatrooms = [];
+                    }
+                },
+
+                // 확인한 채팅방 목록 저장
+                saveCheckedChatrooms() {
+                    const self = this;
+                    const storageKey = `checkedChatrooms_${self.sessionId}`;
+                    localStorage.setItem(storageKey, JSON.stringify(self.checkedChatrooms));
+                    console.log("확인한 채팅방 저장 완료:", self.checkedChatrooms);
+                },
+
+                // 신규 채팅방 체크 (24시간 이내 생성 + 확인하지 않은 채팅방)
                 checkNewChatroom() {
                     const self = this;
 
-                    // localStorage에서 마지막 확인한 채팅방 번호 가져오기
-                    const savedChatroomNo = localStorage.getItem(`lastCheckedChatroomNo_${self.sessionId}`);
-
-                    if (self.chatList.length > 0) {
-                        const latestChatroomNo = self.chatList[0].chatroomNo;
-
-                        console.log("최신 채팅방 번호:", latestChatroomNo);
-                        console.log("마지막 확인 채팅방 번호:", savedChatroomNo);
-
-                        // 저장된 번호가 없거나, 최신 채팅방 번호가 더 크면 NEW 표시
-                        if (!savedChatroomNo || parseInt(latestChatroomNo) > parseInt(savedChatroomNo)) {
-                            self.hasNewChatroom = true;
-                            console.log("NEW 배지 표시!");
-                        } else {
-                            self.hasNewChatroom = false;
-                        }
-                    } else {
+                    if (self.chatList.length === 0) {
                         self.hasNewChatroom = false;
+                        return;
                     }
+
+                    const now = new Date();
+                    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+                    // 24시간 이내 생성되고 확인하지 않은 채팅방이 있는지 체크
+                    const hasNew = self.chatList.some(chat => {
+                        const chatDate = new Date(chat.cdate);
+                        const isRecent = chatDate > oneDayAgo;
+                        const isNotChecked = !self.checkedChatrooms.includes(chat.chatroomNo);
+
+                        return isRecent && isNotChecked;
+                    });
+
+                    self.hasNewChatroom = hasNew;
+                    console.log("NEW 배지 표시 여부:", hasNew);
                 },
 
-                // 개별 채팅방이 신규인지 체크 (사용자가 확인하지 않은 채팅방)
+                // 개별 채팅방이 신규인지 체크 (24시간 이내 생성 + 확인하지 않음)
                 isNewChatroom(chatroomNo) {
                     const self = this;
-                    const savedChatroomNo = localStorage.getItem(`lastCheckedChatroomNo_${self.sessionId}`);
 
-                    // 저장된 번호가 없으면 모든 채팅방이 신규
-                    if (!savedChatroomNo) {
-                        return true;
+                    // 이미 확인한 채팅방이면 NEW 표시 안함
+                    if (self.checkedChatrooms.includes(chatroomNo)) {
+                        return false;
                     }
 
-                    // 현재 채팅방 번호가 저장된 번호보다 크면 신규
-                    return parseInt(chatroomNo) > parseInt(savedChatroomNo);
-                },
-
-                // 채팅방 확인 처리 (NEW 배지 업데이트)
-                updateLastCheckedChatroom(chatroomNo) {
-                    let self = this;
-                    const savedChatroomNo = localStorage.getItem(`lastCheckedChatroomNo_${self.sessionId}`);
-
-                    // 현재 클릭한 채팅방이 저장된 번호보다 크면 업데이트
-                    if (!savedChatroomNo || parseInt(chatroomNo) > parseInt(savedChatroomNo)) {
-                        localStorage.setItem(`lastCheckedChatroomNo_${self.sessionId}`, chatroomNo);
-                        console.log("채팅방 확인 완료, 저장된 번호:", chatroomNo);
+                    // 해당 채팅방 찾기
+                    const chatroom = self.chatList.find(chat => chat.chatroomNo === chatroomNo);
+                    if (!chatroom) {
+                        return false;
                     }
+
+                    // 24시간 이내에 생성되었는지 확인
+                    const now = new Date();
+                    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+                    const chatDate = new Date(chatroom.cdate);
+
+                    return chatDate > oneDayAgo;
                 },
 
-                // 최신 채팅방까지 모두 확인 처리
-                markAllChatroomsAsChecked() {
-                    let self = this;
-                    if (self.chatList.length > 0) {
-                        const latestChatroomNo = self.chatList[0].chatroomNo;
-                        localStorage.setItem(`lastCheckedChatroomNo_${self.sessionId}`, latestChatroomNo);
-                        self.hasNewChatroom = false;
-                        console.log("모든 채팅방 확인 완료, 저장된 번호:", latestChatroomNo);
-                    }
-                },
-
+                // 채팅방 클릭 시 확인 처리
                 fnShowChat(chatroomNo) {
                     let self = this;
 
-                    // 채팅방 확인 처리
-                    self.updateLastCheckedChatroom(chatroomNo);
+                    // 확인한 채팅방으로 표시
+                    if (!self.checkedChatrooms.includes(chatroomNo)) {
+                        self.checkedChatrooms.push(chatroomNo);
+                        self.saveCheckedChatrooms();
 
-                    pageChange("/home/community/chat/show.do", { sessionId: self.sessionId, chatroomNo: chatroomNo });
+                        // NEW 배지 상태 업데이트
+                        self.checkNewChatroom();
+                    }
+
+                    pageChange("/home/community/chat/show.do", {
+                        sessionId: self.sessionId,
+                        chatroomNo: chatroomNo
+                    });
                 },
+
+                // 사이드바 채팅방 메뉴 클릭 시 - 모든 채팅방 확인 처리
+                moveToChat: function () {
+                    let self = this;
+
+                    // 현재 표시된 모든 채팅방을 확인 처리
+                    self.chatList.forEach(chat => {
+                        if (!self.checkedChatrooms.includes(chat.chatroomNo)) {
+                            self.checkedChatrooms.push(chat.chatroomNo);
+                        }
+                    });
+
+                    self.saveCheckedChatrooms();
+                    self.hasNewChatroom = false;
+
+                    // 페이지 이동
+                    if (window.location.pathname === '/home/community/chat.do') {
+                        location.reload();
+                    } else {
+                        pageChange("/home/community/chat.do", {});
+                    }
+                },
+
                 fnCheckLogin() {
                     let self = this;
                     if (self.sessionId == "") {
@@ -680,31 +728,15 @@
                 moveToRally: function () {
                     pageChange("/home/community/rally.do", {});
                 },
-                // 카테고리 클릭 시 - 최신 채팅방까지 확인 처리
-                moveToChat: function () {
-                    let self = this;
-
-                    // 카테고리 클릭 시 모든 채팅방 확인 처리
-                    self.markAllChatroomsAsChecked();
-
-                    // 페이지 이동 (이미 chat.do에 있으면 새로고침)
-                    if (window.location.pathname === '/home/community/chat.do') {
-                        location.reload();
-                    } else {
-                        pageChange("/home/community/chat.do", {});
-                    }
-                },
 
                 // 장바구니 수량을 서버에서 가져오는 함수
                 fetchCartCount() {
-                    // 세션 아이디가 없으면 실행하지 않음
                     if (this.sessionId == '' || this.sessionId == null) return;
 
                     let self = this;
                     $.ajax({
                         url: '/api/cartCount.dox',
                         method: 'GET',
-                        // ★ 서버의 @RequestParam HashMap map으로 전달될 데이터 ★
                         data: {
                             sessionId: self.sessionId
                         },
@@ -712,7 +744,7 @@
                         success: (response) => {
                             console.log("서버 응답 데이터:", response);
                             if (response.result === 'success') {
-                                self.cartCount = response.count; // 서버에서 보낸 count 값을 Vue 변수에 저장
+                                self.cartCount = response.count;
                             }
                         },
                         error: (err) => {
@@ -728,14 +760,12 @@
                 self.fnGetUserInfo();
                 self.fnGetUserChatList();
 
-                // 2. 조건문을 잠시 제거하거나, 로그를 찍어 확인합니다.
                 if (self.sessionId && self.sessionId !== '') {
                     console.log("장바구니 수량 조회를 시작합니다.");
                     self.fetchCartCount();
                 } else {
                     console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                 }
-
             }
         });
 
