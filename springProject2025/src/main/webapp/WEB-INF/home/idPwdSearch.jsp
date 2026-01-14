@@ -229,11 +229,11 @@
                     authFlag: false,
 
                     ranStr: "", // 문자 인증 번호 
-<<<<<<< HEAD
+
                     inputNum: "111",
-=======
+
                     inputNum: "",
->>>>>>> branch 'main' of https://github.com/kkomi211/springProject2025.git
+
                     timer: "",
                     count: 180,
 
