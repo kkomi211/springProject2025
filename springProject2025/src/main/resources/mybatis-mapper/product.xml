@@ -328,7 +328,7 @@
 		INSERT INTO PRODUCT_INQUIRY
 		VALUES (PRODUCT_INQUIRY_SEQ.NEXTVAL, #{productNo}, #{title}, #{content}, #{userId}, SYSDATE, SYSDATE, #{pwd}, 'N', NULL, NULL)
 	</insert>
-	
+		
 	<select id="selectSizeAndQuantity" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
 		SELECT
 		  PRODUCT_NO,

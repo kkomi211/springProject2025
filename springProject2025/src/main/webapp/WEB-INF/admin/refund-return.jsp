@@ -21,9 +21,12 @@
             <!-- 상단 검은색 바 -->
             <div class="topbar">
                 <div><strong>관리자 메인화면</strong></div>
-                <div>관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
-                        @click="fnLogout">로그오프</a></div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="line-height: 1.2;">관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
+                            @click="fnLogout">로그오프</a></div>
+                </div>
             </div>
+            
             <!-- 메뉴 바 (검은색) -->
             <div class="nav-black">
                 <a href="/admin.do">MAIN</a>
@@ -34,6 +37,7 @@
                 <a href="/admin/orders.do">주문 내역</a>
                 <a href="/admin/board-report.do">게시판 신고 리스트</a>
                 <a href="/admin/user-list.do">회원 관리 화면</a>
+                <a href="/admin/activity-log.do">활동 로그</a>
             </div>
             <!-- 본문 -->
             <div class="content">
@@ -149,11 +153,12 @@
             </div>
 
             <!-- 모달 -->
-            <div id="refundReturnModal" class="modal" v-if="showModal">
-                <div class="modal-content">
-                    <span class="close-button" @click="closeModal()">&times;</span>
-                    <h3 class="modal-title">{{ modalTitle }}</h3>
-
+            <div id="refundReturnModal" class="modal-overlay" v-if="showModal" @click.self="closeModal()">
+                <div class="modal-content inquiry-modal">
+                    <div class="modal-header">
+                        <h3>{{ modalTitle }}</h3>
+                        <button @click="closeModal()" class="modal-close-btn">&times;</button>
+                    </div>
                     <div class="modal-body">
                         <div class="modal-section-title">주문 정보</div>
                         <p class="modal-info-item"><strong>주문번호:</strong> {{ selectedOrder.orderNo }}</p>
@@ -204,12 +209,11 @@
                                     style="color:red; font-size:0.8rem;">재고가 부족합니다.</p>
                             </div>
                         </div>
-
-                        <div class="btn-group">
-                            <button class="btn-cancel" @click="closeModal()">취소</button>
-                            <button class="btn-process" @click="processStatusChange()">{{ processButtonText }}</button>
-                            <button class="btn-process" @click="processStatusChange2()" v-if="productOptions == 0">반품 처리</button>
-                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-back" @click="closeModal()">취소</button>
+                        <button class="btn-register-answer" @click="processStatusChange()">{{ processButtonText }}</button>
+                        <button class="btn-register-answer" @click="processStatusChange2()" v-if="productOptions == 0">반품 처리</button>
                     </div>
                 </div>
             </div>

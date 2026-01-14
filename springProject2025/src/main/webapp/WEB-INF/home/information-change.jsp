@@ -310,13 +310,6 @@
                                     {{ info.name }}
                                 </div>
                             </div>
-<<<<<<< HEAD
-=======
-                            <div class="header-user">
-                                {{ info.name }}
-                            </div>
-                        </div>
->>>>>>> branch 'main' of https://github.com/kkomi211/springProject2025.git
 
                             <div class="page-container">
                                 <aside class="sidebar">
@@ -584,7 +577,7 @@
                     count: 180,
                     interval: null,
 
-
+                    cartCount: 0, // 장바구니 수량 변수 추가
                 };
             },
             methods: {
@@ -1079,16 +1072,16 @@
                 } else {
                     self.isLoggedIn = true;
                 }
+
+                // 장바구니 수량 조회
+                if (self.sessionId && self.sessionId !== '') {
+                    console.log("장바구니 수량 조회를 시작합니다.");
+                    self.fetchCartCount();
+                } else {
+                    console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
+                }
             }
         });
-
-        // 2. 조건문을 잠시 제거하거나, 로그를 찍어 확인합니다.
-        if (self.sessionId && self.sessionId !== '') {
-            console.log("장바구니 수량 조회를 시작합니다.");
-            self.fetchCartCount();
-        } else {
-            console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
-        }
 
         app.mount('#app');
     </script>

@@ -333,7 +333,7 @@
 
 
             <div class="container">
-                <%-- 공통 헤더 컴포넌트 (jgh260114) --%>
+                <%-- 공통 헤더 컴포넌트 --%>
                 <jsp:include page="/WEB-INF/header/header.jsp" />
 
 
@@ -547,29 +547,10 @@
                     reasonModalVisible: false,
                     missingReasons: [], // [{ orderNo: 'xxx' }, ...]
                     userType: '${userType}',
-                    cartCount: 0, // 장바구니 수량 변수 추가 (jgh260114)
+                    cartCount: 0, // 장바구니 수량 변수 추가
                 };
             },
             methods: {
-                // 장바구니 수량을 서버에서 가져오는 함수 (jgh260114)
-                fetchCartCount() {
-                    if (this.sessionId == '' || this.sessionId == null) return;
-                    let self = this;
-                    $.ajax({
-                        url: '/api/cartCount.dox', 
-                        method: 'GET',
-                        data: { sessionId: self.sessionId }, 
-                        dataType: 'json',
-                        success: (response) => {
-                            if (response.result === 'success') {
-                                self.cartCount = response.count;
-                            }
-                        },
-                        error: (err) => {
-                            console.error("AJAX 호출 중 오류 발생:", err);
-                        }
-                    });
-                },
                 formatCurrency: function (value) {
                     if (!value) return '0';
                     const numValue = typeof value === 'string' ? parseInt(value) : value;
@@ -869,14 +850,42 @@
 
                     pageChange("/home/community/chat.do", {});
                 },
+                // 장바구니 수량을 서버에서 가져오는 함수
+                fetchCartCount() {
+                    // 세션 아이디가 없으면 실행하지 않음
+                    if (this.sessionId == '' || this.sessionId == null) return;
+
+                    let self = this;
+                    $.ajax({
+                        url: '/api/cartCount.dox',
+                        method: 'GET',
+                        data: {
+                            sessionId: self.sessionId
+                        },
+                        dataType: 'json',
+                        success: (response) => {
+                            console.log("서버 응답 데이터:", response);
+                            if (response.result === 'success') {
+                                self.cartCount = response.count; // 서버에서 보낸 count 값을 Vue 변수에 저장
+                            }
+                        },
+                        error: (err) => {
+                            console.error("AJAX 호출 중 오류 발생:", err);
+                        }
+                    });
+                },
             }, // methods
             mounted() {
                 let self = this;
                 self.fnList(); // 실제 데이터 조회 시작
                 self.fnGetUserInfo(); // 사용자 정보 조회
-                // 장바구니 수량 조회 (jgh260114)
+
+                // 장바구니 수량 조회
                 if (self.sessionId && self.sessionId !== '') {
+                    console.log("장바구니 수량 조회를 시작합니다.");
                     self.fetchCartCount();
+                } else {
+                    console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                 }
             }
         });

@@ -21,9 +21,12 @@
             <!-- 상단 검은색 바 -->
             <div class="topbar">
                 <div><strong>관리자 메인화면</strong></div>
-                <div>관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
-                        @click="fnLogout">로그오프</a></div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="line-height: 1.2;">관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
+                            @click="fnLogout">로그오프</a></div>
+                </div>
             </div>
+            
             <!-- 메뉴 바 (검은색) -->
             <div class="nav-black">
                 <a href="/admin.do">MAIN</a>
@@ -34,6 +37,7 @@
                 <a href="/admin/orders.do">주문 내역</a>
                 <a href="/admin/board-report.do" class="active">게시판 신고 리스트</a>
                 <a href="/admin/user-list.do">회원 관리 화면</a>
+                <a href="/admin/activity-log.do">활동 로그</a>
             </div>
             <!-- 본문 -->
             <div class="content">
@@ -140,6 +144,100 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- 신고 게시물 상세보기 모달 -->
+            <div v-if="showDetailModal" class="modal-overlay" @click.self="closeDetailModal">
+                <div class="modal-content inquiry-modal">
+                    <div class="modal-header">
+                        <h3>신고 게시물 상세보기 및 처리</h3>
+                        <button @click="closeDetailModal" class="modal-close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body" v-if="reportDetail">
+                        <table class="detail-table">
+                            <tr>
+                                <th>신고식별번호</th>
+                                <td>{{reportDetail.reportBoardNo}}</td>
+                            </tr>
+                            <tr>
+                                <th>게시물 번호</th>
+                                <td>{{reportDetail.reportedBoardNo}}</td>
+                            </tr>
+                            <tr>
+                                <th>게시판 유형</th>
+                                <td>{{getBoardType(reportDetail.boardType)}}</td>
+                            </tr>
+                            <tr>
+                                <th>게시글 제목</th>
+                                <td>{{reportDetail.boardTitle}}</td>
+                            </tr>
+                            <tr>
+                                <th>게시글 작성자</th>
+                                <td>{{reportDetail.boardUserId}} ({{reportDetail.boardAuthorName}})</td>
+                            </tr>
+                            <tr>
+                                <th>신고자</th>
+                                <td>{{reportDetail.reporterId}} ({{reportDetail.reporterName}})</td>
+                            </tr>
+                            <tr>
+                                <th>신고 날짜</th>
+                                <td>{{reportDetail.cDate}}</td>
+                            </tr>
+                            <tr>
+                                <th>처리 상태</th>
+                                <td>
+                                    <span :class="{'status-button': true, 'n': reportDetail.reportStatus === 'N', 'y': reportDetail.reportStatus === 'Y'}">
+                                        {{reportDetail.reportStatus === 'N' ? '처리요망' : '처리완료'}}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>게시글 내용</th>
+                                <td>
+                                    <div class="detail-content" v-html="reportDetail.boardContent"></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer" v-if="reportDetail">
+                        <button @click="fnDeleteBoard" class="btn-register-answer" :disabled="reportDetail.reportStatus === 'Y'">삭제</button>
+                        <button @click="fnProcessReport" class="btn-register-answer" :disabled="reportDetail.reportStatus === 'Y'">처리</button>
+                        <button @click="closeDetailModal" class="btn-back">닫기</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 알림 모달 -->
+            <div v-if="showAlertModal" class="modal-overlay" @click.self="closeAlertModal">
+                <div class="modal-content inquiry-modal">
+                    <div class="modal-header">
+                        <h3>{{ alertModalTitle }}</h3>
+                        <button @click="closeAlertModal" class="modal-close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p style="font-size: 1rem; line-height: 1.6; color: #2d3748; white-space: pre-line;">{{ alertModalMessage }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="closeAlertModal" class="btn-back">확인</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 확인 모달 -->
+            <div v-if="showConfirmModal" class="modal-overlay" @click.self="closeConfirmModal">
+                <div class="modal-content inquiry-modal">
+                    <div class="modal-header">
+                        <h3>{{ confirmModalTitle }}</h3>
+                        <button @click="closeConfirmModal" class="modal-close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p style="font-size: 1rem; line-height: 1.6; color: #2d3748; white-space: pre-line;">{{ confirmModalMessage }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="confirmCancel" class="btn-back">취소</button>
+                        <button @click="confirmOk" class="btn-register-answer">확인</button>
+                    </div>
+                </div>
+            </div>
         </div>
         </div>
     </body>
@@ -162,7 +260,18 @@
                     totalPages: 1,
                     loading: false, // 로딩 상태
                     sortColumn: '', // 정렬 컬럼
-                    sortDirection: 'asc' // 정렬 방향
+                    sortDirection: 'asc', // 정렬 방향
+                    // 모달 관련
+                    showDetailModal: false,
+                    reportDetail: null,
+                    showAlertModal: false,
+                    alertModalTitle: '',
+                    alertModalMessage: '',
+                    showConfirmModal: false,
+                    confirmModalTitle: '',
+                    confirmModalMessage: '',
+                    confirmCallback: null,
+                    // 알림 관련
                 };
             },
             computed: {
@@ -262,7 +371,7 @@
                         },
                         error: function (xhr, status, error) {
                             console.error("AJAX Error:", status, error, xhr.responseText);
-                            alert("신고 게시물 리스트 로드 중 오류가 발생했습니다.");
+                            self.showAlert("오류", "신고 게시물 리스트 로드 중 오류가 발생했습니다.");
                         },
                         complete: function() {
                             self.loading = false; // 로딩 종료
@@ -286,7 +395,153 @@
                     this.fnGetBoardReportList(page);
                 },
                 goToDetail(reportBoardNo) {
-                    pageChange("/admin/board-report-view.do", { reportBoardNo: reportBoardNo });
+                    let self = this;
+                    self.showDetailModal = true;
+                    self.reportDetail = null;
+                    
+                    let param = {
+                        reportBoardNo: reportBoardNo
+                    };
+                    
+                    $.ajax({
+                        url: "/admin/board-report-view.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log("신고 게시물 상세 데이터:", data);
+                            if (data.result === "success") {
+                                self.reportDetail = data.detail;
+                            } else {
+                                self.showAlert("오류", "신고 게시물 정보를 불러오는데 실패했습니다: " + data.message);
+                                self.closeDetailModal();
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("AJAX Error:", status, error, xhr.responseText);
+                            self.showAlert("오류", "신고 게시물 상세 정보를 불러오는 중 오류가 발생했습니다.");
+                            self.closeDetailModal();
+                        }
+                    });
+                },
+                closeDetailModal() {
+                    this.showDetailModal = false;
+                    this.reportDetail = null;
+                },
+                getBoardType(type) {
+                    switch (type) {
+                        case 'Q': return '일반문의게시판';
+                        case 'F': return '자유게시판';
+                        case 'B': return '공지게시판';
+                        case 'R': return '대회게시판';
+                        default: return type;
+                    }
+                },
+                fnDeleteBoard: function () {
+                    let self = this;
+                    if (!self.reportDetail) return;
+                    
+                    self.showConfirm(
+                        "게시글 삭제 확인",
+                        "[" + self.getBoardType(self.reportDetail.boardType) + "] <" + self.reportDetail.boardTitle + "> 게시글을 정말로 삭제하시겠습니까? (삭제 시 신고 확인 상태는 '처리완료'로 변경됩니다.)",
+                        function() {
+                            let param = {
+                                reportBoardNo: self.reportDetail.reportBoardNo,
+                                reportedBoardNo: self.reportDetail.reportedBoardNo
+                            };
+
+                            $.ajax({
+                                url: "/admin/board-report/deleteBoard.dox",
+                                dataType: "json",
+                                type: "POST",
+                                data: param,
+                                success: function (data) {
+                                    if (data.result === "success") {
+                                        self.showAlert("성공", data.message);
+                                        self.closeDetailModal();
+                                        self.fnGetBoardReportList(self.currentPage);
+                                    } else {
+                                        self.showAlert("실패", "게시글 삭제에 실패했습니다: " + data.message);
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error("AJAX Error:", status, error, xhr.responseText);
+                                    self.showAlert("오류", "게시글 삭제 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+                                }
+                            });
+                        }
+                    );
+                },
+                fnProcessReport: function () {
+                    let self = this;
+                    if (!self.reportDetail) return;
+                    
+                    self.showConfirm(
+                        "신고 처리 확인",
+                        "[" + self.getBoardType(self.reportDetail.boardType) + "] <" + self.reportDetail.boardTitle + "> 게시글에 대한 신고를 '처리완료' 상태로 변경하시겠습니까? (게시글은 삭제되지 않습니다.)",
+                        function() {
+                            let param = {
+                                reportBoardNo: self.reportDetail.reportBoardNo
+                            };
+
+                            $.ajax({
+                                url: "/admin/board-report/process.dox",
+                                dataType: "json",
+                                type: "POST",
+                                data: param,
+                                success: function (data) {
+                                    if (data.result === "success") {
+                                        self.showAlert("성공", data.message);
+                                        self.reportDetail.reportStatus = 'Y';
+                                        self.fnGetBoardReportList(self.currentPage);
+                                    } else {
+                                        self.showAlert("실패", "신고 처리 상태 변경에 실패했습니다: " + data.message);
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error("AJAX Error:", status, error, xhr.responseText);
+                                    self.showAlert("오류", "신고 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+                                }
+                            });
+                        }
+                    );
+                },
+                // 알림 모달 표시
+                showAlert: function(title, message) {
+                    this.alertModalTitle = title;
+                    this.alertModalMessage = message;
+                    this.showAlertModal = true;
+                },
+                // 알림 모달 닫기
+                closeAlertModal: function() {
+                    this.showAlertModal = false;
+                    this.alertModalTitle = '';
+                    this.alertModalMessage = '';
+                },
+                // 확인 모달 표시
+                showConfirm: function(title, message, callback) {
+                    this.confirmModalTitle = title;
+                    this.confirmModalMessage = message;
+                    this.confirmCallback = callback;
+                    this.showConfirmModal = true;
+                },
+                // 확인 모달 닫기
+                closeConfirmModal: function() {
+                    this.showConfirmModal = false;
+                    this.confirmModalTitle = '';
+                    this.confirmModalMessage = '';
+                    this.confirmCallback = null;
+                },
+                // 확인 모달 확인 버튼
+                confirmOk: function() {
+                    if (this.confirmCallback) {
+                        this.confirmCallback();
+                    }
+                    this.closeConfirmModal();
+                },
+                // 확인 모달 취소 버튼
+                confirmCancel: function() {
+                    this.closeConfirmModal();
                 },
                 downloadExcel: function() {
                     let self = this;
@@ -297,6 +552,123 @@
                     if (self.endDate) params.append('endDate', self.endDate);
                     
                     window.location.href = '/admin/board-report/excel.dox?' + params.toString();
+                },
+                // 실시간 알림 개수 가져오기
+                fetchNotifications: function() {
+                    let self = this;
+                    
+                    // 로컬 스토리지에서 읽음 처리된 알림의 마지막 확인 시간 가져오기
+                    const lastCheckInquiry = localStorage.getItem('lastNotificationCheck_inquiry');
+                    const lastCheckOrder = localStorage.getItem('lastNotificationCheck_order');
+                    const lastCheckReport = localStorage.getItem('lastNotificationCheck_report');
+                    
+                    // 서버에 마지막 확인 시간 전달 (ISO 8601 형식)
+                    let params = {};
+                    if (lastCheckInquiry && lastCheckInquiry.trim() !== '' && lastCheckInquiry !== 'null') {
+                        try {
+                            // ISO 8601 형식을 Oracle DATE 형식으로 변환 (YYYY-MM-DD HH24:MI:SS)
+                            const date = new Date(lastCheckInquiry);
+                            if (!isNaN(date.getTime())) {
+                                const year = date.getFullYear();
+                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                const day = String(date.getDate()).padStart(2, '0');
+                                const hours = String(date.getHours()).padStart(2, '0');
+                                const minutes = String(date.getMinutes()).padStart(2, '0');
+                                const seconds = String(date.getSeconds()).padStart(2, '0');
+                                params.lastCheckInquiry = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                            }
+                        } catch (e) {
+                            console.error('날짜 변환 오류 (inquiry):', e);
+                        }
+                    }
+                    if (lastCheckOrder && lastCheckOrder.trim() !== '' && lastCheckOrder !== 'null') {
+                        try {
+                            const date = new Date(lastCheckOrder);
+                            if (!isNaN(date.getTime())) {
+                                const year = date.getFullYear();
+                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                const day = String(date.getDate()).padStart(2, '0');
+                                const hours = String(date.getHours()).padStart(2, '0');
+                                const minutes = String(date.getMinutes()).padStart(2, '0');
+                                const seconds = String(date.getSeconds()).padStart(2, '0');
+                                params.lastCheckOrder = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                            }
+                        } catch (e) {
+                            console.error('날짜 변환 오류 (order):', e);
+                        }
+                    }
+                    if (lastCheckReport && lastCheckReport.trim() !== '' && lastCheckReport !== 'null') {
+                        try {
+                            const date = new Date(lastCheckReport);
+                            if (!isNaN(date.getTime())) {
+                                const year = date.getFullYear();
+                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                const day = String(date.getDate()).padStart(2, '0');
+                                const hours = String(date.getHours()).padStart(2, '0');
+                                const minutes = String(date.getMinutes()).padStart(2, '0');
+                                const seconds = String(date.getSeconds()).padStart(2, '0');
+                                params.lastCheckReport = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                            }
+                        } catch (e) {
+                            console.error('날짜 변환 오류 (report):', e);
+                        }
+                    }
+                    
+                    $.ajax({
+                        url: '/admin/notifications.dox',
+                        type: 'GET',
+                        dataType: 'json',
+                        data: params,
+                        success: function (response) {
+                            if (response.result === 'success') {
+                                // 서버에서 받은 알림 개수 (이미 읽음 처리된 것은 제외됨)
+                                self.notificationCounts = {
+                                    newInquiryCount: response.newInquiryCount || 0,
+                                    newOrderCount: response.newOrderCount || 0,
+                                    newBoardReportCount: response.newBoardReportCount || 0,
+                                    totalCount: (response.newInquiryCount || 0) + (response.newOrderCount || 0) + (response.newBoardReportCount || 0)
+                                };
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('알림 조회 오류:', error);
+                        }
+                    });
+                },
+                // 알림 패널 토글
+                toggleNotificationPanel: function() {
+                    this.showNotificationPanel = !this.showNotificationPanel;
+                },
+                // 페이지 이동
+                goToPage: function(url) {
+                    window.location.href = url;
+                },
+                // 개별 알림 항목 클릭 시 읽음 처리
+                markNotificationAsRead: function(type) {
+                    try {
+                        // 로컬 스토리지에 마지막 확인 시간 저장
+                        const now = new Date().toISOString();
+                        localStorage.setItem('lastNotificationCheck_' + type, now);
+                        
+                        // 해당 타입의 알림을 읽음 처리 (즉시 UI 업데이트)
+                        if (type === 'inquiry') {
+                            this.notificationCounts.newInquiryCount = 0;
+                        } else if (type === 'order') {
+                            this.notificationCounts.newOrderCount = 0;
+                        } else if (type === 'report') {
+                            this.notificationCounts.newBoardReportCount = 0;
+                        }
+                        // 전체 개수 재계산
+                        this.notificationCounts.totalCount = 
+                            this.notificationCounts.newInquiryCount + 
+                            this.notificationCounts.newOrderCount + 
+                            this.notificationCounts.newBoardReportCount;
+                        
+                        // 서버에서 필터링된 결과를 즉시 가져와서 동기화
+                        this.fetchNotifications();
+                    } catch (e) {
+                        console.error('알림 읽음 처리 오류:', e);
+                    }
                 }
             },
             mounted() {

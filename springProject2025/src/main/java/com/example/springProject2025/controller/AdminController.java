@@ -1,6 +1,7 @@
 package com.example.springProject2025.controller;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -26,12 +27,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.springProject2025.dao.AdminService;
 import com.example.springProject2025.dao.ProductService;
+import com.example.springProject2025.model.Admin;
 import com.google.gson.Gson;
 
 import jakarta.servlet.http.HttpServletRequest; // ← jakarta로 통일
 import jakarta.servlet.http.HttpServletResponse; // ← jakarta로 통일
-
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class AdminController {
@@ -91,6 +92,11 @@ public class AdminController {
   @RequestMapping("admin/user-list.do")
   public String userList(Model model) throws Exception {
     return "admin/user-list"; // .jsp빠진형태
+  }
+
+  @RequestMapping("admin/activity-log.do")
+  public String activityLog(Model model) throws Exception {
+    return "admin/activity-log"; // .jsp빠진형태
   }
 
   // banner(메인 슬라이드 광고) list
@@ -159,10 +165,18 @@ public class AdminController {
   // 상품 문의내역 관리자 답변 등록 메소드
   @RequestMapping(value = "admin/inquiry/registerAnswer.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
   @ResponseBody
-  public String registerAnswer(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+  public String registerAnswer(Model model, @RequestParam HashMap<String, Object> map, HttpServletRequest request)
+      throws Exception {
     HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
     resultMap = adminService.registerInquiryAnswer(map);
+
+    // 활동 로그 기록
+    if ("success".equals(resultMap.get("result"))) {
+      logAdminActivity(request, "INQUIRY_ANSWER",
+          "문의 답변 등록: 문의번호 " + map.get("inquiryNo"),
+          map.get("inquiryNo").toString(), "INQUIRY");
+    }
 
     return new Gson().toJson(resultMap);
   }
@@ -218,18 +232,38 @@ public class AdminController {
   // 주문내역 상태 변경(신규주문->배송중, 배송중->배송완료) 메소드
   @RequestMapping(value = "admin/orders/updateStatus.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
   @ResponseBody
-  public String updateOrderStatus(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+  public String updateOrderStatus(Model model, @RequestParam HashMap<String, Object> map, HttpServletRequest request)
+      throws Exception {
     HashMap<String, Object> resultMap = new HashMap<String, Object>();
     resultMap = adminService.updateOrderStatus(map);
+
+    // 활동 로그 기록
+    if ("success".equals(resultMap.get("result"))) {
+      logAdminActivity(request, "ORDER_UPDATE",
+          "주문 상태 변경: 주문번호 " + map.get("orderNo") + " → " + map.get("newStatus"),
+          map.get("orderNo").toString(), "ORDER");
+    }
+
     return new Gson().toJson(resultMap);
   }
 
   // 주문내역 일괄 상태 변경 메소드
   @RequestMapping(value = "admin/orders/batchUpdateStatus.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
   @ResponseBody
-  public String batchUpdateOrderStatus(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+  public String batchUpdateOrderStatus(Model model, @RequestParam HashMap<String, Object> map,
+      HttpServletRequest request) throws Exception {
     HashMap<String, Object> resultMap = new HashMap<String, Object>();
     resultMap = adminService.batchUpdateOrderStatus(map);
+
+    // 활동 로그 기록
+    if ("success".equals(resultMap.get("result"))) {
+      String orderNos = (String) map.get("orderNos");
+      int count = orderNos != null ? orderNos.split(",").length : 0;
+      logAdminActivity(request, "ORDER_BATCH_UPDATE",
+          "주문 일괄 상태 변경: " + count + "건 → " + map.get("newStatus"),
+          orderNos, "ORDER");
+    }
+
     return new Gson().toJson(resultMap);
   }
 
@@ -254,9 +288,18 @@ public class AdminController {
   // 회원 삭제
   @RequestMapping(value = "admin/user-list/delete.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
   @ResponseBody
-  public String deleteUser(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+  public String deleteUser(Model model, @RequestParam HashMap<String, Object> map, HttpServletRequest request)
+      throws Exception {
     HashMap<String, Object> resultMap = new HashMap<String, Object>();
     resultMap = adminService.deleteUser(map);
+
+    // 활동 로그 기록
+    if ("success".equals(resultMap.get("result"))) {
+      logAdminActivity(request, "USER_DELETE",
+          "회원 삭제: " + map.get("userId"),
+          map.get("userId").toString(), "USER");
+    }
+
     return new Gson().toJson(resultMap);
   }
 
@@ -311,16 +354,34 @@ public class AdminController {
   // 신고게시물 관리자 처리
   @RequestMapping(value = "admin/board-report/process.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
   @ResponseBody
-  public String processBoardReport(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+  public String processBoardReport(Model model, @RequestParam HashMap<String, Object> map, HttpServletRequest request)
+      throws Exception {
     HashMap<String, Object> resultMap = adminService.processBoardReport(map);
+
+    // 활동 로그 기록
+    if ("success".equals(resultMap.get("result"))) {
+      logAdminActivity(request, "BOARD_REPORT_PROCESS",
+          "신고 게시물 처리 완료: 신고번호 " + map.get("reportBoardNo"),
+          map.get("reportBoardNo").toString(), "BOARD_REPORT");
+    }
+
     return new Gson().toJson(resultMap);
   }
 
   // 신고게시물 삭제 처리
   @RequestMapping(value = "admin/board-report/deleteBoard.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
   @ResponseBody
-  public String deleteBoardReported(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+  public String deleteBoardReported(Model model, @RequestParam HashMap<String, Object> map, HttpServletRequest request)
+      throws Exception {
     HashMap<String, Object> resultMap = adminService.deleteBoardReported(map);
+
+    // 활동 로그 기록
+    if ("success".equals(resultMap.get("result"))) {
+      logAdminActivity(request, "BOARD_DELETE",
+          "신고 게시물 삭제: 게시물번호 " + map.get("reportedBoardNo"),
+          map.get("reportedBoardNo").toString(), "BOARD");
+    }
+
     return new Gson().toJson(resultMap);
   }
 
@@ -635,7 +696,13 @@ public class AdminController {
       map.put("currentPage", 1);
       HashMap<String, Object> resultMap = adminService.getOrdersList(map);
       @SuppressWarnings("unchecked")
-      List<HashMap<String, Object>> ordersList = (List<HashMap<String, Object>>) resultMap.get("list");
+      List<Admin> ordersList = resultMap != null
+          ? (List<Admin>) resultMap.get("list")
+          : null;
+
+      if (ordersList == null) {
+        ordersList = new ArrayList<>();
+      }
 
       // 엑셀 파일 생성
       Workbook workbook = new XSSFWorkbook();
@@ -661,15 +728,15 @@ public class AdminController {
 
       // 데이터 행 생성
       int rowNum = 1;
-      for (HashMap<String, Object> order : ordersList) {
+      for (Admin order : ordersList) {
         Row row = sheet.createRow(rowNum++);
-        row.createCell(0).setCellValue(order.get("orderNo") != null ? order.get("orderNo").toString() : "");
-        row.createCell(1).setCellValue(order.get("userId") != null ? order.get("userId").toString() : "");
-        row.createCell(2).setCellValue(order.get("name") != null ? order.get("name").toString() : "");
-        row.createCell(3).setCellValue(order.get("productNo") != null ? order.get("productNo").toString() : "");
-        row.createCell(4).setCellValue(order.get("paymentAmount") != null ? order.get("paymentAmount").toString() : "");
-        row.createCell(5).setCellValue(order.get("cDate") != null ? order.get("cDate").toString() : "");
-        row.createCell(6).setCellValue(order.get("status") != null ? order.get("status").toString() : "");
+        row.createCell(0).setCellValue(order.getOrderNo());
+        row.createCell(1).setCellValue(order.getUserId() != null ? order.getUserId() : "");
+        row.createCell(2).setCellValue(order.getName() != null ? order.getName() : "");
+        row.createCell(3).setCellValue(order.getProductNo() != null ? order.getProductNo() : "");
+        row.createCell(4).setCellValue(order.getPaymentAmount());
+        row.createCell(5).setCellValue(order.getCDate() != null ? order.getCDate() : "");
+        row.createCell(6).setCellValue(order.getStatus() != null ? order.getStatus() : "");
       }
 
       // 컬럼 너비 자동 조정
@@ -702,7 +769,13 @@ public class AdminController {
       map.put("currentPage", 1);
       HashMap<String, Object> resultMap = adminService.getUserList(map);
       @SuppressWarnings("unchecked")
-      List<HashMap<String, Object>> usersList = (List<HashMap<String, Object>>) resultMap.get("list");
+      List<Admin> usersList = resultMap != null
+          ? (List<Admin>) resultMap.get("list")
+          : null;
+
+      if (usersList == null) {
+        usersList = new ArrayList<>();
+      }
 
       Workbook workbook = new XSSFWorkbook();
       Sheet sheet = workbook.createSheet("회원 리스트");
@@ -724,13 +797,13 @@ public class AdminController {
       }
 
       int rowNum = 1;
-      for (HashMap<String, Object> user : usersList) {
+      for (Admin user : usersList) {
         Row row = sheet.createRow(rowNum++);
-        row.createCell(0).setCellValue(user.get("userId") != null ? user.get("userId").toString() : "");
-        row.createCell(1).setCellValue(user.get("name") != null ? user.get("name").toString() : "");
-        row.createCell(2).setCellValue(user.get("nickName") != null ? user.get("nickName").toString() : "");
-        row.createCell(3).setCellValue(user.get("email") != null ? user.get("email").toString() : "");
-        row.createCell(4).setCellValue(user.get("cDate") != null ? user.get("cDate").toString() : "");
+        row.createCell(0).setCellValue(user.getUserId() != null ? user.getUserId() : "");
+        row.createCell(1).setCellValue(user.getName() != null ? user.getName() : "");
+        row.createCell(2).setCellValue(user.getNickName() != null ? user.getNickName() : "");
+        row.createCell(3).setCellValue(user.getEmail() != null ? user.getEmail() : "");
+        row.createCell(4).setCellValue(user.getCDate() != null ? user.getCDate() : "");
       }
 
       for (int i = 0; i < headers.length; i++) {
@@ -760,7 +833,13 @@ public class AdminController {
       map.put("currentPage", 1);
       HashMap<String, Object> resultMap = adminService.getInquiryList(map);
       @SuppressWarnings("unchecked")
-      List<HashMap<String, Object>> inquiryList = (List<HashMap<String, Object>>) resultMap.get("list");
+      List<Admin> inquiryList = resultMap != null
+          ? (List<Admin>) resultMap.get("list")
+          : null;
+
+      if (inquiryList == null) {
+        inquiryList = new ArrayList<>();
+      }
 
       Workbook workbook = new XSSFWorkbook();
       Sheet sheet = workbook.createSheet("문의 내역");
@@ -782,15 +861,15 @@ public class AdminController {
       }
 
       int rowNum = 1;
-      for (HashMap<String, Object> inquiry : inquiryList) {
+      for (Admin inquiry : inquiryList) {
         Row row = sheet.createRow(rowNum++);
-        row.createCell(0).setCellValue(inquiry.get("inquiryNo") != null ? inquiry.get("inquiryNo").toString() : "");
-        row.createCell(1).setCellValue(inquiry.get("productName") != null ? inquiry.get("productName").toString() : "");
-        row.createCell(2).setCellValue(inquiry.get("title") != null ? inquiry.get("title").toString() : "");
-        row.createCell(3).setCellValue(inquiry.get("userId") != null ? inquiry.get("userId").toString() : "");
-        row.createCell(4).setCellValue(inquiry.get("name") != null ? inquiry.get("name").toString() : "");
-        row.createCell(5).setCellValue(inquiry.get("cDate") != null ? inquiry.get("cDate").toString() : "");
-        String status = inquiry.get("status") != null ? inquiry.get("status").toString() : "";
+        row.createCell(0).setCellValue(inquiry.getInquiryNo());
+        row.createCell(1).setCellValue(inquiry.getProductName() != null ? inquiry.getProductName() : "");
+        row.createCell(2).setCellValue(inquiry.getTitle() != null ? inquiry.getTitle() : "");
+        row.createCell(3).setCellValue(inquiry.getUserId() != null ? inquiry.getUserId() : "");
+        row.createCell(4).setCellValue(inquiry.getName() != null ? inquiry.getName() : "");
+        row.createCell(5).setCellValue(inquiry.getCDate() != null ? inquiry.getCDate() : "");
+        String status = inquiry.getStatus() != null ? inquiry.getStatus() : "";
         row.createCell(6).setCellValue("Y".equals(status) ? "답변 완료" : "답변 대기");
       }
 
@@ -822,7 +901,13 @@ public class AdminController {
       map.put("currentPage", 1);
       HashMap<String, Object> resultMap = adminService.getBoardReportList(map);
       @SuppressWarnings("unchecked")
-      List<HashMap<String, Object>> reportList = (List<HashMap<String, Object>>) resultMap.get("list");
+      List<Admin> reportList = resultMap != null
+          ? (List<Admin>) resultMap.get("list")
+          : null;
+
+      if (reportList == null) {
+        reportList = new ArrayList<>();
+      }
 
       Workbook workbook = new XSSFWorkbook();
       Sheet sheet = workbook.createSheet("신고 게시물");
@@ -844,17 +929,15 @@ public class AdminController {
       }
 
       int rowNum = 1;
-      for (HashMap<String, Object> report : reportList) {
+      for (Admin report : reportList) {
         Row row = sheet.createRow(rowNum++);
-        row.createCell(0)
-            .setCellValue(report.get("reportBoardNo") != null ? report.get("reportBoardNo").toString() : "");
-        row.createCell(1)
-            .setCellValue(report.get("reportedBoardNo") != null ? report.get("reportedBoardNo").toString() : "");
-        row.createCell(2).setCellValue(report.get("boardTitle") != null ? report.get("boardTitle").toString() : "");
-        row.createCell(3).setCellValue(report.get("reporterId") != null ? report.get("reporterId").toString() : "");
-        row.createCell(4).setCellValue(report.get("reporterName") != null ? report.get("reporterName").toString() : "");
-        row.createCell(5).setCellValue(report.get("cDate") != null ? report.get("cDate").toString() : "");
-        String status = report.get("reportStatus") != null ? report.get("reportStatus").toString() : "";
+        row.createCell(0).setCellValue(report.getReportBoardNo());
+        row.createCell(1).setCellValue(report.getReportedBoardNo());
+        row.createCell(2).setCellValue(report.getBoardTitle() != null ? report.getBoardTitle() : "");
+        row.createCell(3).setCellValue(report.getReporterId() != null ? report.getReporterId() : "");
+        row.createCell(4).setCellValue(report.getReporterName() != null ? report.getReporterName() : "");
+        row.createCell(5).setCellValue(report.getCDate() != null ? report.getCDate() : "");
+        String status = report.getReportStatus() != null ? report.getReportStatus() : "";
         row.createCell(6).setCellValue("Y".equals(status) ? "처리완료" : "처리요망");
       }
 
@@ -886,7 +969,13 @@ public class AdminController {
       map.put("currentPage", 1);
       HashMap<String, Object> resultMap = adminService.getRefundReturnList(map);
       @SuppressWarnings("unchecked")
-      List<HashMap<String, Object>> refundReturnList = (List<HashMap<String, Object>>) resultMap.get("list");
+      List<Admin> refundReturnList = resultMap != null
+          ? (List<Admin>) resultMap.get("list")
+          : null;
+
+      if (refundReturnList == null) {
+        refundReturnList = new ArrayList<>();
+      }
 
       Workbook workbook = new XSSFWorkbook();
       Sheet sheet = workbook.createSheet("교환반품취소");
@@ -908,17 +997,17 @@ public class AdminController {
       }
 
       int rowNum = 1;
-      for (HashMap<String, Object> item : refundReturnList) {
+      for (Admin item : refundReturnList) {
         Row row = sheet.createRow(rowNum++);
-        row.createCell(0).setCellValue(item.get("orderNo") != null ? item.get("orderNo").toString() : "");
-        row.createCell(1).setCellValue(item.get("productName") != null ? item.get("productName").toString() : "");
-        row.createCell(2).setCellValue(item.get("productSize") != null ? item.get("productSize").toString() : "");
-        row.createCell(3).setCellValue(item.get("userId") != null ? item.get("userId").toString() : "");
-        row.createCell(4).setCellValue(item.get("name") != null ? item.get("name").toString() : "");
-        row.createCell(5).setCellValue(item.get("phone") != null ? item.get("phone").toString() : "");
-        row.createCell(6).setCellValue(item.get("cDate") != null ? item.get("cDate").toString() : "");
-        row.createCell(7).setCellValue(item.get("status") != null ? item.get("status").toString() : "");
-        row.createCell(8).setCellValue(item.get("because") != null ? item.get("because").toString() : "");
+        row.createCell(0).setCellValue(item.getOrderNo());
+        row.createCell(1).setCellValue(item.getProductName() != null ? item.getProductName() : "");
+        row.createCell(2).setCellValue(item.getProductSize() != null ? item.getProductSize() : "");
+        row.createCell(3).setCellValue(item.getUserId() != null ? item.getUserId() : "");
+        row.createCell(4).setCellValue(item.getName() != null ? item.getName() : "");
+        row.createCell(5).setCellValue(item.getPhone() != null ? item.getPhone() : "");
+        row.createCell(6).setCellValue(item.getCDate() != null ? item.getCDate() : "");
+        row.createCell(7).setCellValue(item.getStatus() != null ? item.getStatus() : "");
+        row.createCell(8).setCellValue(item.getBecause() != null ? item.getBecause() : "");
       }
 
       for (int i = 0; i < headers.length; i++) {
@@ -954,8 +1043,13 @@ public class AdminController {
 
       HashMap<String, Object> resultMap = productService.getProductList(map);
       @SuppressWarnings("unchecked")
-      List<com.example.springProject2025.model.Product> productList = (List<com.example.springProject2025.model.Product>) resultMap
-          .get("list");
+      List<com.example.springProject2025.model.Product> productList = resultMap != null
+          ? (List<com.example.springProject2025.model.Product>) resultMap.get("list")
+          : null;
+
+      if (productList == null) {
+        productList = new ArrayList<>();
+      }
 
       Workbook workbook = new XSSFWorkbook();
       Sheet sheet = workbook.createSheet("상품 리스트");
@@ -1003,5 +1097,60 @@ public class AdminController {
       e.printStackTrace();
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "엑셀 다운로드 중 오류가 발생했습니다.");
     }
+  }
+
+  // 관리자 활동 로그 기록 헬퍼 메서드
+  private void logAdminActivity(HttpServletRequest request, String actionType, String description, String targetId,
+      String targetType) {
+    try {
+      HttpSession session = request.getSession();
+      String adminId = (String) session.getAttribute("sessionId");
+      if (adminId == null) {
+        adminId = "SYSTEM"; // 세션이 없으면 SYSTEM으로 기록
+      }
+
+      String ipAddress = getClientIpAddress(request);
+
+      HashMap<String, Object> logMap = new HashMap<>();
+      logMap.put("adminId", adminId);
+      logMap.put("actionType", actionType);
+      logMap.put("actionDescription", description);
+      logMap.put("targetId", targetId);
+      logMap.put("targetType", targetType);
+      logMap.put("ipAddress", ipAddress);
+
+      adminService.logAdminActivity(logMap);
+    } catch (Exception e) {
+      System.err.println("활동 로그 기록 중 오류: " + e.getMessage());
+    }
+  }
+
+  // 클라이언트 IP 주소 가져오기
+  private String getClientIpAddress(HttpServletRequest request) {
+    String ip = request.getHeader("X-Forwarded-For");
+    if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+      ip = request.getHeader("Proxy-Client-IP");
+    }
+    if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+      ip = request.getHeader("WL-Proxy-Client-IP");
+    }
+    if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+      ip = request.getHeader("HTTP_CLIENT_IP");
+    }
+    if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+      ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+    }
+    if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+      ip = request.getRemoteAddr();
+    }
+    return ip;
+  }
+
+  // 관리자 활동 로그 조회 API
+  @RequestMapping(value = "admin/activity-log.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+  @ResponseBody
+  public String getActivityLogList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+    HashMap<String, Object> resultMap = adminService.getAdminActivityLogList(map);
+    return new Gson().toJson(resultMap);
   }
 }

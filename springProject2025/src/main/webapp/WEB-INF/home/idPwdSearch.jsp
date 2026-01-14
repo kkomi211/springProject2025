@@ -137,10 +137,34 @@
                         <!-- MODAL POPUP WINDOW -->
 
                         <!-- When fields are empty -->
-                         <div v-if="emptyId || emptyPhone || emptyBirth" class="modal-overlay">
+                         <div v-if="emptyName" class="modal-overlay">
+                            <div class="modal-content">
+                                <h2 >이름을 입력해주세요.</h2>
+                                <button @click="fieldCloseModal">닫기</button>
+                            </div>
+                        </div>
+                        <div v-if="emptyPhone" class="modal-overlay">
+                            <div class="modal-content">
+                                <h2 >전화번호를 입력해주세요.</h2>
+                                <button @click="fieldCloseModal">닫기</button>
+                            </div>
+                        </div>
+                        <div v-if="emptyBirth" class="modal-overlay">
+                            <div class="modal-content">
+                                <h2 >생년월일을 입력해주세요.</h2>
+                                <button @click="fieldCloseModal">닫기</button>
+                            </div>
+                        </div>
+                        <div v-if="emptyId" class="modal-overlay">
                             <div class="modal-content">
                                 <h2 >아이디를 입력해주세요.</h2>
-                                <button @click="closeModal">닫기</button>
+                                <button @click="fieldCloseModal">닫기</button>
+                            </div>
+                        </div>
+                        <div v-if="emptyAuthNum" class="modal-overlay">
+                            <div class="modal-content">
+                                <h2 >인증 절차를 먼저 완료해주세요.</h2>
+                                <button @click="fieldCloseModal">닫기</button>
                             </div>
                         </div>
 
@@ -154,12 +178,12 @@
                         </div>
 
                         <!-- When password successfully changed -->
-                        <div v-if="emptyId" class="modal-overlay">
+                         <div v-if="pwdChangedModal" class="modal-overlay">
                             <div class="modal-content">
-                                <h2 v-if="emptyId">아이디를 입력해주세요.</h2>
-                                <h2 v-if="emptyPhone && emptyBirth">전화번호를 입력해주세요.</h2>
-                                <h2 v-if="emptyBirth">생년월일을 입력해주세요.</h2>
-                                <button @click="closeModal">닫기</button>
+                                <h2>비밀번호 변경 성공</h2>
+                                <p>변경된 암호로 로그인 해보세요</p>
+                                <a href="/home/login.do"><button>로그인 화면 가기</button></a>
+                                <a href="/home.do"><button>메인 화면 가기</button></a>
                             </div>
                         </div>
 
@@ -231,9 +255,11 @@
                     showModal: false,
                     pwdChangedModal: false,
                     pwdFailedModal: false,
-                    emptyId : false,
+                    emptyName : false,
                     emptyPhone : false,
                     emptyBirth : false,
+                    emptyId : false,
+                    emptyAuthNum : false,
 
                     // 인증
                     smsFlg: false,
@@ -254,7 +280,7 @@
                     let self = this;
                     if (self.id_name == "") {
                         // alert("이름을 입력해주세요.");
-                        self.emptyId = true;
+                        self.emptyName = true;
                         document.querySelector("#id_name").focus();
                         return;
                     }
@@ -296,27 +322,27 @@
                 fnSearchPwd: function () {
                     let self = this;
                     if (self.pwd_userId == "") {
-                        alert("아이디를 입력해주세요.");
+                        self.emptyId = true;    
                         document.querySelector("#pwd_userId").focus();
                         return;
                     }
                     if (self.pwd_name == "") {
-                        alert("이름을 입력해주세요.");
+                        self.emptyName = true;
                         document.querySelector("#pwd_name").focus();
                         return;
                     }
                     if (self.pwd_birth == "") {
-                        alert("생년월일을 입력해주세요.");
+                        self.emptyBirth = true;
                         document.querySelector("#pwd_birth").focus();
                         return;
                     }
                     if (self.pwd_phone == "") {
-                        alert("전화번호를 입력해주세요.");
+                        self.emptyPhone = true;
                         document.querySelector("#pwd_phone").focus();
                         return;
                     }
                     if (self.inputNum == "") {
-                        alert("인증 절차를 먼저 완료해주세요.");
+                        self.emptyAuthNum = true;
                         document.querySelector("#auth").focus();
                         return;
                     }
@@ -388,9 +414,6 @@
                     let self = this;
                     self.showModal = false;
                     self.pwdFailedModal = false;
-                    self.emptyId = false;
-                    self.emptyPhone = false;
-                    self.emptyBirth = false;
                     self.id_name = "";
                     self.id_phone = "";
                     self.id_birth = "";
@@ -401,10 +424,14 @@
                     self.newPwd1 = "";
                     self.newPwd2 = "";
                 },
-
-
-
-
+                fieldCloseModal() {
+                    let self = this;
+                    self.emptyId = false;
+                    self.emptyPhone = false;
+                    self.emptyBirth = false;
+                    self.emptyAuthNum = false;
+                    self.emptyName = false;
+                },
                 fnSms: function () {
                     let self = this;
                     let param = {

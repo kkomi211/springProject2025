@@ -22,8 +22,10 @@
             <!-- 상단 검은색 바 -->
             <div class="topbar">
                 <div><strong>관리자 메인화면</strong></div>
-                <div>관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
-                        @click="fnLogout">로그오프</a></div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="line-height: 1.2;">관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
+                            @click="fnLogout">로그오프</a></div>
+                </div>
             </div>
 
             <!-- 메뉴 바 (검은색) -->
@@ -36,6 +38,7 @@
                 <a href="/admin/orders.do">주문 내역</a>
                 <a href="/admin/board-report.do">게시판 신고 리스트</a>
                 <a href="/admin/user-list.do">회원 관리 화면</a>
+                <a href="/admin/activity-log.do">활동 로그</a>
             </div>
 
             <!-- 본문 -->
@@ -304,6 +307,9 @@
                     if (quantity === 0) return 'stock-badge-out';
                     if (quantity < 5) return 'stock-badge-low';
                     return '';
+                },
+                goToPage: function(url) {
+                    window.location.href = url;
                 }
             }, // methods
             mounted() {

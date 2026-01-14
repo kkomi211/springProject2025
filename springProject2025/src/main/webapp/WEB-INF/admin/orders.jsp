@@ -21,8 +21,10 @@
             <!-- 상단 검은색 바 -->
             <div class="topbar">
                 <div><strong>관리자 메인화면</strong></div>
-                <div>관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
-                        @click="fnLogout">로그오프</a></div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="line-height: 1.2;">관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
+                            @click="fnLogout">로그오프</a></div>
+                </div>
             </div>
 
             <!-- 메뉴 바 (검은색) -->
@@ -35,6 +37,7 @@
                 <a href="/admin/orders.do" class="active">주문 내역</a>
                 <a href="/admin/board-report.do">게시판 신고 리스트</a>
                 <a href="/admin/user-list.do">회원 관리 화면</a>
+                <a href="/admin/activity-log.do">활동 로그</a>
             </div>
 
             <!-- 본문 -->
@@ -187,6 +190,39 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- 알림 모달 -->
+            <div v-if="showAlertModal" class="modal-overlay" @click.self="closeAlertModal">
+                <div class="modal-content inquiry-modal">
+                    <div class="modal-header">
+                        <h3>{{ alertModalTitle }}</h3>
+                        <button @click="closeAlertModal" class="modal-close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p style="font-size: 1rem; line-height: 1.6; color: #2d3748; white-space: pre-line;">{{ alertModalMessage }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="closeAlertModal" class="btn-back">확인</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 확인 모달 -->
+            <div v-if="showConfirmModal" class="modal-overlay" @click.self="closeConfirmModal">
+                <div class="modal-content inquiry-modal">
+                    <div class="modal-header">
+                        <h3>{{ confirmModalTitle }}</h3>
+                        <button @click="closeConfirmModal" class="modal-close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p style="font-size: 1rem; line-height: 1.6; color: #2d3748; white-space: pre-line;">{{ confirmModalMessage }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="confirmCancel" class="btn-back">취소</button>
+                        <button @click="confirmOk" class="btn-register-answer">확인</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 
@@ -211,7 +247,15 @@
                     sortColumn: '', // 정렬 컬럼
                     sortDirection: 'asc', // 정렬 방향
                     selectedOrders: [], // 선택된 주문 번호 리스트
-                    batchStatus: '' // 일괄 변경할 상태
+                    batchStatus: '', // 일괄 변경할 상태
+                    // 모달 관련
+                    showAlertModal: false,
+                    alertModalTitle: '',
+                    alertModalMessage: '',
+                    showConfirmModal: false,
+                    confirmModalTitle: '',
+                    confirmModalMessage: '',
+                    confirmCallback: null
                 };
             },
             computed: {
@@ -359,7 +403,7 @@
                             }
                         },
                         error: function() {
-                            alert("데이터를 불러오는 중 오류가 발생했습니다.");
+                            self.showAlert("오류", "데이터를 불러오는 중 오류가 발생했습니다.");
                         },
                         complete: function() {
                             self.loading = false; // 로딩 종료
@@ -386,29 +430,34 @@
                 fnUpdateStatus: function (orderNo, newStatus) {
                     let self = this;
 
-                    if (!confirm(orderNo + "번 주문을 '" + newStatus + "' 상태로 변경하시겠습니까?")) {
-                        return;
-                    }
+                    self.showConfirm(
+                        "상태 변경 확인",
+                        orderNo + "번 주문을 '" + newStatus + "' 상태로 변경하시겠습니까?",
+                        function() {
+                            let param = {
+                                orderNo: orderNo,
+                                newStatus: newStatus
+                            };
 
-                    let param = {
-                        orderNo: orderNo,
-                        newStatus: newStatus
-                    };
-
-                    $.ajax({
-                        url: "/admin/orders/updateStatus.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-                            if (data.result == "success") {
-                                alert("상태가 변경되었습니다.");
-                                self.fnOrdersList(self.currentPage); // 현재 페이지 유지하며 새로고침
-                            } else {
-                                alert("상태 변경에 실패했습니다: " + (data.message || "다시 시도해 주세요."));
-                            }
+                            $.ajax({
+                                url: "/admin/orders/updateStatus.dox",
+                                dataType: "json",
+                                type: "POST",
+                                data: param,
+                                success: function (data) {
+                                    if (data.result == "success") {
+                                        self.showAlert("성공", "상태가 변경되었습니다.");
+                                        self.fnOrdersList(self.currentPage); // 현재 페이지 유지하며 새로고침
+                                    } else {
+                                        self.showAlert("실패", "상태 변경에 실패했습니다: " + (data.message || "다시 시도해 주세요."));
+                                    }
+                                },
+                                error: function() {
+                                    self.showAlert("오류", "상태 변경 중 오류가 발생했습니다.");
+                                }
+                            });
                         }
-                    });
+                    );
                 },
                 downloadExcel: function() {
                     let self = this;
@@ -441,57 +490,101 @@
                 batchUpdateStatus: function() {
                     let self = this;
                     if (self.selectedOrders.length === 0) {
-                        alert("선택된 주문이 없습니다.");
+                        self.showAlert("알림", "선택된 주문이 없습니다.");
                         return;
                     }
                     if (!self.batchStatus) {
-                        alert("변경할 상태를 선택해주세요.");
+                        self.showAlert("알림", "변경할 상태를 선택해주세요.");
                         return;
                     }
                     
                     // 프론트엔드 유효성 검사
                     const status = self.selectedOrdersStatus;
                     if (self.batchStatus === '배송완료' && status.hasNew) {
-                        alert("신규주문은 배송완료로 직접 변경할 수 없습니다. 먼저 배송중으로 변경해주세요.");
+                        self.showAlert("알림", "신규주문은 배송완료로 직접 변경할 수 없습니다. 먼저 배송중으로 변경해주세요.");
                         return;
                     }
                     if (self.batchStatus === '배송중' && status.allShipping) {
-                        alert("이미 배송중 상태인 주문은 배송중으로 변경할 수 없습니다.");
+                        self.showAlert("알림", "이미 배송중 상태인 주문은 배송중으로 변경할 수 없습니다.");
                         return;
                     }
                     
-                    if (!confirm(self.selectedOrders.length + "개의 주문을 '" + self.batchStatus + "' 상태로 변경하시겠습니까?")) {
-                        return;
-                    }
-                    
-                    let param = {
-                        orderNos: self.selectedOrders.join(','),
-                        newStatus: self.batchStatus
-                    };
-                    
-                    $.ajax({
-                        url: "/admin/orders/batchUpdateStatus.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-                            if (data.result === "success") {
-                                let message = data.message || "일괄 상태 변경이 완료되었습니다.";
-                                if (data.failDetails) {
-                                    message += "\n\n실패 상세:\n" + data.failDetails;
+                    self.showConfirm(
+                        "일괄 상태 변경 확인",
+                        self.selectedOrders.length + "개의 주문을 '" + self.batchStatus + "' 상태로 변경하시겠습니까?",
+                        function() {
+                            let param = {
+                                orderNos: self.selectedOrders.join(','),
+                                newStatus: self.batchStatus
+                            };
+                            
+                            $.ajax({
+                                url: "/admin/orders/batchUpdateStatus.dox",
+                                dataType: "json",
+                                type: "POST",
+                                data: param,
+                                success: function (data) {
+                                    if (data.result === "success") {
+                                        let message = data.message || "일괄 상태 변경이 완료되었습니다.";
+                                        if (data.failDetails) {
+                                            message += "\n\n실패 상세:\n" + data.failDetails;
+                                        }
+                                        self.showAlert("성공", message);
+                                        self.selectedOrders = [];
+                                        self.batchStatus = '';
+                                        self.fnOrdersList(self.currentPage);
+                                    } else {
+                                        self.showAlert("실패", "일괄 상태 변경 중 오류가 발생했습니다: " + (data.message || ""));
+                                    }
+                                },
+                                error: function() {
+                                    self.showAlert("오류", "일괄 상태 변경 중 오류가 발생했습니다.");
                                 }
-                                alert(message);
-                                self.selectedOrders = [];
-                                self.batchStatus = '';
-                                self.fnOrdersList(self.currentPage);
-                            } else {
-                                alert("일괄 상태 변경 중 오류가 발생했습니다: " + (data.message || ""));
-                            }
-                        },
-                        error: function() {
-                            alert("일괄 상태 변경 중 오류가 발생했습니다.");
+                            });
                         }
-                    });
+                    );
+                },
+                // 알림 모달 표시
+                showAlert: function(title, message) {
+                    this.alertModalTitle = title;
+                    this.alertModalMessage = message;
+                    this.showAlertModal = true;
+                },
+                // 알림 모달 닫기
+                closeAlertModal: function() {
+                    this.showAlertModal = false;
+                    this.alertModalTitle = '';
+                    this.alertModalMessage = '';
+                },
+                // 확인 모달 표시
+                showConfirm: function(title, message, callback) {
+                    this.confirmModalTitle = title;
+                    this.confirmModalMessage = message;
+                    this.confirmCallback = callback;
+                    this.showConfirmModal = true;
+                },
+                // 확인 모달 닫기
+                closeConfirmModal: function() {
+                    this.showConfirmModal = false;
+                    this.confirmModalTitle = '';
+                    this.confirmModalMessage = '';
+                    this.confirmCallback = null;
+                },
+                // 확인 모달 확인 버튼
+                confirmOk: function() {
+                    if (this.confirmCallback) {
+                        this.confirmCallback();
+                    }
+                    this.closeConfirmModal();
+                },
+                // 확인 모달 취소 버튼
+                confirmCancel: function() {
+                    this.closeConfirmModal();
+                },
+                // 실시간 알림 개수 가져오기
+                // 페이지 이동
+                goToPage: function(url) {
+                    window.location.href = url;
                 },
                 getBatchButtonTooltip: function() {
                     if (this.selectedOrders.length === 0) {
