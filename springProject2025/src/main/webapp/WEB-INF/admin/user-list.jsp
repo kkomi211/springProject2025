@@ -21,9 +21,12 @@
             <!-- 상단 검은색 바 -->
             <div class="topbar">
                 <div><strong>관리자 메인화면</strong></div>
-                <div>관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
-                        @click="fnLogout">로그오프</a></div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="line-height: 1.2;">관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
+                            @click="fnLogout">로그오프</a></div>
+                </div>
             </div>
+            
             <!-- 메뉴 바 (검은색) -->
             <div class="nav-black">
                 <a href="/admin.do">MAIN</a>
@@ -34,6 +37,7 @@
                 <a href="/admin/orders.do">주문 내역</a>
                 <a href="/admin/board-report.do">게시판 신고 리스트</a>
                 <a href="/admin/user-list.do" class="active">회원 관리 화면</a>
+                <a href="/admin/activity-log.do">활동 로그</a>
             </div>
             <!-- 본문 -->
             <div class="content">
@@ -131,6 +135,109 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- 회원 상세보기 모달 -->
+            <div v-if="showDetailModal" class="modal-overlay" @click.self="closeDetailModal">
+                <div class="modal-content inquiry-modal">
+                    <div class="modal-header">
+                        <h3>회원 정보 상세 화면</h3>
+                        <button @click="closeDetailModal" class="modal-close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body" v-if="userDetail">
+                        <table class="detail-table">
+                            <tr>
+                                <th>유저아이디</th>
+                                <td>{{userDetail.userId}}</td>
+                            </tr>
+                            <tr>
+                                <th>이름</th>
+                                <td>{{userDetail.name}}</td>
+                            </tr>
+                            <tr>
+                                <th>닉네임</th>
+                                <td>{{userDetail.nickName}}</td>
+                            </tr>
+                            <tr>
+                                <th>성별</th>
+                                <td>
+                                    <span v-if="userDetail.gender === 'M'">남자</span>
+                                    <span v-else-if="userDetail.gender === 'F'">여자</span>
+                                    <span v-else>알 수 없음</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>이메일</th>
+                                <td>{{userDetail.email}}</td>
+                            </tr>
+                            <tr>
+                                <th>주소</th>
+                                <td>{{userDetail.addr}}</td>
+                            </tr>
+                            <tr>
+                                <th>생년월일</th>
+                                <td>{{userDetail.birth}}</td>
+                            </tr>
+                            <tr>
+                                <th>휴대폰번호</th>
+                                <td>{{userDetail.phone}}</td>
+                            </tr>
+                            <tr>
+                                <th>가입날짜</th>
+                                <td>{{userDetail.cDate}}</td>
+                            </tr>
+                            <tr>
+                                <th>정보수정날짜</th>
+                                <td>{{userDetail.uDate}}</td>
+                            </tr>
+                            <tr>
+                                <th>유저타입</th>
+                                <td>
+                                    <span v-if="userDetail.userType === 'U'">일반 유저</span>
+                                    <span v-else-if="userDetail.userType === 'A'">관리자</span>
+                                    <span v-else>알 수 없음</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer" v-if="userDetail">
+                        <button @click="fnDeleteUser" class="btn-register-answer">삭제하기</button>
+                        <button @click="closeDetailModal" class="btn-back">닫기</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 알림 모달 -->
+            <div v-if="showAlertModal" class="modal-overlay" @click.self="closeAlertModal">
+                <div class="modal-content inquiry-modal">
+                    <div class="modal-header">
+                        <h3>{{ alertModalTitle }}</h3>
+                        <button @click="closeAlertModal" class="modal-close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p style="font-size: 1rem; line-height: 1.6; color: #2d3748; white-space: pre-line;">{{ alertModalMessage }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="closeAlertModal" class="btn-back">확인</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 확인 모달 -->
+            <div v-if="showConfirmModal" class="modal-overlay" @click.self="closeConfirmModal">
+                <div class="modal-content inquiry-modal">
+                    <div class="modal-header">
+                        <h3>{{ confirmModalTitle }}</h3>
+                        <button @click="closeConfirmModal" class="modal-close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p style="font-size: 1rem; line-height: 1.6; color: #2d3748; white-space: pre-line;">{{ confirmModalMessage }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="confirmCancel" class="btn-back">취소</button>
+                        <button @click="confirmOk" class="btn-register-answer">확인</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 
@@ -151,7 +258,18 @@
                     totalPages: 1,
                     loading: false, // 로딩 상태
                     sortColumnClient: '', // 클라이언트 측 정렬 컬럼
-                    sortDirection: 'asc' // 정렬 방향
+                    sortDirection: 'asc', // 정렬 방향
+                    // 모달 관련
+                    showDetailModal: false,
+                    userDetail: null,
+                    showAlertModal: false,
+                    alertModalTitle: '',
+                    alertModalMessage: '',
+                    showConfirmModal: false,
+                    confirmModalTitle: '',
+                    confirmModalMessage: '',
+                    confirmCallback: null,
+                    // 알림 관련
                 };
             },
             computed: {
@@ -241,7 +359,7 @@
                             }
                         },
                         error: function() {
-                            alert("데이터를 불러오는 중 오류가 발생했습니다.");
+                            self.showAlert("오류", "데이터를 불러오는 중 오류가 발생했습니다.");
                         },
                         complete: function() {
                             self.loading = false; // 로딩 종료
@@ -265,7 +383,104 @@
                     this.fnUserList(page);
                 },
                 fnUserDetail: function (userId) {
-                    pageChange("/admin/user-list/view.do", { userId: userId });
+                    let self = this;
+                    self.showDetailModal = true;
+                    self.userDetail = null;
+                    
+                    let param = {
+                        userId: userId
+                    };
+                    
+                    $.ajax({
+                        url: "/admin/user-list/detail.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            if (data.result === "success") {
+                                self.userDetail = data.detail;
+                            } else {
+                                self.showAlert("오류", "회원 정보를 불러오는데 실패했습니다.");
+                                self.closeDetailModal();
+                            }
+                        },
+                        error: function() {
+                            self.showAlert("오류", "회원 정보를 불러오는 중 오류가 발생했습니다.");
+                            self.closeDetailModal();
+                        }
+                    });
+                },
+                closeDetailModal() {
+                    this.showDetailModal = false;
+                    this.userDetail = null;
+                },
+                fnDeleteUser: function () {
+                    let self = this;
+                    if (!self.userDetail) return;
+
+                    self.showConfirm(
+                        "회원 삭제 확인",
+                        "'" + self.userDetail.name + "' 회원(" + self.userDetail.userId + ")을 정말로 삭제하시겠습니까?",
+                        function() {
+                            $.ajax({
+                                url: "/admin/user-list/delete.dox",
+                                dataType: "json",
+                                type: "POST",
+                                data: { userId: self.userDetail.userId },
+                                success: function (data) {
+                                    if (data.result === "success") {
+                                        self.showAlert("성공", "회원 삭제가 완료되었습니다.");
+                                        self.closeDetailModal();
+                                        self.fnUserList(self.currentPage);
+                                    } else {
+                                        self.showAlert("실패", "회원 삭제에 실패했습니다.\n" + data.message);
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    self.showAlert("오류", "회원 삭제 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+                                    console.error("AJAX Error:", status, error, xhr.responseText);
+                                }
+                            });
+                        }
+                    );
+                },
+                // 알림 모달 표시
+                showAlert: function(title, message) {
+                    this.alertModalTitle = title;
+                    this.alertModalMessage = message;
+                    this.showAlertModal = true;
+                },
+                // 알림 모달 닫기
+                closeAlertModal: function() {
+                    this.showAlertModal = false;
+                    this.alertModalTitle = '';
+                    this.alertModalMessage = '';
+                },
+                // 확인 모달 표시
+                showConfirm: function(title, message, callback) {
+                    this.confirmModalTitle = title;
+                    this.confirmModalMessage = message;
+                    this.confirmCallback = callback;
+                    this.showConfirmModal = true;
+                },
+                // 확인 모달 닫기
+                closeConfirmModal: function() {
+                    this.showConfirmModal = false;
+                    this.confirmModalTitle = '';
+                    this.confirmModalMessage = '';
+                    this.confirmCallback = null;
+                },
+                // 확인 모달 확인 버튼
+                confirmOk: function() {
+                    if (this.confirmCallback) {
+                        this.confirmCallback();
+                    }
+                    this.closeConfirmModal();
+                },
+                // 확인 모달 취소 버튼
+                confirmCancel: function() {
+                    this.closeConfirmModal();
                 },
                 downloadExcel: function() {
                     let self = this;
@@ -274,6 +489,10 @@
                     if (self.sortColumn) params.append('sortColumn', self.sortColumn);
                     
                     window.location.href = '/admin/user-list/excel.dox?' + params.toString();
+                },
+                // 페이지 이동
+                goToPage: function(url) {
+                    window.location.href = url;
                 }
             },
             mounted() {

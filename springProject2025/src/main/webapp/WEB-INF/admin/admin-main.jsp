@@ -22,10 +22,12 @@
             <!-- 상단 검은색 바 -->
             <div class="topbar">
                 <div><strong>관리자 메인화면</strong></div>
-                <div>관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
-                        @click="fnLogout">로그오프</a></div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="line-height: 1.2;">관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
+                            @click="fnLogout">로그오프</a></div>
+                </div>
             </div>
-
+            
             <!-- 메뉴 바 (검은색) -->
             <div class="nav-black">
                 <a href="/admin.do" class="active">MAIN</a>
@@ -36,6 +38,7 @@
                 <a href="/admin/orders.do">주문 내역</a>
                 <a href="/admin/board-report.do">게시판 신고 리스트</a>
                 <a href="/admin/user-list.do">회원 관리 화면</a>
+                <a href="/admin/activity-log.do">활동 로그</a>
             </div>
 
             <!-- 본문 -->
@@ -686,7 +689,11 @@
                     }
                 },
                 goToPage(url) {
-                    window.location.href = url;
+                    // 페이지 전환 전에 알림 읽음 처리가 완료되도록 약간의 지연 후 이동
+                    // (markNotificationAsRead가 먼저 실행되도록)
+                    setTimeout(() => {
+                        window.location.href = url;
+                    }, 100);
                 },
                 // 카테고리별 매출 비율 데이터 가져오기
                 fetchSalesByCategoryData() {

@@ -589,7 +589,9 @@
                     currentQty: 1,
                     unitPrice: 156000,
 
-                    userType: '${userType}',
+                    userType : '${userType}',
+
+                    cartCount: 0, // 장바구니 수량 변수 추가 (jgh260114)
                 };
             },
             computed: {
@@ -603,6 +605,26 @@
                 }
             },
             methods: {
+                // 장바구니 수량을 서버에서 가져오는 함수 (jgh260114)
+                fetchCartCount() {
+                    if (this.sessionId == '' || this.sessionId == null) return;
+                    let self = this;
+                    $.ajax({
+                        url: '/api/cartCount.dox', 
+                        method: 'GET',
+                        data: { sessionId: self.sessionId }, 
+                        dataType: 'json',
+                        success: (response) => {
+                            if (response.result === 'success') {
+                                self.cartCount = response.count;
+                            }
+                        },
+                        error: (err) => {
+                            console.error("AJAX 호출 중 오류 발생:", err);
+                        }
+                    });
+                },
+
                 // 이미지 경로 정규화
                 getImagePath(imgPath) {
                     // null, undefined, 빈 문자열 체크
@@ -1083,6 +1105,11 @@
                 let self = this;
                 self.fnGetUserInfo(); // 사용자 정보 조회
                 self.fnList();
+
+                // 장바구니 수량 조회 (jgh260114)
+                if (self.sessionId && self.sessionId !== '') {
+                    self.fetchCartCount();
+                }
             }
         });
 
