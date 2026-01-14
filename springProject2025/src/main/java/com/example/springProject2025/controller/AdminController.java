@@ -195,6 +195,26 @@ public class AdminController {
     return new Gson().toJson(resultMap);
   }
 
+  // product banner update 수정
+  @RequestMapping(value = "/admin/productBannerUpdate.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+  @ResponseBody
+  public String updateProductBanner(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+    resultMap = adminService.updateProductBanner(map);
+
+    return new Gson().toJson(resultMap);
+  }
+
+  // rally banner update 수정
+  @RequestMapping(value = "/admin/rallyBannerUpdate.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+  @ResponseBody
+  public String updateRallyBanner(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+    resultMap = adminService.updateRallyBanner(map);
+
+    return new Gson().toJson(resultMap);
+  }
+
   // 주문내역 상태 변경(신규주문->배송중, 배송중->배송완료) 메소드
   @RequestMapping(value = "admin/orders/updateStatus.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
   @ResponseBody

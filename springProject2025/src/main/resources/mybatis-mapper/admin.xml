@@ -42,11 +42,37 @@
 		WHERE BANNER_ID = #{bannerId}
 	</delete>
 	
+	<!-- product banner 수정/저장 -->
+	<update id="updateProductBanner" parameterType="hashmap">
+		UPDATE PRODUCT_BANNER_IMG
+		SET 
+			TITLE = #{title, jdbcType=VARCHAR},
+			PRODUCT_NO = #{productNo, jdbcType=NUMERIC},
+			CDATE = SYSDATE
+		WHERE 
+			PBANNER_IMG_NO = #{pBannerImgNo, jdbcType=NUMERIC}
+	</update>
+	
 	<!-- product banner 삭제 -->
 	<delete id="deleteProductBanner" parameterType="hashmap">
 		DELETE FROM PRODUCT_BANNER_IMG
 		WHERE PBANNER_IMG_NO = #{pBannerImgNo}
 	</delete>
+	
+	<!-- rally banner 수정/저장 -->
+	<update id="updateRallyBanner" parameterType="hashmap">
+		UPDATE RALLY
+		SET 
+			RALLY_NAME = #{rallyName, jdbcType=VARCHAR},
+			RALLY_DATE = TO_DATE(#{rallyDate}, 'YYYY-MM-DD'),
+			APPLICATION_PERIOD = TO_DATE(#{applicationPeriod}, 'YYYY-MM-DD'),
+			PRICE = #{price, jdbcType=VARCHAR},
+			PHONE = #{phone, jdbcType=VARCHAR},
+			TYPE = #{type, jdbcType=VARCHAR},
+			HOST = #{host, jdbcType=VARCHAR}
+		WHERE 
+			RALLY_NO = #{rallyNo, jdbcType=NUMERIC}
+	</update>
 	
 	<!-- rally banner 삭제 -->
 	<delete id="deleteRallyBanner" parameterType="hashmap">
@@ -911,4 +937,20 @@
         GROUP BY MD.SALES_MONTH, MD.MONTH_START_DATE
         ORDER BY MD.MONTH_START_DATE ASC
     </select>
-	</mapper>
+    
+    <!-- 올해 연간 매출 (배송완료, 교환완료 상태만 합산) -->
+    <select id="selectAnnualSales" resultType="long">
+        SELECT NVL(SUM(PAYMENT_AMOUNT), 0)
+        FROM ORDERS
+        WHERE STATUS IN ('배송완료', '교환완료')
+        AND TO_CHAR(CDATE, 'YYYY') = TO_CHAR(SYSDATE, 'YYYY')
+    </select>
+    
+    <!-- 전년 연간 매출 (배송완료, 교환완료 상태만 합산) -->
+    <select id="selectPreviousYearAnnualSales" resultType="long">
+        SELECT NVL(SUM(PAYMENT_AMOUNT), 0)
+        FROM ORDERS
+        WHERE STATUS IN ('배송완료', '교환완료')
+        AND TO_CHAR(CDATE, 'YYYY') = TO_CHAR(ADD_MONTHS(SYSDATE, -12), 'YYYY')
+    </select>
+</mapper>

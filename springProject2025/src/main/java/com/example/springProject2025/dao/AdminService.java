@@ -489,6 +489,24 @@ public class AdminService {
 		return resultMap;
 	}
 	
+	// product banner update 수정/저장
+	public HashMap<String, Object> updateProductBanner(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int updateResult = adminMapper.updateProductBanner(map);
+
+		resultMap.put("result", "success");
+		return resultMap;
+	}
+	
+	// rally banner update 수정/저장
+	public HashMap<String, Object> updateRallyBanner(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int updateResult = adminMapper.updateRallyBanner(map);
+
+		resultMap.put("result", "success");
+		return resultMap;
+	}
+	
 	// slide banner delect 삭제
 	public HashMap<String, Object> removeSlideBanner(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
@@ -896,6 +914,8 @@ public class AdminService {
         long monthlySales = adminMapper.selectMonthlySales(); // 이번 달 매출
         long previousMonthSales = adminMapper.selectPreviousMonthSales(); // 전월 매출
         long previousYearSameMonthSales = adminMapper.selectPreviousYearSameMonthSales(); // 전년 동월 매출
+        long annualSales = adminMapper.selectAnnualSales(); // 올해 연간 매출
+        long previousYearAnnualSales = adminMapper.selectPreviousYearAnnualSales(); // 전년 연간 매출
         List<HashMap<String, Object>> monthlySalesList = adminMapper.selectLastSixMonthsSales(); // 지난 6개월 월별 매출
         List<HashMap<String, Object>> previousYearMonthlySalesList = adminMapper.selectPreviousYearMonthlySales(); // 전년도 월별 매출
         // List<HashMap<String, Object>> salesByPaymentMethod = adminMapper.selectSalesByPaymentMethod(); 결제 방법별 매출
@@ -906,6 +926,8 @@ public class AdminService {
         summary.put("monthlySales", monthlySales);
         summary.put("previousMonthSales", previousMonthSales);
         summary.put("previousYearSameMonthSales", previousYearSameMonthSales);
+        summary.put("annualSales", annualSales);
+        summary.put("previousYearAnnualSales", previousYearAnnualSales);
         summary.put("monthlySalesList", monthlySalesList);
         summary.put("previousYearMonthlySalesList", previousYearMonthlySalesList);
         // summary.put("salesByPaymentMethod", salesByPaymentMethod);

@@ -26,6 +26,12 @@ public interface AdminMapper {
 	// banner(slide) 수정/저장/삭제/추가 (update)
 	int updateBannerModify(HashMap<String, Object> map);
 	
+	// banner(product) 수정/저장
+	int updateProductBanner(HashMap<String, Object> map);
+	
+	// banner(rally) 수정/저장
+	int updateRallyBanner(HashMap<String, Object> map);
+	
 	// banner(slide) 삭제
 	int deleteSlideBanner(HashMap<String, Object> map);
 	
@@ -222,4 +228,10 @@ public interface AdminMapper {
     
     // 전년도 월별 매출 (비교용)
     List<HashMap<String, Object>> selectPreviousYearMonthlySales();
+    
+    // 올해 연간 매출 (배송완료, 교환완료)
+    Long selectAnnualSales();
+    
+    // 전년 연간 매출 (배송완료, 교환완료)
+    Long selectPreviousYearAnnualSales();
 }
