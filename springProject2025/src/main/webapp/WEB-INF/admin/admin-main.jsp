@@ -61,28 +61,10 @@
                         <h3>상품 요약</h3>
                         <div class="product-summary-section">
                             <div>
-                                <h4>일반 요약</h4>
                                 <table>
                                     <tr>
-                                        <th>항목</th>
-                                        <th>값</th>
-                                    </tr>
-                                    <tr>
-                                        <td>총 상품 수</td>
+                                        <th>총 상품 수</th>
                                         <td>{{ productSummary.totalProducts }} 개</td>
-                                    </tr>
-                                    <tr>
-                                        <td>재고 있음 상품 수</td>
-                                        <td>{{ productSummary.inStockProducts }} 개</td>
-                                    </tr>
-                                    <tr>
-                                        <td>품절 임박 상품 수</td>
-                                        <td>
-                                            <span v-if="productSummary.lowStockProducts > 0" style="color: #ff9800; font-weight: bold;">
-                                                {{ productSummary.lowStockProducts }} 개 ⚠️
-                                            </span>
-                                            <span v-else>{{ productSummary.lowStockProducts }} 개</span>
-                                        </td>
                                     </tr>
                                 </table>
                             </div>
@@ -108,7 +90,7 @@
                     </div>
 
                     <!-- 품절 임박 상품 알림 카드 -->
-                    <div class="dashboard-card" :class="{'stock-alert-card': lowStockProductsList.length > 0}">
+                    <div class="dashboard-card clickable" @click="goToPage('/admin/product.do')" :class="{'stock-alert-card': lowStockProductsList.length > 0}">
                         <h3>
                             ⚠️ 품절 임박 상품
                             <span v-if="lowStockProductsList.length > 0" style="color: #dc3545; font-size: 0.9em;">
@@ -116,17 +98,17 @@
                             </span>
                         </h3>
                         <div v-if="lowStockProductsList.length > 0" class="low-stock-list-full">
-                            <table style="width: 100%; font-size: 0.9em;">
+                            <table style="width: 100%; font-size: 0.9em;" class="low-stock-table">
                                 <tr>
                                     <th>상품명</th>
-                                    <th>사이즈</th>
-                                    <th>재고</th>
+                                    <th class="size-col">사이즈</th>
+                                    <th class="stock-col">재고</th>
                                 </tr>
                                 <tr v-for="product in lowStockProductsList" :key="product.PRODUCT_NO" 
                                     :class="product.QUANTITY === 0 ? 'stock-out-row' : 'stock-low-row'">
                                     <td>{{ product.PRODUCT_NAME }}</td>
-                                    <td>{{ product.PRODUCT_SIZE || '-' }}</td>
-                                    <td>
+                                    <td class="size-col">{{ product.PRODUCT_SIZE || '-' }}</td>
+                                    <td class="stock-col">
                                         <span :class="product.QUANTITY === 0 ? 'stock-badge-out' : 'stock-badge-low'">
                                             {{ product.QUANTITY }}
                                             <span class="stock-badge">{{ product.QUANTITY === 0 ? '품절' : '품절임박' }}</span>
@@ -141,7 +123,7 @@
                     </div>
 
                     <!-- 미처리 요청 -->
-                    <div class="dashboard-card request-alert-card" :class="{'request-alert-card-active': requestSummary.totalPendingRequestsCount > 0}" @click="goToPage('/admin/orders.do')">
+                    <div class="dashboard-card request-alert-card" :class="{'request-alert-card-active': requestSummary.totalPendingRequestsCount > 0}">
                         <h3>
                             ⚠️ 미처리 요청
                             <span v-if="requestSummary.totalPendingRequestsCount > 0" style="color: #dc3545; font-size: 0.9em;">
@@ -155,23 +137,23 @@
                                         <th>항목</th>
                                         <th>대기 수</th>
                                     </tr>
-                                    <tr>
+                                    <tr class="clickable-row" @click.stop="goToPage('/admin/orders.do')">
                                         <td>배송 중 주문</td>
                                         <td>{{ requestSummary.deliveryInProgress }} 건</td>
                                     </tr>
-                                    <tr>
+                                    <tr class="clickable-row" @click.stop="goToPage('/admin/board-report.do')">
                                         <td>신규 신고 게시물</td>
                                         <td>{{ requestSummary.newReports }} 건</td>
                                     </tr>
-                                    <tr>
+                                    <tr class="clickable-row" @click.stop="goToPage('/admin/orders.do')">
                                         <td>반품 요청 대기</td>
                                         <td>{{ requestSummary.refundRequests }} 건</td>
                                     </tr>
-                                    <tr>
+                                    <tr class="clickable-row" @click.stop="goToPage('/admin/orders.do')">
                                         <td>교환 요청 대기</td>
                                         <td>{{ requestSummary.exchangeRequests }} 건</td>
                                     </tr>
-                                    <tr>
+                                    <tr class="clickable-row" @click.stop="goToPage('/admin/inquiry.do')">
                                         <td>상품 문의 대기</td>
                                         <td>{{ requestSummary.newProductInquiries }} 건</td>
                                     </tr>
@@ -232,6 +214,18 @@
                                         <td>
                                             <span :style="getComparisonStyle(salesSummary.monthlySales, salesSummary.previousYearSameMonthSales)">
                                                 {{ getComparisonText(salesSummary.monthlySales, salesSummary.previousYearSameMonthSales) }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>연간 매출</td>
+                                        <td>{{ formatCurrency(salesSummary.annualSales) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>전년 대비</td>
+                                        <td>
+                                            <span :style="getComparisonStyle(salesSummary.annualSales, salesSummary.previousYearAnnualSales)">
+                                                {{ getComparisonText(salesSummary.annualSales, salesSummary.previousYearAnnualSales) }}
                                             </span>
                                         </td>
                                     </tr>
@@ -334,6 +328,8 @@
                         monthlySales: 0,
                         previousMonthSales: 0,
                         previousYearSameMonthSales: 0,
+                        annualSales: 0,
+                        previousYearAnnualSales: 0,
                         monthlySalesChartLabels: [],
                         monthlySalesChartData: [],
                         previousYearMonthlySalesChartData: [],
@@ -556,6 +552,8 @@
                                 self.salesSummary.monthlySales = response.data.monthlySales; // 이번 달 매출
                                 self.salesSummary.previousMonthSales = response.data.previousMonthSales || 0; // 전월 매출
                                 self.salesSummary.previousYearSameMonthSales = response.data.previousYearSameMonthSales || 0; // 전년 동월 매출
+                                self.salesSummary.annualSales = response.data.annualSales || 0; // 연간 매출
+                                self.salesSummary.previousYearAnnualSales = response.data.previousYearAnnualSales || 0; // 전년 연간 매출
                                 self.salesSummary.monthlySalesChartLabels = response.data.monthlySalesList.map(item => item.SALES_MONTH); // 대문자
                                 self.salesSummary.monthlySalesChartData = response.data.monthlySalesList.map(item => item.MONTHLY_SALES);   // 대문자
                                 self.salesSummary.previousYearMonthlySalesChartData = (response.data.previousYearMonthlySalesList || []).map(item => item.MONTHLY_SALES); // 전년도 월별 매출
@@ -737,7 +735,7 @@
                             maintainAspectRatio: false,
                             plugins: {
                                 legend: {
-                                    position: 'right',
+                                    position: 'bottom',
                                     labels: {
                                         padding: 15,
                                         font: {

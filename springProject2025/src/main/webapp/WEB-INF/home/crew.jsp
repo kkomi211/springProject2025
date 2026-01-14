@@ -7,6 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/css/user-style.css">
         <link rel="stylesheet" href="/css/crew-style.css">
+        <link rel="stylesheet" href="/css/board-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -560,10 +561,12 @@
                                     </h1>
 
                                     <div class="search-bar">
-                                        <div class="search-wrapper">
-                                            <input type="text" placeholder="검색어" v-model="keyword"
+                                        <div class="search-box">
+                                            <input class="search" type="text" placeholder="검색어를 입력하세요" v-model="keyword"
                                                 @keyup.enter="fnList">
-                                            <button class="search-btn" @click="fnList">🔍</button>
+                                            <a href="javascript:;" @click="fnBoardList">
+                                                <div><i data-lucide="search" stroke-width="1.5"></i></div>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

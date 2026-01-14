@@ -38,28 +38,26 @@
                 <a href="/admin/user-list.do">회원 관리 화면</a>
             </div>
 
-            <!-- 메인 슬라이드 광고-->
-            <h2 id="main-slide-banner-section">메인 슬라이드 배너 관리</h2>
-            <div>
-                <button @click="openMainAddModal" style="background-color:#007bff;">
-                    메인 배너 추가
-                </button>
-            </div>
-            <div class="content-wrapper">
-                <div class="left-ad-area">
-                    <div class="ad-box" onclick="scrollToSection('main-slide-banner-section')">메인 슬라이드 배너</div>
-                    <div class="ad-box" onclick="scrollToSection('product-banner-section')">제품 배너</div>
-                    <div class="ad-box" onclick="scrollToSection('contest-banner-section')">서브 슬라이드 배너</div>
-                </div>
-
-                <table>
+            <div class="banner-layout-container">
+                <!-- 왼쪽 영역: 메인 슬라이드 배너 관리 & 제품 배너 관리 -->
+                <div class="banner-left-section">
+                    <!-- 메인 슬라이드 광고-->
+                    <div class="banner-section">
+                        <div class="banner-header">
+                            <h2 id="main-slide-banner-section">메인 슬라이드 배너 관리</h2>
+                            <button @click="openMainAddModal" class="banner-btn-primary">
+                                메인 배너 추가
+                            </button>
+                        </div>
+                        <div class="content-wrapper">
+                            <table>
                     <tr>
                         <th>배너 ID</th>
                         <th>배너 제목</th>
                         <th>이미지 경로</th>
                         <th>URL</th>
                         <th>등록 날짜</th>
-                        <th>수정 하기</th>
+                        <th>수정</th>
                     </tr>
 
                     <template v-for="(item, index) in list" :key="item.bannerId">
@@ -68,14 +66,14 @@
                                 <td>{{item.bannerId}}</td>
                                 <td @click="toggleImage(index)"
                                     style="cursor:pointer; color:#007bff; text-decoration:underline;">
-                                    {{item.title}}
+                                    <span class="text-clamp">{{item.title}}</span>
                                 </td>
-                                <td>{{item.imageDir}}</td>
-                                <td>{{item.linkUrl}}</td>
+                                <td><span class="text-clamp">{{item.imageDir}}</span></td>
+                                <td><span class="text-clamp">{{item.linkUrl}}</span></td>
                                 <td>{{item.cDate}}</td>
                                 <td>
                                     <button @click="item.isEditing = true"
-                                        style="background-color: #007bff;">수정하기</button>
+                                        class="banner-btn-primary">수정</button>
                                 </td>
                             </template>
 
@@ -87,11 +85,11 @@
                                 <td>{{item.cDate}}</td>
                                 <td>
                                     <button @click="saveMainBanner(index)"
-                                        style="background-color: #007bff;">저장하기</button>
+                                        class="banner-btn-primary">저장</button>
                                     <button @click="item.isEditing = false"
-                                        style="background-color: #7e7e7e;">취소하기</button>
+                                        class="banner-btn-secondary">취소</button>
                                     <button @click="openMainDeleteModal(item)"
-                                        style="background-color: #dc3545;">삭제</button>
+                                        class="banner-btn-danger">삭제</button>
                                 </td>
                             </template>
                         </tr>
@@ -103,7 +101,148 @@
                         </tr>
                     </template>
 
-                </table>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 제품 광고-->
+                    <div class="banner-section">
+                        <div class="banner-header">
+                            <h2 id="product-banner-section">제품 배너 관리</h2>
+                            <button @click="openProductAddModal" class="banner-btn-primary">
+                                제품 배너 추가
+                            </button>
+                        </div>
+
+                        <table>
+                            <tr>
+                                <th>이미지 번호</th>
+                                <th>배너 제목</th>
+                                <th>상품 번호</th>
+                                <th>등록 날짜</th>
+                                <th>수정</th>
+                            </tr>
+
+                            <template v-for="(item, index) in list1" :key="item.pBannerImgNo">
+                                <tr>
+                                    <template v-if="!item.isEditing">
+                                        <td>{{item.pBannerImgNo}}</td>
+                                        <td @click="toggleProductImage(index)"
+                                            style="cursor:pointer; color:#007bff; text-decoration:underline;">
+                                            <span class="text-clamp">{{item.title}}</span>
+                                        </td>
+                                        <td>{{item.productNo}}</td>
+                                        <td>{{item.cDate}}</td>
+                                        <td>
+                                            <button @click="item.isEditing = true"
+                                                class="banner-btn-primary">수정</button>
+                                        </td>
+                                    </template>
+
+                                    <template v-else>
+                                        <td>{{item.pBannerImgNo}}</td>
+                                        <td><input style="height: 78px;" v-model="item.title"></td>
+                                        <td><input style="height: 78px;" v-model="item.productNo"></td>
+                                        <td>{{item.cDate}}</td>
+                                        <td>
+                                            <button @click="saveProductBanner(index)"
+                                                class="banner-btn-primary">저장</button>
+                                            <button @click="item.isEditing = false"
+                                                class="banner-btn-secondary">취소</button>
+                                            <button @click="openProductDeleteModal(item)"
+                                                class="banner-btn-danger">삭제</button>
+                                        </td>
+                                    </template>
+                                </tr>
+
+                                <tr v-if="item.showImage">
+                                    <td colspan="5" style="text-align:center; background-color:#f9f9f9;">
+                                        <img :src="item.imgPath" alt="제품 배너 이미지" style="max-width:600px; border-radius:6px;">
+                                    </td>
+                                </tr>
+                            </template>
+
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 오른쪽 영역: 대회 배너 관리 -->
+                <div class="banner-right-section">
+                    <!-- 대회 광고-->
+                    <div class="banner-section">
+                        <div class="banner-header">
+                            <h2 id="contest-banner-section">대회 배너 관리</h2>
+                            <button @click="openRallyAddModal" class="banner-btn-primary">
+                                광고 배너 추가
+                            </button>
+                        </div>
+
+                        <table>
+                            <tr>
+                                <th>대회 번호</th>
+                                <th>대회 이름</th>
+                                <th>대회 일시</th>
+                                <th>접수 기간</th>
+                                <th>가격</th>
+                                <th>문의 번호</th>
+                                <th>참가부문</th>
+                                <th>주최</th>
+                                <th>등록 날짜</th>
+                                <th>수정</th>
+                            </tr>
+
+                            <template v-for="(item, index) in list2" :key="item.rallyNo">
+                                <tr>
+                                    <template v-if="!item.isEditing">
+                                        <td>{{item.rallyNo}}</td>
+                                        <td @click="toggleRallyImage(index)"
+                                            style="cursor:pointer; color:#007bff; text-decoration:underline;">
+                                            <span class="text-clamp">{{item.rallyName}}</span>
+                                        </td>
+                                        <td><span class="text-clamp">{{item.rallyDate}}</span></td>
+                                        <td><span class="text-clamp">{{item.applicationPeriod}}</span></td>
+                                        <td><span class="text-clamp">{{item.price}}</span></td>
+                                        <td><span class="text-clamp">{{item.phone}}</span></td>
+                                        <td><span class="text-clamp">{{item.type}}</span></td>
+                                        <td><span class="text-clamp">{{item.host}}</span></td>
+                                        <td><span class="text-clamp">{{item.cDate}}</span></td>
+                                        <td>
+                                            <button @click="item.isEditing = true"
+                                                class="banner-btn-primary">수정</button>
+                                        </td>
+                                    </template>
+
+                                    <template v-else>
+                                        <td>{{item.rallyNo}}</td>
+                                        <td><input style="height: 78px;" v-model="item.rallyName"></td>
+                                        <td><input style="height: 78px;" v-model="item.rallyDate"></td>
+                                        <td><input style="height: 78px;" v-model="item.applicationPeriod"></td>
+                                        <td><input style="height: 78px;" v-model="item.price"></td>
+                                        <td><input style="height: 78px;" v-model="item.phone"></td>
+                                        <td><input style="height: 78px;" v-model="item.type"></td>
+                                        <td><input style="height: 78px;" v-model="item.host"></td>
+                                        <td>{{item.cDate}}</td>
+                                        <td>
+                                            <button @click="saveRallyBanner(index)"
+                                                class="banner-btn-primary">저장</button>
+                                            <button @click="item.isEditing = false"
+                                                class="banner-btn-secondary">취소</button>
+                                            <button @click="openRallyDeleteModal(item)"
+                                                class="banner-btn-danger">삭제</button>
+                                        </td>
+                                    </template>
+                                </tr>
+
+                                <tr v-if="item.showImage">
+                                    <td colspan="10" style="text-align:center; background-color:#f9f9f9;">
+                                        <img :src="item.imgPath" alt="대회 배너 이미지" style="max-width:600px; border-radius:6px;">
+                                    </td>
+                                </tr>
+                            </template>
+
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <div v-if="showMainDeleteModal" class="modal-overlay">
@@ -138,48 +277,6 @@
                 <img :src="selectedImage" alt="배너 이미지">
             </div>
 
-
-            <!-- 제품 광고-->
-            <h2 id="product-banner-section">제품 배너 관리</h2>
-
-            <div class="product-banner-controls">
-                <button @click="openProductAddModal" style="background-color:#007bff;">
-                    제품 배너 추가
-                </button>
-            </div>
-
-            <table>
-                <tr>
-                    <th>이미지 번호</th>
-                    <th>배너 제목</th>
-                    <th>상품 번호</th>
-                    <th>등록 날짜</th>
-                    <th>삭제</th>
-                </tr>
-
-                <template v-for="(item, index) in list1" :key="item.pBannerImgNo">
-                    <tr>
-                        <td>{{item.pBannerImgNo}}</td>
-                        <td @click="toggleProductImage(index)"
-                            style="cursor:pointer; color:#007bff; text-decoration:underline;">
-                            {{item.title}}
-                        </td>
-                        <td>{{item.productNo}}</td>
-                        <td>{{item.cDate}}</td>
-                        <td>
-                            <button @click="openProductDeleteModal(item)" style="background-color: #dc3545;">삭제</button>
-                        </td>
-                    </tr>
-
-                    <tr v-if="item.showImage">
-                        <td colspan="5" style="text-align:center; background-color:#f9f9f9;">
-                            <img :src="item.imgPath" alt="제품 배너 이미지" style="max-width:600px; border-radius:6px;">
-                        </td>
-                    </tr>
-                </template>
-
-            </table>
-
             <div v-if="showProductDeleteModal" class="modal-overlay">
                 <div class="modal-content">
                     <h3>삭제 확인</h3>
@@ -205,58 +302,6 @@
                     </div>
                 </div>
             </div>
-
-
-            <!-- 대회 광고-->
-            <h2 id="contest-banner-section">대회 배너 관리</h2>
-
-            <div class="product-banner-controls">
-                <button @click="openRallyAddModal" style="background-color:#007bff;">
-                    광고 배너 추가
-                </button>
-            </div>
-
-            <table>
-                <tr>
-                    <th>대회 번호</th>
-                    <th>대회 이름</th>
-                    <th>대회 일시</th>
-                    <th>접수 기간</th>
-                    <th>가격</th>
-                    <th>문의 번호</th>
-                    <th>참가부문</th>
-                    <th>주최</th>
-                    <th>등록날 짜</th>
-                    <th>삭제</th>
-                </tr>
-
-                <template v-for="(item, index) in list2" :key="item.rallyNo">
-                    <tr>
-                        <td>{{item.rallyNo}}</td>
-                        <td @click="toggleRallyImage(index)"
-                            style="cursor:pointer; color:#007bff; text-decoration:underline;">
-                            {{item.rallyName}}
-                        </td>
-                        <td>{{item.rallyDate}}</td>
-                        <td>{{item.applicationPeriod}}</td>
-                        <td>{{item.price}}</td>
-                        <td>{{item.phone}}</td>
-                        <td>{{item.type}}</td>
-                        <td>{{item.host}}</td>
-                        <td>{{item.cDate}}</td>
-                        <td>
-                            <button @click="openRallyDeleteModal(item)" style="background-color: #dc3545;">삭제</button>
-                        </td>
-                    </tr>
-
-                    <tr v-if="item.showImage">
-                        <td colspan="10" style="text-align:center; background-color:#f9f9f9;">
-                            <img :src="item.imgPath" alt="대회 배너 이미지" style="max-width:600px; border-radius:6px;">
-                        </td>
-                    </tr>
-                </template>
-
-            </table>
 
             <!-- 대회 배너 삭제 모달 -->
             <div v-if="showRallyDeleteModal" class="modal-overlay">
@@ -488,6 +533,27 @@
                 },
 
                 // 제품 배너 기능 (list1)
+                saveProductBanner(index) {
+                    let item = this.list1[index];
+                    $.ajax({
+                        url: "/admin/productBannerUpdate.dox",
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            pBannerImgNo: item.pBannerImgNo,
+                            title: item.title,
+                            productNo: item.productNo
+                        },
+                        success: (res) => {
+                            alert("제품 배너 저장 완료!");
+                            this.list1[index].isEditing = false; // 수정모드 해제
+                            this.fnList();
+                        },
+                        error: () => {
+                            alert("제품 배너 저장 오류 발생!");
+                        }
+                    });
+                },
                 toggleProductImage(index) { // 제품 배너 이미지 토글
                     // list의 이미지 토글은 유지
                     this.list.forEach(item => item.showImage = false);
@@ -555,6 +621,32 @@
                 },
 
                 // 대회 광고 (list2)
+                saveRallyBanner(index) {
+                    let item = this.list2[index];
+                    $.ajax({
+                        url: "/admin/rallyBannerUpdate.dox",
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            rallyNo: item.rallyNo,
+                            rallyName: item.rallyName,
+                            rallyDate: item.rallyDate,
+                            applicationPeriod: item.applicationPeriod,
+                            price: item.price,
+                            phone: item.phone,
+                            type: item.type,
+                            host: item.host
+                        },
+                        success: (res) => {
+                            alert("대회 배너 저장 완료!");
+                            this.list2[index].isEditing = false; // 수정모드 해제
+                            this.fnList();
+                        },
+                        error: () => {
+                            alert("대회 배너 저장 오류 발생!");
+                        }
+                    });
+                },
                 toggleRallyImage(index) {
                     // 대회 배너 이미지 토글
                     this.list2.forEach((item, i) => {

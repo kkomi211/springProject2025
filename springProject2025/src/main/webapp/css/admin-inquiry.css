@@ -1997,3 +1997,50 @@
 		max-width: 90% !important;
 	}
 	
+	/* 품절 임박 상품 테이블 열 너비 조정 */
+	.low-stock-table {
+		table-layout: fixed !important;
+	}
+	
+	.low-stock-table th.size-col,
+	.low-stock-table td.size-col {
+		width: 15% !important;
+		min-width: 15% !important;
+		max-width: 15% !important;
+	}
+	
+	.low-stock-table th.stock-col,
+	.low-stock-table td.stock-col {
+		width: 25% !important;
+		min-width: 25% !important;
+		max-width: 25% !important;
+	}
+	
+	.low-stock-table th:first-child,
+	.low-stock-table td:first-child {
+		width: 60% !important;
+		min-width: 60% !important;
+		max-width: 60% !important;
+	}
+	
+	/* 미처리 요청 카드 클릭 가능한 행 스타일 */
+	.request-alert-card table .clickable-row {
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+	
+	.request-alert-card table .clickable-row:hover {
+		background-color: rgba(102, 126, 234, 0.1) !important;
+		transform: translateX(4px);
+	}
+	
+	/* 카테고리별 매출 비율 차트 컨테이너 조정 */
+	.dashboard-chart-container {
+		min-height: 250px;
+	}
+	
+	/* 카테고리별 매출 비율 차트 범례 아래 배치 시 여백 조정 */
+	#salesByCategoryChart {
+		margin-bottom: 40px;
+	}
+	

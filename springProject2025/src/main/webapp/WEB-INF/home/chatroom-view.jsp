@@ -177,6 +177,12 @@
                 gap: 20px;
                 height: 600px;
                 width: 800px;
+                background: linear-gradient(180deg, #fce5e5 0%, #ebedee 100%);
+                /* 그라데이션 배경 */
+                border: none;
+                /* 기존 테두리 제거 */
+                box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.03);
+                /* 안쪽 그림자로 깊이감 */
             }
 
             /* 날짜 구분선 */
@@ -243,9 +249,13 @@
             }
 
             .my-message .chat-bubble {
-                background-color: #DCCCFF;
-                /* 연보라색 적용 */
-                color: #000;
+                background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+                /* 보라색 그라데이션 */
+                color: white;
+                /* 글자색 흰색 */
+                box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+                /* 그림자 */
+                border: none;
             }
 
             .other-message .chat-bubble {
@@ -555,6 +565,48 @@
                 gap: 15px;
                 font-weight: bold;
                 color: #ccc;
+            }
+
+            .bot-section .chat-bubble {
+                /* ▼▼▼ 여기만 수정 ▼▼▼ */
+                background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+                /* 민트/하늘 그라데이션 */
+                color: #333;
+                /* 글자색 진하게 */
+                box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+                border: none;
+            }
+
+            .chatInput {
+                /* 기존 flex, padding 등은 유지 */
+
+                /* ▼▼▼ 여기만 수정 ▼▼▼ */
+                border-radius: 30px;
+                /* 아주 둥글게 */
+                border: 1px solid #ddd;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+                /* 살짝 띄운 느낌 */
+            }
+
+            .button-box button {
+                /* 기존 padding 등 유지 */
+
+                /* ▼▼▼ 여기만 수정 ▼▼▼ */
+                background: linear-gradient(135deg, #434343 0%, #000000 100%);
+                /* 검정 그라데이션 */
+                color: white;
+                border-radius: 30px;
+                /* 둥글게 */
+                border: none;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+                /* 그림자 */
+                transition: transform 0.1s;
+                /* 클릭 효과용 */
+            }
+
+            /* 마우스 올렸을 때 살짝 뜨는 효과 */
+            .button-box button:hover {
+                transform: translateY(-2px);
             }
         </style>
     </head>

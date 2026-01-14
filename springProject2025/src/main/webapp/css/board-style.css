@@ -113,88 +113,233 @@ ul {
   margin-bottom: 10px;
 }
 /* ------------------------------
-   게시판 헤더 + 검색바 수정
+   게시판 헤더 + 검색바
 ------------------------------ */
 .board-header {
-  display: flex;                 /* horizontal layout */
-  align-items: center;           /* vertical alignment */
-  justify-content: space-between;/* 게시판 left, search bar right */
-  margin-bottom: 20px;
-  border-bottom: 2px solid #333;
-  padding-bottom: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
 }
 
 .search-bar {
-  margin-bottom: 15px; /* align with title */
+    margin-bottom: 15px;
 }
 
-.search-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 5px; /* space between select, input, button */
-  width: 100%;
-  max-width: 450px; /* optional */
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  overflow: hidden;
-  background-color: #fff;
+/* Search Box Container */
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 450px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fff;
+    transition: border-color 0.2s;
 }
 
-.search-wrapper select,
-.search-wrapper input,
-.search-wrapper .search-btn {
-  height: 32px;       /* unify height for alignment */
-  font-size: 14px;    /* match text size */
+.search-box:hover {
+    border-color: #888;
 }
 
-.search-wrapper select {
-  border: none;
-  outline: none;
-  width: 110px;
-  padding: 0 12px;
-  background-color: rgb(197, 197, 197);
-  color: black;
-  cursor: pointer;
+/* Select Dropdown - Improved Styling */
+.search-box .board-select {
+    height: 38px;
+    border: none;
+    outline: none;
+    width: 120px;
+    padding: 0 30px 0 12px;
+    background-color: #f8f9fa;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    color: #333;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    transition: background-color 0.2s;
+    border-right: 1px solid #e0e0e0;
 }
 
-.search-wrapper input {
-  flex: 1;
-  border: none;
-  outline: none;
-  padding: 0 10px;
+.search-box .board-select:hover {
+    background-color: #f0f1f3;
 }
 
-.search-wrapper .search-btn {
-  border: none;
-  background-color: #fff;
-  cursor: pointer;
-  font-size: 18px;
-  padding: 0 12px;
-  color: #2a2a72;
+.search-box .board-select:focus {
+    background-color: #e8eaf0;
+}
+
+/* Search Input */
+.search-box input.search {
+    flex: 1;
+    height: 38px;
+    border: none;
+    outline: none;
+    padding: 0 40px 0 15px;
+    font-size: 14px;
+}
+
+.search-box input.search::placeholder {
+    color: #999;
+}
+
+/* Search Icon Container */
+.search-box a {
+    position: absolute;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.search-box a div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    color: #666;
+    transition: color 0.2s;
+}
+
+.search-box a:hover div {
+    color: #2a2a72;
+}
+
+.search-box a i {
+    width: 20px;
+    height: 20px;
+}
+
+/* Page Size Dropdown */
+.page-size-select {
+    height: 38px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 0 30px 0 12px;
+    background-color: #f8f9fa;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    color: #333;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+}
+
+.page-size-select:hover {
+    background-color: #f0f1f3;
+    border-color: #888;
+}
+
+.page-size-select:focus {
+    background-color: #e8eaf0;
+    border-color: #666;
+    outline: none;
+}
+
+/* Page Size Dropdown */
+.page-size-select {
+    height: 38px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 0 30px 0 12px;
+    background-color: #f8f9fa;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    color: #333;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    transition: all 0.2s;
+    margin-bottom: 15px;
+}
+
+.page-size-select:hover {
+    background-color: #f0f1f3;
+    border-color: #888;
+}
+
+.page-size-select:focus {
+    background-color: #e8eaf0;
+    border-color: #666;
+    outline: none;
 }
 
 /* 게시판 테이블 스타일 */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
-  /* box-shadow: 0px 0px 4px -1px; */
-  border-radius: 8px;
-}
-
-th, td {
-  border-bottom: 1px solid #eee;
-  padding: 12px 20px;
-  text-align: left;
+  font-family: 'Jost', sans-serif;
 }
 
 th {
-  background-color: #f7f7f7;
-  font-weight: bold;
+  text-align: left;
+  font-weight: 500;
+  font-size: 13px;
+  color: #777;
+  padding: 12px 10px;
+  border-bottom: 1px solid #eee;
+}
+
+td {
+  padding: 14px 10px;
+  vertical-align: middle;
+}
+
+tr {
+  border-bottom: 1px solid #f1f1f1;
 }
 
 tr:hover {
   background-color: #fafafa;
+}
+
+/* Table edits */
+
+.title-cell a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.post-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #222;
+}
+
+.sub-meta {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #999;
 }
 
 .comment-column{
@@ -209,14 +354,26 @@ tr:hover {
     margin: 20px 0;            /* optional spacing above/below */
 }
 
+.write-btn-wrapper button{
+  background-color: black;
+  color: white;
+  border-radius: 8px;
+}
+
 #view-cnt{
   text-align: center;
+}
+
+.show-keylock{
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 /* ------------------------------
    공통 버튼 스타일
 ------------------------------ */
-.btn, .page-btn {
+.btn, .write-btn, .page-btn {
   padding: 10px 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -232,6 +389,10 @@ tr:hover {
 
 .btn:hover {
   background-color: #f0f0f0;
+}
+
+.write-btn:hover{
+  transform: scale(1.02);
 }
 
 .bottom-btn, .list-btn {
