@@ -11,7 +11,8 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet">
         <script src="/js/page-change.js"></script>
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
@@ -22,193 +23,239 @@
         <script src="https://unpkg.com/lucide@latest"></script>
 
         <style>
-             /* New CSS from homepage */
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            color: #333;
-        }
-        #app { /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
+            /* New CSS from homepage */
+            html,
+            body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                color: #333;
+            }
 
-        /* --- Header Section (화면 전체 너비) --- */
-        header { /* default 헤더 스타일이 header 태그에 직접 적용되도록 재구성 */
-            width: 100%;
-            background-color: black; /* default top-header의 배경색을 header 전체로 */
-            color: white; /* default top-header의 글자색을 header 전체로 */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+            #app {
+                /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
 
-        .top-header { /* default top-header가 header의 유일한 자식이 됨 */
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 150px; /* default top-header의 높이 */
-            padding: 0 40px; /* default footer padding과 맞춤 */
-            box-sizing: border-box; /* 패딩이 width에 포함되도록 */
-        }
-        .top-header div {
-            display: inline-block;
-            text-align: left;
-            font-size: 15px;
-            margin-right: 0; /* flex gap 사용을 위해 개별 div 마진 제거 */
-        }
-        .top-header input {
-            height: 25px;
-            border-radius: 8px;
-            width: 200px;
-        }
+            a {
+                text-decoration: none;
+                color: inherit;
+            }
 
-        .brand-name { /* top-header 내 brand-name */
-            margin-right: 0; /* top-header div의 default margin-right 상쇄 */
-        }
-        .brand-name div {
-			font-family: 'Jost', sans-serif;
-			font-size: 60px;
-			font-weight: 900;
-			letter-spacing: 3px;
-			margin-left: 0;
-			/* top-header div의 default margin-left 상쇄 */
-			display: block;
-			color: white;
-			/* default 유지 */
-		}
-		.brand-name a:hover {
-			text-decoration: none;
-		}
-        .brand-name a {
-            color: white;
-        }
+            a:hover {
+                text-decoration: underline;
+            }
 
-        #right-items {
-            display: flex;
-            align-items: center;
-            gap: 20px; /* 요소들 간 간격 */
-        }
-        #right-items div {
-            font-size: 15px;
-            white-space: nowrap;
-        }
-        #right-items div a {
-            color: white; /* default top-header의 글자색 */
-        }
-        #right-items div a:hover {
-            color: #eee;
-        }
+            /* --- Header Section (화면 전체 너비) --- */
+            header {
+                /* default 헤더 스타일이 header 태그에 직접 적용되도록 재구성 */
+                width: 100%;
+                background-color: black;
+                /* default top-header의 배경색을 header 전체로 */
+                color: white;
+                /* default top-header의 글자색을 header 전체로 */
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
 
-        .bottom-header {
-            display: flex;
-            justify-content: center;
-            font-size: 25px;
-            /* default bottom-header 폰트 사이즈 */
-            background-color: white;
-            /* bottom-header 배경색 추가 */
-            border-bottom: 1px solid #eee;
-            /* 하단 경계선 */
-            padding: 20px 0;
-            /* 세로 패딩 */
-            letter-spacing: 3px;
-        }
+            .top-header {
+                /* default top-header가 header의 유일한 자식이 됨 */
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                height: 150px;
+                /* default top-header의 높이 */
+                padding: 0 40px;
+                /* default footer padding과 맞춤 */
+                box-sizing: border-box;
+                /* 패딩이 width에 포함되도록 */
+            }
 
-        .bottom-header a:hover {
-            text-decoration: none;
-            transform: scale(1.1);
-            transition: transform 0.3s ease-out; /* faster ease-out */
-        }
+            .top-header div {
+                display: inline-block;
+                text-align: left;
+                font-size: 15px;
+                margin-right: 0;
+                /* flex gap 사용을 위해 개별 div 마진 제거 */
+            }
 
-        .bottom-header a {
-            color: black;
-            transition: transform 0.2s ease-in; /* slower ease-in */
-            display: inline-block;
-        }
-        .bottom-header div {
-            display: inline-block;
-            margin-right: 100px; /* default bottom-header div의 마진 */
-            margin-top: 0; /* flex-align으로 중앙 정렬 */
-            text-align: center;
-        }
-        .bottom-header div:last-child {
-            margin-right: 0;
-        }
-        /* .bottom-header a:hover {
+            .top-header input {
+                height: 25px;
+                border-radius: 8px;
+                width: 200px;
+            }
+
+            .brand-name {
+                /* top-header 내 brand-name */
+                margin-right: 0;
+                /* top-header div의 default margin-right 상쇄 */
+            }
+
+            .brand-name div {
+                font-family: 'Jost', sans-serif;
+                font-size: 60px;
+                font-weight: 900;
+                letter-spacing: 3px;
+                margin-left: 0;
+                /* top-header div의 default margin-left 상쇄 */
+                display: block;
+                color: white;
+                /* default 유지 */
+            }
+
+            .brand-name a:hover {
+                text-decoration: none;
+            }
+
+            .brand-name a {
+                color: white;
+            }
+
+            #right-items {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                /* 요소들 간 간격 */
+            }
+
+            #right-items div {
+                font-size: 15px;
+                white-space: nowrap;
+            }
+
+            #right-items div a {
+                color: white;
+                /* default top-header의 글자색 */
+            }
+
+            #right-items div a:hover {
+                color: #eee;
+            }
+
+            .bottom-header {
+                display: flex;
+                justify-content: center;
+                font-size: 25px;
+                /* default bottom-header 폰트 사이즈 */
+                background-color: white;
+                /* bottom-header 배경색 추가 */
+                border-bottom: 1px solid #eee;
+                /* 하단 경계선 */
+                padding: 20px 0;
+                /* 세로 패딩 */
+                letter-spacing: 3px;
+            }
+
+            .bottom-header a:hover {
+                text-decoration: none;
+                transform: scale(1.1);
+                transition: transform 0.3s ease-out;
+                /* faster ease-out */
+            }
+
+            .bottom-header a {
+                color: black;
+                transition: transform 0.2s ease-in;
+                /* slower ease-in */
+                display: inline-block;
+            }
+
+            .bottom-header div {
+                display: inline-block;
+                margin-right: 100px;
+                /* default bottom-header div의 마진 */
+                margin-top: 0;
+                /* flex-align으로 중앙 정렬 */
+                text-align: center;
+            }
+
+            .bottom-header div:last-child {
+                margin-right: 0;
+            }
+
+            /* .bottom-header a:hover {
             color: #007bff;
         } */
 
-                /* --- Footer Section (화면 전체 너비) --- */
-        footer { /* default 푸터 스타일 */
-            width: 100%;
-            height: 200px;
-            background-color: black;
-            color: white;
-            align-items: center;
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            padding: 0 40px; /* default footer의 padding */
-            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
-            margin-top: auto; /* #app이 flex-direction: column일 때 푸터를 아래로 밀어냄 */
-            box-sizing: border-box; /* 패딩이 width에 포함되도록 */
-        }
+            /* --- Footer Section (화면 전체 너비) --- */
+            footer {
+                /* default 푸터 스타일 */
+                width: 100%;
+                height: 200px;
+                background-color: black;
+                color: white;
+                align-items: center;
+                display: flex;
+                justify-content: space-between;
+                font-size: 12px;
+                padding: 0 40px;
+                /* default footer의 padding */
+                box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+                margin-top: auto;
+                /* #app이 flex-direction: column일 때 푸터를 아래로 밀어냄 */
+                box-sizing: border-box;
+                /* 패딩이 width에 포함되도록 */
+            }
 
-        .footer-left {
-            margin-left: 0; /* padding이 있으므로 margin-left 제거 */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .footer-left .company-info div {
-            margin-bottom: 5px;
-            white-space: nowrap;
-        }
-        .copyright {
-            margin-top: 8px;
-            font-size: 0.9em;
-            color: #bbb;
-            white-space: nowrap;
-        }
+            .footer-left {
+                margin-left: 0;
+                /* padding이 있으므로 margin-left 제거 */
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
 
-        .footer-right {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-end;
-        }
-        .other {
-            margin-bottom: 10px;
-            white-space: nowrap;
-        }
-        .other span {
-            margin-left: 20px;
-            cursor: pointer;
-        }
-        .other span:hover {
-            text-decoration: underline;
-        }
-        .other span:first-child {
-            margin-left: 0;
-        }
-        .socials span {
-            margin-left: 20px;
-            cursor: pointer;
-        }
-        .socials span:hover {
-            text-decoration: underline;
-        }
-        .socials span:first-child {
-            margin-left: 0;
-        }
+            .footer-left .company-info div {
+                margin-bottom: 5px;
+                white-space: nowrap;
+            }
+
+            .copyright {
+                margin-top: 8px;
+                font-size: 0.9em;
+                color: #bbb;
+                white-space: nowrap;
+            }
+
+            .footer-right {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: flex-end;
+            }
+
+            .other {
+                margin-bottom: 10px;
+                white-space: nowrap;
+            }
+
+            .other span {
+                margin-left: 20px;
+                cursor: pointer;
+            }
+
+            .other span:hover {
+                text-decoration: underline;
+            }
+
+            .other span:first-child {
+                margin-left: 0;
+            }
+
+            .socials span {
+                margin-left: 20px;
+                cursor: pointer;
+            }
+
+            .socials span:hover {
+                text-decoration: underline;
+            }
+
+            .socials span:first-child {
+                margin-left: 0;
+            }
         </style>
     </head>
 
@@ -216,19 +263,17 @@
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
             <div class="container">
-                <header>
+                <!-- <header>
                     <div class="top-header">
                         <div class="brand-name">
                             <div><a href="/home.do">RUNNERS' HOUSE</a></div>
                         </div>
                         <div id="right-items">
                             <div>
-                                <!-- <template > -->
                                     <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
-                                <!-- </template> -->
-                                <!-- <template > -->
+ 
                                     <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
-                                <!-- </template> -->
+                            
                             </div>
                             <div v-if="sessionId == ''">
                                 <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
@@ -251,221 +296,236 @@
                             <a href="/home/community/board.do">커뮤니티</a>
                         </div>
                     </div>
-                </header>
+                </header> -->
+                <%-- 공통 헤더 컴포넌트 --%>
+                    <jsp:include page="/WEB-INF/header/header.jsp" />
 
-                <main>
                     <main>
-                        <div class="header">
-                            <div class="header-welcome">
-                                Welcome,
+                        <main>
+                            <div class="header">
+                                <div class="header-welcome">
+                                    Welcome,
+                                </div>
+                                <div class="header-user">
+                                    {{ info.name }}
+                                </div>
                             </div>
+<<<<<<< HEAD
+=======
                             <div class="header-user">
                                 {{ info.name }}
                             </div>
                         </div>
+>>>>>>> branch 'main' of https://github.com/kkomi211/springProject2025.git
 
-                        <div class="page-container">
-                            <aside class="sidebar">
-                                <h2 class="sidebar-heading">MY PAGE ></h2>
-                                <nav class="mypage-menu">
-                                    <ul>
-                                        <li @click="moveToOrder">
-                                            <span class="icon">📝</span>
-                                            <a href="#">주문•배송 내역</a>
-                                        </li>
-                                        <li @click="moveToRefund">
-                                            <span class="icon">📦</span>
-                                            <a href="javascript:;">반품•교환 내역</a>
-                                        </li>
-                                        <li @click="moveToInquiry">
-                                            <span class="icon">💬</span>
-                                            <a href="#">문의 내역</a>
-                                        </li>
-                                        <li class="active">
-                                            <span class="icon">👤</span>
-                                            <a href="">나의 정보</a>
-                                        </li>
-                                        <li @click="moveToReview">
-                                            <span class="icon">⭐️</span>
-                                            <a href="#">상품 리뷰</a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </aside>
+                            <div class="page-container">
+                                <aside class="sidebar">
+                                    <h2 class="sidebar-heading">MY PAGE ></h2>
+                                    <nav class="mypage-menu">
+                                        <ul>
+                                            <li @click="moveToOrder">
+                                                <span class="icon">📝</span>
+                                                <a href="#">주문•배송 내역</a>
+                                            </li>
+                                            <li @click="moveToRefund">
+                                                <span class="icon">📦</span>
+                                                <a href="javascript:;">반품•교환 내역</a>
+                                            </li>
+                                            <li @click="moveToInquiry">
+                                                <span class="icon">💬</span>
+                                                <a href="#">문의 내역</a>
+                                            </li>
+                                            <li class="active">
+                                                <span class="icon">👤</span>
+                                                <a href="">나의 정보</a>
+                                            </li>
+                                            <li @click="moveToReview">
+                                                <span class="icon">⭐️</span>
+                                                <a href="#">상품 리뷰</a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </aside>
 
-                            <main class="main-content">
-                                <h1 class="main-title">나의 정보</h1>
-                                <h3 class="sub-title">
-                                    회원가입정보 수정
-                                </h3>
-                                <section class="check-info">
-                                    <table>
-                                        <tr>
-                                            <th>
-                                                이메일
-                                            </th>
-                                            <td>
-                                                <template v-if="!emailFlg">{{info.email}}</template>
-                                                <template v-else><input type="text" v-model="info.email"
-                                                        id="email"></template>
-                                            </td>
-                                            <td>
-                                                <template v-if="!emailFlg">
-                                                    <button class="btn" @click="fnEmailChange">이메일 수정 </button>
-                                                </template>
-                                                <template v-else>
-                                                    <button class="btn" @click="fnEmailCheck">중복확인 </button>
-                                                    <button class="btn" v-if="saveBtn" @click="fnEmailSave">저장</button>
-                                                </template>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>이름</th>
-                                            <td>
-                                                <template v-if="!nameFlg">{{info.name}}</template>
-                                                <template v-else><input type="text" v-model="info.name"></template>
-                                            </td>
-                                            <td>
-                                                <button class="btn" v-if="!nameFlg" @click="fnNameChange">이름 수정
-                                                </button>
-                                                <button class="btn" v-if="nameFlg" @click="fnNameSave">저장</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>휴대폰번호</th>
-                                            <td>
-                                                <template v-if="!phoneFlg ">{{info.phone}}</template>
-                                                <template v-else>
-                                                    <input v-if="!timerFlg && !authSuccess" type="text" v-model="inputNum" id="auth" placeholder="하이픈(-) 없이 전화번호를 입력하세요">
-                                                    <input v-else-if="timerFlg && !authSuccess" type="text" placeholder="인증번호" v-model="authNum">
-                                                    <input v-else type="text" v-model="inputNum" disabled>
-                                                    <span>{{timer}}</span>
-                                                </template>
-                                            </td>
-                                            <td>
-                                                <button class="btn" v-if="!phoneFlg"  @click="fnPhoneChange">휴대폰번호 수정</button>
-                                                <template v-if="authConfirm">
-                                                    <template v-if="!smsFlg && !flg">
-                                                        <button class="btn" @click="fnSms">인증번호 전송</button>
+                                <main class="main-content">
+                                    <h1 class="main-title">나의 정보</h1>
+                                    <h3 class="sub-title">
+                                        회원가입정보 수정
+                                    </h3>
+                                    <section class="check-info">
+                                        <table>
+                                            <tr>
+                                                <th>
+                                                    이메일
+                                                </th>
+                                                <td>
+                                                    <template v-if="!emailFlg">{{info.email}}</template>
+                                                    <template v-else><input type="text" v-model="info.email"
+                                                            id="email"></template>
+                                                </td>
+                                                <td>
+                                                    <template v-if="!emailFlg">
+                                                        <button class="btn" @click="fnEmailChange">이메일 수정 </button>
                                                     </template>
-                                                    <template v-else-if="smsFlg && !authSuccess">
-                                                        <button class="btn" @click="fnSmsAuth">인증</button>
+                                                    <template v-else>
+                                                        <button class="btn" @click="fnEmailCheck">중복확인 </button>
+                                                        <button class="btn" v-if="saveBtn"
+                                                            @click="fnEmailSave">저장</button>
                                                     </template>
-                                                </template>
-                                                
-                                                <button class="btn" v-if="authSuccess" @click="fnPhoneSave">저장</button>
-                                            </td>
-                                        </tr>
-                                        <tr v-if="userType != 'K' ">
-                                            <th>비밀번호 변경</th>
-                                            <td>
-                                                <template v-if="!pwdFlg">
-                                                    <div>
-                                                        현재 비밀번호
-                                                        <div><label for=""><input type="password" v-model="pwd"
-                                                                    id="pwd"></label></div>
-                                                    </div>
-                                                    <div>
-                                                        새 비밀번호
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>이름</th>
+                                                <td>
+                                                    <template v-if="!nameFlg">{{info.name}}</template>
+                                                    <template v-else><input type="text" v-model="info.name"></template>
+                                                </td>
+                                                <td>
+                                                    <button class="btn" v-if="!nameFlg" @click="fnNameChange">이름 수정
+                                                    </button>
+                                                    <button class="btn" v-if="nameFlg" @click="fnNameSave">저장</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>휴대폰번호</th>
+                                                <td>
+                                                    <template v-if="!phoneFlg ">{{info.phone}}</template>
+                                                    <template v-else>
+                                                        <input v-if="!timerFlg && !authSuccess" type="text"
+                                                            v-model="inputNum" id="auth"
+                                                            placeholder="하이픈(-) 없이 전화번호를 입력하세요">
+                                                        <input v-else-if="timerFlg && !authSuccess" type="text"
+                                                            placeholder="인증번호" v-model="authNum">
+                                                        <input v-else type="text" v-model="inputNum" disabled>
+                                                        <span>{{timer}}</span>
+                                                    </template>
+                                                </td>
+                                                <td>
+                                                    <button class="btn" v-if="!phoneFlg" @click="fnPhoneChange">휴대폰번호
+                                                        수정</button>
+                                                    <template v-if="authConfirm">
+                                                        <template v-if="!smsFlg && !flg">
+                                                            <button class="btn" @click="fnSms">인증번호 전송</button>
+                                                        </template>
+                                                        <template v-else-if="smsFlg && !authSuccess">
+                                                            <button class="btn" @click="fnSmsAuth">인증</button>
+                                                        </template>
+                                                    </template>
+
+                                                    <button class="btn" v-if="authSuccess"
+                                                        @click="fnPhoneSave">저장</button>
+                                                </td>
+                                            </tr>
+                                            <tr v-if="userType != 'K' ">
+                                                <th>비밀번호 변경</th>
+                                                <td>
+                                                    <template v-if="!pwdFlg">
                                                         <div>
-                                                            <label for=""><input type="password" v-model="newPwd1"
-                                                                    id="newPwd1"></label>
+                                                            현재 비밀번호
+                                                            <div><label for=""><input type="password" v-model="pwd"
+                                                                        id="pwd"></label></div>
                                                         </div>
-                                                    </div>
-                                                    <div>
-                                                        비밀번호 재확인
                                                         <div>
-                                                            <label for=""><input type="password" v-model="newPwd2"
-                                                                    id="newPwd2"></label>
+                                                            새 비밀번호
+                                                            <div>
+                                                                <label for=""><input type="password" v-model="newPwd1"
+                                                                        id="newPwd1"></label>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </template>
-                                                <template v-else>
-                                                    <div>비밀번호 변경되었습니다.</div>
-                                                </template>
-                                            </td>
-                                            <td>
-                                                <button class="btn" @click="fnPwdChange">비밀번호 변경</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>배송지</th>
-                                            <td>
-                                                <div v-if="!addrFlg">{{info.addr}}</div>
-                                                <div v-if="addrFlg"><input type="text" v-model="addr" id="addr"
-                                                        disabled></div>
-                                            </td>
-                                            <td>
-                                                <button class="btn" v-if="!addrFlg" @click="fnAddr">주소 수정</button>
-                                                <button class="btn" v-if="addrFlg" @click="fnAddrSave">저장</button>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </section>
-                                <div class="bottom-btn">
-                                    <button class="btn" @click="fnConfirmDelete">탈퇴하기</button>
-                                </div>
-
-                                <!-- Popup asking the user really wants to delete their account -->
-
-                                <div v-if="confirmDelete" class="modal-overlay">
-                                    <div class="modal-content">
-                                        <h2>정말로 이 계정을 삭제하시겠습니까?</h2>
-                                        <button class="btn" @click="closeModal">돌아가기</button>
-                                        <button class="btn" @click="fnDeleteAccount">삭제하기</button>
+                                                        <div>
+                                                            비밀번호 재확인
+                                                            <div>
+                                                                <label for=""><input type="password" v-model="newPwd2"
+                                                                        id="newPwd2"></label>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                    <template v-else>
+                                                        <div>비밀번호 변경되었습니다.</div>
+                                                    </template>
+                                                </td>
+                                                <td>
+                                                    <button class="btn" @click="fnPwdChange">비밀번호 변경</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>배송지</th>
+                                                <td>
+                                                    <div v-if="!addrFlg">{{info.addr}}</div>
+                                                    <div v-if="addrFlg"><input type="text" v-model="addr" id="addr"
+                                                            disabled></div>
+                                                </td>
+                                                <td>
+                                                    <button class="btn" v-if="!addrFlg" @click="fnAddr">주소 수정</button>
+                                                    <button class="btn" v-if="addrFlg" @click="fnAddrSave">저장</button>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </section>
+                                    <div class="bottom-btn">
+                                        <button class="btn" @click="fnConfirmDelete">탈퇴하기</button>
                                     </div>
-                                </div>
 
-                                <!-- Popup confirming the user deleted their account -->
+                                    <!-- Popup asking the user really wants to delete their account -->
 
-                                <div v-if="accountDeleted" class="modal-overlay">
-                                    <div class="modal-content">
-                                        <h2>회원님의 계정이 삭제되었습니다.</h2>
-                                        <button class="btn" @click="moveMainPage">닫기</button>
-                                    </div>
-                                </div>
-
-
-
-                                <!-- If the user is not logged in -->
-
-                                <div v-if="!isLoggedIn" class="modal-overlay">
-                                    <div class="modal-content">
-                                        <h2>로그인 후 이용해주세요.</h2>
-                                        <div class="modal-btn">
-                                            <button @click="moveToLogin">로그인</button>
+                                    <div v-if="confirmDelete" class="modal-overlay">
+                                        <div class="modal-content">
+                                            <h2>정말로 이 계정을 삭제하시겠습니까?</h2>
+                                            <button class="btn" @click="closeModal">돌아가기</button>
+                                            <button class="btn" @click="fnDeleteAccount">삭제하기</button>
                                         </div>
                                     </div>
-                                </div>
-                            </main>
-                    </main>
 
-                    <footer>
-                        <div class="footer-left">
-                            <div class="company-info">
-                                <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
-                                <div><strong>대표:</strong> 김재</div>
-                                <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
-                                <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
-                                <div><strong>부가세 번호:</strong> KR123456789</div>
+                                    <!-- Popup confirming the user deleted their account -->
+
+                                    <div v-if="accountDeleted" class="modal-overlay">
+                                        <div class="modal-content">
+                                            <h2>회원님의 계정이 삭제되었습니다.</h2>
+                                            <button class="btn" @click="moveMainPage">닫기</button>
+                                        </div>
+                                    </div>
+
+
+
+                                    <!-- If the user is not logged in -->
+
+                                    <div v-if="!isLoggedIn" class="modal-overlay">
+                                        <div class="modal-content">
+                                            <h2>로그인 후 이용해주세요.</h2>
+                                            <div class="modal-btn">
+                                                <button @click="moveToLogin">로그인</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </main>
+                        </main>
+
+                        <footer>
+                            <div class="footer-left">
+                                <div class="company-info">
+                                    <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
+                                    <div><strong>대표:</strong> 김재</div>
+                                    <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
+                                    <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
+                                    <div><strong>부가세 번호:</strong> KR123456789</div>
+                                </div>
+                                <div class="copyright">
+                                    COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                                </div>
                             </div>
-                            <div class="copyright">
-                                COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                            <div class="footer-right">
+                                <div class="other">
+                                    <span><a href="/home/about.do">회사소개</a></span>
+                                    <span><a @click="fnNotice">공지사항</a></span>
+                                    <span><a href="/home/terms.do">이용약관</a></span>
+                                    <span><a href="/home/privacy.do">개인정보처리방침</a></span>
+                                </div>
+                                <div class="socials">
+                                    <span>INSTAGRAM</span>
+                                    <span>NAVER</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="footer-right">
-                            <div class="other">
-                                <span><a href="/home/about.do">회사소개</a></span>
-                                <span><a @click="fnNotice">공지사항</a></span>
-                                <span><a href="/home/terms.do">이용약관</a></span>
-                                <span><a href="/home/privacy.do">개인정보처리방침</a></span>
-                            </div>
-                            <div class="socials">
-                                <span>INSTAGRAM</span>
-                                <span>NAVER</span>
-                            </div>
-                        </div>
-                    </footer>
+                        </footer>
             </div>
         </div>
     </body>
@@ -501,7 +561,7 @@
                     saveBtn: false,
                     pwdFlg: false,
                     addrFlg: false,
-                    flg : false,
+                    flg: false,
 
                     // Popup Modal
                     confirmDelete: false,
@@ -513,16 +573,16 @@
                     smsFlg: false,
                     joinFlg: false, // 문자 인증 유무
                     authFlag: false,
-                    authConfirm : false,
+                    authConfirm: false,
                     timerFlg: false,
-                    authSuccess : false,
-                    authNum : "",
+                    authSuccess: false,
+                    authNum: "",
 
                     ranStr: "111", // 문자 인증 번호 
                     inputNum: "",
                     timer: "",
                     count: 180,
-                    interval : null,
+                    interval: null,
 
 
                 };
@@ -699,7 +759,7 @@
                     }
                     let param = {
                         userId: self.sessionId,
-                        phone: self.inputNum 
+                        phone: self.inputNum
                     };
                     $.ajax({
                         url: "/home/mypage/phoneSave.dox",
@@ -714,7 +774,7 @@
                                 self.phoneFlg = false;
                                 self.flg = true;
                                 self.info.phone = self.inputNum;
-                                location.reload();   
+                                location.reload();
                             } else {
                                 alert("오류가 발생했습니다.");
                             }
@@ -802,6 +862,32 @@
                             } else {
                                 alert("오류가 발생했습니다.");
                             }
+                        }
+                    });
+                },
+
+                // 장바구니 수량을 서버에서 가져오는 함수
+                fetchCartCount() {
+                    // 세션 아이디가 없으면 실행하지 않음
+                    if (this.sessionId == '' || this.sessionId == null) return;
+
+                    let self = this;
+                    $.ajax({
+                        url: '/api/cartCount.dox',
+                        method: 'GET',
+                        // ★ 서버의 @RequestParam HashMap map으로 전달될 데이터 ★
+                        data: {
+                            sessionId: self.sessionId
+                        },
+                        dataType: 'json',
+                        success: (response) => {
+                            console.log("서버 응답 데이터:", response);
+                            if (response.result === 'success') {
+                                self.cartCount = response.count; // 서버에서 보낸 count 값을 Vue 변수에 저장
+                            }
+                        },
+                        error: (err) => {
+                            console.error("AJAX 호출 중 오류 발생:", err);
                         }
                     });
                 },
@@ -899,7 +985,7 @@
                     pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                 },
 
-                 fnSms: function () {
+                fnSms: function () {
                     let self = this;
                     if (self.inputNum == "") {
                         alert("인증번호를 입력해주세요.");
@@ -917,7 +1003,7 @@
                     let param = {
                         phone: self.inputNum
                     };
-                    
+
                     $.ajax({
                         url: "/send-one",
                         dataType: "json",
@@ -929,8 +1015,8 @@
                                 alert("문자 전송 완료");
                                 self.ranStr = data.ranStr;
                                 self.smsFlg = true;
-                                    self.timerFlg = true;
-                                    self.fnTimer();
+                                self.timerFlg = true;
+                                self.fnTimer();
                             } else {
                                 alert("잠시 후 다시 시도해주세요.");
                             }
@@ -976,11 +1062,11 @@
                         }
                     }, 1000);
                 },
-            fnNotice(){
-                let self = this;
-                pageChange("/home/community/board.do", {type : "B"});
-            }
-        },
+                fnNotice() {
+                    let self = this;
+                    pageChange("/home/community/board.do", { type: "B" });
+                }
+            },
             // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분
@@ -995,6 +1081,14 @@
                 }
             }
         });
+
+        // 2. 조건문을 잠시 제거하거나, 로그를 찍어 확인합니다.
+        if (self.sessionId && self.sessionId !== '') {
+            console.log("장바구니 수량 조회를 시작합니다.");
+            self.fetchCartCount();
+        } else {
+            console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
+        }
 
         app.mount('#app');
     </script>

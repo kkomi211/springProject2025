@@ -20,145 +20,149 @@
         <script src="https://unpkg.com/lucide@latest"></script>
         <style>
             html,
-                body {
-                    height: 100%;
-                    margin: 0;
-                    padding: 0;
-                    font-family: Arial, sans-serif;
-                    color: #333;
-                    line-height: 1.6;
-                }
+            body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                color: #333;
+                line-height: 1.6;
+            }
 
-                #app {
-                    /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
-                    display: flex;
-                    flex-direction: column;
-                    min-height: 100vh;
-                }
+            #app {
+                /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+
             /* Main Hero Slider styles (메인 상단 배너) */
-           .main-hero-slider .crew-overlay-text {
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    font-size: 5em;
-                    font-weight: 600;
-                    color: #fff;
-                    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
-                    letter-spacing: 0.2em;
-                    text-align: center;
-                    white-space: nowrap;
-                    z-index: 10;
-                }
+            .main-hero-slider .crew-overlay-text {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 5em;
+                font-weight: 600;
+                color: #fff;
+                text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+                letter-spacing: 0.2em;
+                text-align: center;
+                white-space: nowrap;
+                z-index: 10;
+            }
 
-                .main-hero-slider img {
-                    width: 100%;
-                    height: 400px; /* adjust to your design */
-                    object-fit: cover;
-                }
-                .main-hero-slider-area {
-                    /* 이 영역이 브라우저 너비 전체를 차지하도록 */
-                    width: 100vw;
-                    /* 뷰포트 너비 전체 */
-                    position: relative;
-                    left: 50%;
-                    right: 50%;
-                    margin-left: -50vw;
-                    /* 왼쪽으로 50vw 밀고 */
-                    margin-right: -50vw;
-                    /* 오른쪽으로 50vw 밀어서 풀 너비 확장 */
-                    overflow: hidden;
-                    /* 영역 밖으로 나가는 콘텐츠 숨김 */
-                    background-color: #f8f8f8;
-                    /* 로드 전/후 배경색 */
-                    height: 300px;
-                    /* 이미지 높이를 지정 */
-                }
+            .main-hero-slider img {
+                width: 100%;
+                height: 400px;
+                /* adjust to your design */
+                object-fit: cover;
+            }
 
-                .main-hero-slider {
-                    /* 이 section은 풀 브라우저 너비를 차지하도록 만듭니다. */
-                    width: 100%;
-                    height: 100%;
-                    /* 부모와 동일한 높이 */
-                    padding: 0;
-                    /* 상하 패딩 제거 */
-                    position: relative;
-                }
+            .main-hero-slider-area {
+                /* 이 영역이 브라우저 너비 전체를 차지하도록 */
+                width: 100vw;
+                /* 뷰포트 너비 전체 */
+                position: relative;
+                left: 50%;
+                right: 50%;
+                margin-left: -50vw;
+                /* 왼쪽으로 50vw 밀고 */
+                margin-right: -50vw;
+                /* 오른쪽으로 50vw 밀어서 풀 너비 확장 */
+                overflow: hidden;
+                /* 영역 밖으로 나가는 콘텐츠 숨김 */
+                background-color: #f8f8f8;
+                /* 로드 전/후 배경색 */
+                height: 300px;
+                /* 이미지 높이를 지정 */
+            }
 
-                .main-hero-slider .swiper-container {
-                    width: 100%;
-                    /* 부모 section의 너비를 꽉 채움 */
-                    height: 100%;
-                    /* 부모 section의 높이를 꽉 채움 */
-                    margin: 0;
-                    /* Swiper 기본 마진 제거 */
-                }
+            .main-hero-slider {
+                /* 이 section은 풀 브라우저 너비를 차지하도록 만듭니다. */
+                width: 100%;
+                height: 100%;
+                /* 부모와 동일한 높이 */
+                padding: 0;
+                /* 상하 패딩 제거 */
+                position: relative;
+            }
 
-                .main-hero-slider .swiper-slide {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    position: relative;
-                    /* 텍스트 오버레이를 위한 기준점 */
-                }
+            .main-hero-slider .swiper-container {
+                width: 100%;
+                /* 부모 section의 너비를 꽉 채움 */
+                height: 100%;
+                /* 부모 section의 높이를 꽉 채움 */
+                margin: 0;
+                /* Swiper 기본 마진 제거 */
+            }
 
-                .main-hero-slider .swiper-slide a {
-                    display: block;
-                    /* 링크 전체 클릭 가능 */
-                    width: 100%;
-                    height: 100%;
-                }
+            .main-hero-slider .swiper-slide {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+                /* 텍스트 오버레이를 위한 기준점 */
+            }
 
-                .main-hero-slider .swiper-slide img {
-                    width: 100%;
-                    /* 슬라이드 너비를 꽉 채움 */
-                    height: 100%;
-                    /* 슬라이드 높이를 꽉 채움 */
-                    object-fit: cover;
-                    /* 이미지가 잘려도 비율 유지하며 채움 */
-                    object-position: center;
-                    /* 이미지의 중앙이 보이도록 */
-                    display: block;
-                }
+            .main-hero-slider .swiper-slide a {
+                display: block;
+                /* 링크 전체 클릭 가능 */
+                width: 100%;
+                height: 100%;
+            }
 
-                /* Swiper 페이지네이션 (하단 점 스타일) */
-                .main-hero-slider .swiper-pagination {
-                    bottom: 30px !important;
-                    /* 이미지 위에 오도록 위치 조정 */
-                    z-index: 10;
-                    /* 이미지 위에 표시되도록 z-index 부여 */
-                }
+            .main-hero-slider .swiper-slide img {
+                width: 100%;
+                /* 슬라이드 너비를 꽉 채움 */
+                height: 100%;
+                /* 슬라이드 높이를 꽉 채움 */
+                object-fit: cover;
+                /* 이미지가 잘려도 비율 유지하며 채움 */
+                object-position: center;
+                /* 이미지의 중앙이 보이도록 */
+                display: block;
+            }
 
-                .main-hero-slider .swiper-pagination-bullet {
-                    background-color: #fff;
-                    /* 흰색 점 */
-                    opacity: 0.7;
-                    margin: 0 8px !important;
-                    width: 12px;
-                    /* 점 크기 조절 */
-                    height: 12px;
-                    transition: opacity 0.3s ease, background-color 0.3s ease;
-                }
+            /* Swiper 페이지네이션 (하단 점 스타일) */
+            .main-hero-slider .swiper-pagination {
+                bottom: 30px !important;
+                /* 이미지 위에 오도록 위치 조정 */
+                z-index: 10;
+                /* 이미지 위에 표시되도록 z-index 부여 */
+            }
 
-                .main-hero-slider .swiper-pagination-bullet-active {
-                    background-color: #007bff;
-                    /* 활성 점은 ASICS스러운 블루 계열 */
-                    opacity: 1;
-                }
+            .main-hero-slider .swiper-pagination-bullet {
+                background-color: #fff;
+                /* 흰색 점 */
+                opacity: 0.7;
+                margin: 0 8px !important;
+                width: 12px;
+                /* 점 크기 조절 */
+                height: 12px;
+                transition: opacity 0.3s ease, background-color 0.3s ease;
+            }
 
-                /* ★★★ 양쪽 사이드를 가릴 div 처리 ★★★ */
-                /* 메인 슬라이더를 풀 너비로 확장했으므로, 이 div들은 이제 필요 없을 가능성이 높습니다. */
-                /* 만약 이 div들이 특정 배경색으로 사이드를 채우는 역할을 한다면 다음과 같이 처리할 수 있습니다. */
-                /* 하지만 메인 배너 이미지가 풀 너비라면 이 div들은 보이지 않습니다. */
-                .main-hero-slider-area .swiper-side-cover {
-                    display: none;
-                    /* 현재는 풀 너비 배너이므로 숨김 */
-                    /* 만약 swiper-container에 max-width를 주고 양 옆을 이 div로 채우는 디자인이라면,
+            .main-hero-slider .swiper-pagination-bullet-active {
+                background-color: #007bff;
+                /* 활성 점은 ASICS스러운 블루 계열 */
+                opacity: 1;
+            }
+
+            /* ★★★ 양쪽 사이드를 가릴 div 처리 ★★★ */
+            /* 메인 슬라이더를 풀 너비로 확장했으므로, 이 div들은 이제 필요 없을 가능성이 높습니다. */
+            /* 만약 이 div들이 특정 배경색으로 사이드를 채우는 역할을 한다면 다음과 같이 처리할 수 있습니다. */
+            /* 하지만 메인 배너 이미지가 풀 너비라면 이 div들은 보이지 않습니다. */
+            .main-hero-slider-area .swiper-side-cover {
+                display: none;
+                /* 현재는 풀 너비 배너이므로 숨김 */
+                /* 만약 swiper-container에 max-width를 주고 양 옆을 이 div로 채우는 디자인이라면,
             main-hero-slider-area에 position: relative;를 주고,
             left/right 커버에 position: absolute, top/bottom/left/right 0, z-index -1
             같은 스타일을 주어 배경색을 채울 수 있습니다.
             하지만 현재는 스위퍼 이미지 자체가 풀 너비이므로 display: none; 처리 */
-                }
+            }
+
             textarea {
                 /* !important를 사용하여 다른 CSS보다 우선순위를 높입니다. */
                 resize: none !important;
@@ -180,54 +184,18 @@
 
     <body>
         <div id="app">
-            <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-            <div class="container">
-                <header>
-                    <div class="top-header">
-                        <div class="brand-name">
-                            <div><a href="/home.do">RUNNERS' HOUSE</a></div>
-                        </div>
-                        <div id="right-items">
-                            <div>
-                                <!-- <template > -->
-                                    <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
-                                <!-- </template> -->
-                                <!-- <template > -->
-                                    <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
-                                <!-- </template> -->
-                            </div>
-                            <div v-if="sessionId == ''">
-                                <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
-                            </div>
-                            <div v-if="sessionId != '' && userType != 'K'"><a
-                                    href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
-                            <div v-else-if="sessionId != '' && userType == 'K'"><a
-                                    href="home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
-                            <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div>
-                        </div>
-                    </div>
-                    <div class="bottom-header">
-                        <div>
-                            <a href="/home/product.do">제품</a>
-                        </div>
-                        <div>
-                            <a href="/home/product.do">세일</a>
-                        </div>
-                        <div>
-                            <a href="/home/community/board.do">커뮤니티</a>
-                        </div>
-                    </div>
-                </header>
+            <%-- 공통 헤더 컴포넌트 --%>
+                <jsp:include page="/WEB-INF/header/header.jsp" />
 
                 <div class="main-hero-slider-area">
                     <section class="main-hero-slider">
                         <div class="swiper-container mySwiper">
                             <div class="swiper-wrapper">
-                                <div class="swiper-slide"
-                                    >
-                                    
-                                        <img src="https://as2.ftcdn.net/v2/jpg/02/34/65/76/1000_F_234657662_jQjqcHFWIh3oVh9DTXAXzKAXVZ5Zf6ko.jpg"  >
-                                    
+                                <div class="swiper-slide">
+
+                                    <img
+                                        src="https://as2.ftcdn.net/v2/jpg/02/34/65/76/1000_F_234657662_jQjqcHFWIh3oVh9DTXAXzKAXVZ5Zf6ko.jpg">
+
                                 </div>
                             </div>
                             <div class="swiper-pagination"></div>
@@ -357,7 +325,7 @@
                         </div>
                     </div>
                 </footer>
-            </div>
+        </div>
         </div>
     </body>
 
@@ -382,7 +350,7 @@
                     index: 0,
                     isLoggedIn: true,
 
-                    userType : '${userType}',
+                    userType: '${userType}',
                 };
             },
             methods: {
@@ -460,13 +428,40 @@
                         success: function (data) {
                             if (data.result == "success") {
                                 alert("채팅방이 개설되었습니다!");
-                                location.href = "/home/community/chat.do";
+                                location.href = "/home/community/crew.do";
                             } else {
                                 alert("채팅방 개설에 실패했습니다.");
                             }
                         }
                     });
                 },
+
+                // 장바구니 수량을 서버에서 가져오는 함수
+                fetchCartCount() {
+                    // 세션 아이디가 없으면 실행하지 않음
+                    if (this.sessionId == '' || this.sessionId == null) return;
+
+                    let self = this;
+                    $.ajax({
+                        url: '/api/cartCount.dox',
+                        method: 'GET',
+                        // ★ 서버의 @RequestParam HashMap map으로 전달될 데이터 ★
+                        data: {
+                            sessionId: self.sessionId
+                        },
+                        dataType: 'json',
+                        success: (response) => {
+                            console.log("서버 응답 데이터:", response);
+                            if (response.result === 'success') {
+                                self.cartCount = response.count; // 서버에서 보낸 count 값을 Vue 변수에 저장
+                            }
+                        },
+                        error: (err) => {
+                            console.error("AJAX 호출 중 오류 발생:", err);
+                        }
+                    });
+                },
+
                 moveToLogin() {
                     location.href = "/home/login.do";
                 },
@@ -489,6 +484,14 @@
 
                 if (!self.sessionId || self.sessionId.trim() === "") {
                     self.isLoggedIn = false;
+                }
+
+                // 2. 조건문을 잠시 제거하거나, 로그를 찍어 확인합니다.
+                if (self.sessionId && self.sessionId !== '') {
+                    console.log("장바구니 수량 조회를 시작합니다.");
+                    self.fetchCartCount();
+                } else {
+                    console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                 }
             }
         });

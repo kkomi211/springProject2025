@@ -167,6 +167,76 @@
             하지만 현재는 스위퍼 이미지 자체가 풀 너비이므로 display: none; 처리 */
             }
 
+            /* ========== 사이드바 메뉴 NEW 배지 스타일 ========== */
+            .mypage-menu li {
+                position: relative;
+            }
+
+            .sidebar-new-badge {
+                display: inline-block;
+                background: linear-gradient(135deg, #ff4444, #ff6b6b);
+                color: white;
+                padding: 2px 8px;
+                border-radius: 10px;
+                font-size: 0.7em;
+                font-weight: bold;
+                margin-left: 8px;
+                box-shadow: 0 2px 6px rgba(255, 68, 68, 0.5);
+                animation: badgePulse 2s infinite;
+                vertical-align: middle;
+            }
+
+            @keyframes badgePulse {
+
+                0%,
+                100% {
+                    transform: scale(1);
+                }
+
+                50% {
+                    transform: scale(1.1);
+                }
+            }
+
+            /* ========== 크루 목록 NEW 배지 스타일 ========== */
+            .new-crew-badge {
+                display: inline-block;
+                background: linear-gradient(135deg, #ff4444, #ff6b6b);
+                color: white;
+                padding: 2px 8px;
+                border-radius: 10px;
+                font-size: 0.75em;
+                font-weight: bold;
+                margin-left: 6px;
+                box-shadow: 0 2px 6px rgba(255, 68, 68, 0.5);
+                animation: pulse 2s infinite;
+                vertical-align: middle;
+            }
+
+            @keyframes pulse {
+
+                0%,
+                100% {
+                    transform: scale(1);
+                    box-shadow: 0 2px 8px rgba(255, 68, 68, 0.4);
+                }
+
+                50% {
+                    transform: scale(1.05);
+                    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.6);
+                }
+            }
+
+            /* 신규 크루 행 강조 */
+            table tr.new-crew {
+                background-color: #fff5f5;
+                border-left: 3px solid #ff6b6b;
+            }
+
+            table tr.new-crew:hover {
+                background-color: #ffe8e8;
+            }
+
             /* New CSS from homepage */
 
             html,
@@ -427,42 +497,8 @@
         <div id="app">
             <div class="container">
                 <!--  상단 헤더 -->
-                <div class="container">
-                    <header>
-                        <div class="top-header">
-                            <div class="brand-name">
-                                <div><a href="/home.do">RUNNERS' HOUSE</a></div>
-                            </div>
-                            <div id="right-items">
-                                <div>
-                                    <!-- <template > -->
-                                    <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i
-                                                data-lucide="log-out" stroke-width="1.5"></i></a></div>
-                                    <!-- </template> -->
-                                    <!-- <template > -->
-                                    <div v-else><a href="/home/login.do"><i data-lucide="log-in"
-                                                stroke-width="1.5"></i></a></div>
-                                    <!-- </template> -->
-                                </div>
-                                <div v-if="sessionId == ''">
-                                    <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
-                                </div>
-                                <div v-if="sessionId != '' && userType != 'K'"><a href="/home/mypage/information.do"><i
-                                            data-lucide="user" stroke-width="1.5"></i></a></div>
-                                <div v-else-if="sessionId != '' && userType == 'K'"><a
-                                        href="home/mypage/information/change.do"><i data-lucide="user"
-                                            stroke-width="1.5"></i></a></div>
-                                <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart"
-                                            stroke-width="1.5"></i></a></div>
-                            </div>
-                        </div>
-
-                        <div class="bottom-header">
-                            <div><a href="/home/product.do">제품</a></div>
-                            <div><a href="javascript:;" @click="fnSale">세일</a></div>
-                            <div><a href="/home/community/board.do">커뮤니티</a></div>
-                        </div>
-                    </header>
+                <%-- 공통 헤더 컴포넌트 --%>
+                    <jsp:include page="/WEB-INF/header/header.jsp" />
 
                     <div class="main-hero-slider-area">
                         <section class="main-hero-slider">
@@ -500,7 +536,10 @@
                                         </li>
                                         <li @click="moveToCrew" class="active">
                                             <span class="icon">📦</span>
-                                            <a href="/home/community/crew.do">크루 찾기</a>
+                                            <a href="javascript:void(0)">
+                                                크루 찾기
+                                                <span v-if="hasNewCrew" class="sidebar-new-badge">NEW</span>
+                                            </a>
                                         </li>
                                         <li @click="moveToRally">
                                             <span class="icon">💬</span>
@@ -539,12 +578,14 @@
                                         <th>채팅방 소개</th>
                                         <th>채널</th>
                                     </tr>
-                                    <tr v-for="item in list">
+                                    <tr v-for="item in list" :class="{ 'new-crew': isNewCrew(item.chatroomNo) }">
                                         <td>{{item.chatroomNo}}</td>
                                         <td>
                                             <a href="javascript:;">
                                                 {{item.title}}
                                                 <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
+                                                <span v-if="isNewCrew(item.chatroomNo)"
+                                                    class="new-crew-badge">NEW</span>
                                             </a>
 
                                         </td>
@@ -615,8 +656,8 @@
                             </div>
                         </div>
                     </footer>
-                </div>
             </div>
+        </div>
         </div>
 
         <script>
@@ -639,8 +680,11 @@
                         page: 1,
                         pageSize: 10,
                         index: 0,
-
                         userType: '${userType}',
+
+                        // NEW 배지 관련
+                        hasNewCrew: false,
+                        lastCheckedCrewNo: null
                     };
                 },
                 methods: {
@@ -665,12 +709,66 @@
                                     self.list = data.list;
                                     self.cnt = data.cnt;
                                     self.index = Math.ceil(self.cnt / self.pageSize);
+
+                                    // NEW 크루 체크
+                                    self.checkNewCrew();
                                 } else {
                                     console.log("오류");
                                 }
                             }
 
                         });
+                    },
+
+                    // 신규 크루 체크
+                    checkNewCrew() {
+                        const self = this;
+
+                        // localStorage에서 마지막 확인한 크루 번호 가져오기
+                        const savedCrewNo = localStorage.getItem("lastCheckedCrewNo");
+
+                        if (self.list.length > 0) {
+                            const latestCrewNo = self.list[0].chatroomNo;
+
+                            console.log("최신 크루 번호:", latestCrewNo);
+                            console.log("마지막 확인 크루 번호:", savedCrewNo);
+
+                            // 저장된 번호가 없거나, 최신 크루 번호가 더 크면 NEW 표시
+                            if (!savedCrewNo || parseInt(latestCrewNo) > parseInt(savedCrewNo)) {
+                                self.hasNewCrew = true;
+                                console.log("NEW 배지 표시!");
+                            } else {
+                                self.hasNewCrew = false;
+                            }
+                        }
+                    },
+
+                    // 개별 크루가 신규인지 체크 (사용자가 확인하지 않은 크루)
+                    isNewCrew(chatroomNo) {
+                        const savedCrewNo = localStorage.getItem("lastCheckedCrewNo");
+
+                        // 저장된 번호가 없으면 모든 크루가 신규
+                        if (!savedCrewNo) {
+                            return true;
+                        }
+
+                        // 현재 크루 번호가 저장된 번호보다 크면 신규
+                        return parseInt(chatroomNo) > parseInt(savedCrewNo);
+                    },
+
+                    // 크루 확인 처리 (NEW 배지 업데이트)
+                    updateLastCheckedCrew: function (chatroomNo) {
+                        let self = this;
+                        const savedCrewNo = localStorage.getItem("lastCheckedCrewNo");
+
+                        // 현재 클릭한 크루가 저장된 번호보다 크면 업데이트
+                        if (!savedCrewNo || parseInt(chatroomNo) > parseInt(savedCrewNo)) {
+                            localStorage.setItem("lastCheckedCrewNo", chatroomNo);
+                            console.log("크루 확인 완료, 저장된 번호:", chatroomNo);
+
+                            // NEW 배지 상태 다시 체크
+                            self.checkNewCrew();
+                        }
                     },
                     fnLogout: function () {
                         let self = this;
@@ -722,8 +820,12 @@
                     // 프론트엔드 - 입장하기 버튼 클릭 시 JavaScript
                     fnEnterChat: function (chatroomNo) {
                         let self = this;
+
+                        // 크루 확인 처리 (NEW 배지 업데이트)
+                        self.updateLastCheckedCrew(chatroomNo);
+
                         $.ajax({
-                            url: "/home/crew/chatMove.dox", // 서버에서 DB에 유저 정보 저장 요청
+                            url: "/home/crew/chatMove.dox",
                             dataType: "json",
                             type: "POST",
                             data: {
@@ -732,7 +834,6 @@
                             },
                             success: function (response) {
                                 if (response.result == 'success') {
-                                    // DB 저장 성공 확인 후, 이제 존재하는 채팅방 페이지로 이동!
                                     location.href = "/home/community/chat/show.do?chatroomNo=" + chatroomNo;
                                 } else {
                                     alert("채팅방 입장 실패: " + (response.message || "권한이 없거나 오류 발생"));
@@ -743,6 +844,19 @@
                                 console.error(xhr.responseText);
                             }
                         });
+                    },
+
+                    // moveToCrew 메서드 수정 (카테고리 클릭 시)
+                    moveToCrew: function () {
+                        let self = this;
+
+                        // 크루 페이지 방문 시, 현재 최신 크루를 확인한 것으로 처리
+                        if (self.list.length > 0) {
+                            const latestCrewNo = self.list[0].chatroomNo;
+                            self.updateLastCheckedCrew(latestCrewNo);
+                        }
+
+                        pageChange("/home/community/crew.do", {});
                     },
                     fnNotice() {
                         let self = this;
@@ -824,11 +938,47 @@
 
                         pageChange("/home/community/chat.do", {});
                     },
+
+                    // 장바구니 수량을 서버에서 가져오는 함수
+                    fetchCartCount() {
+                        // 세션 아이디가 없으면 실행하지 않음
+                        if (this.sessionId == '' || this.sessionId == null) return;
+
+                        let self = this;
+                        $.ajax({
+                            url: '/api/cartCount.dox',
+                            method: 'GET',
+                            // ★ 서버의 @RequestParam HashMap map으로 전달될 데이터 ★
+                            data: {
+                                sessionId: self.sessionId
+                            },
+                            dataType: 'json',
+                            success: (response) => {
+                                console.log("서버 응답 데이터:", response);
+                                if (response.result === 'success') {
+                                    self.cartCount = response.count; // 서버에서 보낸 count 값을 Vue 변수에 저장
+                                }
+                            },
+                            error: (err) => {
+                                console.error("AJAX 호출 중 오류 발생:", err);
+                            }
+                        });
+                    },
+
                 },
                 mounted() {
                     let self = this;
                     self.fnList();
                     self.fnGetUserInfo(); //유저정보가져오기
+
+                    // 2. 조건문을 잠시 제거하거나, 로그를 찍어 확인합니다.
+                    if (self.sessionId && self.sessionId !== '') {
+                        console.log("장바구니 수량 조회를 시작합니다.");
+                        self.fetchCartCount();
+                    } else {
+                        console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
+                    }
+
                 }
             });
 

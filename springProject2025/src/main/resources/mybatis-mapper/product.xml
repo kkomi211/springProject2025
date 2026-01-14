@@ -29,36 +29,57 @@
 	</select>
 	
 	<select id="selectProductListUser" parameterType="hashmap" resultType="com.example.springProject2025.model.Product">
-		SELECT *
-		FROM (
-		  SELECT p.*,
-		         ROW_NUMBER() OVER (
-		           PARTITION BY p.PRODUCT_NAME
-		           ORDER BY p.PRODUCT_NO ASC
-		         ) AS rn
-		  FROM PRODUCT p
-		)
-		
-		WHERE rn = 1
-		<if test="keyword != null and keyword != ''">
-			<if test="keytype == 'name'">
-				AND PRODUCT_NAME LIKE '%' || #{keyword} || '%'
-			</if>
-			<if test="keytype == 'no'">
-				AND PRODUCT_NO LIKE '%' || #{keyword} || '%'
-			</if>
-		</if>
-		<if test="category != '' and category != null and category != 'undefined'">
-			AND TYPE_NO LIKE '%' || #{category} || '%'
-		</if>
-		<if test="saleYN != '' and saleYN != null and saleYN != 'undefined'">
-			AND SALE_YN = 'Y'
-		</if>
-		
-		<if test="pageSize != null and pageSize != ''">
-			OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
-		</if>
-	</select>
+    SELECT *
+    FROM (
+      SELECT p.*,
+             ROW_NUMBER() OVER (
+               PARTITION BY p.PRODUCT_NAME
+               ORDER BY p.PRODUCT_NO ASC
+             ) AS rn
+      FROM PRODUCT p
+    )
+    WHERE rn = 1
+    
+    <if test="keyword != null and keyword != ''">
+        <if test="keytype == 'name'">
+            AND PRODUCT_NAME LIKE '%' || #{keyword} || '%'
+        </if>
+        <if test="keytype == 'no'">
+            AND PRODUCT_NO LIKE '%' || #{keyword} || '%'
+        </if>
+        <if test="keytype == null or keytype == ''">
+            AND (PRODUCT_NAME LIKE '%' || #{keyword} || '%' OR BRAND LIKE '%' || #{keyword} || '%')
+        </if>
+    </if>
+
+    <if test="category != null and category != '' and category != 'undefined'">
+        AND (TYPE_NO = #{category} 
+             OR TYPE_NO IN (SELECT TYPE_NO FROM PRODUCT_TYPE WHERE TYPE_PART = #{category}))
+    </if>
+
+    <if test="saleYN != null and saleYN != '' and saleYN != 'undefined'">
+        AND SALE_YN = #{saleYN}
+    </if>
+    
+    ORDER BY
+    <choose>
+        <when test="orderType == 'PRICE_DESC'">
+            PRICE DESC
+        </when>
+        
+        <when test="orderType == 'PRICE_ASC'">
+            PRICE ASC
+        </when>
+        
+        <otherwise>
+            CDATE DESC
+        </otherwise>
+    </choose>
+    
+    <if test="pageSize != null and pageSize != ''">
+        OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+    </if>
+</select>
 	
 	<select id="selectProductPage" parameterType="hashmap" resultType="int">
 		SELECT COUNT(*)
@@ -300,7 +321,7 @@
 		FROM PRODUCT P
 		INNER JOIN PRODUCT_TYPE T
 		ON P.TYPE_NO = T.TYPE_NO
-		WHERE PRODUCT_NO = #{productNo}	
+		WHERE PRODUCT_NO = #{productNo}
 	</select>
 	
 	<insert id="InsertProductInquiry" parameterType="hashmap">
