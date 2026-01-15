@@ -38,6 +38,15 @@
 			AND INQUIRY_NO = #{inquiryNo}
 		</select>
 		
+		<!-- 새 답변이 있는 문의 개수 조회 (답변완료 상태) -->
+		<select id="selectNewReplyCount" parameterType="hashmap" resultType="int">
+			SELECT COUNT(*)
+			FROM PRODUCT_INQUIRY
+			WHERE USER_ID = #{sessionId}
+			AND STATUS = 'Y'
+			AND ANSWER_DATE IS NOT NULL
+		</select>
+		
 	
 	
 	
