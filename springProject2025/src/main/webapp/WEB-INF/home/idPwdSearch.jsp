@@ -72,8 +72,7 @@
                                     </div>
 
                                     <div v-if="!joinFlg" class="form-row">
-                                        <input type="text" v-model="inputNum" placeholder="문자인증" :placeholder="timer"
-                                            id="auth" :disabled="authFlag">
+                                        <input type="text" v-model="inputNum" :placeholder="timer || '문자인증'" id="auth" :disabled="authFlag">
                                         <template v-if="!smsFlg">
                                             <button @click="fnSms">인증번호 전송</button>
                                         </template>
@@ -136,6 +135,45 @@
 
                         <!-- MODAL POPUP WINDOW -->
 
+                        <!-- When fields are empty -->
+                         <div v-if="emptyName" class="modal-overlay">
+                            <div class="modal-content">
+                                <h2 >이름을 입력해주세요.</h2>
+                                <button @click="fieldCloseModal">닫기</button>
+                            </div>
+                        </div>
+                        <div v-if="emptyPhone" class="modal-overlay">
+                            <div class="modal-content">
+                                <h2 >전화번호를 입력해주세요.</h2>
+                                <button @click="fieldCloseModal">닫기</button>
+                            </div>
+                        </div>
+                        <div v-if="emptyBirth" class="modal-overlay">
+                            <div class="modal-content">
+                                <h2 >생년월일을 입력해주세요.</h2>
+                                <button @click="fieldCloseModal">닫기</button>
+                            </div>
+                        </div>
+                        <div v-if="emptyId" class="modal-overlay">
+                            <div class="modal-content">
+                                <h2 >아이디를 입력해주세요.</h2>
+                                <button @click="fieldCloseModal">닫기</button>
+                            </div>
+                        </div>
+                        <div v-if="emptyAuthNum" class="modal-overlay">
+                            <div class="modal-content">
+                                <h2 >인증 절차를 먼저 완료해주세요.</h2>
+                                <button @click="fieldCloseModal">닫기</button>
+                            </div>
+                        </div>
+                        <!-- When authentication number is wrong -->
+                         <div v-if="wrongAuth" class="modal-overlay">
+                            <div class="modal-content">
+                                <h2>인증 번호가 올바르지 않습니다.</h2>
+                                <button @click="fieldCloseModal">닫기</button>
+                            </div>
+                        </div>
+
                         <!-- When id or password can't be found -->
                         <div v-if="showModal" class="modal-overlay">
                             <div class="modal-content">
@@ -146,7 +184,7 @@
                         </div>
 
                         <!-- When password successfully changed -->
-                        <div v-if="pwdChangedModal" class="modal-overlay">
+                         <div v-if="pwdChangedModal" class="modal-overlay">
                             <div class="modal-content">
                                 <h2>비밀번호 변경 성공</h2>
                                 <p>변경된 암호로 로그인 해보세요</p>
@@ -161,6 +199,22 @@
                                 <h2>비밀번호 변경 실패</h2>
                                 <p>암호 생성 규칙을 다시 확인해주세요</p>
                                 <button @click="closeModal">돌아가기</button>
+                            </div>
+                        </div>
+
+                        <!-- Password change mismatched -->
+                        <div v-if="pwdMismatched" class="modal-overlay">
+                            <div class="modal-content">
+                                <h2>비밀번호가 서로 다릅니다.</h2>
+                                <button @click="pwdClosemodal">돌아가기</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Universal Modal -->
+                        <div v-if="showUniversalModal" class="modal-overlay">
+                            <div class="modal-content">
+                                <h2>{{ modalMessage }}</h2>
+                                <button class="btn" @click="closeUniversalModal">확인</button>
                             </div>
                         </div>
 
@@ -219,22 +273,35 @@
                     newPwd1: "",
                     newPwd2: "",
 
+                    // modals
                     showModal: false,
                     pwdChangedModal: false,
                     pwdFailedModal: false,
+                    emptyName : false,
+                    emptyPhone : false,
+                    emptyBirth : false,
+                    emptyId : false,
+                    emptyAuthNum : false,
+                    wrongAuth : false,
+                    authChecked : false,
+                    pwdMismatched : false,
+
+                    // Universal modal (ADD THIS)
+                    showUniversalModal: false,
+                    modalMessage: '',
+                    modalCallback: null,
 
                     // 인증
                     smsFlg: false,
                     joinFlg: false, // 문자 인증 유무
                     authFlag: false,
 
-                    ranStr: "", // 문자 인증 번호 
-
-                    inputNum: "111",
-
+                    // harcoding for test purposes
+                    // ranStr: 111,
+                    ranStr: "",
                     inputNum: "",
-
                     timer: "",
+                    timerInterval: null,
                     count: 180,
 
                     userType: '${userType}',
@@ -242,20 +309,36 @@
             },
             methods: {
                 // 함수(메소드) - (key : function())
+                openModal: function(message, callback) {
+                    this.modalMessage = message;
+                    this.modalCallback = callback || null;
+                    this.showUniversalModal = true;
+                },
+                
+                closeUniversalModal: function() {
+                    this.showUniversalModal = false;
+                    if (this.modalCallback) {
+                        this.modalCallback();
+                        this.modalCallback = null;
+                    }
+                },
                 fnSearchId: function () {
                     let self = this;
                     if (self.id_name == "") {
-                        alert("이름을 입력해주세요.");
+                        // alert("이름을 입력해주세요.");
+                        self.emptyName = true;
                         document.querySelector("#id_name").focus();
                         return;
                     }
                     if (self.id_phone == "") {
-                        alert("전화번호를 입력해주세요.");
+                        // alert("전화번호를 입력해주세요.");
+                        self.emptyPhone = true;
                         document.querySelector("#id_phone").focus();
                         return;
                     }
                     if (self.id_birth == "") {
-                        alert("생년월일을 입력해주세요.");
+                        // alert("생년월일을 입력해주세요.");
+                        self.emptyBirth = true;
                         document.querySelector("#id_birth").focus();
                         return;
                     }
@@ -285,28 +368,45 @@
                 fnSearchPwd: function () {
                     let self = this;
                     if (self.pwd_userId == "") {
-                        alert("아이디를 입력해주세요.");
+                        self.emptyId = true;    
                         document.querySelector("#pwd_userId").focus();
                         return;
                     }
                     if (self.pwd_name == "") {
-                        alert("이름을 입력해주세요.");
+                        self.emptyName = true;
                         document.querySelector("#pwd_name").focus();
                         return;
                     }
                     if (self.pwd_birth == "") {
-                        alert("생년월일을 입력해주세요.");
+                        self.emptyBirth = true;
                         document.querySelector("#pwd_birth").focus();
                         return;
                     }
+                    let birthPattern = /^\d{4}-\d{2}-\d{2}$/;
+                    if (!birthPattern.test(self.pwd_birth)) {
+                        self.openModal("생년월일 형식이 올바르지 않습니다. YYYY-MM-DD 형식으로 입력해주세요.", function() {
+                            document.querySelector("#pwd_birth").focus();
+                        });
+                        return;
+                    }
                     if (self.pwd_phone == "") {
-                        alert("전화번호를 입력해주세요.");
+                        self.emptyPhone = true;
                         document.querySelector("#pwd_phone").focus();
                         return;
                     }
+                    if (self.pwd_phone.length < 11 || !/^[0-9]+$/.test(self.pwd_phone)) {
+                        self.openModal("전화번호를 다시 확인해주세요. 11자리 숫자를 입력해주세요.", function() {
+                            document.querySelector("#pwd_phone").focus();
+                        });
+                        return;
+                    }
                     if (self.inputNum == "") {
-                        alert("인증 절차를 먼저 완료해주세요.");
+                        self.emptyAuthNum = true;
                         document.querySelector("#auth").focus();
+                        return;
+                    }
+                    if(!self.authChecked){
+                        self.emptyAuthNum = true;
                         return;
                     }
                     let param = {
@@ -328,6 +428,10 @@
                                 self.pwdChanged = true;
                             } else {
                                 self.showModal = true;
+                                self.smsFlg = false;
+                                self.authFlag = false;      
+                                self.inputNum = "";         
+                                self.authChecked = false; 
                             }
                         }
                     });
@@ -344,13 +448,8 @@
                         return; // Stop the function if validation fails
                     }
                     if (self.newPwd1 !== self.newPwd2) {
-                        alert("비밀번호가 서로 다릅니다."); // alert if mismatch
+                        self.pwdMismatched = true;
                         return; // stop function
-                    }
-                    if (self.inputNum == "") {
-                        alert("인증 절차를 먼저 완료해주세요.");
-                        document.querySelector("#auth").focus();
-                        return;
                     }
                     let param = {
                         userId: self.pwd_userId,
@@ -365,7 +464,6 @@
                         success: function (data) {
                             console.log(data);
                             if (data.result === "success") {
-                                // 로그인 성공 시 페이지 전환
                                 self.pwdChangedModal = true;
                             } else {
                                 self.pwdFailedModal = true;
@@ -387,58 +485,84 @@
                     self.newPwd1 = "";
                     self.newPwd2 = "";
                 },
-
-
-
-
+                fieldCloseModal() {
+                    let self = this;
+                    self.emptyId = false;
+                    self.emptyPhone = false;
+                    self.emptyBirth = false;
+                    self.emptyAuthNum = false;
+                    self.emptyName = false;
+                    self.wrongAuth = false;
+                },
+                pwdClosemodal(){
+                    let self = this;
+                    self.pwdMismatched = false;
+                },
                 fnSms: function () {
                     let self = this;
                     let param = {
                         phone: self.pwd_phone
                     };
-                    self.smsFlg = true;
-                    self.fnTimer();
-                    // $.ajax({
-                    //     url: "/send-one",
-                    //     dataType: "json",
-                    //     type: "POST",
-                    //     data: param,
-                    //     success: function (data) {
-                    //         console.log(data);
-                    //         if (data.res.statusCode == "2000") {
-                    //             alert("문자 전송 완료");
-                    //             self.ranStr = data.ranStr;
-                    //             self.smsFlg = true;
-                    //             self.fnTimer();
-                    //         } else {
-                    //             alert("잠시 후 다시 시도해주세요.");
-                    //         }
-                    //     }
-                    // });
+                    // Harcoding for test purposes
+                    // self.smsFlg = true;
+                    // self.fnTimer();
+                     $.ajax({
+                        url: "/send-one",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            if (data.res.statusCode == "2000") {
+                                self.openModal("문자 전송 완료");
+                                self.ranStr = data.ranStr;
+                                self.smsFlg = true;
+                                
+                                // Clear existing timer and reset count
+                                if (self.timerInterval) {
+                                    clearInterval(self.timerInterval);
+                                }
+                                self.count = 180;
+                                self.fnTimer();
+                            } else {
+                                self.openModal("잠시 후 다시 시도해주세요.");
+                            }
+                        }
+                    });
                 },
                 fnSmsAuth: function () {
                     let self = this;
                     if (self.inputNum == "") {
-                        alert("인증번호를 입력해주세요.");
-                        document.querySelector("#auth").focus();
+                        self.openModal("인증번호를 입력해주세요.", function() {
+                            document.querySelector("#auth").focus();
+                        });
                         return;
                     }
                     if (self.ranStr == self.inputNum) {
-                        // alert("문자 인증 완료되았습니다");
                         self.joinFlg = true;
                         self.authFlag = true;
+                        self.authChecked = true;
+                        
+                        // Clear the timer
+                        if (self.timerInterval) {
+                            clearInterval(self.timerInterval);
+                            self.timerInterval = null;
+                        }
                     } else {
-                        alert("문자인증 실패했습니다.");
+                        self.openModal("인증번호가 올바르지 않습니다.");
                         self.joinFlg = false;
+                        self.authChecked = false;
                     }
                 },
-
                 fnTimer: function () {
                     let self = this;
-                    let interval = setInterval(function () {
+                    self.timerInterval = setInterval(function () {
                         if (self.count == 0) {
-                            clearInterval(interval);
-                            alert("시간이  만료되었습니다!");
+                            clearInterval(self.timerInterval);
+                            self.timerInterval = null;
+                            self.openModal("시간이 만료되었습니다!");
+                            self.smsFlg = false;
+                            self.inputNum = "";
                         } else {
                             let min = parseInt(self.count / 60);
                             let sec = self.count % 60;
