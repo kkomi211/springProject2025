@@ -381,7 +381,6 @@
         <div id="app">
             <!-- html 코드는 id가 app인 태그 안에서 작업 -->
             <div class="container">
-<<<<<<< HEAD
                 <%-- 공통 헤더 컴포넌트 --%>
                     <jsp:include page="/WEB-INF/header/header.jsp" />
 
@@ -398,10 +397,6 @@
                             <h1 class="main-title"
                                 style="text-align: center; font-size: 32px; font-weight: 500; margin-bottom: 50px; border-bottom: 1px solid #ccc; padding-bottom: 20px;">
                                 장바구니</h1>
-=======
-                <%-- 공통 헤더 컴포넌트 (jgh260114) --%>
-                <jsp:include page="/WEB-INF/header/header.jsp" />
->>>>>>> branch 'main' of https://github.com/kkomi211/springProject2025.git
 
                             <div class="cart-layout" style="display: flex; justify-content: space-between; gap: 40px;">
                                 <div class="cart-list-container" style="flex: 3; min-width: 60%;">
@@ -571,6 +566,7 @@
 
     </html>
 
+    
     <script>
         lucide.createIcons();
         const app = Vue.createApp({
@@ -594,13 +590,9 @@
                     currentQty: 1,
                     unitPrice: 156000,
 
-
-                    userType: '${userType}',
-
                     userType : '${userType}',
 
                     cartCount: 0, // 장바구니 수량 변수 추가 (jgh260114)
-
                 };
             },
             computed: {
