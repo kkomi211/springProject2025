@@ -405,8 +405,9 @@
                                             <td><a href="javascript:;"
                                                     @click="fnView(item.inquiryNo)">{{item.title}}</a></td>
                                             <td>{{ item.udate }}</td>
-                                            <td :class="{'status-completed': item.status === 'Y'}">
+                                            <td :class="{'status-completed': item.status === 'Y'}" style="position: relative;">
                                                 {{ item.status === 'Y' ? '답변완료' : '답변대기' }}
+                                                <span v-if="item.status === 'Y' && !checkedReplies.includes(item.inquiryNo)" style="position: absolute; top: 50%; transform: translateY(-50%); margin-left: 8px; background-color: #ff0000; color: white; font-size: 10px; font-weight: bold; min-width: 16px; height: 16px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; padding: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">N</span>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -424,7 +425,10 @@
                                             <!-- <h3 class="card-title">{{ item.title || item.productName }}</h3> -->
                                             <h3 class="card-title"><a href="javascript:;"
                                                     @click="fnView(item.inquiryNo)">{{item.title}}</a></h3>
-                                            <p class="card-status">{{ item.status }}</p>
+                                            <p class="card-status" style="position: relative; display: inline-block;">
+                                                {{ item.status === 'Y' ? '답변완료' : '답변대기' }}
+                                                <span v-if="item.status === 'Y' && !checkedReplies.includes(item.inquiryNo)" style="position: absolute; top: 50%; transform: translateY(-50%); margin-left: 8px; background-color: #ff0000; color: white; font-size: 10px; font-weight: bold; min-width: 16px; height: 16px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; padding: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">N</span>
+                                            </p>
                                         </div>
                                     </article>
                                 </div>
