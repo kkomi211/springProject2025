@@ -69,8 +69,7 @@
                             <h2>로그인</h2>
                             <div class="signup-form">
                                 <div class="form-row">
-                                    <input type="text" placeholder="아이디" v-model="userId" @keyup.enter="fnLogin"
-                                        id="id">
+                                    <input id="id" type="text" placeholder="아이디" v-model="userId" @keyup.enter="fnLogin">
                                 </div>
                                 <div class="form-row">
                                     <input type="password" placeholder="비밀번호" v-model="pwd" @keyup.enter="fnLogin">
@@ -216,6 +215,7 @@
                     let self = this;
                     self.noLoginModal = false;
                     self.emptyFields = false;
+                    document.querySelector("#id").focus();
                 },
 
                 // Kakao Popup window
