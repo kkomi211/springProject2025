@@ -88,14 +88,17 @@
                                 </div>
                                 <div class="form-row">
                                     <label>닉네임</label>
-                                    <input type="text" placeholder="닉네임" v-model="nickname" id="nickname">
+                                    <input v-if="!nicknameFlg" type="text" placeholder="닉네임" v-model="nickname" id="nickname">
+                                    <input v-else type="text" disabled :placeholder="nickname">
                                     <button @click="fnNicknameCheck">중복확인</button>
                                 </div>
                                 <div class="form-row">
                                     <label>성별</label>
                                     <label>
-                                        <input type="radio" v-model="gender" value="F"> F
-                                        <input type="radio" v-model="gender" value="M"> M
+                                        <div class="gender-section">
+                                        <div class="gender-radio-btn"><input type="radio" v-model="gender" value="F"> <span>F</span></div>
+                                        <div class="gender-radio-btn"><input type="radio" v-model="gender" value="M"> <span>M</span></div>
+                                        </div>
                                     </label>
                                 </div>
                                 <div class="form-row">
@@ -128,18 +131,27 @@
                                         <button @click="fnSmsAuth">인증</button>
                                     </template>
                                 </div>
-
                                 <!-- 인증완료 popup -->
                                 <div v-else class="modal-overlay">
                                     <div class="modal-content">
                                         <h2>문자인증이 완료되었습니다.</h2>
-                                        <button class="btn" @click="closeModal">확인</button>
+                                        <button @click="closeAuthModal">확인</button>
                                     </div>
                                 </div>
 
                                 <div class="form-submit">
-                                    <button @click="fnSignup" class="submit-btn">회원 가입 완료</button>
+                                    <button @click="fnSignup" class="submit-btn">회원 가입</button>
                                 </div>
+
+                                <!-- Modals -->
+                                <!-- Empty fields modals -->
+                                <div v-if="showModal" class="modal-overlay">
+                                    <div class="modal-content">
+                                        <h2>{{ modalMessage }}</h2>
+                                        <button @click="closeModal">확인</button>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -205,22 +217,47 @@
                     smsFlg: false,
                     joinFlg: false, // 문자 인증 유무
                     authFlag: false,
+                    invalidId: false,
+                    invalidNickname : false,
+                    nicknameFlg: false,
+                    authChecked: false,
 
-                    ranStr: "111", // 문자 인증 번호 
+                    // For test purposes
+                    // ranStr : 111,
+                    ranStr: "", // 문자 인증 번호 
                     inputNum: "",
                     timer: "",
                     count: 180,
 
                     userType : '${userType}',
+
+                    // modals
+                    showModal: false,
+                    modalMessage: '',
+                    modalCallback: null
                 };
             },
             methods: {
                 // 함수(메소드) - (key : function())
-                fnIdCheck: function () {
+                openModal: function(message, callback) {
+                    this.modalMessage = message;
+                    this.modalCallback = callback || null;
+                    this.showModal = true;
+                },
+                
+                closeModal: function() {
+                    this.showModal = false;
+                    if (this.modalCallback) {
+                        this.modalCallback();
+                        this.modalCallback = null;
+                    }
+                },
+                 fnIdCheck: function () {
                     let self = this;
                     if (self.userId == "") {
-                        alert("아이디를 입력해주세요.");
-                        document.querySelector("#userId").focus();
+                        self.openModal("아이디를 입력해주세요.", function() {
+                            document.querySelector("#userId").focus();
+                        });
                         return;
                     }
                     let param = {
@@ -233,11 +270,14 @@
                         data: param,
                         success: function (data) {
                             if (data.result == "true") {
-                                alert("이미 사용 중인 아이디 입니다.");
-                            } else {
-                                alert("사용가능한 아이디 입니다.");
-                                self.checkFlg = true;
+                                self.openModal("이미 사용 중인 아이디 입니다.");
                                 document.querySelector("#name").focus();
+                                self.invalidId = true;
+                            } else {
+                                self.openModal("사용가능한 아이디 입니다.", function() {
+                                    self.checkFlg = true;
+                                    self.invalidId = false;
+                                });
                             }
                         }
                     });
@@ -245,7 +285,7 @@
                 fnNicknameCheck: function () {
                     let self = this;
                     if (self.nickname == "") {
-                        alert("닉네임을 입력해주세요.");
+                        self.openModal("닉네임을 입력해주세요.");
                         return;
                     }
                     let param = {
@@ -258,12 +298,16 @@
                         data: param,
                         success: function (data) {
                             if (data.result == "true") {
-                                alert("이미 사용 중인 닉네임 입니다.");
-                                document.querySelector("#nickname").focus();
+                                self.openModal("이미 사용 중인 닉네임 입니다.", function() {
+                                    document.querySelector("#nickname").focus();
+                                    self.invalidNickname = true;
+                                });
                             } else {
-                                alert("사용가능한 닉네임 입니다.");
-                                self.checkFlg = true;
-                                document.querySelector("#email").focus();
+                                self.openModal("사용가능한 닉네임 입니다.", function() {
+                                    self.nicknameFlg = true;
+                                    self.invalidNickname = false;
+                                    document.querySelector("#email").focus();
+                                });
                             }
                         }
                     });
@@ -279,66 +323,99 @@
                 fnSignup: function () {
                     let self = this;
                     let speChar = /[!@#$%^&*(),.?":{}|<>]/;
+                    
                     if (self.userId == "") {
-                        alert("아이디를 입력해주세요.");
-                        document.querySelector("#userId").focus();
+                        self.openModal("아이디를 입력해주세요.", function() {
+                            document.querySelector("#userId").focus();
+                        });
+                        return;
+                    }
+                    if(self.invalidId){
+                        self.openModal("아이디를 중복 확인하세요.", function() {
+                            document.querySelector("#userId").focus();
+                        });
                         return;
                     }
                     if (self.name == "") {
-                        alert("이름을 입력해주세요.");
-                        document.querySelector("#name").focus();
-                        return;
-                    }
-                    if (self.pwd1.length < 6) {
-                        alert("비밀번호를 입력해주세요.");
-                        document.querySelector("#pwd1").focus();
+                        self.openModal("이름을 입력해주세요.", function() {
+                            document.querySelector("#name").focus();
+                        });
                         return;
                     }
                     if (!speChar.test(self.pwd1)) {
-                        alert("비밀번호에는 최소한 하나의 영문, 숫자, 특수문자가 포함되어야 합니다.");
-                        document.querySelector("#pwd1").focus();
+                        self.openModal("비밀번호에는 최소한 하나의 영문, 숫자, 특수문자가 포함되어야 합니다.", function() {
+                            document.querySelector("#pwd1").focus();
+                        });
                         return;
                     }
                     if (self.pwd1 != self.pwd2) {
-                        alert("비밀번호를 다시 확인해주세요.");
-                        document.querySelector("#pwd2").focus();
+                        self.openModal("비밀번호를 다시 확인해주세요.", function() {
+                            document.querySelector("#pwd2").focus();
+                        });
                         return;
                     }
                     if (self.nickname == "") {
-                        alert("닉네임을 입력해주세요.");
-                        document.querySelector("#nickname").focus();
+                        self.openModal("닉네임을 입력해주세요.", function() {
+                            document.querySelector("#nickname").focus();
+                        });
+                        return;
+                    }
+                    if(self.invalidNickname){
+                        self.openModal("닉네임을 중복 확인하세요.", function() {
+                            document.querySelector("#nickname").focus();
+                        });
                         return;
                     }
                     if (self.email == "") {
-                        alert("이메일 입력해주세요.");
-                        document.querySelector("#email").focus();
+                        self.openModal("이메일을 입력해주세요.", function() {
+                            document.querySelector("#email").focus();
+                        });
                         return;
                     }
+                    let emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                        if (!emailPattern.test(self.email)) {
+                            self.openModal("올바른 이메일 형식을 입력해주세요.", function() {
+                                document.querySelector("#email").focus();
+                            });
+                            return;
+                    }
                     if (self.addr.length == 0) {
-                        alert("주소를 입력해주세요.");
-                        document.querySelector("#addr").focus();
+                        self.openModal("주소를 입력해주세요.", function() {
+                            document.querySelector("#addr").focus();
+                        });
                         return;
                     }
                     if (self.birthday == "") {
-                        alert("생년월일를 입력해주세요.");
-                        document.querySelector("#birth").focus();
+                        self.openModal("생년월일을 입력해주세요.", function() {
+                            document.querySelector("#birth").focus();
+                        });
                         return;
                     }
                     if (self.phone == "") {
-                        alert("전화번호를 입력해주세요.");
-                        document.querySelector("#phone").focus();
+                        self.openModal("전화번호를 입력해주세요.", function() {
+                            document.querySelector("#phone").focus();
+                        });
                         return;
                     }
                     if (self.phone.length < 11 || !/^[0-9]+$/.test(self.phone)) {
-                        alert("전화번호를 다시 확인해주세요.");
-                        document.querySelector("#phone").focus();
+                        self.openModal("전화번호를 다시 확인해주세요.", function() {
+                            document.querySelector("#phone").focus();
+                        });
                         return;
                     }
                     if (self.inputNum == "") {
-                        alert("인증 절차를 먼저 완료해주세요.");
-                        document.querySelector("#auth").focus();
+                        self.openModal("인증 절차를 먼저 완료해주세요.", function() {
+                            document.querySelector("#auth").focus();
+                        });
                         return;
                     }
+                    if (!self.authChecked){
+                        self.openModal("인증 절차를 먼저 완료해주세요.", function() {
+                            document.querySelector("#auth").focus();
+                        });
+                        return;
+                    }
+                    
                     let param = {
                         userId: self.userId.trim(),
                         pwd: self.pwd1,
@@ -350,21 +427,21 @@
                         phone: self.phone.trim(),
                         name: self.name.trim()
                     };
+                    
                     $.ajax({
                         url: "/home/signup.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            if (data.result = "success") {
-                                alert("가입되었습니다.");
-                                location.href = "/home/login.do";
+                            if (data.result == "success") {
+                                self.openModal("가입되었습니다.", function() {
+                                    location.href = "/home/login.do";
+                                });
                             } else {
-                                alert("오류가 발생했습니다.");
+                                self.openModal("오류가 발생했습니다.");
                             }
-
                         }
-
                     });
                 },
                 fnSms: function () {
@@ -372,6 +449,7 @@
                     let param = {
                         phone: self.phone
                     };
+                    // Harcoding for test purposes
                     // self.smsFlg = true;
                     // self.fnTimer();
                     $.ajax({
@@ -382,29 +460,30 @@
                         success: function (data) {
                             console.log(data);
                             if(data.res.statusCode == "2000"){
-                                alert("문자 전송 완료");
+                                self.openModal("문자 전송 완료");
                                 self.ranStr = data.ranStr;
                                 self.smsFlg = true;
                                 self.fnTimer();
                             } else {
-                                alert("잠시 후 다시 시도해주세요.");
+                                self.openModal("잠시 후 다시 시도해주세요.");
                             }
                         }
                     });
                 },
                 fnSmsAuth: function () {
                     let self = this;
+                    self.authChecked = true;
                     if (self.inputNum == "") {
-                        alert("인증번호를 입력해주세요.");
-                        document.querySelector("#auth").focus();
+                        self.openModal("인증번호를 입력해주세요.", function() {
+                            document.querySelector("#auth").focus();
+                        });
                         return;
                     }
                     if (self.ranStr == self.inputNum) {
-                        // alert("문자 인증 완료되았습니다");
-                        self.joinFlg = true;
+                        self.joinFlg = true;  // This will show the auth success modal
                         self.authFlag = true;
                     } else {
-                        alert("문자인증 실패했습니다.");
+                        self.openModal("문자인증 실패했습니다.");
                         self.joinFlg = false;
                     }
                 },
@@ -413,7 +492,7 @@
                     let interval = setInterval(function () {
                         if (self.count == 0) {
                             clearInterval(interval);
-                            alert("시간이  만료되었습니다!");
+                            self.openModal("시간이 만료되었습니다!");
                         } else {
                             let min = parseInt(self.count / 60);
                             let sec = self.count % 60;
@@ -426,7 +505,7 @@
                         }
                     }, 1000);
                 },
-                closeModal: function () {
+                closeAuthModal: function () {
                     let self = this;
                     self.joinFlg = false;
                 },

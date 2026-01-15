@@ -64,20 +64,20 @@ main {
    }
    .form-row button {
        padding: 8px 12px;
-       background: #e0e0e0;
-       border: 1px solid #bdbdbd;
-       border-radius: 4px;
+       background-color: white;
+       border: 1.5px solid black;
+       border-radius: 3px;
        cursor: pointer;
    }
    .form-row button:hover {
-       background: #d5d5d5;
+       background: #f7f6f6;
    }
    .form-submit {
        text-align: center;
        margin-top: 20px;
    }
    .submit-btn, .pwd-submit-btn{
-       background-color: #409eff;
+       background-color: black;
        width: 140px;
        color: white;
        border: none;
@@ -89,7 +89,8 @@ main {
    }
 
    .submit-btn:hover {
-       background-color: #318ce7;
+       background-color: rgb(43, 42, 42);
+       transform: scale(1.02);
    }
    #other {
        margin-top: 40px;

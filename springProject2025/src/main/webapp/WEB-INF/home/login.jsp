@@ -69,8 +69,7 @@
                             <h2>로그인</h2>
                             <div class="signup-form">
                                 <div class="form-row">
-                                    <input type="text" placeholder="아이디" v-model="userId" @keyup.enter="fnLogin"
-                                        id="id">
+                                    <input id="id" type="text" placeholder="아이디" v-model="userId" @keyup.enter="fnLogin">
                                 </div>
                                 <div class="form-row">
                                     <input type="password" placeholder="비밀번호" v-model="pwd" @keyup.enter="fnLogin">
@@ -95,21 +94,32 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- v-if="loginModal"  -->
-                        <div v-if="isLoginModal" class="modal-overlay">
-                            <div class="modal-content">
-                                <h2>로그인 성공했습니다</h2>
-                                <a href="/home.do"><button>메인 화면 가기</button></a>
-                                <a href="/home/mypage/information.do"><button>마이페이지 가기</button></a>
+
+                        <!-- Modals -->
+
+                            <!-- Login fail or success  -->
+                            <div v-if="isLoginModal" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>로그인 성공했습니다</h2>
+                                    <a href="/home.do"><button>메인 화면 가기</button></a>
+                                    <a href="/home/mypage/information.do"><button>마이페이지 가기</button></a>
+                                </div>
                             </div>
-                        </div>
-                        <div v-if="noLoginModal" class="modal-overlay">
-                            <div class="modal-content">
-                                <h2>로그인에 실패했습니다</h2>
-                                <p>다시 시도해보세요</p>
-                                <button @click="closeModal">돌아가기</button>
+                            <div v-if="noLoginModal" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>로그인에 실패했습니다</h2>
+                                    <p>다시 시도해보세요</p>
+                                    <button @click="closeModal">돌아가기</button>
+                                </div>
                             </div>
-                        </div>
+
+                            <!-- Require to enter fields -->
+                             <div v-if="emptyFields" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>아이디와 비밀벌호를 입력해주세요.</h2>
+                                    <button @click="closeModal">닫기</button>
+                                </div>
+                            </div>
                     </div>
                 </main>
 
@@ -157,6 +167,7 @@
                     pwd: "",
                     isLoginModal: false,
                     noLoginModal: false,
+                    emptyFields: false,
                     sessionId: "${sessionId}",
 
                     //kakao login
@@ -173,8 +184,7 @@
                     let self = this;
                     // 유효성 검사
                     if (!self.userId || !self.pwd) {
-                        alert("아이디와 비밀번호를 입력하세요.");
-                        document.querySelector("#id").focus();
+                        self.emptyFields = true;
                         return;
                     }
                     let param = {
@@ -204,6 +214,8 @@
                 closeModal() {
                     let self = this;
                     self.noLoginModal = false;
+                    self.emptyFields = false;
+                    document.querySelector("#id").focus();
                 },
 
                 // Kakao Popup window

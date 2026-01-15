@@ -228,5 +228,19 @@ public class MypageService {
 		}
 		return resultMap;
 	}
+	
+	public HashMap<String, Object> getNewReplyCount(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			int count = mypageMapper.selectNewReplyCount(map);
+			resultMap.put("result", "success");
+			resultMap.put("count", count);
+		} catch (Exception e) {
+			resultMap.put("result", "fail");
+			resultMap.put("count", 0);
+			System.out.println(e.getMessage());
+		}
+		return resultMap;
+	}
 
 }
