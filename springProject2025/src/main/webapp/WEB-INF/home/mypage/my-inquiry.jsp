@@ -364,9 +364,10 @@
                                         <span class="icon">📦</span>
                                         <a href="javascript:;">반품•교환 내역</a>
                                     </li>
-                                    <li class="active" @click="moveToMyinquiry">
+                                    <li class="active" @click="moveToMyinquiry" style="position: relative;">
                                         <span class="icon">💬</span>
                                         <a href="#">문의 내역</a>
+                                        <span v-if="newReplyCount > 0" style="position: absolute; top: 50%; transform: translateY(-50%); right: 30px; background-color: #ff0000; color: white; font-size: 11px; font-weight: bold; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">{{ newReplyCount > 99 ? '99+' : newReplyCount }}</span>
                                     </li>
                                     <li @click="mvInfo">
                                         <span class="icon">👤</span>
@@ -511,6 +512,8 @@
                     userName: "로딩중...",
                     userType : '${userType}',
                     cartCount: 0, // 장바구니 수량 변수 추가 (jgh260114)
+                    newReplyCount: 0, // 새 답변 개수
+                    checkedReplies: [], // 확인한 답변 목록 (localStorage에서 로드)
                 };
             },
             methods: {
@@ -564,6 +567,9 @@
                                 // self.index = Math.ceil(self.cnt / self.pageSize);
                                 self.totalPages = Math.ceil(self.cnt / self.pageSize);
                                 console.log("문의 리스트 업데이트 완료 - 전체 개수:", self.cnt, "현재 페이지:", self.page);
+                                
+                                // 리스트 업데이트 후 새 답변 개수 계산
+                                self.calculateNewReplyCount();
                             }
                             else {
                                 console.log("문의 내역 조회 실패");
@@ -571,6 +577,7 @@
                                 self.cnt = 0;
                                 // self.index = 0;
                                 self.totalPages = 0;
+                                self.newReplyCount = 0;
                             }
                         }
                     });
@@ -657,6 +664,15 @@
                     // console.log(boardNo);
                     let self = this;
                     let sessionId = self.sessionId;
+                    
+                    // 상세보기로 이동 시 해당 답변을 확인한 것으로 표시
+                    if (!self.checkedReplies.includes(inquiryNo)) {
+                        self.checkedReplies.push(inquiryNo);
+                        self.saveCheckedReplies();
+                        // 새 답변 개수 다시 계산
+                        self.calculateNewReplyCount();
+                    }
+                    
                     // alert("상세보기로 inquiryNo로 넘겨줌 " + inquiryNo);
                     pageChange("/home/mypage/my-inquiry-detail.do", { inquiryNo: inquiryNo, sessionId: sessionId });
                 },
@@ -696,16 +712,70 @@
                     let self = this;
                     self.saleYN = 'Y';
                     pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
+                },
+                
+                // localStorage에서 확인한 답변 목록 불러오기
+                loadCheckedReplies: function() {
+                    let self = this;
+                    const storageKey = `checkedReplies_${self.sessionId}`;
+                    const saved = localStorage.getItem(storageKey);
+                    
+                    if (saved) {
+                        try {
+                            self.checkedReplies = JSON.parse(saved);
+                            console.log("확인한 답변 목록:", self.checkedReplies);
+                        } catch (e) {
+                            self.checkedReplies = [];
+                        }
+                    } else {
+                        self.checkedReplies = [];
+                    }
+                },
+                
+                // 확인한 답변 목록 저장
+                saveCheckedReplies: function() {
+                    let self = this;
+                    const storageKey = `checkedReplies_${self.sessionId}`;
+                    localStorage.setItem(storageKey, JSON.stringify(self.checkedReplies));
+                    console.log("확인한 답변 저장 완료:", self.checkedReplies);
+                },
+                
+                // 새 답변 개수 계산 (확인하지 않은 답변만 카운트)
+                calculateNewReplyCount: function() {
+                    let self = this;
+                    let uncheckedCount = 0;
+                    
+                    self.orderList.forEach(function(item) {
+                        if (item.status === 'Y' && !self.checkedReplies.includes(item.inquiryNo)) {
+                            uncheckedCount++;
+                        }
+                    });
+                    
+                    self.newReplyCount = uncheckedCount;
+                    console.log("확인하지 않은 새 답변 개수:", uncheckedCount);
                 }
             }, // methods
             mounted() {
                 let self = this;
-                self.fnList(); // 실제 데이터 조회 시작
+                self.loadCheckedReplies(); // 확인한 답변 목록 불러오기
                 self.fnGetUserInfo(); // 사용자 정보 조회
                 // 장바구니 수량 조회 (jgh260114)
                 if (self.sessionId && self.sessionId !== '') {
                     self.fetchCartCount();
                 }
+                self.fnList(); // 실제 데이터 조회 시작 (리스트 로드 후 새 답변 개수 계산됨)
+                
+                // 주기적으로 새 답변 체크 (30초마다)
+                setInterval(function() {
+                    if (self.sessionId && self.sessionId !== '') {
+                        self.fnList(); // 리스트 새로고침 후 새 답변 개수 계산
+                    }
+                }, 30000);
+                
+                // lucide 아이콘 초기화
+                setTimeout(function() {
+                    lucide.createIcons();
+                }, 100);
             }
         });
 

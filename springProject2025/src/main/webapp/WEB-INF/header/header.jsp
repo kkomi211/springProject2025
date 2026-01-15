@@ -13,11 +13,17 @@
             <div v-if="sessionId == ''">
                 <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
             </div>
-            <div v-if="sessionId != '' && userType != 'K'">
-                <a href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a>
+            <div v-if="sessionId != '' && userType != 'K'" style="position: relative; display: inline-block;">
+                <a href="/home/mypage/information.do">
+                    <i data-lucide="user" stroke-width="1.5"></i>
+                    <span v-if="newReplyCount > 0" style="position: absolute; top: -8px; right: -10px; background-color: #ff0000; color: white; font-size: 11px; font-weight: bold; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5); z-index: 10;">{{ newReplyCount > 99 ? '99+' : newReplyCount }}</span>
+                </a>
             </div>
-            <div v-else-if="sessionId != '' && userType == 'K'">
-                <a href="/home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a>
+            <div v-else-if="sessionId != '' && userType == 'K'" style="position: relative; display: inline-block;">
+                <a href="/home/mypage/information/change.do">
+                    <i data-lucide="user" stroke-width="1.5"></i>
+                    <span v-if="newReplyCount > 0" style="position: absolute; top: -8px; right: -10px; background-color: #ff0000; color: white; font-size: 11px; font-weight: bold; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5); z-index: 10;">{{ newReplyCount > 99 ? '99+' : newReplyCount }}</span>
+                </a>
             </div>
             <div v-if="sessionId != ''" class="cart-wrapper" style="position: relative; display: inline-block;">
                 <a href="/home/cart.do">
