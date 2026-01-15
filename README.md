@@ -323,6 +323,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 - 신고기능 구현
 - 단체채팅방/ 1:1채팅방 구현
 - 같은방 유저 표시
+- 러닝코스 추천봇 구현
 
 ##### - 게시판, 대회정보
 | Before(Figma) | After(완성) |
@@ -332,7 +333,10 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 ##### - 크루찾기, 채팅방
 | Before(Figma) | After(완성) |
 |--------|-------|
-|<img width="500" height="200" alt="합치기3" src="https://github.com/user-attachments/assets/6445e079-acd2-4431-ae32-22e5fa258eb0" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/184d2a5c-6cae-481e-b83e-07a5f3ca7a3f" />|
+|<img width="500" height="200" alt="합치기3" src="https://github.com/user-attachments/assets/6445e079-acd2-4431-ae32-22e5fa258eb0" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/c0dc99a9-901c-411f-8ba4-1a0b93917849" />|
+
+
+
 
 
 
