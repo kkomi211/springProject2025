@@ -776,7 +776,8 @@
                                     <input type="file" id="chatImgInput" accept="image/*" style="display: none;"
                                         @change="fnUploadImage">
 
-                                    <input type="text" id="message" placeholder="메시지를 입력하세요..."
+                                    <input type="text" id="message"
+                                        :placeholder="[!chatbotFlg ? '/코스추천을 입력하면 러닝코스추천봇이 나옵니다.' : '/종료를 입력하면 봇이 종료됩니다.']"
                                         @keyup.enter="sendMessage" class="chatInput" v-model="userInput"
                                         style="flex: 1; height: 50px; padding: 0 20px; border-radius: 8px; border: 1px solid #ddd; outline: none; box-sizing: border-box; font-size: 15px;">
 
@@ -1027,43 +1028,47 @@
                 sendMessage() {
                     let self = this;
                     let chatBox = document.getElementById("chatBox");
-                    let messageContent = document.getElementById("message").value;
+
+                    // 1. v-model인 userInput 값을 가져옵니다.
+                    let messageContent = self.userInput;
+
+                    // 빈 메시지 전송 방지
+                    if (!messageContent || messageContent.trim() === "") return;
+
                     if (messageContent == "/코스추천") {
                         chatBox.scrollTop = chatBox.scrollHeight;
                         self.chatbotFlg = true;
-                        document.getElementById("message").value = "";
+                        self.userInput = ""; // 초기화
                         return;
                     }
                     if (messageContent == "/종료") {
                         chatBox.scrollTop = chatBox.scrollHeight;
                         self.chatbotFlg = false;
-                        document.getElementById("message").value = "";
+                        self.userInput = ""; // 초기화
                         return;
                     }
-                    // if (self.stompClient && messageContent.trim() !== "") {
-                    //     let chatMessage = { content: messageContent };
-                    //     self.stompClient.send('/app/sendMessage', {}, JSON.stringify(chatMessage));
-                    //     document.getElementById("message").value = "";
-                    // }
 
                     let param = {
                         chatroomNo: self.chatroomNo,
                         senderId: self.sessionId,
                         message: messageContent
                     }
+
                     $.ajax({
                         url: "/home/mypage/message/add.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data);
-
-                            document.getElementById("message").value = "";
-
+                            // 2. 전송 성공 시 Vue 변수를 빈 값으로 만들어 입력창을 비웁니다.
+                            self.userInput = "";
 
                             let chatMessage = { content: "" };
-                            self.stompClient.send('/app/sendMessage', {}, JSON.stringify(chatMessage));
+                            if (self.stompClient) {
+                                self.stompClient.send('/app/sendMessage', {}, JSON.stringify(chatMessage));
+                            }
+
+                            self.fnMessageList();
                         }
                     });
                 },
