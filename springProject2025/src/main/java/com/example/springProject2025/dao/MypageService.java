@@ -60,8 +60,22 @@ public class MypageService {
 			map.put("startIndex", startIndex);
 			map.put("pageSize", pageSize);
 
+			// 쿼리 실행 전 파라미터 로그 출력
+			System.out.println("=== MyBatis 쿼리 실행 파라미터 ===");
+			System.out.println("Mapper: MypageMapper.selectMyInquiryList");
+			System.out.println("파라미터 map: " + map);
+			System.out.println("sessionId: " + map.get("sessionId"));
+			System.out.println("startIndex: " + startIndex);
+			System.out.println("pageSize: " + pageSize);
+			System.out.println("===================================");
+
 			// 리스트 조회
 			List<MyInquiry> list = mypageMapper.selectMyInquiryList(map);
+			
+			// 쿼리 실행 후 결과 로그 출력
+			System.out.println("=== 쿼리 실행 결과 ===");
+			System.out.println("조회된 리스트 개수: " + (list != null ? list.size() : 0));
+			System.out.println("====================");
 
 			resultMap.put("list", list);
 			resultMap.put("totalItems", totalItems);
