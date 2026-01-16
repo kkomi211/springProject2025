@@ -631,8 +631,8 @@
                                 </div>
 
                                 <table>
-                                    <tr>
-                                        <th>No</th>
+                                    <tr style="background-color: #f7f7f7;"  >
+                                        <th>번호</th>
                                         <th>제목</th>
                                         <th>채팅방 소개</th>
                                         <th>채널</th>
