@@ -572,7 +572,7 @@
                                 </div>
 
                                 <table>
-                                    <tr style="background-color: #f7f7f7;"  >
+                                    <tr style="background-color: #f7f7f7;">
                                         <th>번호</th>
                                         <th>제목</th>
                                         <th>채팅방 소개</th>
@@ -587,14 +587,13 @@
                                                     <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
                                                     <span v-if="isNewCrew(item.chatroomNo)"
                                                         class="new-crew-badge">NEW</span>
-                                                </div>    
+                                                </div>
                                             </a>
 
                                         </td>
                                         <td>{{item.intro}}</td>
                                         <td class="entry-btn-cell">
-                                            <button class="entry-btn"
-                                                @click="fnEnterChat(item.chatroomNo)"  
+                                            <button class="entry-btn" @click="fnEnterChat(item.chatroomNo)"
                                                 style="padding: 50 25px; border-radius: 8px; background: #000; color: #fff; cursor: pointer;">입장하기</button>
                                         </td>
                                     </tr>
@@ -612,7 +611,8 @@
 
                                 <div class="write-btn-wrapper">
                                     <button @click="moveToPost"
-                                        style="padding: 10px; border-radius: 8px; background: #000; color: #fff; cursor: pointer;">크루 생성</button>
+                                        style="padding: 10px; border-radius: 8px; background: #000; color: #fff; cursor: pointer;">크루
+                                        생성</button>
                                 </div>
 
 
@@ -688,7 +688,9 @@
 
                         // NEW 배지 관련
                         hasNewCrew: false,
-                        lastCheckedCrewNo: null
+                        lastCheckedCrewNo: null,
+
+                        newReplyCount: 0 // 새 답변 개수
                     };
                 },
                 methods: {
@@ -969,6 +971,57 @@
                         });
                     },
 
+                    // 새 답변 개수 체크 (localStorage 기반)
+                    checkNewReplyCount: function () {
+                        // alert("메롱");
+                        let self = this;
+                        if (!self.sessionId || self.sessionId === '') {
+                            self.newReplyCount = 0;
+                            return;
+                        }
+
+                        // localStorage에서 확인한 답변 목록 불러오기
+                        const storageKey = `checkedReplies_${self.sessionId}`;
+                        const saved = localStorage.getItem(storageKey);
+                        let checkedReplies = [];
+                        if (saved) {
+                            try {
+                                checkedReplies = JSON.parse(saved);
+                            } catch (e) {
+                                checkedReplies = [];
+                            }
+                        }
+
+                        // 서버에서 답변 완료된 문의 목록 가져오기
+                        $.ajax({
+                            url: "/home/mypage/my-inquiry.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: {
+                                sessionId: self.sessionId,
+                                page: 1,
+                                pageSize: 1000 // 모든 문의 가져오기
+                            },
+                            success: function (data) {
+                                if (data.result == "success" && data.list) {
+                                    let uncheckedCount = 0;
+                                    data.list.forEach(function (item) {
+                                        if (item.status === 'Y' && !checkedReplies.includes(item.inquiryNo)) {
+                                            uncheckedCount++;
+                                        }
+                                    });
+                                    self.newReplyCount = uncheckedCount;
+                                    console.log("새 답변 개수:", uncheckedCount);
+                                } else {
+                                    self.newReplyCount = 0;
+                                }
+                            },
+                            error: function () {
+                                self.newReplyCount = 0;
+                            }
+                        });
+                    },
+
                 },
                 mounted() {
                     let self = this;
@@ -982,6 +1035,8 @@
                     } else {
                         console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                     }
+
+                    self.checkNewReplyCount();
 
                 }
             });
