@@ -11,6 +11,9 @@ import com.example.springProject2025.model.Comment;
 @Mapper
 public interface BoardMapper {
 	
+	// - 새로 추가: 채팅방 멤버 목록 조회 -
+	List<HashMap<String, Object>> selectChatMembers(HashMap<String, Object> map);
+	
 	// rally-board(대회정보) 목록
 	List<Board>selectRallyBoardList(HashMap<String, Object> map);
 
