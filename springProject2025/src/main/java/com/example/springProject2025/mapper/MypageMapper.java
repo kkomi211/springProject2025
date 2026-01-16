@@ -20,6 +20,8 @@ public interface MypageMapper {
 
 	MyInquiry selectMyInquiry(HashMap<String, Object> map);
 
+	int selectNewReplyCount(HashMap<String, Object> map);
+
 	
 
 

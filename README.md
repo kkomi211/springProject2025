@@ -188,8 +188,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 | Before(Figma) | After(완성) |
 |------|------|
-|<img width="500" height="200" alt="관리자문의" src="https://github.com/user-attachments/assets/f7d6091b-559f-469c-834f-8059a583a6a1" />|<img width="500" height="200" alt="상품문의내역관리" src="https://github.com/user-attachments/assets/d738d030-9408-4edc-96d9-d9e8499d8a3d" />
-|
+|<img width="500" height="200" alt="관리자문의" src="https://github.com/user-attachments/assets/f7d6091b-559f-469c-834f-8059a583a6a1" />|<img width="500" height="200" alt="상품문의내역관리" src="https://github.com/user-attachments/assets/d738d030-9408-4edc-96d9-d9e8499d8a3d" />|
 
 <br>
 
@@ -282,6 +281,7 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 - 제품 구매(결제) 시스템 구현
 - 장바구니 시스템 구현
 - 상품문의 구현
+- 신제품 등록 시 배지 기능 추가
 
 ##### - 제품 장바구니 및 결제 
 | Before(Figma) | After(완성) |
@@ -320,9 +320,13 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 #### 🦸🏼‍♂️ HOME 커뮤니티 기능
 - search옵션 구현
 - 게시판 글 추가 수정
+- 게시판 좋아요 댓글 기능 구현
 - 신고기능 구현
 - 단체채팅방/ 1:1채팅방 구현
 - 같은방 유저 표시
+- 러닝코스 추천봇 구현
+- 신규(add) 등록 시 배지 기능 추가
+  
 
 ##### - 게시판, 대회정보
 | Before(Figma) | After(완성) |
@@ -332,7 +336,11 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 ##### - 크루찾기, 채팅방
 | Before(Figma) | After(완성) |
 |--------|-------|
-|<img width="500" height="200" alt="합치기3" src="https://github.com/user-attachments/assets/6445e079-acd2-4431-ae32-22e5fa258eb0" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/184d2a5c-6cae-481e-b83e-07a5f3ca7a3f" />|
+|<img width="500" height="200" alt="합치기3" src="https://github.com/user-attachments/assets/6445e079-acd2-4431-ae32-22e5fa258eb0" />|<img width="500" height="200" src="https://github.com/user-attachments/assets/c0dc99a9-901c-411f-8ba4-1a0b93917849" />|
+
+
+
+
 
 
 

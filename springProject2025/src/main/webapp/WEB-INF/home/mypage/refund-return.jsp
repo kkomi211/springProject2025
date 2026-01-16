@@ -360,9 +360,10 @@
                                         <span class="icon">📦</span>
                                         <a href="#">반품•교환 내역</a>
                                     </li>
-                                    <li @click="moveToMyinquiry">
+                                    <li @click="moveToMyinquiry" style="position: relative;">
                                         <span class="icon">💬</span>
                                         <a href="#">문의 내역</a>
+                                        <span v-if="newReplyCount > 0" style="position: absolute; top: 50%; transform: translateY(-50%); right: 30px; background-color: #ff0000; color: white; font-size: 11px; font-weight: bold; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">{{ newReplyCount > 99 ? '99+' : newReplyCount }}</span>
                                     </li>
                                     <li @click="moveToInfo">
                                         <span class="icon">👤</span>
@@ -548,6 +549,7 @@
                     missingReasons: [], // [{ orderNo: 'xxx' }, ...]
                     userType: '${userType}',
                     cartCount: 0, // 장바구니 수량 변수 추가
+                    newReplyCount: 0, // 새 답변 개수
                 };
             },
             methods: {
@@ -874,6 +876,56 @@
                         }
                     });
                 },
+                
+                // 새 답변 개수 체크 (localStorage 기반)
+                checkNewReplyCount: function() {
+                    let self = this;
+                    if (!self.sessionId || self.sessionId === '') {
+                        self.newReplyCount = 0;
+                        return;
+                    }
+                    
+                    // localStorage에서 확인한 답변 목록 불러오기
+                    const storageKey = `checkedReplies_${self.sessionId}`;
+                    const saved = localStorage.getItem(storageKey);
+                    let checkedReplies = [];
+                    if (saved) {
+                        try {
+                            checkedReplies = JSON.parse(saved);
+                        } catch (e) {
+                            checkedReplies = [];
+                        }
+                    }
+                    
+                    // 서버에서 답변 완료된 문의 목록 가져오기
+                    $.ajax({
+                        url: "/home/mypage/my-inquiry.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: {
+                            sessionId: self.sessionId,
+                            page: 1,
+                            pageSize: 1000 // 모든 문의 가져오기
+                        },
+                        success: function (data) {
+                            if (data.result == "success" && data.list) {
+                                let uncheckedCount = 0;
+                                data.list.forEach(function(item) {
+                                    if (item.status === 'Y' && !checkedReplies.includes(item.inquiryNo)) {
+                                        uncheckedCount++;
+                                    }
+                                });
+                                self.newReplyCount = uncheckedCount;
+                                console.log("새 답변 개수:", uncheckedCount);
+                            } else {
+                                self.newReplyCount = 0;
+                            }
+                        },
+                        error: function() {
+                            self.newReplyCount = 0;
+                        }
+                    });
+                },
             }, // methods
             mounted() {
                 let self = this;
@@ -884,9 +936,17 @@
                 if (self.sessionId && self.sessionId !== '') {
                     console.log("장바구니 수량 조회를 시작합니다.");
                     self.fetchCartCount();
+                    self.checkNewReplyCount(); // 새 답변 개수 체크
                 } else {
                     console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                 }
+                
+                // 주기적으로 새 답변 체크 (30초마다)
+                setInterval(function() {
+                    if (self.sessionId && self.sessionId !== '') {
+                        self.checkNewReplyCount();
+                    }
+                }, 30000);
             }
         });
 

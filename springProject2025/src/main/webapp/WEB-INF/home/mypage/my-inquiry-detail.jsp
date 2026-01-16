@@ -315,9 +315,10 @@ html, body {
                                         <span class="icon">📦</span>
                                         <a href="javascript:;">반품•교환 내역</a>
                                     </li>
-                                    <li class="active" @click="moveToMyinquiry">
+                                    <li class="active" @click="moveToMyinquiry" style="position: relative;">
                                         <span class="icon">💬</span>
                                         <a href="#">문의 내역</a>
+                                        <span v-if="newReplyCount > 0" style="position: absolute; top: 50%; transform: translateY(-50%); right: 30px; background-color: #ff0000; color: white; font-size: 11px; font-weight: bold; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">{{ newReplyCount > 99 ? '99+' : newReplyCount }}</span>
                                     </li>
                                     <li>
                                         <span class="icon">👤</span>
@@ -430,6 +431,8 @@ html, body {
                     inquiry: null,
                     userType : '${userType}',
                     cartCount: 0, // 장바구니 수량 변수 추가 (jgh260114)
+                    newReplyCount: 0, // 새 답변 개수
+                    checkedReplies: [], // 확인한 답변 목록 (localStorage에서 로드)
                 };
             },
             methods: {
@@ -449,6 +452,82 @@ html, body {
                         },
                         error: (err) => {
                             console.error("AJAX 호출 중 오류 발생:", err);
+                        }
+                    });
+                },
+                
+                // localStorage에서 확인한 답변 목록 불러오기
+                loadCheckedReplies: function() {
+                    let self = this;
+                    const storageKey = `checkedReplies_${self.sessionId}`;
+                    const saved = localStorage.getItem(storageKey);
+                    
+                    if (saved) {
+                        try {
+                            self.checkedReplies = JSON.parse(saved);
+                            console.log("확인한 답변 목록:", self.checkedReplies);
+                        } catch (e) {
+                            self.checkedReplies = [];
+                        }
+                    } else {
+                        self.checkedReplies = [];
+                    }
+                },
+                
+                // 확인한 답변 목록 저장
+                saveCheckedReplies: function() {
+                    let self = this;
+                    const storageKey = `checkedReplies_${self.sessionId}`;
+                    localStorage.setItem(storageKey, JSON.stringify(self.checkedReplies));
+                    console.log("확인한 답변 저장 완료:", self.checkedReplies);
+                },
+                
+                // 새 답변 개수 체크 (localStorage 기반)
+                checkNewReplyCount: function() {
+                    let self = this;
+                    if (!self.sessionId || self.sessionId === '') {
+                        self.newReplyCount = 0;
+                        return;
+                    }
+                    
+                    // localStorage에서 확인한 답변 목록 불러오기
+                    const storageKey = `checkedReplies_${self.sessionId}`;
+                    const saved = localStorage.getItem(storageKey);
+                    let checkedReplies = [];
+                    if (saved) {
+                        try {
+                            checkedReplies = JSON.parse(saved);
+                        } catch (e) {
+                            checkedReplies = [];
+                        }
+                    }
+                    
+                    // 서버에서 답변 완료된 문의 목록 가져오기
+                    $.ajax({
+                        url: "/home/mypage/my-inquiry.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: {
+                            sessionId: self.sessionId,
+                            page: 1,
+                            pageSize: 1000 // 모든 문의 가져오기
+                        },
+                        success: function (data) {
+                            if (data.result == "success" && data.list) {
+                                let uncheckedCount = 0;
+                                data.list.forEach(function(item) {
+                                    if (item.status === 'Y' && !checkedReplies.includes(item.inquiryNo)) {
+                                        uncheckedCount++;
+                                    }
+                                });
+                                self.newReplyCount = uncheckedCount;
+                                console.log("새 답변 개수:", uncheckedCount);
+                            } else {
+                                self.newReplyCount = 0;
+                            }
+                        },
+                        error: function() {
+                            self.newReplyCount = 0;
                         }
                     });
                 },
@@ -549,6 +628,16 @@ html, body {
                             console.log("돌아온 detail관련 data는" + JSON.stringify(data))
                             if (data.result === "success") {
                                 self.inquiry = data.info;
+                                
+                                // 답변이 있고, 아직 확인하지 않은 경우 확인 처리
+                                if (self.inquiry && self.inquiry.status === 'Y' && self.inquiry.answer) {
+                                    if (!self.checkedReplies.includes(self.inquiry.inquiryNo)) {
+                                        self.checkedReplies.push(self.inquiry.inquiryNo);
+                                        self.saveCheckedReplies();
+                                        // 새 답변 개수 다시 계산
+                                        self.checkNewReplyCount();
+                                    }
+                                }
                             } else {
                                 alert("문의 정보를 불러오지 못했습니다.");
                             }
@@ -592,12 +681,27 @@ html, body {
             }, // methods
             mounted() {
                 let self = this;
-                self.fnGetInquiryDetail(); // 실제 데이터 조회 시작
+                self.loadCheckedReplies(); // 확인한 답변 목록 불러오기
+                self.fnGetInquiryDetail(); // 실제 데이터 조회 시작 (내부에서 확인 처리)
                 self.fnGetUserInfo(); // 사용자 정보 조회
+                
                 // 장바구니 수량 조회 (jgh260114)
                 if (self.sessionId && self.sessionId !== '') {
                     self.fetchCartCount();
+                    self.checkNewReplyCount(); // 새 답변 개수 체크
                 }
+                
+                // 주기적으로 새 답변 체크 (30초마다)
+                setInterval(function() {
+                    if (self.sessionId && self.sessionId !== '') {
+                        self.checkNewReplyCount();
+                    }
+                }, 30000);
+                
+                // lucide 아이콘 초기화
+                setTimeout(function() {
+                    lucide.createIcons();
+                }, 100);
             }
         });
 

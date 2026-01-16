@@ -172,4 +172,12 @@ public class MypageController {
 		return new Gson().toJson(resultMap);
 	}
 	
+	@RequestMapping(value = "/home/mypage/new-reply-count.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String getNewReplyCount(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = mypageService.getNewReplyCount(map);
+		return new Gson().toJson(resultMap);
+	}
+	
 }

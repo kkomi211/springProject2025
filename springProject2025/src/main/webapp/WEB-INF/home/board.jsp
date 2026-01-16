@@ -189,9 +189,12 @@
             }
 
             @keyframes badgePulse {
-                0%, 100% {
+
+                0%,
+                100% {
                     transform: scale(1);
                 }
+
                 50% {
                     transform: scale(1.1);
                 }
@@ -213,10 +216,13 @@
             }
 
             @keyframes pulse {
-                0%, 100% {
+
+                0%,
+                100% {
                     transform: scale(1);
                     box-shadow: 0 2px 8px rgba(255, 68, 68, 0.4);
                 }
+
                 50% {
                     transform: scale(1.05);
                     box-shadow: 0 4px 12px rgba(255, 68, 68, 0.6);
@@ -242,211 +248,204 @@
                 <%-- 공통 헤더 컴포넌트 --%>
                     <jsp:include page="/WEB-INF/header/header.jsp" />
 
-                <div class="main-hero-slider-area">
-                    <section class="main-hero-slider">
-                        <div class="swiper-container mySwiper">
-                            <div class="swiper-wrapper">
-                                <div class="swiper-slide">
+                    <div class="main-hero-slider-area">
+                        <section class="main-hero-slider">
+                            <div class="swiper-container mySwiper">
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide">
 
-                                    <img
-                                        src="https://as2.ftcdn.net/v2/jpg/02/34/65/76/1000_F_234657662_jQjqcHFWIh3oVh9DTXAXzKAXVZ5Zf6ko.jpg">
+                                        <img
+                                            src="https://as2.ftcdn.net/v2/jpg/02/34/65/76/1000_F_234657662_jQjqcHFWIh3oVh9DTXAXzKAXVZ5Zf6ko.jpg">
 
-                                </div>
-                            </div>
-                            <div class="swiper-pagination"></div>
-                        </div>
-                        <span class="crew-overlay-text">COMMUNITY</span> <!-- 텍스트는 항상 보임, 중앙 위치 -->
-                    </section>
-                </div>
-
-                <main class="below-header">
-
-
-                    <div class="header">
-                        <div class="header-welcome">
-                            Welcome,
-                        </div>
-                        <div class="header-user">
-                            {{ userName }}
-                        </div>
-                    </div>
-                    <div class="page-container">
-                        <aside class="sidebar">
-                            <h2 class="sidebar-heading"> COMMUNITY ></h2>
-                            <nav class="mypage-menu">
-                                <ul>
-                                    <li class="active" @click="moveToBoard">
-                                        <span class="icon">📝</span>
-                                        <a href="javascript:void(0)">
-                                            게시판
-                                            <span v-if="hasNewPost" class="sidebar-new-badge">NEW</span>
-                                        </a>
-                                    </li>
-                                    <li @click="moveToCrew">
-                                        <span class="icon">📦</span>
-                                        <a href="/home/community/crew.do">크루 찾기</a>
-                                    </li>
-                                    <li @click="moveToRally">
-                                        <span class="icon">💬</span>
-                                        <a href="/home/community/rally.do">대회정보</a>
-                                    </li>
-                                    <li @click="moveToChat">
-                                        <span class="icon">👤</span>
-                                        <a href="/home/community/chat.do">채팅방</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </aside>
-
-                        <main class="main-content">
-                            <div class="board-header">
-                                <h1 class="main-title">
-                                    게시판 •
-                                    {{
-                                    type === '' ? '전체 게시판' :
-                                    type === 'B' ? '공지사항' :
-                                    type === 'Q' ? '문의게시판' :
-                                    type === 'F' ? '자유게시판' :
-                                    type === 'R' ? '대회게시판' :
-                                    '게시판'
-                                    }}
-                                </h1>
-                                <div class="search-bar">
-                                    <div class="search-box">
-                                        <select v-model="type" @change="fnBoardList" class="board-select">
-                                            <option value="">전체</option>
-                                            <option value="B">공지사항</option>
-                                            <option value="Q">문의게시판</option>
-                                            <option value="F">자유게시판</option>
-                                            <option value="R">대회게시판</option>
-                                        </select>
-                                        <input 
-                                            class="search" 
-                                            type="text" 
-                                            placeholder="검색어를 입력하세요" 
-                                            v-model="keyword"
-                                            @keyup.enter="fnBoardList">
-                                        <a href="javascript:;" @click="fnBoardList">
-                                            <div><i data-lucide="search" stroke-width="1.5"></i></div>
-                                        </a>
                                     </div>
                                 </div>
+                                <div class="swiper-pagination"></div>
                             </div>
-                            <select class="page-size-select" v-model="pageSize" @change="fnBoardList">
-                                <option value="5">5개씩</option>
-                                <option value="10">10개씩</option>
-                                <option value="20">20개씩</option>
-                            </select>
-                            <table>
-                                <tr>
-                                    <th>번호</th>
-                                    <th>제목</th>
-                                    <th>댓글</th>
-                                    <!-- <th>작정자</th> -->
-                                    <th>작성일</th>
-                                    <th id="view-cnt">조회수</th>
-                                </tr>
-                                <tr v-for="item in boardList" :class="{ 'new-post': isNewPost(item.boardNo) }">
-                                    <td>{{item.boardNo}}</td>
-                                    <td class="title-cell">
-                                        <a href="javascript:;" @click="fnPostView(item.boardNo)">
-                                            <div class="title-row">
-                                            <span class="post-title">{{ item.title }}</span>
-                                            <span
-                                                v-if="item.pwd"
-                                                class="material-symbols-outlined lock-icon"
-                                                title="비밀글"
-                                            >
-                                                lock
-                                            </span>
-                                            </div>
-                                            <div class="sub-meta">
-                                            <span>{{ item.userId }}</span>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td >
-                                        <div class="comment-column">
-                                            <span class="material-icons-outlined" style="font-size: 18px;">
-                                            comment
-                                            </span>
-                                            <span>{{item.commentCnt}}</span> 
+                            <span class="crew-overlay-text">COMMUNITY</span> <!-- 텍스트는 항상 보임, 중앙 위치 -->
+                        </section>
+                    </div>
+
+                    <main class="below-header">
+
+
+                        <div class="header">
+                            <div class="header-welcome">
+                                Welcome,
+                            </div>
+                            <div class="header-user">
+                                {{ userName }}
+                            </div>
+                        </div>
+                        <div class="page-container">
+                            <aside class="sidebar">
+                                <h2 class="sidebar-heading"> COMMUNITY ></h2>
+                                <nav class="mypage-menu">
+                                    <ul>
+                                        <li class="active" @click="moveToBoard">
+                                            <span class="icon">📝</span>
+                                            <a href="javascript:void(0)">
+                                                게시판
+                                                <span v-if="hasNewPost" class="sidebar-new-badge">NEW</span>
+                                            </a>
+                                        </li>
+                                        <li @click="moveToCrew">
+                                            <span class="icon">📦</span>
+                                            <a href="/home/community/crew.do">크루 찾기</a>
+                                        </li>
+                                        <li @click="moveToRally">
+                                            <span class="icon">💬</span>
+                                            <a href="/home/community/rally.do">대회정보</a>
+                                        </li>
+                                        <li @click="moveToChat">
+                                            <span class="icon">👤</span>
+                                            <a href="/home/community/chat.do">채팅방</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </aside>
+
+                            <main class="main-content">
+                                <div class="board-header">
+                                    <h1 class="main-title">
+                                        게시판 •
+                                        {{
+                                        type === '' ? '전체 게시판' :
+                                        type === 'B' ? '공지사항' :
+                                        type === 'Q' ? '문의게시판' :
+                                        type === 'F' ? '자유게시판' :
+                                        type === 'R' ? '대회게시판' :
+                                        '게시판'
+                                        }}
+                                    </h1>
+                                    <div class="search-bar">
+                                        <div class="search-box">
+                                            <select v-model="type" @change="fnBoardList" class="board-select">
+                                                <option value="">전체</option>
+                                                <option value="B">공지사항</option>
+                                                <option value="Q">문의게시판</option>
+                                                <option value="F">자유게시판</option>
+                                                <option value="R">대회게시판</option>
+                                            </select>
+                                            <input class="search" type="text" placeholder="검색어를 입력하세요" v-model="keyword"
+                                                @keyup.enter="fnBoardList">
+                                            <a href="javascript:;" @click="fnBoardList">
+                                                <div><i data-lucide="search" stroke-width="1.5"></i></div>
+                                            </a>
                                         </div>
-                                    </td>
-                                    <!-- <td>{{item.userId}}</td> -->
-                                    <td>{{item.chardate}}</td>
-                                    <td id="view-cnt">{{item.viewCnt}}</td>
-                                </tr>
-                            </table>
-                            <div v-if="index > 0" class="pagination">
-                                <!-- <a v-if="page != 1" @click="fnMove(1)" href="javascript:void(0)">←</a> -->
-                                <a v-if="page != 1" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
-                                <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index"
-                                    :key="num">
-                                    <span :class="{ active: page == num }">{{ num }}</span>
-                                </a>
-                                <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
-                                <!-- <a v-if="page != index" @click="fnMove(index)" href="javascript:void(0)">→</a> -->
-                            </div>
-
-                            <div class="write-btn-wrapper">
-                                <button @click="moveToPost" class="write-btn">글쓰기</button>
-                            </div>
-
-                            <!-- Popup asking for the user post's password -->
-
-                            <div v-if="pwdCorrect" class="modal-overlay">
-                                <div class="modal-content">
-                                    <h2>비밀글로 보호된 게시물입니다.</h2>
-                                    <p>비밀번호를 입력해야 내용을 확인할 수 있습니다.</p>
-                                    <input class="btn" type="password" @keyup.enter="fnKeylock" placeholder="비밀번호 입력"
-                                        v-model="keylock" id="keylock">
-                                    <div>
-                                        <button style="margin-right: 10px;" class="btn"
-                                            @click="pwdCorrect = false">닫기</button>
-                                        <button class="btn" @click="fnKeylock">확인</button>
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- Logout popup -->
-                            <div v-if="isLoggedOut" class="modal-overlay">
-                                <div class="modal-content">
-                                    <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
-                                    <a href="/home.do"><button class="btn">메인 화면으로 가기</button></a>
+                                <select class="page-size-select" v-model="pageSize" @change="fnBoardList">
+                                    <option value="5">5개씩</option>
+                                    <option value="10">10개씩</option>
+                                    <option value="20">20개씩</option>
+                                </select>
+                                <table>
+                                    <tr>
+                                        <th>번호</th>
+                                        <th>제목</th>
+                                        <th>댓글</th>
+                                        <!-- <th>작정자</th> -->
+                                        <th>작성일</th>
+                                        <th id="view-cnt">조회수</th>
+                                    </tr>
+                                    <tr v-for="item in boardList" :class="{ 'new-post': isNewPost(item.boardNo) }">
+                                        <td>{{item.boardNo}}</td>
+                                        <td class="title-cell">
+                                            <a href="javascript:;" @click="fnPostView(item.boardNo)">
+                                                <div class="title-row">
+                                                    <span class="post-title">{{ item.title }}</span>
+                                                    <span v-if="item.pwd" class="material-symbols-outlined lock-icon"
+                                                        title="비밀글">
+                                                        lock
+                                                    </span>
+                                                </div>
+                                                <div class="sub-meta">
+                                                    <span>{{ item.userId }}</span>
+                                                </div>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <div class="comment-column">
+                                                <span class="material-icons-outlined" style="font-size: 18px;">
+                                                    comment
+                                                </span>
+                                                <span>{{item.commentCnt}}</span>
+                                            </div>
+                                        </td>
+                                        <!-- <td>{{item.userId}}</td> -->
+                                        <td>{{item.chardate}}</td>
+                                        <td id="view-cnt">{{item.viewCnt}}</td>
+                                    </tr>
+                                </table>
+                                <div v-if="index > 0" class="pagination">
+                                    <!-- <a v-if="page != 1" @click="fnMove(1)" href="javascript:void(0)">←</a> -->
+                                    <a v-if="page != 1" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
+                                    <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index"
+                                        :key="num">
+                                        <span :class="{ active: page == num }">{{ num }}</span>
+                                    </a>
+                                    <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
+                                    <!-- <a v-if="page != index" @click="fnMove(index)" href="javascript:void(0)">→</a> -->
                                 </div>
+
+                                <div class="write-btn-wrapper">
+                                    <button @click="moveToPost" class="write-btn">글쓰기</button>
+                                </div>
+
+                                <!-- Popup asking for the user post's password -->
+
+                                <div v-if="pwdCorrect" class="modal-overlay">
+                                    <div class="modal-content">
+                                        <h2>비밀글로 보호된 게시물입니다.</h2>
+                                        <p>비밀번호를 입력해야 내용을 확인할 수 있습니다.</p>
+                                        <input class="btn" type="password" @keyup.enter="fnKeylock"
+                                            placeholder="비밀번호 입력" v-model="keylock" id="keylock">
+                                        <div>
+                                            <button style="margin-right: 10px;" class="btn"
+                                                @click="pwdCorrect = false">닫기</button>
+                                            <button class="btn" @click="fnKeylock">확인</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Logout popup -->
+                                <div v-if="isLoggedOut" class="modal-overlay">
+                                    <div class="modal-content">
+                                        <h2>{{userName}} 님, 로그아웃 되었습니다.</h2>
+                                        <a href="/home.do"><button class="btn">메인 화면으로 가기</button></a>
+                                    </div>
+                                </div>
+
+                            </main>
+                        </div>
+                    </main>
+
+                    <footer>
+                        <div class="footer-left">
+                            <div class="company-info">
+                                <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
+                                <div><strong>대표:</strong> 김재</div>
+                                <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
+                                <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
+                                <div><strong>부가세 번호:</strong> KR123456789</div>
                             </div>
-
-                        </main>
-                    </div>
-                </main>
-
-                <footer>
-                    <div class="footer-left">
-                        <div class="company-info">
-                            <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
-                            <div><strong>대표:</strong> 김재</div>
-                            <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
-                            <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
-                            <div><strong>부가세 번호:</strong> KR123456789</div>
+                            <div class="copyright">
+                                COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                            </div>
                         </div>
-                        <div class="copyright">
-                            COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                        <div class="footer-right">
+                            <div class="other">
+                                <span><a href="/home/about.do">회사소개</a></span>
+                                <span><a @click="fnNotice">공지사항</a></span>
+                                <span><a href="/home/terms.do">이용약관</a></span>
+                                <span><a href="/home/privacy.do">개인정보처리방침</a></span>
+                            </div>
+                            <div class="socials">
+                                <span>INSTAGRAM</span>
+                                <span>NAVER</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="footer-right">
-                        <div class="other">
-                            <span><a href="/home/about.do">회사소개</a></span>
-                            <span><a @click="fnNotice">공지사항</a></span>
-                            <span><a href="/home/terms.do">이용약관</a></span>
-                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
-                        </div>
-                        <div class="socials">
-                            <span>INSTAGRAM</span>
-                            <span>NAVER</span>
-                        </div>
-                    </div>
-                </footer>
+                    </footer>
             </div>
         </div>
     </body>
@@ -458,7 +457,6 @@
         const app = Vue.createApp({
             data() {
                 return {
-                    // 변수 - (key : value)
                     sessionId: "${sessionId}",
                     userName: "",
                     boardList: [],
@@ -466,6 +464,7 @@
                     keyword: "",
                     type: "${type}",
                     userType: "${userType}",
+
                     // pagination
                     cnt: 0,
                     page: 1,
@@ -473,19 +472,18 @@
                     index: 0,
 
                     // modal popup 
-                    isLoggedOut: false, // logout popup 
+                    isLoggedOut: false,
                     pwdCorrect: false,
-                    selectedPost: null,  // store the post object being clicked
+                    selectedPost: null,
                     keylock: "",
-                    userType: '${userType}',
 
                     // NEW 배지 관련
                     hasNewPost: false,
-                    lastCheckedBoardNo: null
+                    checkedPosts: [], // 확인한 게시글 목록
+                    newReplyCount: 0 // 새 답변 개수
                 };
             },
             methods: {
-                // 함수(메소드) - (key : function())
                 fnGetUserInfo: function () {
                     let self = this;
                     $.ajax({
@@ -503,6 +501,7 @@
                         }
                     });
                 },
+
                 fnBoardList: function () {
                     let self = this;
                     let startRow = (self.page - 1) * self.pageSize + 1;
@@ -528,50 +527,104 @@
                                 self.cnt = data.cnt;
                                 self.index = Math.ceil(self.cnt / self.pageSize);
 
+                                // 확인한 게시글 목록 로드
+                                self.loadCheckedPosts();
+
                                 // NEW 게시글 체크
                                 self.checkNewPost();
                             } else {
                                 console.log("오류");
                             }
-
                         }
                     });
                 },
 
-                // 신규 게시글 체크
-                checkNewPost() {
+                // localStorage에서 확인한 게시글 목록 불러오기
+                loadCheckedPosts() {
                     const self = this;
-                    
-                    // localStorage에서 마지막 확인한 게시글 번호 가져오기
-                    const savedBoardNo = localStorage.getItem("lastCheckedBoardNo");
-                    
-                    if (self.boardList.length > 0) {
-                        const latestBoardNo = self.boardList[0].boardNo;
-                        
-                        console.log("최신 게시글 번호:", latestBoardNo);
-                        console.log("마지막 확인 게시글 번호:", savedBoardNo);
-                        
-                        // 저장된 번호가 없거나, 최신 게시글 번호가 더 크면 NEW 표시
-                        if (!savedBoardNo || parseInt(latestBoardNo) > parseInt(savedBoardNo)) {
-                            self.hasNewPost = true;
-                            console.log("NEW 배지 표시!");
-                        } else {
-                            self.hasNewPost = false;
+                    const storageKey = `checkedPosts_${self.sessionId}`;
+                    const saved = localStorage.getItem(storageKey);
+
+                    if (saved) {
+                        try {
+                            self.checkedPosts = JSON.parse(saved);
+                            console.log("확인한 게시글 목록:", self.checkedPosts);
+                        } catch (e) {
+                            self.checkedPosts = [];
                         }
+                    } else {
+                        self.checkedPosts = [];
                     }
                 },
 
-                // 개별 게시글이 신규인지 체크 (사용자가 확인하지 않은 게시글)
-                isNewPost(boardNo) {
-                    const savedBoardNo = localStorage.getItem("lastCheckedBoardNo");
-                    
-                    // 저장된 번호가 없으면 모든 게시글이 신규
-                    if (!savedBoardNo) {
-                        return true;
+                // 확인한 게시글 목록 저장
+                saveCheckedPosts() {
+                    const self = this;
+                    const storageKey = `checkedPosts_${self.sessionId}`;
+                    localStorage.setItem(storageKey, JSON.stringify(self.checkedPosts));
+                    console.log("확인한 게시글 저장 완료:", self.checkedPosts);
+                },
+
+                // 신규 게시글 체크 (24시간 이내 작성 + 확인하지 않은 게시글)
+                checkNewPost() {
+                    const self = this;
+
+                    if (self.boardList.length === 0) {
+                        self.hasNewPost = false;
+                        return;
                     }
-                    
-                    // 현재 게시글 번호가 저장된 번호보다 크면 신규
-                    return parseInt(boardNo) > parseInt(savedBoardNo);
+
+                    const now = new Date();
+                    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+                    // 24시간 이내 작성되고 확인하지 않은 게시글이 있는지 체크
+                    const hasNew = self.boardList.some(post => {
+                        const postDate = new Date(post.chardate);
+                        const isRecent = postDate > oneDayAgo;
+                        const isNotChecked = !self.checkedPosts.includes(post.boardNo);
+
+                        return isRecent && isNotChecked;
+                    });
+
+                    self.hasNewPost = hasNew;
+                    console.log("NEW 배지 표시 여부:", hasNew);
+                },
+
+                // 개별 게시글이 신규인지 체크 (24시간 이내 작성 + 확인하지 않음)
+                isNewPost(boardNo) {
+                    const self = this;
+
+                    // 이미 확인한 게시글이면 NEW 표시 안함
+                    if (self.checkedPosts.includes(boardNo)) {
+                        return false;
+                    }
+
+                    // 해당 게시글 찾기
+                    const post = self.boardList.find(p => p.boardNo === boardNo);
+                    if (!post) {
+                        return false;
+                    }
+
+                    // 24시간 이내에 작성되었는지 확인
+                    const now = new Date();
+                    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+                    const postDate = new Date(post.chardate);
+
+                    return postDate > oneDayAgo;
+                },
+
+                // 게시글 확인 처리 (NEW 배지 업데이트)
+                updateLastCheckedPost: function (boardNo) {
+                    let self = this;
+
+                    // 확인한 게시글로 표시
+                    if (!self.checkedPosts.includes(boardNo)) {
+                        self.checkedPosts.push(boardNo);
+                        self.saveCheckedPosts();
+
+                        // NEW 배지 상태 업데이트
+                        self.checkNewPost();
+                    }
                 },
 
                 fnMove: function (num) {
@@ -579,15 +632,18 @@
                     self.page = num;
                     self.fnBoardList();
                 },
+
                 fnPage: function (num) {
                     let self = this;
                     self.page = num;
                     self.fnBoardList();
                 },
+
                 moveToPost: function () {
                     let self = this;
                     pageChange("/home/community/board/post.do", { sessionId: self.sessionId });
                 },
+
                 fnPostView: function (boardNo) {
                     let self = this;
                     let param = {
@@ -602,36 +658,20 @@
                         // Show password modal
                         self.selectedPost = post;
                         self.pwdCorrect = true;
-                        self.keylock = ""; // reset input
+                        self.keylock = "";
                     } else {
                         // No lock, go directly to the post
                         pageChange("board/view.do", { boardNo: boardNo });
                     }
+                },
 
-                    // pageChange("board/view.do", {boardNo : boardNo});
-                },
-                
-                // 게시글 확인 처리 (NEW 배지 업데이트)
-                updateLastCheckedPost: function(boardNo) {
-                    let self = this;
-                    const savedBoardNo = localStorage.getItem("lastCheckedBoardNo");
-                    
-                    // 현재 클릭한 게시글이 저장된 번호보다 크면 업데이트
-                    if (!savedBoardNo || parseInt(boardNo) > parseInt(savedBoardNo)) {
-                        localStorage.setItem("lastCheckedBoardNo", boardNo);
-                        console.log("게시글 확인 완료, 저장된 번호:", boardNo);
-                        
-                        // NEW 배지 상태 다시 체크
-                        self.checkNewPost();
-                    }
-                },
                 fnKeylock: function () {
                     let self = this;
-                    if (!self.selectedPost) return; // safety check
+                    if (!self.selectedPost) return;
 
                     let param = {
-                        boardNo: self.selectedPost.boardNo, // send the post ID
-                        keylock: self.keylock               // send the password entered
+                        boardNo: self.selectedPost.boardNo,
+                        keylock: self.keylock
                     };
 
                     $.ajax({
@@ -641,12 +681,10 @@
                         data: param,
                         success: function (data) {
                             if (data.result === "success") {
-                                // alert("Password correct");
-                                self.pwdCorrect = false; // close modal
-                                // redirect to the post
+                                self.pwdCorrect = false;
                                 pageChange("board/view.do", { boardNo: self.selectedPost.boardNo });
                             } else if (data.result === "fail") {
-                                alert("비밀번호가 올바르지 않습니다."); // wrong password
+                                alert("비밀번호가 올바르지 않습니다.");
                                 document.querySelector("#keylock").focus();
                                 self.keylock = "";
                             }
@@ -656,14 +694,17 @@
                         }
                     });
                 },
+
                 fnChat() {
                     let self = this;
                     pageChange("/home/community/chat.do", { sessionId: self.sessionId });
                 },
+
                 fnNotice() {
                     let self = this;
                     pageChange("/home/community/board.do", { type: "B" });
                 },
+
                 fnLogout: function () {
                     let self = this;
                     let param = {};
@@ -676,57 +717,53 @@
                             if (data.result == "success") {
                                 location.href = "/home.do";
                             }
-
                         }
                     })
                 },
-                fnNotice() {
-                    let self = this;
-                    pageChange("/home/community/board.do", { type: "B" });
-                },
+
                 fnSale() {
                     let self = this;
                     self.saleYN = 'Y';
                     pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                 },
+
+                // 사이드바 게시판 메뉴 클릭 시 - 모든 게시글 확인 처리
                 moveToBoard: function () {
                     let self = this;
-                    
-                    // NEW 배지 클릭 시 확인 처리
-                    if (self.boardList.length > 0) {
-                        const latestBoardNo = self.boardList[0].boardNo;
-                        localStorage.setItem("lastCheckedBoardNo", latestBoardNo);
-                        self.hasNewPost = false;
-                        console.log("게시판 확인 완료, 저장된 번호:", latestBoardNo);
-                    }
-                    
-                    pageChange("/home/community/board.do", {  });
+
+                    // 현재 표시된 모든 게시글을 확인 처리
+                    self.boardList.forEach(post => {
+                        if (!self.checkedPosts.includes(post.boardNo)) {
+                            self.checkedPosts.push(post.boardNo);
+                        }
+                    });
+
+                    self.saveCheckedPosts();
+                    self.hasNewPost = false;
+
+                    pageChange("/home/community/board.do", {});
                 },
+
                 moveToCrew: function () {
-                    let self = this;
-                    
-                    pageChange("/home/community/crew.do", {  });
+                    pageChange("/home/community/crew.do", {});
                 },
+
                 moveToRally: function () {
-                    let self = this;
-                    
-                    pageChange("/home/community/rally.do", {  });
+                    pageChange("/home/community/rally.do", {});
                 },
+
                 moveToChat: function () {
-                    let self = this;
-                    
-                    pageChange("/home/community/chat.do", {  });
+                    pageChange("/home/community/chat.do", {});
                 },
+
                 // 장바구니 수량을 서버에서 가져오는 함수
                 fetchCartCount() {
-                    // 세션 아이디가 없으면 실행하지 않음
                     if (this.sessionId == '' || this.sessionId == null) return;
 
                     let self = this;
                     $.ajax({
                         url: '/api/cartCount.dox',
                         method: 'GET',
-                        // ★ 서버의 @RequestParam HashMap map으로 전달될 데이터 ★
                         data: {
                             sessionId: self.sessionId
                         },
@@ -734,7 +771,7 @@
                         success: (response) => {
                             console.log("서버 응답 데이터:", response);
                             if (response.result === 'success') {
-                                self.cartCount = response.count; // 서버에서 보낸 count 값을 Vue 변수에 저장
+                                self.cartCount = response.count;
                             }
                         },
                         error: (err) => {
@@ -742,21 +779,77 @@
                         }
                     });
                 },
+                
+                // 새 답변 개수 체크 (localStorage 기반)
+                checkNewReplyCount: function() {
+                    let self = this;
+                    if (!self.sessionId || self.sessionId === '') {
+                        self.newReplyCount = 0;
+                        return;
+                    }
+                    
+                    // localStorage에서 확인한 답변 목록 불러오기
+                    const storageKey = `checkedReplies_${self.sessionId}`;
+                    const saved = localStorage.getItem(storageKey);
+                    let checkedReplies = [];
+                    if (saved) {
+                        try {
+                            checkedReplies = JSON.parse(saved);
+                        } catch (e) {
+                            checkedReplies = [];
+                        }
+                    }
+                    
+                    // 서버에서 답변 완료된 문의 목록 가져오기
+                    $.ajax({
+                        url: "/home/mypage/my-inquiry.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: {
+                            sessionId: self.sessionId,
+                            page: 1,
+                            pageSize: 1000 // 모든 문의 가져오기
+                        },
+                        success: function (data) {
+                            if (data.result == "success" && data.list) {
+                                let uncheckedCount = 0;
+                                data.list.forEach(function(item) {
+                                    if (item.status === 'Y' && !checkedReplies.includes(item.inquiryNo)) {
+                                        uncheckedCount++;
+                                    }
+                                });
+                                self.newReplyCount = uncheckedCount;
+                                console.log("새 답변 개수:", uncheckedCount);
+                            } else {
+                                self.newReplyCount = 0;
+                            }
+                        },
+                        error: function() {
+                            self.newReplyCount = 0;
+                        }
+                    });
+                },
 
-            }, // methods
+            },
             mounted() {
-                // 처음 시작할 때 실행되는 부분
                 let self = this;
-                self.fnBoardList();   //보드리스트정보게시판정보 가져오기
-                self.fnGetUserInfo(); //유저정보가져오기
+                self.fnBoardList();
+                self.fnGetUserInfo();
 
-                // 2. 조건문을 잠시 제거하거나, 로그를 찍어 확인합니다.
                 if (self.sessionId && self.sessionId !== '') {
                     console.log("장바구니 수량 조회를 시작합니다.");
                     self.fetchCartCount();
+                    self.checkNewReplyCount(); // 새 답변 개수 체크
                 } else {
                     console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                 }
+                
+                // 주기적으로 새 답변 체크 (30초마다)
+                setInterval(function() {
+                    if (self.sessionId && self.sessionId !== '') {
+                        self.checkNewReplyCount();
+                    }
+                }, 30000);
             }
         });
 

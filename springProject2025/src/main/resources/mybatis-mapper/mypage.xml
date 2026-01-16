@@ -15,16 +15,11 @@
 		
 		<!-- 나의 상품 문의내역 리스트 불러오기 -->
 		<select id="selectMyInquiryList" parameterType="hashmap" resultType="com.example.springProject2025.model.MyInquiry">
-		    SELECT *
-		    FROM (
-		        SELECT SUB.*, ROWNUM AS RN
-		        FROM (
-		            SELECT I.*
-		            FROM PRODUCT_INQUIRY I
-		            WHERE USER_ID = #{sessionId}
-		        ) SUB
-		    ) 
-		    WHERE RN > #{startIndex} AND RN &lt;= #{startIndex} + #{pageSize}
+		    SELECT I.*
+		    FROM PRODUCT_INQUIRY I
+		    WHERE USER_ID = #{sessionId}
+		    ORDER BY I.CDATE DESC, I.INQUIRY_NO DESC
+		    OFFSET #{startIndex} ROWS FETCH NEXT #{pageSize} ROWS ONLY
 		</select>
 	
 	
@@ -36,6 +31,15 @@
 			PRODUCT_INQUIRY I
 			INNER JOIN PRODUCT P ON I.PRODUCT_NO = P.PRODUCT_NO 
 			AND INQUIRY_NO = #{inquiryNo}
+		</select>
+		
+		<!-- 새 답변이 있는 문의 개수 조회 (답변완료 상태) -->
+		<select id="selectNewReplyCount" parameterType="hashmap" resultType="int">
+			SELECT COUNT(*)
+			FROM PRODUCT_INQUIRY
+			WHERE USER_ID = #{sessionId}
+			AND STATUS = 'Y'
+			AND ANSWER_DATE IS NOT NULL
 		</select>
 		
 	

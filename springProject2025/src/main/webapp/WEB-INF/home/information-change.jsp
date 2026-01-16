@@ -353,8 +353,9 @@
                                                 </th>
                                                 <td>
                                                     <template v-if="!emailFlg">{{info.email}}</template>
-                                                    <template v-else><input type="text" v-model="info.email"
-                                                            id="email"></template>
+                                                    <template v-else>
+                                                        <input type="text" v-model="info.email" id="email" :disabled="!isDuplicated && saveBtn">
+                                                    </template>
                                                 </td>
                                                 <td>
                                                     <template v-if="!emailFlg">
@@ -490,6 +491,14 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Universal modal -->
+                                     <div v-if="showModal" class="modal-overlay">
+                                        <div class="modal-content">
+                                            <h2>{{ modalMessage }}</h2>
+                                            <button @click="closeUniversalModal">확인</button>
+                                        </div>
+                                    </div>
                                 </main>
                         </main>
 
@@ -555,6 +564,7 @@
                     pwdFlg: false,
                     addrFlg: false,
                     flg: false,
+                    isDuplicated: true,
 
                     // Popup Modal
                     confirmDelete: false,
@@ -571,18 +581,40 @@
                     authSuccess: false,
                     authNum: "",
 
-                    ranStr: "111", // 문자 인증 번호 
+                    // HardCoding for test purposes
+                    // ranStr: "111", // 문자 인증 번호 
+
+                    ranStr : "",
                     inputNum: "",
                     timer: "",
                     count: 180,
                     interval: null,
 
                     cartCount: 0, // 장바구니 수량 변수 추가
+
+                    // Universal modal
+                    showModal: false,
+                    modalMessage: '',
+                    modalCallback: null,
+                    timerInterval: null,
                 };
             },
             methods: {
                 // 함수(메소드) - (key : function())
-                fnInfo: function () {
+                openModal: function(message, callback) {
+                    this.modalMessage = message;
+                    this.modalCallback = callback || null;
+                    this.showModal = true;
+                },
+                
+                closeUniversalModal: function() {
+                    this.showModal = false;
+                    if (this.modalCallback) {
+                        this.modalCallback();
+                        this.modalCallback = null;
+                    }
+                },
+                 fnInfo: function () {
                     let self = this;
                     let param = {
                         userId: self.sessionId
@@ -597,9 +629,8 @@
                                 console.log(data);
                                 self.info = data.info;
                             } else {
-                                alert("error");
+                                self.openModal("오류가 발생했습니다.");
                             }
-
                         }
                     });
                 },
@@ -664,6 +695,8 @@
                 fnEmailChange: function () {
                     let self = this;
                     self.emailFlg = true;
+                    self.isDuplicated = true;  // Reset to allow typing
+                    self.saveBtn = false;      // Reset save button
                 },
                 fnNameChange: function () {
                     let self = this;
@@ -678,6 +711,15 @@
                 },
                 fnEmailCheck: function () {
                     let self = this;
+                    let emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                    
+                    if (!emailPattern.test(self.info.email)) {
+                        self.openModal("올바른 이메일 형식을 입력해주세요.", function() {
+                            document.querySelector("#email").focus();
+                        });
+                        return;
+                    }
+                    
                     let param = {
                         email: self.info.email
                     };
@@ -689,19 +731,26 @@
                         data: param,
                         success: function (data) {
                             if (data.result == "success") {
-                                alert("사용가능한 이메일 입니다.");
-                                self.saveBtn = true;
+                                self.openModal("사용가능한 이메일 입니다.", function() {
+                                    self.saveBtn = true;
+                                    self.isDuplicated = false;  // No duplicate, field gets disabled
+                                });
                             } else {
-                                alert("이미 사용 중인 이메일 입니다.");
-                                document.querySelector("#email").focus();
-                                self.saveBtn = false;
+                                self.openModal("이미 사용 중인 이메일 입니다.", function() {
+                                    document.querySelector("#email").focus();
+                                    self.saveBtn = false;
+                                    self.isDuplicated = true;  // Duplicate exists, field stays enabled
+                                });
                             }
-
                         }
                     });
                 },
                 fnEmailSave: function () {
                     let self = this;
+                    if(self.isDuplicated){
+                        self.openModal("이메일 중복 확인을 해주세요.");
+                        return;
+                    }
                     let param = {
                         userId: self.sessionId,
                         email: self.info.email
@@ -713,10 +762,11 @@
                         data: param,
                         success: function (data) {
                             if (data.result == "success") {
-                                alert("이메일이 수정되었습니다.");
-                                self.emailFlg = false;
+                                self.openModal("이메일이 수정되었습니다.", function() {
+                                    self.emailFlg = false;
+                                });
                             } else {
-                                alert("오류가 발생했습니다.");
+                                self.openModal("오류가 발생했습니다.");
                             }
                         }
                     });
@@ -735,10 +785,11 @@
                         data: param,
                         success: function (data) {
                             if (data.result == "success") {
-                                alert("이름이 수정되었습니다.");
-                                self.nameFlg = false;
+                                self.openModal("이름이 수정되었습니다.", function() {
+                                    self.nameFlg = false;
+                                });
                             } else {
-                                alert("오류가 발생했습니다.");
+                                self.openModal("오류가 발생했습니다.");
                             }
                         }
                     });
@@ -746,8 +797,9 @@
                 fnPhoneSave: function () {
                     let self = this;
                     if (self.inputNum < 11 || !/^[0-9]+$/.test(self.inputNum)) {
-                        alert("전화번호를 다시 확인해주세요.");
-                        document.querySelector("#phone").focus();
+                        self.openModal("전화번호를 다시 확인해주세요.", function() {
+                            document.querySelector("#phone").focus();
+                        });
                         return;
                     }
                     let param = {
@@ -761,15 +813,16 @@
                         data: param,
                         success: function (data) {
                             if (data.result == "success") {
-                                alert("전화번호가 수정되었습니다.");
-                                self.authSuccess = false;
-                                self.smsFlg = false;
-                                self.phoneFlg = false;
-                                self.flg = true;
-                                self.info.phone = self.inputNum;
-                                location.reload();
+                                self.openModal("전화번호가 수정되었습니다.", function() {
+                                    self.authSuccess = false;
+                                    self.smsFlg = false;
+                                    self.phoneFlg = false;
+                                    self.flg = true;
+                                    self.info.phone = self.inputNum;
+                                    location.reload();
+                                });
                             } else {
-                                alert("오류가 발생했습니다.");
+                                self.openModal("오류가 발생했습니다.");
                             }
                         }
                     });
@@ -780,7 +833,6 @@
                         userId: self.sessionId,
                         pwd: self.pwd
                     };
-                    // GOTTA CHECK IF THE ENCODED PASSWORD IS MATCHING
                     $.ajax({
                         url: "/home/login.dox",
                         dataType: "json",
@@ -790,8 +842,9 @@
                             if (data.result == "success") {
                                 self.fnPwdSave();
                             } else {
-                                alert("입력하신 비밀번호가 현재 비밀번호와 일치하지 않습니다.");
-                                document.querySelector("#pwd").focus();
+                                self.openModal("입력하신 비밀번호가 현재 비밀번호와 일치하지 않습니다.", function() {
+                                    document.querySelector("#pwd").focus();
+                                });
                             }
                         }
                     });
@@ -801,17 +854,21 @@
                     let speChar = /^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])/;
 
                     if (self.newPwd1 == "") {
-                        alert("새 비밀번호를 입력하세요.");
-                        document.querySelector("#newPwd1").focus();
+                        self.openModal("새 비밀번호를 입력하세요.", function() {
+                            document.querySelector("#newPwd1").focus();
+                        });
                         return;
-                    } if (self.newPwd1.length < 6 || !speChar.test(self.newPwd1)) {
-                        alert("비밀번호는 공백 없이 6자 이상의 영문자, 숫자, 특수문자 조합으로 지정해주세요.");
-                        document.querySelector("#newPwd1").focus();
+                    } 
+                    if (self.newPwd1.length < 6 || !speChar.test(self.newPwd1)) {
+                        self.openModal("비밀번호는 공백 없이 6자 이상의 영문자, 숫자, 특수문자 조합으로 지정해주세요.", function() {
+                            document.querySelector("#newPwd1").focus();
+                        });
                         return;
                     }
                     if (self.newPwd1 !== self.newPwd2) {
-                        alert("비밀번호가 서로 다릅니다. 다시 확인해주세요.");
-                        document.querySelector("#newPwd2").focus();
+                        self.openModal("비밀번호가 서로 다릅니다.", function() {
+                            document.querySelector("#newPwd2").focus();
+                        });
                         return;
                     }
                     let param = {
@@ -826,22 +883,25 @@
                         success: function (data) {
                             console.log(data);
                             if (data.result === "success") {
-                                // 로그인 성공 시 페이지 전환
-                                alert("비밀번호 변경이 완료되었습니다!");
-                                self.pwdFlg = true;
+                                self.openModal("비밀번호 변경이 완료되었습니다!", function() {
+                                    self.pwdFlg = true;
+                                });
                             } else {
-                                alert("오류가 발생했습니다.");
+                                self.openModal("오류가 발생했습니다.");
                             }
                         }
                     });
                 },
                 fnAddrSave: function () {
                     let self = this;
+                    if (self.addr == "") {
+                        self.openModal("주소를 입력해주세요.");
+                        return;
+                    }
                     let param = {
                         userId: self.sessionId,
                         addr: self.addr
                     };
-                    // GOTTA CHECK IF THE ENCODED PASSWORD IS MATCHING
                     $.ajax({
                         url: "/home/mypage/addrSave.dox",
                         dataType: "json",
@@ -849,11 +909,12 @@
                         data: param,
                         success: function (data) {
                             if (data.result == "success") {
-                                alert("주소가 수정되었습니다.");
-                                self.addrFlg = false;
-                                self.fnInfo();
+                                self.openModal("주소가 수정되었습니다.", function() {
+                                    self.addrFlg = false;
+                                    self.fnInfo();
+                                });
                             } else {
-                                alert("오류가 발생했습니다.");
+                                self.openModal("오류가 발생했습니다.");
                             }
                         }
                     });
@@ -884,37 +945,6 @@
                         }
                     });
                 },
-
-
-                fnAddrSave: function () {
-                    let self = this;
-                    if (self.addr == "") {
-                        alert("주소를 입력해주세요.");
-                        return;
-                    }
-                    let param = {
-                        userId: self.sessionId,
-                        addr: self.addr
-                    };
-                    // GOTTA CHECK IF THE ENCODED PASSWORD IS MATCHING
-                    $.ajax({
-                        url: "/home/mypage/addrSave.dox",
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-                            if (data.result == "success") {
-                                alert("주소가 수정되었습니다.");
-                                self.addrFlg = false;
-                                self.fnInfo();
-                            } else {
-                                alert("오류가 발생했습니다.");
-                            }
-                        }
-                    });
-                },
-
-
                 fnConfirmDelete: function () {
                     let self = this;
                     self.confirmDelete = true; // Modal Popup
@@ -935,12 +965,10 @@
                                 self.accountDeleted = true;
                                 self.sessionId = "";
                             } else {
-                                alert("오류가 발생했습니다.");
+                                self.openModal("오류가 발생했습니다.");
                             }
                         }
                     });
-
-
                 },
                 moveToLogin: function () {
                     let self = this;
@@ -977,22 +1005,26 @@
                     self.saleYN = 'Y';
                     pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                 },
-
                 fnSms: function () {
                     let self = this;
                     if (self.inputNum == "") {
-                        alert("인증번호를 입력해주세요.");
-                        document.querySelector("#auth").focus();
+                        self.openModal("인증번호를 입력해주세요.", function() {
+                            document.querySelector("#auth").focus();
+                        });
                         return;
                     }
                     if (self.inputNum < 11 || !/^[0-9]+$/.test(self.inputNum)) {
-                        alert("전화번호를 다시 확인해주세요.");
-                        document.querySelector("#auth").focus();
+                        self.openModal("전화번호를 다시 확인해주세요.", function() {
+                            document.querySelector("#auth").focus();
+                        });
                         return;
                     }
+
+                    // Hardcoding for test purposes
                     // self.smsFlg = true;
                     // self.timerFlg = true;
                     // self.fnTimer();
+                    
                     let param = {
                         phone: self.inputNum
                     };
@@ -1005,44 +1037,53 @@
                         success: function (data) {
                             console.log(data);
                             if (data.res.statusCode == "2000") {
-                                alert("문자 전송 완료");
+                                self.openModal("문자 전송 완료");
                                 self.ranStr = data.ranStr;
                                 self.smsFlg = true;
                                 self.timerFlg = true;
+                                
+                                // Clear existing timer and reset count
+                                if (self.timerInterval) {
+                                    clearInterval(self.timerInterval);
+                                }
+                                self.count = 180;
                                 self.fnTimer();
                             } else {
-                                alert("잠시 후 다시 시도해주세요.");
+                                self.openModal("잠시 후 다시 시도해주세요.");
                             }
                         }
                     });
                 },
                 fnSmsAuth: function () {
                     let self = this;
-                    // if (self.inputNum == "") {
-                    //     alert("인증번호를 입력해주세요.");
-                    //     document.querySelector("#auth").focus();
-                    //     return;
-                    // }
-
-                    // let num = document.querySelector("#num").value;
+                    
                     if (self.ranStr == self.authNum) {
-                        alert("문자 인증 완료되았습니다");
-                        self.authSuccess = true;
-                        self.timerFlg = false;
-                        clearInterval(self.interval);
-                        self.joinFlg = true;
-                        self.authFlag = true;
+                        self.openModal("문자 인증 완료되었습니다", function() {
+                            self.authSuccess = true;
+                            self.timerFlg = false;
+                            if (self.timerInterval) {
+                                clearInterval(self.timerInterval);
+                                self.timerInterval = null;
+                            }
+                            self.joinFlg = true;
+                            self.authFlag = true;
+                        });
                     } else {
-                        alert("문자인증 실패했습니다.");
-                        self.joinFlg = false;
+                        self.openModal("문자인증 실패했습니다.", function() {
+                            self.joinFlg = false;
+                        });
                     }
                 },
                 fnTimer: function () {
                     let self = this;
-                    self.interval = setInterval(function () {
+                    self.timerInterval = setInterval(function () {
                         if (self.count == 0) {
-                            clearInterval(interval);
-                            alert("시간이  만료되었습니다!");
+                            clearInterval(self.timerInterval);
+                            self.timerInterval = null;
+                            self.openModal("시간이 만료되었습니다!");
+                            self.smsFlg = false;
+                            self.inputNum = "";
+                            self.timerFlg = false;
                         } else {
                             let min = parseInt(self.count / 60);
                             let sec = self.count % 60;
