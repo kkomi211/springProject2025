@@ -7,6 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="stylesheet" href="/css/jghstyle.css">
+        <link rel="stylesheet" href="/css/modal-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -18,6 +19,9 @@
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
+
         <style>
             /* 모달 오버레이 / 콘텐츠 기본 */
             .modal-overlay {
@@ -561,6 +565,8 @@
                             </div>
                         </div>
                     </footer>
+                    <!-- session time out modal -->
+                    <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
             </div>
         </div>
     </body>
@@ -571,6 +577,7 @@
     <script>
         lucide.createIcons();
         const app = Vue.createApp({
+            mixins: [sessionTimeoutMixin],
             data() {
                 return {
                     // 변수 - (key : value)
@@ -1137,6 +1144,7 @@
                 },
                 fnLogout: function () {
                     let self = this;
+                    self.clearSessionTimers();
                     let param = {};
                     $.ajax({
                         url: "/member/logout.dox",
@@ -1171,6 +1179,8 @@
                 if (self.sessionId && self.sessionId !== '') {
                     self.fetchCartCount();
                     self.checkNewReplyCount(); // 새 답변 개수 체크
+                    self.setupActivityListeners();
+                    self.startSessionTimer();
                 }
                 
                 // 주기적으로 새 답변 체크 (30초마다)
@@ -1179,6 +1189,11 @@
                         self.checkNewReplyCount();
                     }
                 }, 30000);
+            },
+            beforeUnmount() {
+                let self = this;
+                self.removeActivityListeners();
+                self.clearSessionTimers();
             }
         });
 

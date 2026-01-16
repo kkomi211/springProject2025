@@ -9,6 +9,7 @@
         <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/board-style.css">
+        <link rel="stylesheet" href="/css/modal-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -23,6 +24,9 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
 
         <style>
             html,
@@ -447,6 +451,8 @@
                         </div>
                     </footer>
             </div>
+            <!-- session time out modal -->
+            <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
         </div>
     </body>
 
@@ -455,6 +461,7 @@
     <script>
         lucide.createIcons();
         const app = Vue.createApp({
+            mixins: [sessionTimeoutMixin],
             data() {
                 return {
                     sessionId: "${sessionId}",
@@ -707,6 +714,7 @@
 
                 fnLogout: function () {
                     let self = this;
+                    self.clearSessionTimers();
                     let param = {};
                     $.ajax({
                         url: "/member/logout.dox",
@@ -840,8 +848,9 @@
                     console.log("장바구니 수량 조회를 시작합니다.");
                     self.fetchCartCount();
                     self.checkNewReplyCount(); // 새 답변 개수 체크
+                    self.startSessionTimer();
                 } else {
-                    console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
+                    console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");  
                 }
                 
                 // 주기적으로 새 답변 체크 (30초마다)
@@ -850,7 +859,12 @@
                         self.checkNewReplyCount();
                     }
                 }, 30000);
-            }
+            },
+            beforeUnmount() {
+                let self = this;
+                self.removeActivityListeners();
+                self.clearSessionTimers();
+          }
         });
 
         app.mount('#app');

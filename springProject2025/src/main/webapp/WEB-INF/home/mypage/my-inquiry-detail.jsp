@@ -8,6 +8,7 @@
         <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="stylesheet" href="/css/jghstyle.css">
         <link rel="stylesheet" href="/css/mypage.css">
+        <link rel="stylesheet" href="/css/modal-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -18,6 +19,8 @@
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
 
 
     </head>
@@ -405,6 +408,8 @@ html, body {
                         </div>
                     </div>
                 </footer>
+                <!-- session time out modal -->
+                <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
             </div>
         </div>
     </body>
@@ -415,6 +420,7 @@ html, body {
         lucide.createIcons();
         // Vue 인스턴스를 전역에서 접근 가능하도록 'app' 변수로 선언
         const app = Vue.createApp({
+            mixins: [sessionTimeoutMixin],
             data() {
                 return {
                     orderList: [],
@@ -646,6 +652,7 @@ html, body {
                 },
                 fnLogout: function () {
                     let self = this;
+                    self.clearSessionTimers();
                     let param = {};
                     $.ajax({
                         url: "/member/logout.dox",
@@ -689,6 +696,8 @@ html, body {
                 if (self.sessionId && self.sessionId !== '') {
                     self.fetchCartCount();
                     self.checkNewReplyCount(); // 새 답변 개수 체크
+                    self.setupActivityListeners();
+                    self.startSessionTimer();
                 }
                 
                 // 주기적으로 새 답변 체크 (30초마다)
@@ -702,6 +711,11 @@ html, body {
                 setTimeout(function() {
                     lucide.createIcons();
                 }, 100);
+            },
+            beforeUnmount() {
+                let self = this;
+                self.removeActivityListeners();
+                self.clearSessionTimers();
             }
         });
 
