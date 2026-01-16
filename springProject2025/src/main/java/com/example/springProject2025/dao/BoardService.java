@@ -29,6 +29,33 @@ public class BoardService {
 		resultMap.put("result", "success");
 		return resultMap;
 	}
+	
+	// ★★★ 새로 추가: 채팅방 멤버 목록 조회 ★★★
+	public HashMap<String, Object> getChatMembers(HashMap<String, Object> map) {
+	    HashMap<String, Object> resultMap = new HashMap<>();
+	    
+	    try {
+	        System.out.println("Service - getChatMembers 호출됨");
+	        System.out.println("Service - chatroomNo: " + map.get("chatroomNo"));
+	        
+	        List<HashMap<String, Object>> memberList = boardMapper.selectChatMembers(map);
+	        
+	        System.out.println("Service - 조회된 멤버 수: " + (memberList != null ? memberList.size() : 0));
+	        if (memberList != null && !memberList.isEmpty()) {
+	            System.out.println("Service - 첫 번째 멤버: " + memberList.get(0));
+	        }
+	        
+	        resultMap.put("result", "success");
+	        resultMap.put("memberList", memberList);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        System.out.println("Service - 에러 발생: " + e.getMessage());
+	        resultMap.put("result", "fail");
+	        resultMap.put("message", e.getMessage());
+	    }
+	    
+	    return resultMap;
+	}
 
 	// crew board list 목록
 	public HashMap<String, Object> getCrewBoardList(HashMap<String, Object> map) {

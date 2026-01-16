@@ -78,5 +78,19 @@
 		    )
 		</insert>
 		
+		<!-- ★★★ 채팅방 멤버 목록 조회 ★★★ -->
+		<select id="selectChatMembers" parameterType="hashmap" resultType="hashmap">
+		    SELECT
+		        USER_ID as "userId",
+		        ROLE as "memberRole",
+		        JOINDATE as "joinDate"
+		    FROM
+		        CHAT_MEMBER
+		    WHERE
+		        CHATROOM_NO = #{chatroomNo}
+		    ORDER BY
+		        CASE WHEN ROLE = 'O' THEN 1 ELSE 2 END,
+		        JOINDATE ASC
+		</select>
 		
 	</mapper>  

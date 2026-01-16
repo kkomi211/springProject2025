@@ -91,6 +91,17 @@ public class BoardController {
 			return new Gson().toJson(resultMap);
 		}
 		
+		// ★★★ 새로 추가: 채팅방 멤버 목록 조회 API ★★★
+		@RequestMapping(value = "/home/crew/members.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+		@ResponseBody
+		public String getChatMembers(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+			System.out.println("채팅방 멤버 조회 - chatroomNo: " + map.get("chatroomNo"));
+			
+			HashMap<String, Object> resultMap = boardService.getChatMembers(map);
+			
+			return new Gson().toJson(resultMap);
+		}	
+		
 	@RequestMapping("/home/community/board/post.do")
 	public String boardPost(HttpServletRequest request, Model model,  @RequestParam HashMap<String, Object> map) throws Exception {
 		request.setAttribute("sessionId", map.get("sessionId"));
