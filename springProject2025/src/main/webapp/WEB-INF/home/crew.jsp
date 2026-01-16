@@ -693,7 +693,7 @@
 
                                 <div class="write-btn-wrapper">
                                     <button @click="moveToPost"
-                                        style="padding: 10px; border-radius: 8px; background: #000; color: #fff; cursor: pointer;">크루
+                                        style="padding: 12px; border-radius: 8px; background: #000; color: #fff; cursor: pointer;">크루
                                         생성</button>
                                 </div>
 
@@ -779,7 +779,8 @@
                         showMembersModal: false,
                         memberList: [],
 
-                        newReplyCount: 0  // 이 줄 추가
+                        newReplyCount: 0,  // 이 줄 추가
+
                     };
                 },
                 methods: {
@@ -861,11 +862,14 @@
                         });
                     },
 
-                    // ★★★ 멤버 목록 조회 메서드 - 디버깅 추가 ★★★
+                    //  멤버 목록 조회 메서드 - 배지 비활성화 추가 
                     fnShowMembers(chatroomNo) {
                         let self = this;
 
-                        console.log("fnShowMembers 호출 - chatroomNo:", chatroomNo); // 디버깅용
+                        //  타이틀 클릭 시에도 크루 확인 처리 
+                        self.updateLastCheckedCrew(chatroomNo);
+
+                        console.log("fnShowMembers 호출 - chatroomNo:", chatroomNo);
 
                         $.ajax({
                             url: "/home/crew/members.dox",
@@ -873,12 +877,12 @@
                             type: "POST",
                             data: { chatroomNo: chatroomNo },
                             success(data) {
-                                console.log("서버 응답:", data); // 디버깅용
-                                console.log("멤버 리스트:", data.memberList); // 디버깅용
+                                console.log("서버 응답:", data);
+                                console.log("멤버 리스트:", data.memberList);
 
                                 if (data.result === "success") {
                                     self.memberList = data.memberList;
-                                    console.log("Vue memberList 설정됨:", self.memberList); // 디버깅용
+                                    console.log("Vue memberList 설정됨:", self.memberList);
                                     self.showMembersModal = true;
                                 } else {
                                     alert("멤버 목록을 불러올 수 없습니다.");
