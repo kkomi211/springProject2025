@@ -610,7 +610,7 @@
                                     // imgByProduct가 계산될 때까지 기다림
                                     const productImage = (self.imgByProduct && self.imgByProduct[String(self.productNo)])
                                         ? self.imgByProduct[String(self.productNo)]
-                                        : '/img/no-image.jpg';
+                                        : '/img/no-image.png';
                                     
                                     let recentProducts = window.RecentProducts.get() || [];
                                     recentProducts = recentProducts.filter(p => p.productNo !== self.productNo);
