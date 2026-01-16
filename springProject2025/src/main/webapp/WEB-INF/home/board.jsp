@@ -340,7 +340,7 @@
                                     <option value="20">20개씩</option>
                                 </select>
                                 <table>
-                                    <tr>
+                                    <tr style="background-color: #f7f7f7;">
                                         <th>번호</th>
                                         <th>제목</th>
                                         <th>댓글</th>

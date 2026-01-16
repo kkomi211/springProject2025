@@ -572,20 +572,22 @@
                                 </div>
 
                                 <table>
-                                    <tr>
-                                        <th>No</th>
+                                    <tr style="background-color: #f7f7f7;"  >
+                                        <th>번호</th>
                                         <th>제목</th>
                                         <th>채팅방 소개</th>
                                         <th>채널</th>
                                     </tr>
                                     <tr v-for="item in list" :class="{ 'new-crew': isNewCrew(item.chatroomNo) }">
                                         <td>{{item.chatroomNo}}</td>
-                                        <td>
+                                        <td class="title-cell">
                                             <a href="javascript:;">
-                                                {{item.title}}
-                                                <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
-                                                <span v-if="isNewCrew(item.chatroomNo)"
-                                                    class="new-crew-badge">NEW</span>
+                                                <div class="title-row">
+                                                    <span class="post-title">{{item.title}}</span>
+                                                    <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
+                                                    <span v-if="isNewCrew(item.chatroomNo)"
+                                                        class="new-crew-badge">NEW</span>
+                                                </div>    
                                             </a>
 
                                         </td>

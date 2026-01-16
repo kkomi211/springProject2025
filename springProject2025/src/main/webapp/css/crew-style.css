@@ -189,8 +189,7 @@ table {
     border-radius: 8px;
 }
 
-th,
-td {
+/* th {
     border-bottom: 1px solid #eee;
     padding: 12px 20px;
     text-align: center;
@@ -199,7 +198,7 @@ td {
 th {
     background-color: #f7f7f7;
     font-weight: bold;
-}
+} */
 
 tr:hover {
     background-color: #fafafa;
