@@ -221,7 +221,7 @@
             }
 
             .modal-header {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #000000 0%, #b9b8b9 100%);
                 color: white;
                 padding: 25px 30px;
                 border-radius: 12px 12px 0 0;
@@ -273,7 +273,7 @@
             .modal-image-placeholder {
                 width: 100%;
                 height: 450px;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #000000 0%, #b9b8b9 100%);
                 border-radius: 8px;
                 margin-bottom: 25px;
                 display: flex;
@@ -295,12 +295,12 @@
                 background: #f8f9fa;
                 padding: 15px;
                 border-radius: 8px;
-                border-left: 4px solid #667eea;
+                border-left: 4px solid #000000;
             }
 
             .modal-info-item strong {
                 display: block;
-                color: #667eea;
+                color: #000000;
                 font-size: 0.9em;
                 margin-bottom: 8px;
                 text-transform: uppercase;
@@ -323,7 +323,7 @@
 
             .modal-footer .btn {
                 padding: 12px 30px;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #000000 0%, #b9b8b9 100%);
                 color: white;
                 border: none;
                 border-radius: 8px;
@@ -978,12 +978,12 @@
                 },
 
                 // 이미지 로드 실패 시 처리
-                handleImageError(event) {
-                    console.log("이미지 로드 실패");
-                    event.target.style.display = 'none';
-                    // 또는 기본 이미지로 교체
-                    // event.target.src = '/images/default-rally.jpg';
-                },
+    handleImageError(event) {
+        console.log("이미지 로드 실패");
+        event.target.style.display = 'none';
+        // 또는 기본 이미지로 교체
+        // event.target.src = '/images/default-rally.jpg';
+    },
 
             },
             mounted() {
@@ -1008,7 +1008,7 @@
             beforeUnmount() {
                 window.removeEventListener('keydown', this.handleKeyDown);
 
-
+                
             }
 
         });
