@@ -64,8 +64,8 @@
 		UPDATE RALLY
 		SET 
 			RALLY_NAME = #{rallyName, jdbcType=VARCHAR},
-			RALLY_DATE = TO_DATE(#{rallyDate}, 'YYYY-MM-DD'),
-			APPLICATION_PERIOD = TO_DATE(#{applicationPeriod}, 'YYYY-MM-DD'),
+			RALLY_DATE = TO_DATE(SUBSTR(#{rallyDate}, 1, 10), 'YYYY-MM-DD'),
+			APPLICATION_PERIOD = #{applicationPeriod, jdbcType=NVARCHAR},
 			PRICE = #{price, jdbcType=VARCHAR},
 			PHONE = #{phone, jdbcType=VARCHAR},
 			TYPE = #{type, jdbcType=VARCHAR},
@@ -127,8 +127,8 @@
 	    VALUES (
 	        RALLY_SEQ.NEXTVAL,
 	        #{rallyName},
-	        TO_DATE(#{rallyDate}, 'YYYY-MM-DD'),
-	        TO_DATE(#{applicationPeriod}, 'YYYY-MM-DD'),
+	        TO_DATE(SUBSTR(#{rallyDate}, 1, 10), 'YYYY-MM-DD'),
+	        #{applicationPeriod, jdbcType=NVARCHAR},
 	        #{price},
 	        #{phone},
 	        #{type},
@@ -1038,4 +1038,61 @@
             </if>
         </where>
     </select>
+    
+    <!-- 알림 개수 조회 -->
+    <select id="selectNewInquiryCount" parameterType="hashmap" resultType="int">
+        SELECT COUNT(*)
+        FROM PRODUCT_INQUIRY
+        WHERE STATUS = 'N'
+        <if test="adminId != null and adminId != ''">
+        AND NOT EXISTS (
+            SELECT 1 FROM ADMIN_NOTIFICATION_READ
+            WHERE ADMIN_ID = #{adminId}
+            AND TYPE = 'inquiry'
+            AND PRODUCT_INQUIRY.CDATE &lt;= LAST_READ_TIME
+        )
+        </if>
+    </select>
+    
+    <select id="selectNewOrderCount" parameterType="hashmap" resultType="int">
+        SELECT COUNT(*)
+        FROM ORDERS
+        WHERE STATUS = '신규주문'
+        <if test="adminId != null and adminId != ''">
+        AND NOT EXISTS (
+            SELECT 1 FROM ADMIN_NOTIFICATION_READ
+            WHERE ADMIN_ID = #{adminId}
+            AND TYPE = 'order'
+            AND ORDERS.CDATE &lt;= LAST_READ_TIME
+        )
+        </if>
+    </select>
+    
+    <select id="selectNewBoardReportCount" parameterType="hashmap" resultType="int">
+        SELECT COUNT(*)
+        FROM REPORT_BOARD
+        WHERE STATUS = 'N'
+        <if test="adminId != null and adminId != ''">
+        AND NOT EXISTS (
+            SELECT 1 FROM ADMIN_NOTIFICATION_READ
+            WHERE ADMIN_ID = #{adminId}
+            AND TYPE = 'report'
+            AND REPORT_BOARD.CDATE &lt;= LAST_READ_TIME
+        )
+        </if>
+    </select>
+    
+    <!-- 알림 읽음 처리 -->
+    <insert id="insertNotificationRead" parameterType="hashmap">
+        <if test="adminId != null and adminId != '' and type != null and type != ''">
+        MERGE INTO ADMIN_NOTIFICATION_READ
+        USING DUAL
+        ON (ADMIN_ID = #{adminId} AND TYPE = #{type})
+        WHEN MATCHED THEN
+            UPDATE SET LAST_READ_TIME = SYSDATE
+        WHEN NOT MATCHED THEN
+            INSERT (ADMIN_ID, TYPE, LAST_READ_TIME)
+            VALUES (#{adminId}, #{type}, SYSDATE)
+        </if>
+    </insert>
 </mapper>

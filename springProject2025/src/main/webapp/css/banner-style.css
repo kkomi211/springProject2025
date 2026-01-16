@@ -387,7 +387,7 @@ body {
 				gap: 40px;
 			}
 			
-			/* 오른쪽 영역: 대회 배너 관리 */
+			/* 오른쪽 영역: 대회 배너 관리 */ 
 			.banner-right-section {
 				flex: 1;
 				min-width: 0; /* flexbox에서 텍스트 오버플로우 방지 */

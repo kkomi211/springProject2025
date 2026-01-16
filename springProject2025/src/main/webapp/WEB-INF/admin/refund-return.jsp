@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/admin-inquiry.css">
         <script src="/js/page-change.js"></script>
+        <script src="/js/admin-notifications.js"></script>
 
     </head>
 
@@ -22,10 +23,55 @@
             <div class="topbar">
                 <div><strong>관리자 메인화면</strong></div>
                 <div style="display: flex; align-items: center; gap: 15px;">
+                    <!-- 알림 아이콘 -->
+                    <div class="notification-icon-wrapper" @click="toggleNotificationPanel">
+                        <span class="notification-bell">🔔</span>
+                        <span v-if="notificationCounts.totalCount > 0" class="notification-badge">{{ notificationCounts.totalCount }}</span>
+                    </div>
                     <div style="line-height: 1.2;">관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
                             @click="fnLogout">로그오프</a></div>
                 </div>
             </div>
+            
+            <!-- 알림 패널 -->
+            <div v-if="showNotificationPanel" class="notification-panel" @click.stop>
+                <div class="notification-header">
+                    <h3>실시간 알림</h3>
+                    <button @click="toggleNotificationPanel" class="notification-close">×</button>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-item" v-if="notificationCounts.newInquiryCount > 0" 
+                         @click="markAsReadAndGo('inquiry', '/admin/inquiry.do')">
+                        <div class="notification-item-icon">📝</div>
+                        <div class="notification-item-text">
+                            <strong>새 문의</strong>
+                            <span>{{ notificationCounts.newInquiryCount }}건</span>
+                        </div>
+                    </div>
+                    <div class="notification-item" v-if="notificationCounts.newOrderCount > 0" 
+                         @click="markAsReadAndGo('order', '/admin/orders.do')">
+                        <div class="notification-item-icon">📦</div>
+                        <div class="notification-item-text">
+                            <strong>신규 주문</strong>
+                            <span>{{ notificationCounts.newOrderCount }}건</span>
+                        </div>
+                    </div>
+                    <div class="notification-item" v-if="notificationCounts.newBoardReportCount > 0" 
+                         @click="markAsReadAndGo('report', '/admin/board-report.do')">
+                        <div class="notification-item-icon">🚨</div>
+                        <div class="notification-item-text">
+                            <strong>신고 게시물</strong>
+                            <span>{{ notificationCounts.newBoardReportCount }}건</span>
+                        </div>
+                    </div>
+                    <div v-if="notificationCounts.totalCount === 0" class="notification-empty">
+                        새로운 알림이 없습니다.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 알림 패널 오버레이 -->
+            <div v-if="showNotificationPanel" class="notification-overlay" @click="toggleNotificationPanel"></div>
             
             <!-- 메뉴 바 (검은색) -->
             <div class="nav-black">
@@ -250,7 +296,16 @@
                     productOptions: [],      // 교환 가능한 동일 제품의 옵션 리스트
                     selectedNewProductNo: "", // 선택된 새로운 제품의 productNo
                     newProductDetails: null,  // 선택된 새 제품의 상세 정보 (가격, 재고 등)
-                    exchangeQuantity: 1       // 교환 수량
+                    exchangeQuantity: 1,       // 교환 수량
+                    // 알림 관련
+                    notificationCounts: {
+                        newInquiryCount: 0,
+                        newOrderCount: 0,
+                        newBoardReportCount: 0,
+                        totalCount: 0
+                    },
+                    showNotificationPanel: false,
+                    notificationInterval: null
                 };
             },
             computed: {
@@ -588,6 +643,16 @@
                     if (self.endDate) params.append('endDate', self.endDate);
                     
                     window.location.href = '/admin/refund-return/excel.dox?' + params.toString();
+                },
+                // 알림 관련 메서드
+                fetchNotifications: function() {
+                    AdminNotifications.fetchNotifications(this);
+                },
+                toggleNotificationPanel: function() {
+                    AdminNotifications.toggleNotificationPanel(this);
+                },
+                markAsReadAndGo: function(type, url) {
+                    AdminNotifications.markAsReadAndGo(this, type, url);
                 }
             },
             mounted() {
@@ -609,6 +674,10 @@
                 self.exchangeQuantity = 1;
                 
                 self.fnGetRefundReturnList();
+                AdminNotifications.init(self);
+            },
+            beforeUnmount() {
+                AdminNotifications.cleanup(this);
             }
         });
 
