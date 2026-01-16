@@ -715,6 +715,8 @@
                                 </div>
                             </main>
                         </div>
+                        <!-- session time out modal -->
+                        <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
 
                     </main>
 
@@ -745,8 +747,6 @@
                             </div>
                         </div>
                     </footer>
-                    <!-- session time out modal -->
-                    <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
             </div>
         </div>
         </div>
@@ -818,79 +818,7 @@
                         });
                     },
 
-<<<<<<< HEAD
-                    // 신규 크루 체크
-                    checkNewCrew() {
-                        const self = this;
-
-                        // localStorage에서 마지막 확인한 크루 번호 가져오기
-                        const savedCrewNo = localStorage.getItem("lastCheckedCrewNo");
-
-                        if (self.list.length > 0) {
-                            const latestCrewNo = self.list[0].chatroomNo;
-
-                            console.log("최신 크루 번호:", latestCrewNo);
-                            console.log("마지막 확인 크루 번호:", savedCrewNo);
-
-                            // 저장된 번호가 없거나, 최신 크루 번호가 더 크면 NEW 표시
-                            if (!savedCrewNo || parseInt(latestCrewNo) > parseInt(savedCrewNo)) {
-                                self.hasNewCrew = true;
-                                console.log("NEW 배지 표시!");
-                            } else {
-                                self.hasNewCrew = false;
-                            }
-                        }
-                    },
-
-                    // 개별 크루가 신규인지 체크 (사용자가 확인하지 않은 크루)
-                    isNewCrew(chatroomNo) {
-                        const savedCrewNo = localStorage.getItem("lastCheckedCrewNo");
-
-                        // 저장된 번호가 없으면 모든 크루가 신규
-                        if (!savedCrewNo) {
-                            return true;
-                        }
-
-                        // 현재 크루 번호가 저장된 번호보다 크면 신규
-                        return parseInt(chatroomNo) > parseInt(savedCrewNo);
-                    },
-
-                    // 크루 확인 처리 (NEW 배지 업데이트)
-                    updateLastCheckedCrew: function (chatroomNo) {
-                        let self = this;
-                        const savedCrewNo = localStorage.getItem("lastCheckedCrewNo");
-
-                        // 현재 클릭한 크루가 저장된 번호보다 크면 업데이트
-                        if (!savedCrewNo || parseInt(chatroomNo) > parseInt(savedCrewNo)) {
-                            localStorage.setItem("lastCheckedCrewNo", chatroomNo);
-                            console.log("크루 확인 완료, 저장된 번호:", chatroomNo);
-
-                            // NEW 배지 상태 다시 체크
-                            self.checkNewCrew();
-                        }
-                    },
-                    fnLogout: function () {
-                        let self = this;
-                        self.clearSessionTimers();
-                        let param = {};
-                        $.ajax({
-                            url: "/member/logout.dox",
-                            dataType: "json",
-                            type: "POST",
-                            data: param,
-                            success: function (data) {
-                                if (data.result == "success") {
-                                    location.href = "/home.do";
-                                }
-
-                            }
-                        })
-                    },
-
-                    fnGetUserInfo: function () {
-=======
                     fnGetUserInfo() {
->>>>>>> branch 'main' of https://github.com/kkomi211/springProject2025.git
                         let self = this;
                         $.ajax({
                             url: "/home/mypage/userInfo.dox",
@@ -1013,6 +941,7 @@
 
                     fnLogout() {
                         let self = this;
+                        self.clearSessionTimers();
                         $.ajax({
                             url: "/member/logout.dox",
                             dataType: "json",
@@ -1190,16 +1119,13 @@
                         console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                     }
 
-<<<<<<< HEAD
+                    self.checkNewReplyCount();      
+
                 },
                 beforeUnmount() {
                     let self = this;
                     self.removeActivityListeners();
                     self.clearSessionTimers();
-=======
-                    self.checkNewReplyCount();
-
->>>>>>> branch 'main' of https://github.com/kkomi211/springProject2025.git
                 }
             });
 

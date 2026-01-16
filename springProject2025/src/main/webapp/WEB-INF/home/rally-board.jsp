@@ -224,7 +224,7 @@
             }
 
             .modal-header {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #000000 0%, #b9b8b9 100%);
                 color: white;
                 padding: 25px 30px;
                 border-radius: 12px 12px 0 0;
@@ -276,7 +276,7 @@
             .modal-image-placeholder {
                 width: 100%;
                 height: 450px;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #000000 0%, #b9b8b9 100%);
                 border-radius: 8px;
                 margin-bottom: 25px;
                 display: flex;
@@ -298,12 +298,12 @@
                 background: #f8f9fa;
                 padding: 15px;
                 border-radius: 8px;
-                border-left: 4px solid #667eea;
+                border-left: 4px solid #000000;
             }
 
             .modal-info-item strong {
                 display: block;
-                color: #667eea;
+                color: #000000;
                 font-size: 0.9em;
                 margin-bottom: 8px;
                 text-transform: uppercase;
@@ -326,7 +326,7 @@
 
             .modal-footer .btn {
                 padding: 12px 30px;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #000000 0%, #b9b8b9 100%);
                 color: white;
                 border: none;
                 border-radius: 8px;
@@ -498,28 +498,10 @@
                                 <div>
                                     <button class="btn" @click="pwdCorrect = false">닫기</button>
                                 </div>
-<<<<<<< HEAD
-
-                                <!-- 비밀번호 확인 모달 -->
-                                <div v-if="pwdCorrect" class="modal-overlay">
-                                    <div class="modal-content">
-                                        <h2>비밀글로 보호된 게시물입니다.</h2>
-                                        <p>비밀번호를 입력해야 내용을 확인할 수 있습니다.</p>
-                                        <input class="btn" type="password" v-model="inputPwd" @keyup.enter="fnKeylock"
-                                            placeholder="비밀번호 입력">
-                                        <div>
-                                            <button class="btn" @click="pwdCorrect = false">닫기</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- session time out modal -->
-                                <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
-                            </main>
-
-=======
                             </div>
->>>>>>> branch 'main' of https://github.com/kkomi211/springProject2025.git
                         </div>
+                        <!-- session time out modal -->
+                        <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
                     </main>
 
             </div>
@@ -1003,12 +985,12 @@
                 },
 
                 // 이미지 로드 실패 시 처리
-                handleImageError(event) {
-                    console.log("이미지 로드 실패");
-                    event.target.style.display = 'none';
-                    // 또는 기본 이미지로 교체
-                    // event.target.src = '/images/default-rally.jpg';
-                },
+    handleImageError(event) {
+        console.log("이미지 로드 실패");
+        event.target.style.display = 'none';
+        // 또는 기본 이미지로 교체
+        // event.target.src = '/images/default-rally.jpg';
+    },
 
             },
             mounted() {
@@ -1024,10 +1006,13 @@
                 } else {
                     console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                 }
+
                 self.checkNewReplyCount();
+
                 //  ESC 키 이벤트 리스너 추가 
                 window.addEventListener('keydown', self.handleKeyDown);
             },
+
             // beforeUnmount 추가 (컴포넌트 제거 시 이벤트 리스너 정리) 
             beforeUnmount() {
                 let self = this;
@@ -1035,6 +1020,7 @@
                 self.removeActivityListeners();
                 self.clearSessionTimers();
             }
+
         });
 
         app.mount('#app');
