@@ -8,6 +8,7 @@
         <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="stylesheet" href="/css/jghstyle.css">
         <link rel="stylesheet" href="/css/mypage.css">
+        <link rel="stylesheet" href="/css/modal-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -18,6 +19,8 @@
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
 
 
     </head>
@@ -531,6 +534,8 @@
                         </div>
                     </div>
                 </footer>
+                <!-- session time out modal -->
+                <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
             </div>
 
 
@@ -545,6 +550,7 @@
         lucide.createIcons();
         // Vue 인스턴스를 전역에서 접근 가능하도록 'app' 변수로 선언
         const app = Vue.createApp({
+            mixins: [sessionTimeoutMixin],
             data() {
                 return {
                     userName: "로딩중...",
@@ -657,6 +663,7 @@
                 },
                 fnLogout: function () {
                     let self = this;
+                    self.clearSessionTimers();
                     let param = {};
                     $.ajax({
                         url: "/member/logout.dox",
@@ -684,8 +691,17 @@
             }, // methods
             mounted() {
                 let self = this;
+                if (self.sessionId && self.sessionId !== '') {
+                    self.setupActivityListeners();
+                    self.startSessionTimer();
+                }
                 self.fnGetUserInfo(); // 사용자 정보 조회
                 self.fnReviewInfo(); // 리뷰 정보 조회
+            },
+            beforeUnmount() {
+                let self = this;
+                self.removeActivityListeners();
+                self.clearSessionTimers();
             }
         });
 

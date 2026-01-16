@@ -120,6 +120,18 @@
                                     <button @click="closeModal">닫기</button>
                                 </div>
                             </div>
+
+                            <div v-if="showSessionWarning" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>세션 만료 경고</h2>
+                                    <p>비활동으로 인해 2분 후 세션이 만료됩니다.</p>
+                                    <p>계속하시겠습니까?</p>
+                                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                                        <button @click="extendSession">세션 연장</button>
+                                        <button @click="fnLogout">로그아웃</button>
+                                    </div>
+                                </div>
+                            </div>
                     </div>
                 </main>
 
@@ -176,6 +188,12 @@
                     redirect_uri: "${redirect_uri}",
 
                     userType : '${userType}',
+
+                    // 세션 타임아웃 관련 변수 추가
+                    showSessionWarning: false,
+                    sessionTimeoutId: null,
+                    sessionWarningTimeoutId: null,
+                    timeoutMinutes: 3,
                 };
             },
             methods: {
@@ -204,6 +222,9 @@
                                 }
                                 // 로그인 성공 시 페이지 전환
                                 self.isLoginModal = true;
+
+                                // 로그인 성공 시 세션 타이머 시작
+                                self.startSessionTimer();
                             } else {
                                 // 로그인 실패 시 경고 메시지 출력
                                 self.noLoginModal = true;
@@ -253,6 +274,10 @@
                 },
                 fnLogout: function () {
                     let self = this;
+
+                    // 세션 타이머 정리
+                    self.clearSessionTimers();
+
                     let param = {};
                     $.ajax({
                         url: "/member/logout.dox",
@@ -266,12 +291,99 @@
 
                         }
                     })
+                },
+                startSessionTimer() {
+                    let self = this;
+                    
+                    // 기존 타이머가 있으면 정리
+                    self.clearSessionTimers();
+                    
+                    const timeoutDuration = self.timeoutMinutes * 60 * 1000; // 밀리초로 변환
+                    const warningDuration = timeoutDuration - (2 * 60 * 1000); // 2분 전 경고
+                    
+                    // 경고 타이머 설정
+                    self.sessionWarningTimeoutId = setTimeout(() => {
+                        self.showSessionWarning = true;
+                    }, warningDuration);
+                    
+                    // 로그아웃 타이머 설정
+                    self.sessionTimeoutId = setTimeout(() => {
+                        self.autoLogout();
+                    }, timeoutDuration);
+                    
+                    console.log('세션 타이머 시작:', self.timeoutMinutes + '분');
+                },
+                
+                resetSessionTimer() {
+                    let self = this;
+                    
+                    // 로그인된 상태에서만 타이머 재설정
+                    if (self.sessionId && self.sessionId !== '') {
+                        self.showSessionWarning = false;
+                        self.startSessionTimer();
+                    }
+                },
+                
+                clearSessionTimers() {
+                    let self = this;
+                    
+                    if (self.sessionTimeoutId) {
+                        clearTimeout(self.sessionTimeoutId);
+                        self.sessionTimeoutId = null;
+                    }
+                    
+                    if (self.sessionWarningTimeoutId) {
+                        clearTimeout(self.sessionWarningTimeoutId);
+                        self.sessionWarningTimeoutId = null;
+                    }
+                },
+                
+                extendSession() {
+                    let self = this;
+                    self.resetSessionTimer();
+                    self.showSessionWarning = false;
+                    console.log('세션 연장됨');
+                },
+                
+                autoLogout() {
+                    let self = this;
+                    console.log('자동 로그아웃');
+                    self.fnLogout();
+                },
+                
+                setupActivityListeners() {
+                    let self = this;
+                    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+                    
+                    events.forEach(event => {
+                        document.addEventListener(event, self.resetSessionTimer);
+                    });
+                },
+                
+                removeActivityListeners() {
+                    let self = this;
+                    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+                    
+                    events.forEach(event => {
+                        document.removeEventListener(event, self.resetSessionTimer);
+                    });
                 }
             }, // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분
                 let self = this;
 
+                // 로그인된 상태면 세션 타이머 시작
+                if (self.sessionId && self.sessionId !== '') {
+                    self.setupActivityListeners();
+                    self.startSessionTimer();
+                }
+
+            },
+            beforeUnmount() {
+                let self = this;
+                self.removeActivityListeners();
+                self.clearSessionTimers();
             }
         });
 

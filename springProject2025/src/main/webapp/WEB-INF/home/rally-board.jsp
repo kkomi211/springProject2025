@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/board-style.css">
         <link rel="stylesheet" href="/css/rally-style.css">
+        <link rel="stylesheet" href="/css/modal-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -17,6 +18,8 @@
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
         <style>
             html,
             body {
@@ -221,7 +224,7 @@
             }
 
             .modal-header {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #000000 0%, #b9b8b9 100%);
                 color: white;
                 padding: 25px 30px;
                 border-radius: 12px 12px 0 0;
@@ -273,7 +276,7 @@
             .modal-image-placeholder {
                 width: 100%;
                 height: 450px;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #000000 0%, #b9b8b9 100%);
                 border-radius: 8px;
                 margin-bottom: 25px;
                 display: flex;
@@ -295,12 +298,12 @@
                 background: #f8f9fa;
                 padding: 15px;
                 border-radius: 8px;
-                border-left: 4px solid #667eea;
+                border-left: 4px solid #000000;
             }
 
             .modal-info-item strong {
                 display: block;
-                color: #667eea;
+                color: #000000;
                 font-size: 0.9em;
                 margin-bottom: 8px;
                 text-transform: uppercase;
@@ -323,7 +326,7 @@
 
             .modal-footer .btn {
                 padding: 12px 30px;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #000000 0%, #b9b8b9 100%);
                 color: white;
                 border: none;
                 border-radius: 8px;
@@ -497,6 +500,8 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- session time out modal -->
+                        <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
                     </main>
 
             </div>
@@ -592,6 +597,7 @@
     <script>
         lucide.createIcons();
         const app = Vue.createApp({
+            mixins: [sessionTimeoutMixin],
             data() {
                 return {
                     list: [],
@@ -772,6 +778,7 @@
 
                 fnLogout: function () {
                     let self = this;
+                    self.clearSessionTimers();
                     let param = {};
                     $.ajax({
                         url: "/member/logout.dox",
@@ -978,12 +985,12 @@
                 },
 
                 // 이미지 로드 실패 시 처리
-                handleImageError(event) {
-                    console.log("이미지 로드 실패");
-                    event.target.style.display = 'none';
-                    // 또는 기본 이미지로 교체
-                    // event.target.src = '/images/default-rally.jpg';
-                },
+    handleImageError(event) {
+        console.log("이미지 로드 실패");
+        event.target.style.display = 'none';
+        // 또는 기본 이미지로 교체
+        // event.target.src = '/images/default-rally.jpg';
+    },
 
             },
             mounted() {
@@ -994,6 +1001,8 @@
                 if (self.sessionId && self.sessionId !== '') {
                     console.log("장바구니 수량 조회를 시작합니다.");
                     self.fetchCartCount();
+                    self.setupActivityListeners();
+                    self.startSessionTimer();
                 } else {
                     console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                 }
@@ -1006,9 +1015,10 @@
 
             // beforeUnmount 추가 (컴포넌트 제거 시 이벤트 리스너 정리) 
             beforeUnmount() {
+                let self = this;
                 window.removeEventListener('keydown', this.handleKeyDown);
-
-
+                self.removeActivityListeners();
+                self.clearSessionTimers();
             }
 
         });

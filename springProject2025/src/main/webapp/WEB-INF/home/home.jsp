@@ -21,6 +21,7 @@
             <!-- 사용자 정의 스타일시트 -->
             <link rel="stylesheet" href="/css/style.css">
             <link rel="stylesheet" href="/css/home.css">
+            <link rel="stylesheet" href="/css/modal-style.css">
 
             <!-- Google Fonts (Fugaz One) -->
             <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -43,6 +44,9 @@
             
             <!-- 위젯 위치 동적 조정 스크립트 -->
             <script src="/js/widget-position.js"></script>
+
+            <!-- session timeout modal -->
+            <script src="/js/session-timeout.js"></script>
         </head>
 
         <body>
@@ -269,6 +273,8 @@
                         </div>
                     </div>
                 </footer>
+                <!-- session time out modal -->
+                <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
             </div>
         </body>
 
@@ -279,6 +285,7 @@
         <script>
             lucide.createIcons();
             const app = Vue.createApp({
+                mixins: [sessionTimeoutMixin],
                 data() {
                     return {
                         mainSlideImages: [],
@@ -551,6 +558,7 @@
                     },
                     fnLogout: function () {
                         let self = this;
+                        self.clearSessionTimers();
                         let param = {};
                         $.ajax({
                             url: "/member/logout.dox",
@@ -1561,6 +1569,9 @@
                         console.log("장바구니 수량 조회를 시작합니다.");
                         self.fetchCartCount();
                         self.checkNewReplyCount(); // 새 답변 개수 체크
+                        self.setupActivityListeners();
+                        self.startSessionTimer();
+                        self.setupActivityListeners();
                     } else {
                         console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                     }
@@ -1571,7 +1582,12 @@
                             self.checkNewReplyCount();
                         }
                     }, 30000);
-                }
+                },
+                beforeUnmount() {
+                    let self = this;
+                    self.removeActivityListeners();
+                    self.clearSessionTimers();
+              }
             });
 
             app.mount('#app');

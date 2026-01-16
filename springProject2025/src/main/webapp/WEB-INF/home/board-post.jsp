@@ -8,6 +8,7 @@
         <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="stylesheet" href="/css/post-style.css">
         <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/modal-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -19,6 +20,8 @@
         <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
         <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
         <style>
             /* community top banner style */
 
@@ -400,6 +403,8 @@
                     </div>
                 </div>
             </footer>
+            <!-- session time out modal -->
+            <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
         </div>
         </div>
     </body>
@@ -409,6 +414,7 @@
     <script>
         lucide.createIcons();
         const app = Vue.createApp({
+            mixins: [sessionTimeoutMixin],
             data() {
                 return {
                     // 변수 - (key : value)
@@ -552,6 +558,7 @@
                 },
                 fnLogout: function () {
                     let self = this;
+                    self.clearSessionTimers();
                     let param = {};
                     $.ajax({
                         url: "/member/logout.dox",
@@ -582,6 +589,8 @@
                     self.isLoggedIn = false;
                 } else {
                     self.isLoggedIn = true;
+                    self.setupActivityListeners();
+    +               self.startSessionTimer();
                 }
 
                 // text editor
@@ -602,6 +611,11 @@
                 quill.on('text-change', function () {
                     self.content = quill.root.innerHTML;
                 });
+            },
+            beforeUnmount() {
+                let self = this;
+                self.removeActivityListeners();
+                self.clearSessionTimers();
             }
         });
 

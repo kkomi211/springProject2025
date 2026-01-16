@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="/css/user-style.css">
         <link rel="stylesheet" href="/css/crew-style.css">
         <link rel="stylesheet" href="/css/board-style.css">
+        <link rel="stylesheet" href="/css/modal-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -21,6 +22,8 @@
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
 
         <style>
             html,
@@ -712,6 +715,8 @@
                                 </div>
                             </main>
                         </div>
+                        <!-- session time out modal -->
+                        <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
 
                     </main>
 
@@ -751,6 +756,7 @@
         <script>
             lucide.createIcons();
             const app = Vue.createApp({
+                mixins: [sessionTimeoutMixin],
                 data() {
                     return {
                         list: [],
@@ -935,6 +941,7 @@
 
                     fnLogout() {
                         let self = this;
+                        self.clearSessionTimers();
                         $.ajax({
                             url: "/member/logout.dox",
                             dataType: "json",
@@ -1106,12 +1113,19 @@
                     if (self.sessionId && self.sessionId !== '') {
                         console.log("장바구니 수량 조회를 시작합니다.");
                         self.fetchCartCount();
+                        self.setupActivityListeners();
+                        self.startSessionTimer();
                     } else {
                         console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                     }
 
-                    self.checkNewReplyCount();
+                    self.checkNewReplyCount();      
 
+                },
+                beforeUnmount() {
+                    let self = this;
+                    self.removeActivityListeners();
+                    self.clearSessionTimers();
                 }
             });
 
