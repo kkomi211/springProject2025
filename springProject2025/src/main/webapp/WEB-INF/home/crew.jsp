@@ -591,8 +591,7 @@
                                         </td>
                                         <td>{{item.intro}}</td>
                                         <td class="entry-btn-cell">
-                                            <button class="entry-btn"
-                                                @click="fnEnterChat(item.chatroomNo)"  
+                                            <button class="entry-btn" @click="fnEnterChat(item.chatroomNo)"
                                                 style="padding: 50 25px; border-radius: 8px; background: #000; color: #fff; cursor: pointer;">입장하기</button>
                                         </td>
                                     </tr>
@@ -610,7 +609,8 @@
 
                                 <div class="write-btn-wrapper">
                                     <button @click="moveToPost"
-                                        style="padding: 10px; border-radius: 8px; background: #000; color: #fff; cursor: pointer;">크루 생성</button>
+                                        style="padding: 10px; border-radius: 8px; background: #000; color: #fff; cursor: pointer;">크루
+                                        생성</button>
                                 </div>
 
 
