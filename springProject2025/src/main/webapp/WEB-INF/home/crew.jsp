@@ -693,7 +693,7 @@
 
                                 <div class="write-btn-wrapper">
                                     <button @click="moveToPost"
-                                        style="padding: 10px; border-radius: 8px; background: #000; color: #fff; cursor: pointer;">크루
+                                        style="padding: 12px; border-radius: 8px; background: #000; color: #fff; cursor: pointer;">크루
                                         생성</button>
                                 </div>
 
@@ -862,11 +862,14 @@
                         });
                     },
 
-                    // ★★★ 멤버 목록 조회 메서드 - 디버깅 추가 ★★★
+                    //  멤버 목록 조회 메서드 - 배지 비활성화 추가 
                     fnShowMembers(chatroomNo) {
                         let self = this;
 
-                        console.log("fnShowMembers 호출 - chatroomNo:", chatroomNo); // 디버깅용
+                        //  타이틀 클릭 시에도 크루 확인 처리 
+                        self.updateLastCheckedCrew(chatroomNo);
+
+                        console.log("fnShowMembers 호출 - chatroomNo:", chatroomNo);
 
                         $.ajax({
                             url: "/home/crew/members.dox",
@@ -874,12 +877,12 @@
                             type: "POST",
                             data: { chatroomNo: chatroomNo },
                             success(data) {
-                                console.log("서버 응답:", data); // 디버깅용
-                                console.log("멤버 리스트:", data.memberList); // 디버깅용
+                                console.log("서버 응답:", data);
+                                console.log("멤버 리스트:", data.memberList);
 
                                 if (data.result === "success") {
                                     self.memberList = data.memberList;
-                                    console.log("Vue memberList 설정됨:", self.memberList); // 디버깅용
+                                    console.log("Vue memberList 설정됨:", self.memberList);
                                     self.showMembersModal = true;
                                 } else {
                                     alert("멤버 목록을 불러올 수 없습니다.");
@@ -1043,19 +1046,55 @@
                         });
                     },
 
-                    // 새 답변 개수 계산 (확인하지 않은 답변만 카운트)
-                    calculateNewReplyCount: function () {
+                    // 새 답변 개수 체크 (localStorage 기반)
+                    checkNewReplyCount: function () {
+                        // alert("메롱");
                         let self = this;
-                        let uncheckedCount = 0;
+                        if (!self.sessionId || self.sessionId === '') {
+                            self.newReplyCount = 0;
+                            return;
+                        }
 
-                        self.orderList.forEach(function (item) {
-                            if (item.status === 'Y' && !self.checkedReplies.includes(item.inquiryNo)) {
-                                uncheckedCount++;
+                        // localStorage에서 확인한 답변 목록 불러오기
+                        const storageKey = `checkedReplies_${self.sessionId}`;
+                        const saved = localStorage.getItem(storageKey);
+                        let checkedReplies = [];
+                        if (saved) {
+                            try {
+                                checkedReplies = JSON.parse(saved);
+                            } catch (e) {
+                                checkedReplies = [];
+                            }
+                        }
+
+                        // 서버에서 답변 완료된 문의 목록 가져오기
+                        $.ajax({
+                            url: "/home/mypage/my-inquiry.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: {
+                                sessionId: self.sessionId,
+                                page: 1,
+                                pageSize: 1000 // 모든 문의 가져오기
+                            },
+                            success: function (data) {
+                                if (data.result == "success" && data.list) {
+                                    let uncheckedCount = 0;
+                                    data.list.forEach(function (item) {
+                                        if (item.status === 'Y' && !checkedReplies.includes(item.inquiryNo)) {
+                                            uncheckedCount++;
+                                        }
+                                    });
+                                    self.newReplyCount = uncheckedCount;
+                                    console.log("새 답변 개수:", uncheckedCount);
+                                } else {
+                                    self.newReplyCount = 0;
+                                }
+                            },
+                            error: function () {
+                                self.newReplyCount = 0;
                             }
                         });
-
-                        self.newReplyCount = uncheckedCount;
-                        console.log("확인하지 않은 새 답변 개수:", uncheckedCount);
                     },
 
                 },
@@ -1071,7 +1110,8 @@
                         console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                     }
 
-                    self.calculateNewReplyCount();
+                    self.checkNewReplyCount();
+
                 }
             });
 

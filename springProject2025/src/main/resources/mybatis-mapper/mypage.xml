@@ -1,104 +1,98 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-	
-	<mapper namespace="com.example.springProject2025.mapper.MypageMapper">
-	
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+   <mapper namespace="com.example.springProject2025.mapper.MypageMapper">
+   
 
-	
-		<!-- 나의 상품 문의내역 전체 개수 조회 -->
-		<select id="selectMyInquiryListCnt" parameterType="hashmap" resultType="int">
-		    SELECT COUNT(*)
-		    FROM PRODUCT_INQUIRY 
-		    WHERE USER_ID = #{sessionId}
+   
+      <!-- 나의 상품 문의내역 전체 개수 조회 -->
+      <select id="selectMyInquiryListCnt" parameterType="hashmap" resultType="int">
+          SELECT COUNT(*)
+          FROM PRODUCT_INQUIRY 
+          WHERE USER_ID = #{sessionId}
 
-		</select>
-		
-		<!-- 나의 상품 문의내역 리스트 불러오기 -->
-		<select id="selectMyInquiryList" parameterType="hashmap" resultType="com.example.springProject2025.model.MyInquiry">
-		    SELECT I.*
-		    FROM PRODUCT_INQUIRY I
-		    WHERE USER_ID = #{sessionId}
-		    ORDER BY I.CDATE DESC, I.INQUIRY_NO DESC
-		    OFFSET #{startIndex} ROWS FETCH NEXT #{pageSize} ROWS ONLY
-		</select>
-	
-	
-		<!-- 나의 상품 문의내역 1개 불러오기 -->
-		<select id="selectMyInquiry" parameterType="hashmap" resultType="com.example.springProject2025.model.MyInquiry">
-			SELECT
-			* 
-			FROM 
-			PRODUCT_INQUIRY I
-			INNER JOIN PRODUCT P ON I.PRODUCT_NO = P.PRODUCT_NO 
-			AND INQUIRY_NO = #{inquiryNo}
-		</select>
-		
-		<!-- 새 답변이 있는 문의 개수 조회 (답변완료 상태) -->
-		<select id="selectNewReplyCount" parameterType="hashmap" resultType="int">
-			SELECT COUNT(*)
-			FROM PRODUCT_INQUIRY
-			WHERE USER_ID = #{sessionId}
-			AND STATUS = 'Y'
-			AND ANSWER_DATE IS NOT NULL
-		</select>
-		
-	
-	
-	
+      </select>
+      
+      <!-- 나의 상품 문의내역 리스트 불러오기 -->
+      <select id="selectMyInquiryList" parameterType="hashmap" resultType="com.example.springProject2025.model.MyInquiry">
+          SELECT I.*
+          FROM PRODUCT_INQUIRY I
+          WHERE USER_ID = #{sessionId}
+          ORDER BY I.CDATE DESC, I.INQUIRY_NO DESC
+          OFFSET #{startIndex} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+      </select>
+   
+   
+      <!-- 나의 상품 문의내역 1개 불러오기 -->
+      <select id="selectMyInquiry" parameterType="hashmap" resultType="com.example.springProject2025.model.MyInquiry">
+         SELECT
+         * 
+         FROM 
+         PRODUCT_INQUIRY I
+         INNER JOIN PRODUCT P ON I.PRODUCT_NO = P.PRODUCT_NO 
+         AND INQUIRY_NO = #{inquiryNo}
+      </select>
+      
+      <!-- 새 답변이 있는 문의 개수 조회 (답변완료 상태) -->
+      <select id="selectNewReplyCount" parameterType="hashmap" resultType="int">
+         SELECT COUNT(*)
+         FROM PRODUCT_INQUIRY
+         WHERE USER_ID = #{sessionId}
+         AND STATUS = 'Y'
+         AND ANSWER_DATE IS NOT NULL
+      </select>
+      
 
-
-
-
-	<select id="userInfo" parameterType="hashmap" resultType="com.example.springProject2025.model.User">
-		SELECT *
-		FROM USERS
-		WHERE USER_ID = #{userId}
-	</select>
-	
-	<select id="checkPwd" parameterType="hashmap" resultType="com.example.springProject2025.model.User">
-		SELECT *
-		FROM USERS
-		WHERE USER_ID = #{userId}
-	</select>
-	
-	<select id="checkEmail" parameterType="hashmap" resultType="int">
-		SELECT COUNT(*)
-		FROM USERS
-		WHERE EMAIL = #{email}
-	</select>
-	
-	<update id="insertNewEmail" parameterType="hashmap">
-		UPDATE USERS
-		SET 
-			EMAIL = #{email}
-		WHERE USER_ID = #{userId}
-	</update>
-	
-	<update id="insertNewName" parameterType="hashmap">
-		UPDATE USERS
-		SET 
-			NAME = #{name}
-		WHERE USER_ID = #{userId}
-	</update>
-	
-	<update id="insertNewPhone" parameterType="hashmap">
-		UPDATE USERS
-		SET 
-			PHONE = #{phone}
-		WHERE USER_ID = #{userId}
-	</update>
-	
-	<update id="insertNewAddr" parameterType="hashmap">
-		UPDATE USERS
-		SET 
-			ADDR = #{addr}
-		WHERE USER_ID = #{userId}
-	</update>
-	
-	<delete id="deleteAccount" parameterType="hashmap">
-		DELETE 
-		FROM USERS 
-		WHERE USER_ID = #{userId}
-	</delete>
-	
+   <select id="userInfo" parameterType="hashmap" resultType="com.example.springProject2025.model.User">
+      SELECT *
+      FROM USERS
+      WHERE USER_ID = #{userId}
+   </select>
+   
+   <select id="checkPwd" parameterType="hashmap" resultType="com.example.springProject2025.model.User">
+      SELECT *
+      FROM USERS
+      WHERE USER_ID = #{userId}
+   </select>
+   
+   <select id="checkEmail" parameterType="hashmap" resultType="int">
+      SELECT COUNT(*)
+      FROM USERS
+      WHERE EMAIL = #{email}
+   </select>
+   
+   <update id="insertNewEmail" parameterType="hashmap">
+      UPDATE USERS
+      SET 
+         EMAIL = #{email}
+      WHERE USER_ID = #{userId}
+   </update>
+   
+   <update id="insertNewName" parameterType="hashmap">
+      UPDATE USERS
+      SET 
+         NAME = #{name}
+      WHERE USER_ID = #{userId}
+   </update>
+   
+   <update id="insertNewPhone" parameterType="hashmap">
+      UPDATE USERS
+      SET 
+         PHONE = #{phone}
+      WHERE USER_ID = #{userId}
+   </update>
+   
+   <update id="insertNewAddr" parameterType="hashmap">
+      UPDATE USERS
+      SET 
+         ADDR = #{addr}
+      WHERE USER_ID = #{userId}
+   </update>
+   
+   <delete id="deleteAccount" parameterType="hashmap">
+      DELETE 
+      FROM USERS 
+      WHERE USER_ID = #{userId}
+   </delete>
+   
 </mapper>
