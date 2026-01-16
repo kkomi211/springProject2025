@@ -19,7 +19,14 @@
         <!-- <link rel="stylesheet" href="/css/jes.css"> -->
         <script src="/js/page-change.js"></script>
         <link rel="stylesheet" href="/css/home_product_category-style.css">
+        <link rel="stylesheet" href="/css/home.css">
         <script src="https://unpkg.com/lucide@latest"></script>
+        
+        <!-- 최근 본 상품 컴포넌트 스크립트 -->
+        <script src="/js/recent-products.js"></script>
+        
+        <!-- 위젯 위치 동적 조정 스크립트 -->
+        <script src="/js/widget-position.js"></script>
         <style>
             html,
             body {
@@ -280,6 +287,9 @@
                         </div>
                     </div>
                 </footer>
+                
+                <!-- 최근 본 상품 컴포넌트 -->
+                <div id="recent-products-widget"></div>
         </div>
     </body>
 

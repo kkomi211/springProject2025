@@ -33,7 +33,7 @@
 		ORDER BY B.PBANNER_IMG_NO
 	</select>
 
-    <!-- 최신 대회 정보 조회 (현재 날짜 기준 접수 기간 내인 것 우선) - ROWNUM 및 인라인 뷰로 수정 -->
+    <!-- 최신 대회 정보 조회 (현재 날짜 이후의 대회 또는 접수 중인 대회 조회) -->
     <select id="selectLatestRallies" parameterType="int" resultType="com.example.springProject2025.model.Home">
         SELECT *
         FROM (
@@ -46,7 +46,7 @@
                 R.HOST,
                 (SELECT A.IMG_PATH FROM (SELECT IMG_PATH, RALLY_IMG_NO FROM RALLY_IMG WHERE RALLY_NO = R.RALLY_NO ORDER BY RALLY_IMG_NO ASC) A WHERE ROWNUM = 1) AS imgPath
             FROM RALLY R
-            WHERE TRUNC(SYSDATE) BETWEEN R.APPLICATION_PERIOD AND R.RALLY_DATE
+            WHERE R.RALLY_DATE >= TRUNC(SYSDATE)
             ORDER BY R.RALLY_DATE ASC, R.CDATE DESC
         )
         WHERE ROWNUM &lt;= #{limit}
