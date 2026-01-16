@@ -492,6 +492,65 @@
                 flex: 1;
                 /* makes main take up all remaining vertical space */
             }
+
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+            }
+
+            .modal-content {
+                background: white;
+                padding: 30px;
+                border-radius: 8px;
+                max-width: 500px;
+                width: 90%;
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+
+            .modal-content h2 {
+                margin-top: 0;
+                margin-bottom: 20px;
+            }
+
+            .modal-content .btn {
+                margin-top: 10px;
+                padding: 10px 20px;
+                border-radius: 8px;
+                background: #000;
+                color: #fff;
+                cursor: pointer;
+                border: none;
+            }
+
+            .modal-content input.btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .modal-content table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .modal-content table th,
+            .modal-content table td {
+                padding: 10px;
+                border: 1px solid #ddd;
+                text-align: left;
+            }
+
+            .modal-content table th {
+                background-color: #f5f5f5;
+            }
         </style>
     </head>
 
@@ -575,34 +634,56 @@
                                 </div>
 
                                 <table>
-                                    <tr style="background-color: #f7f7f7;"  >
+                                    <tr style="background-color: #f7f7f7;">
                                         <th>번호</th>
                                         <th>제목</th>
                                         <th>채팅방 소개</th>
                                         <th>채널</th>
                                     </tr>
-                                    <tr v-for="item in list" :class="{ 'new-crew': isNewCrew(item.chatroomNo) }">
+                                    <tr v-for="item in list" :key="item.chatroomNo"
+                                        :class="{ 'new-crew': isNewCrew(item.chatroomNo) }">
                                         <td>{{item.chatroomNo}}</td>
-                                        <td class="title-cell">
-                                            <a href="javascript:;">
-                                                <div class="title-row">
-                                                    <span class="post-title">{{item.title}}</span>
-                                                    <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
-                                                    <span v-if="isNewCrew(item.chatroomNo)"
-                                                        class="new-crew-badge">NEW</span>
-                                                </div>    
+                                        <td>
+                                            <!-- ★★★ 제목 클릭 시 멤버 모달 표시 ★★★ -->
+                                            <a href="javascript:;" @click="fnShowMembers(item.chatroomNo)">
+                                                {{item.title}}
+                                                <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
+                                                <span v-if="isNewCrew(item.chatroomNo)"
+                                                    class="new-crew-badge">NEW</span>
                                             </a>
-
                                         </td>
                                         <td>{{item.intro}}</td>
                                         <td class="entry-btn-cell">
-                                            <button class="entry-btn"
-                                                @click="fnEnterChat(item.chatroomNo)"  
-                                                style="padding: 50 25px; border-radius: 8px; background: #000; color: #fff; cursor: pointer;">입장하기</button>
+                                            <button class="entry-btn" @click="fnEnterChat(item.chatroomNo)"
+                                                style="padding: 5px 25px; border-radius: 8px; background: #000; color: #fff; cursor: pointer; border: none;">
+                                                입장하기
+                                            </button>
                                         </td>
                                     </tr>
-
                                 </table>
+
+                                <!-- ★★★ 멤버 목록 모달 추가 ★★★ -->
+                                <div v-if="showMembersModal" class="modal-overlay"
+                                    @click.self="showMembersModal = false">
+                                    <div class="modal-content">
+                                        <h2>채팅방 멤버 목록</h2>
+                                        <div style="max-height: 400px; overflow-y: auto; margin: 20px 0;">
+                                            <table>
+                                                <tr>
+                                                    <th>역할</th>
+                                                    <th>아이디</th>
+                                                </tr>
+                                                <tr v-for="member in memberList" :key="member.userId">
+                                                    <td>{{ member.memberRole === 'O' ? '👑 크루장' : '멤버' }}</td>
+                                                    <td>{{ member.userId }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div>
+                                            <button class="btn" @click="showMembersModal = false">닫기</button>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div v-if="index > 0" class="pagination">
                                     <a v-if="page != 1" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
@@ -615,7 +696,8 @@
 
                                 <div class="write-btn-wrapper">
                                     <button @click="moveToPost"
-                                        style="padding: 10px; border-radius: 8px; background: #000; color: #fff; cursor: pointer;">크루 생성</button>
+                                        style="padding: 12px; border-radius: 8px; background: #000; color: #fff; cursor: pointer;">크루
+                                        생성</button>
                                 </div>
 
 
@@ -669,6 +751,8 @@
         </div>
         </div>
 
+        <!-- crew.jsp의 스크립트 부분 전체 (기존 코드에 추가) -->
+
         <script>
             lucide.createIcons();
             const app = Vue.createApp({
@@ -691,10 +775,18 @@
                         pageSize: 10,
                         index: 0,
                         userType: '${userType}',
-
+                        selectedPost: null,
+                        cartCount: 0,
+                        saleYN: '',
                         // NEW 배지 관련
                         hasNewCrew: false,
-                        lastCheckedCrewNo: null
+                        lastCheckedCrewNo: null,
+                        // ★★★ 멤버 모달 관련 추가 ★★★
+                        showMembersModal: false,
+                        memberList: [],
+
+                        newReplyCount: 0,  // 이 줄 추가
+
                     };
                 },
                 methods: {
@@ -702,7 +794,7 @@
                         let self = this;
                         const param = {
                             keyword: self.keyword,
-                            type: self.type, // 추가
+                            type: self.type,
                             page: self.page,
                             pageSize: self.pageSize
                         };
@@ -715,21 +807,18 @@
                             success(data) {
                                 console.log(data);
                                 if (data.result == "success") {
-                                    console.log(data);
                                     self.list = data.list;
                                     self.cnt = data.cnt;
                                     self.index = Math.ceil(self.cnt / self.pageSize);
-
-                                    // NEW 크루 체크
                                     self.checkNewCrew();
                                 } else {
                                     console.log("오류");
                                 }
                             }
-
                         });
                     },
 
+<<<<<<< HEAD
                     // 신규 크루 체크
                     checkNewCrew() {
                         const self = this;
@@ -799,40 +888,34 @@
                     },
 
                     fnGetUserInfo: function () {
+=======
+                    fnGetUserInfo() {
+>>>>>>> branch 'main' of https://github.com/kkomi211/springProject2025.git
                         let self = this;
                         $.ajax({
                             url: "/home/mypage/userInfo.dox",
                             dataType: "json",
                             type: "POST",
                             data: { userId: self.sessionId },
-                            success: function (data) {
+                            success(data) {
                                 console.log("사용자 이름:", data);
                                 self.userName = data;
                             },
-                            error: function (xhr, status, error) {
+                            error(xhr, status, error) {
                                 console.error("사용자 정보 조회 실패:", error);
                                 self.userName = "Guest";
                             }
                         });
                     },
 
-                    fnMove: function (num) {
+                    fnMove(num) {
                         let self = this;
                         self.page = num;
                         self.fnList();
                     },
 
-                    fnPage: function (num) {
+                    fnEnterChat(chatroomNo) {
                         let self = this;
-                        self.page = num;
-                        self.fnList();
-                    },
-
-                    // 프론트엔드 - 입장하기 버튼 클릭 시 JavaScript
-                    fnEnterChat: function (chatroomNo) {
-                        let self = this;
-
-                        // 크루 확인 처리 (NEW 배지 업데이트)
                         self.updateLastCheckedCrew(chatroomNo);
 
                         $.ajax({
@@ -843,41 +926,166 @@
                                 userId: self.sessionId,
                                 chatroomNo: chatroomNo
                             },
-                            success: function (response) {
+                            success(response) {
                                 if (response.result == 'success') {
                                     location.href = "/home/community/chat/show.do?chatroomNo=" + chatroomNo;
                                 } else {
                                     alert("채팅방 입장 실패: " + (response.message || "권한이 없거나 오류 발생"));
                                 }
                             },
-                            error: function (xhr, status, error) {
-                                alert("서버 통신 중 오류가 발생했습니다. (500 에러 먼저 해결해야 합니다!)");
+                            error(xhr, status, error) {
+                                alert("서버 통신 중 오류가 발생했습니다.");
                                 console.error(xhr.responseText);
                             }
                         });
                     },
 
-                    // moveToCrew 메서드 수정 (카테고리 클릭 시)
-                    moveToCrew: function () {
+                    //  멤버 목록 조회 메서드 - 배지 비활성화 추가 
+                    fnShowMembers(chatroomNo) {
                         let self = this;
 
-                        // 크루 페이지 방문 시, 현재 최신 크루를 확인한 것으로 처리
+                        //  타이틀 클릭 시에도 크루 확인 처리 
+                        self.updateLastCheckedCrew(chatroomNo);
+
+                        console.log("fnShowMembers 호출 - chatroomNo:", chatroomNo);
+
+                        $.ajax({
+                            url: "/home/crew/members.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: { chatroomNo: chatroomNo },
+                            success(data) {
+                                console.log("서버 응답:", data);
+                                console.log("멤버 리스트:", data.memberList);
+
+                                if (data.result === "success") {
+                                    self.memberList = data.memberList;
+                                    console.log("Vue memberList 설정됨:", self.memberList);
+                                    self.showMembersModal = true;
+                                } else {
+                                    alert("멤버 목록을 불러올 수 없습니다.");
+                                }
+                            },
+                            error(xhr, status, error) {
+                                console.error("멤버 목록 조회 실패:", error);
+                                console.error("응답 텍스트:", xhr.responseText);
+                                alert("서버 오류가 발생했습니다.");
+                            }
+                        });
+                    },
+
+                    checkNewCrew() {
+                        const self = this;
+                        const savedCrewNo = localStorage.getItem("lastCheckedCrewNo");
+
+                        if (self.list.length > 0) {
+                            const latestCrewNo = self.list[0].chatroomNo;
+                            console.log("최신 크루 번호:", latestCrewNo);
+                            console.log("마지막 확인 크루 번호:", savedCrewNo);
+
+                            if (!savedCrewNo || parseInt(latestCrewNo) > parseInt(savedCrewNo)) {
+                                self.hasNewCrew = true;
+                                console.log("NEW 배지 표시!");
+                            } else {
+                                self.hasNewCrew = false;
+                            }
+                        }
+                    },
+
+                    isNewCrew(chatroomNo) {
+                        const savedCrewNo = localStorage.getItem("lastCheckedCrewNo");
+                        if (!savedCrewNo) {
+                            return true;
+                        }
+                        return parseInt(chatroomNo) > parseInt(savedCrewNo);
+                    },
+
+                    updateLastCheckedCrew(chatroomNo) {
+                        let self = this;
+                        const savedCrewNo = localStorage.getItem("lastCheckedCrewNo");
+
+                        if (!savedCrewNo || parseInt(chatroomNo) > parseInt(savedCrewNo)) {
+                            localStorage.setItem("lastCheckedCrewNo", chatroomNo);
+                            console.log("크루 확인 완료, 저장된 번호:", chatroomNo);
+                            self.checkNewCrew();
+                        }
+                    },
+
+                    fnLogout() {
+                        let self = this;
+                        $.ajax({
+                            url: "/member/logout.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: {},
+                            success(data) {
+                                if (data.result == "success") {
+                                    location.href = "/home.do";
+                                }
+                            }
+                        });
+                    },
+
+                    fnKeylock() {
+                        let self = this;
+                        if (!self.selectedPost) return;
+
+                        let param = {
+                            boardNo: self.selectedPost.boardNo,
+                            keylock: self.inputPwd
+                        };
+
+                        $.ajax({
+                            url: "/board/keylock.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success(data) {
+                                if (data.result === "success") {
+                                    self.pwdCorrect = false;
+                                    pageChange("board/view.do", { boardNo: self.selectedPost.boardNo });
+                                } else if (data.result === "fail") {
+                                    alert("비밀번호가 올바르지 않습니다.");
+                                    self.inputPwd = "";
+                                }
+                            },
+                            error(xhr, status, error) {
+                                console.error("Keylock check failed:", error);
+                            }
+                        });
+                    },
+
+                    moveToBoard() {
+                        pageChange("/home/community/board.do", {});
+                    },
+
+                    moveToCrew() {
+                        let self = this;
                         if (self.list.length > 0) {
                             const latestCrewNo = self.list[0].chatroomNo;
                             self.updateLastCheckedCrew(latestCrewNo);
                         }
-
                         pageChange("/home/community/crew.do", {});
                     },
-                    fnNotice() {
-                        let self = this;
-                        pageChange("/home/community/board.do", { type: "B" });
+
+                    moveToRally() {
+                        pageChange("/home/community/rally.do", {});
                     },
-                    moveToPost: function () {
+
+                    moveToChat() {
+                        pageChange("/home/community/chat.do", {});
+                    },
+
+                    moveToPost() {
                         let self = this;
                         pageChange("/home/community/crew/post.do", { sessionId: self.sessionId });
                     },
-                    fnPostView: function (chatroomNo) {
+
+                    fnNotice() {
+                        pageChange("/home/community/board.do", { type: "B" });
+                    },
+
+                    fnPostView(chatroomNo) {
                         const post = this.list.find(i => i.chatroomNo === chatroomNo);
                         if (post && post.pwd) {
                             this.selectedPost = post;
@@ -893,73 +1101,13 @@
                         pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
                     },
 
-                    fnKeylock: function () {
-                        let self = this;
-                        if (!self.selectedPost) return; // safety check
-
-                        let param = {
-                            boardNo: self.selectedPost.boardNo, // send the post ID
-                            keylock: self.keylock               // send the password entered
-                        };
-
-                        $.ajax({
-                            url: "/board/keylock.dox",
-                            dataType: "json",
-                            type: "POST",
-                            data: param,
-                            success: function (data) {
-                                if (data.result === "success") {
-                                    // alert("Password correct");
-                                    self.pwdCorrect = false; // close modal
-                                    // redirect to the post
-                                    pageChange("board/view.do", { boardNo: self.selectedPost.boardNo });
-                                } else if (data.result === "fail") {
-                                    alert("비밀번호가 올바르지 않습니다."); // wrong password
-                                    document.querySelector("#keylock").focus();
-                                    self.keylock = "";
-                                }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error("Keylock check failed:", error);
-                            }
-                        });
-                    },
-                    fnSale() {
-                        let self = this;
-                        self.saleYN = 'Y';
-                        pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
-                    },
-                    moveToBoard: function () {
-                        let self = this;
-
-                        pageChange("/home/community/board.do", {});
-                    },
-                    moveToCrew: function () {
-                        let self = this;
-
-                        pageChange("/home/community/crew.do", {});
-                    },
-                    moveToRally: function () {
-                        let self = this;
-
-                        pageChange("/home/community/rally.do", {});
-                    },
-                    moveToChat: function () {
-                        let self = this;
-
-                        pageChange("/home/community/chat.do", {});
-                    },
-
-                    // 장바구니 수량을 서버에서 가져오는 함수
                     fetchCartCount() {
-                        // 세션 아이디가 없으면 실행하지 않음
                         if (this.sessionId == '' || this.sessionId == null) return;
 
                         let self = this;
                         $.ajax({
                             url: '/api/cartCount.dox',
                             method: 'GET',
-                            // ★ 서버의 @RequestParam HashMap map으로 전달될 데이터 ★
                             data: {
                                 sessionId: self.sessionId
                             },
@@ -967,7 +1115,7 @@
                             success: (response) => {
                                 console.log("서버 응답 데이터:", response);
                                 if (response.result === 'success') {
-                                    self.cartCount = response.count; // 서버에서 보낸 count 값을 Vue 변수에 저장
+                                    self.cartCount = response.count;
                                 }
                             },
                             error: (err) => {
@@ -976,13 +1124,63 @@
                         });
                     },
 
+                    // 새 답변 개수 체크 (localStorage 기반)
+                    checkNewReplyCount: function () {
+                        // alert("메롱");
+                        let self = this;
+                        if (!self.sessionId || self.sessionId === '') {
+                            self.newReplyCount = 0;
+                            return;
+                        }
+
+                        // localStorage에서 확인한 답변 목록 불러오기
+                        const storageKey = `checkedReplies_${self.sessionId}`;
+                        const saved = localStorage.getItem(storageKey);
+                        let checkedReplies = [];
+                        if (saved) {
+                            try {
+                                checkedReplies = JSON.parse(saved);
+                            } catch (e) {
+                                checkedReplies = [];
+                            }
+                        }
+
+                        // 서버에서 답변 완료된 문의 목록 가져오기
+                        $.ajax({
+                            url: "/home/mypage/my-inquiry.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: {
+                                sessionId: self.sessionId,
+                                page: 1,
+                                pageSize: 1000 // 모든 문의 가져오기
+                            },
+                            success: function (data) {
+                                if (data.result == "success" && data.list) {
+                                    let uncheckedCount = 0;
+                                    data.list.forEach(function (item) {
+                                        if (item.status === 'Y' && !checkedReplies.includes(item.inquiryNo)) {
+                                            uncheckedCount++;
+                                        }
+                                    });
+                                    self.newReplyCount = uncheckedCount;
+                                    console.log("새 답변 개수:", uncheckedCount);
+                                } else {
+                                    self.newReplyCount = 0;
+                                }
+                            },
+                            error: function () {
+                                self.newReplyCount = 0;
+                            }
+                        });
+                    },
+
                 },
                 mounted() {
                     let self = this;
                     self.fnList();
-                    self.fnGetUserInfo(); //유저정보가져오기
+                    self.fnGetUserInfo();
 
-                    // 2. 조건문을 잠시 제거하거나, 로그를 찍어 확인합니다.
                     if (self.sessionId && self.sessionId !== '') {
                         console.log("장바구니 수량 조회를 시작합니다.");
                         self.fetchCartCount();
@@ -992,11 +1190,16 @@
                         console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                     }
 
+<<<<<<< HEAD
                 },
                 beforeUnmount() {
                     let self = this;
                     self.removeActivityListeners();
                     self.clearSessionTimers();
+=======
+                    self.checkNewReplyCount();
+
+>>>>>>> branch 'main' of https://github.com/kkomi211/springProject2025.git
                 }
             });
 

@@ -358,6 +358,9 @@
                                             <a href="javascript:;" @click="fnPostView(item.boardNo)">
                                                 <div class="title-row">
                                                     <span class="post-title">{{ item.title }}</span>
+                                                    <!-- NEW 배지 추가  -->
+                                                    <span v-if="isNewPost(item.boardNo)"
+                                                        class="new-post-badge">NEW</span>
                                                     <span v-if="item.pwd" class="material-symbols-outlined lock-icon"
                                                         title="비밀글">
                                                         lock
@@ -787,15 +790,15 @@
                         }
                     });
                 },
-                
+
                 // 새 답변 개수 체크 (localStorage 기반)
-                checkNewReplyCount: function() {
+                checkNewReplyCount: function () {
                     let self = this;
                     if (!self.sessionId || self.sessionId === '') {
                         self.newReplyCount = 0;
                         return;
                     }
-                    
+
                     // localStorage에서 확인한 답변 목록 불러오기
                     const storageKey = `checkedReplies_${self.sessionId}`;
                     const saved = localStorage.getItem(storageKey);
@@ -807,7 +810,7 @@
                             checkedReplies = [];
                         }
                     }
-                    
+
                     // 서버에서 답변 완료된 문의 목록 가져오기
                     $.ajax({
                         url: "/home/mypage/my-inquiry.dox",
@@ -821,7 +824,7 @@
                         success: function (data) {
                             if (data.result == "success" && data.list) {
                                 let uncheckedCount = 0;
-                                data.list.forEach(function(item) {
+                                data.list.forEach(function (item) {
                                     if (item.status === 'Y' && !checkedReplies.includes(item.inquiryNo)) {
                                         uncheckedCount++;
                                     }
@@ -832,7 +835,7 @@
                                 self.newReplyCount = 0;
                             }
                         },
-                        error: function() {
+                        error: function () {
                             self.newReplyCount = 0;
                         }
                     });
@@ -852,9 +855,9 @@
                 } else {
                     console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");  
                 }
-                
+
                 // 주기적으로 새 답변 체크 (30초마다)
-                setInterval(function() {
+                setInterval(function () {
                     if (self.sessionId && self.sessionId !== '') {
                         self.checkNewReplyCount();
                     }

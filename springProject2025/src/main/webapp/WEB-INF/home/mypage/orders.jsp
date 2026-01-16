@@ -112,8 +112,8 @@
             color: white;
         }
         .brand-name a:hover {
-			text-decoration: none;
-		}
+         text-decoration: none;
+      }
 
         #right-items {
             display: flex;
