@@ -2,81 +2,101 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-	<mapper namespace="com.example.springProject2025.mapper.BoardMapper">
-		
-		<!-- rally board.xml(대회 게시판) list-->
-		<select id="selectCrewBoardList" parameterType="hashmap" resultType="com.example.springProject2025.model.Chat">
-			SELECT *
-		    FROM
-		        CHAT  
-		    <where>
-		        ROOM_TYPE = 'GROUP'  
-		        <if test="keyword != null and keyword.trim() != ''">
-		            AND (
-		                TITLE LIKE '%' || #{keyword} || '%'
-		                OR NAME LIKE '%' || #{keyword} || '%'
-		                OR INTRO LIKE '%' || #{keyword} || '%'
-		                OR OWNER_ID LIKE '%' || #{keyword} || '%' 
-		            )
-		        </if>
-		    </where>
-		    ORDER BY CDATE DESC	    
-		    OFFSET ( (#{page} - 1) * #{pageSize} ) ROWS 
-		    FETCH NEXT #{pageSize} ROWS ONLY
-		</select>
-		
-		<select id="selectCrewBoardCnt" parameterType="hashmap" resultType="int">
-		    SELECT COUNT(*) AS CNT
-		    FROM CHAT
-		    WHERE 1=1
-		  	AND ROOM_TYPE = 'GROUP'  
-		    <if test="type != null and type != ''">
-		        AND TYPE = #{type}
-		    </if>
-		    <if test="keyword != null and keyword != ''">
-		        AND (
-		            TITLE LIKE '%' || #{keyword} || '%'
-		            OR INTRO LIKE '%' || #{keyword} || '%'
-		        )
-		    </if>
-		</select>
-		
-		<!-- crew chatting cnt in check-->
-		<select id="selectCrewCheck" parameterType="hashmap" resultType="int">
-			SELECT COUNT(*) AS CNT
-		    FROM CHAT_MEMBER 
-		    WHERE USER_ID = #{userId}
-		    AND CHATROOM_NO = #{chatroomNo}
-		</select>
-		
-		<!-- 채팅방 입장 후 CHAT_MEMBER insert-->
-		<insert id="crewCatInsertMember" parameterType="hashmap">
-		   INSERT INTO CHAT_MEMBER
-		   VALUES (
-		       CHAT_MEMBER_SEQ.NEXTVAL,
-		       SYSDATE, 
-		       'M',
-		       #{userId},
-		       #{chatroomNo}
-		    )
-		</insert>
-		
-		
-		<insert id="crewChatInsert" parameterType="hashmap" useGeneratedKeys="true" keyColumn="CHATROOM_NO" keyProperty="chatroomNo" >
-			INSERT INTO CHAT 
-			VALUES(CHAT_SEQ.NEXTVAL, 'GROUP', #{title}, #{userId}, SYSDATE, #{name}, #{intro}, SYSDATE)
-		</insert>
-		
-		<insert id="crewChatInsertOner" parameterType="hashmap">
-		   INSERT INTO CHAT_MEMBER
-		   VALUES (
-		       CHAT_MEMBER_SEQ.NEXTVAL,
-		       SYSDATE, 
-		       'O',
-		       #{userId},
-		       #{chatroomNo}
-		    )
-		</insert>
-		
-		
-	</mapper>  
+<mapper namespace="com.example.springProject2025.mapper.BoardMapper">
+
+	<!-- rally board.xml(대회 게시판) list-->
+	<select id="selectCrewBoardList" parameterType="hashmap" resultType="com.example.springProject2025.model.Chat">
+		SELECT *
+	    FROM
+	        CHAT
+	    <where>
+	        ROOM_TYPE = 'GROUP'
+	        <if test="keyword != null and keyword.trim() != ''">
+	            AND (
+	                TITLE LIKE '%' || #{keyword} || '%'
+	                OR NAME LIKE '%' || #{keyword} || '%'
+	                OR INTRO LIKE '%' || #{keyword} || '%'
+	                OR OWNER_ID LIKE '%' || #{keyword} || '%'
+	            )
+	        </if>
+	    </where>
+	    ORDER BY CDATE DESC
+	    OFFSET ( (#{page} - 1) * #{pageSize} ) ROWS
+	    FETCH NEXT #{pageSize} ROWS ONLY
+	</select>
+
+	<select id="selectCrewBoardCnt" parameterType="hashmap" resultType="int">
+	    SELECT COUNT(*) AS CNT
+	    FROM CHAT
+	    WHERE 1=1
+	  	AND ROOM_TYPE = 'GROUP'
+	    <if test="type != null and type != ''">
+	        AND TYPE = #{type}
+	    </if>
+	    <if test="keyword != null and keyword != ''">
+	        AND (
+	            TITLE LIKE '%' || #{keyword} || '%'
+	            OR INTRO LIKE '%' || #{keyword} || '%'
+	        )
+	    </if>
+	</select>
+
+	<!-- crew chatting cnt in check-->
+	<select id="selectCrewCheck" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) AS CNT
+	    FROM CHAT_MEMBER
+	    WHERE USER_ID = #{userId}
+	    AND CHATROOM_NO = #{chatroomNo}
+	</select>
+
+	<!-- 채팅방 멤버 목록 조회 (NEW 추가) -->
+	<select id="selectCrewMemberList" parameterType="hashmap" resultType="hashmap">
+		SELECT 
+		    CM.USER_ID,
+		    CM.MEMBER_ROLE,
+		    CM.JOIN_DATE,
+		    U.NAME AS USER_NAME
+		FROM 
+		    CHAT_MEMBER CM
+		LEFT JOIN 
+		    TBL_USER U ON CM.USER_ID = U.USER_ID
+		WHERE 
+		    CM.CHATROOM_NO = #{chatroomNo}
+		ORDER BY 
+		    CASE CM.MEMBER_ROLE 
+		        WHEN 'O' THEN 1  -- 크루장을 먼저
+		        WHEN 'M' THEN 2  -- 멤버는 나중에
+		    END,
+		    CM.JOIN_DATE ASC  -- 가입일 빠른 순
+	</select>
+
+	<!-- 채팅방 입장 후 CHAT_MEMBER insert-->
+	<insert id="crewCatInsertMember" parameterType="hashmap">
+	   INSERT INTO CHAT_MEMBER
+	   VALUES (
+	       CHAT_MEMBER_SEQ.NEXTVAL,
+	       SYSDATE,
+	       'M',
+	       #{userId},
+	       #{chatroomNo}
+	    )
+	</insert>
+
+
+	<insert id="crewChatInsert" parameterType="hashmap" useGeneratedKeys="true" keyColumn="CHATROOM_NO" keyProperty="chatroomNo" >
+		INSERT INTO CHAT
+		VALUES(CHAT_SEQ.NEXTVAL, 'GROUP', #{title}, #{userId}, SYSDATE, #{name}, #{intro}, SYSDATE)
+	</insert>
+
+	<insert id="crewChatInsertOner" parameterType="hashmap">
+	   INSERT INTO CHAT_MEMBER
+	   VALUES (
+	       CHAT_MEMBER_SEQ.NEXTVAL,
+	       SYSDATE,
+	       'O',
+	       #{userId},
+	       #{chatroomNo}
+	    )
+	</insert>
+
+</mapper>
