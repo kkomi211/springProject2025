@@ -247,6 +247,17 @@ RUNNERS HOUSE는 러너들이 자신의 이야기를 나누고, 제품을 구매
 
 <br>
 
+#### 👨🏼‍🎨 ADMIN 관리자활동 로그 기능 (추가)
+- search옵션 구현  
+- 회원상세정보 및 처리
+- 엑설다운 기능 구현
+
+| After(완성) |
+|------|
+|<img width="500" height="200" alt="회원관리" src="https://github.com/user-attachments/assets/9b68dcf6-bc4d-449d-b974-ba43c21be4b8" />|
+
+<br>
+
 ## 🧐 HOME
 #### 👨🏼‍🚒 HOME 메인 기능
 - DB정보 각종 정보 현황출력 (ADIMIN에 등록 된 배너 호출)
