@@ -631,7 +631,7 @@
                                 </div>
 
                                 <table>
-                                    <tr style="background-color: #f7f7f7;"  >
+                                    <tr style="background-color: #f7f7f7;">
                                         <th>번호</th>
                                         <th>제목</th>
                                         <th>채팅방 소개</th>
@@ -779,7 +779,8 @@
                         showMembersModal: false,
                         memberList: [],
 
-                        newReplyCount: 0  // 이 줄 추가
+                        newReplyCount: 0,  // 이 줄 추가
+
                     };
                 },
                 methods: {
@@ -1040,7 +1041,23 @@
                                 console.error("AJAX 호출 중 오류 발생:", err);
                             }
                         });
-                    }
+                    },
+
+                    // 새 답변 개수 계산 (확인하지 않은 답변만 카운트)
+                    calculateNewReplyCount: function () {
+                        let self = this;
+                        let uncheckedCount = 0;
+
+                        self.orderList.forEach(function (item) {
+                            if (item.status === 'Y' && !self.checkedReplies.includes(item.inquiryNo)) {
+                                uncheckedCount++;
+                            }
+                        });
+
+                        self.newReplyCount = uncheckedCount;
+                        console.log("확인하지 않은 새 답변 개수:", uncheckedCount);
+                    },
+
                 },
                 mounted() {
                     let self = this;
@@ -1053,6 +1070,8 @@
                     } else {
                         console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                     }
+
+                    self.calculateNewReplyCount();
                 }
             });
 
