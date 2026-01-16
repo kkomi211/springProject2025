@@ -1090,4 +1090,58 @@ public class AdminService {
 		return resultMap;
 	}
 
+	// 알림 개수 조회
+	public HashMap<String, Object> getNotificationCounts(String adminId) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			// adminId가 null이면 빈 결과 반환
+			if (adminId == null || adminId.trim().isEmpty()) {
+				resultMap.put("newInquiryCount", 0);
+				resultMap.put("newOrderCount", 0);
+				resultMap.put("newBoardReportCount", 0);
+				resultMap.put("totalCount", 0);
+				resultMap.put("result", "success");
+				return resultMap;
+			}
+			
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("adminId", adminId);
+			
+			int newInquiryCount = adminMapper.selectNewInquiryCount(map);
+			int newOrderCount = adminMapper.selectNewOrderCount(map);
+			int newBoardReportCount = adminMapper.selectNewBoardReportCount(map);
+			
+			resultMap.put("newInquiryCount", newInquiryCount);
+			resultMap.put("newOrderCount", newOrderCount);
+			resultMap.put("newBoardReportCount", newBoardReportCount);
+			resultMap.put("totalCount", newInquiryCount + newOrderCount + newBoardReportCount);
+			resultMap.put("result", "success");
+		} catch (Exception e) {
+			resultMap.put("result", "fail");
+			resultMap.put("newInquiryCount", 0);
+			resultMap.put("newOrderCount", 0);
+			resultMap.put("newBoardReportCount", 0);
+			resultMap.put("totalCount", 0);
+			System.err.println("알림 개수 조회 중 오류: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return resultMap;
+	}
+
+	// 알림 읽음 처리
+	public HashMap<String, Object> markNotificationAsRead(String adminId, String type) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("adminId", adminId);
+			map.put("type", type);
+			adminMapper.insertNotificationRead(map);
+			resultMap.put("result", "success");
+		} catch (Exception e) {
+			resultMap.put("result", "fail");
+			System.err.println("알림 읽음 처리 중 오류: " + e.getMessage());
+		}
+		return resultMap;
+	}
+
 }

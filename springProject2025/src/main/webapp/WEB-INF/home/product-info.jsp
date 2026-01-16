@@ -20,9 +20,16 @@
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <link rel="stylesheet" href="/css/product-info2.css">
+        <link rel="stylesheet" href="/css/home.css">
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
         <script src="/js/page-change.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        
+        <!-- 최근 본 상품 컴포넌트 스크립트 -->
+        <script src="/js/recent-products.js"></script>
+        
+        <!-- 위젯 위치 동적 조정 스크립트 -->
+        <script src="/js/widget-position.js"></script>
 
         <style>
             html,
@@ -453,6 +460,10 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- 최근 본 상품 컴포넌트 -->
+                <div id="recent-products-widget"></div>
+                
                 <footer>
                     <div class="footer-left">
                         <div class="company-info">
@@ -584,6 +595,52 @@
                             self.category = data.typeNo;
                             self.size = data.sizeList[0].productSize;
                             self.maxQuantity = data.sizeList[0].quantity;
+                            
+                            // 최근 본 상품 저장 (Vue.js 데이터 로드 후)
+                            // imgByProduct가 로드될 때까지 약간의 지연
+                            self.saveProductToRecent = function() {
+                                if (!window.RecentProducts || !data.info) return;
+                                
+                                try {
+                                    const productName = data.info.productName || '';
+                                    const productPrice = data.info.saleYN === 'Y' && data.info.salePrice 
+                                        ? data.info.salePrice.toLocaleString() + ' 원' 
+                                        : data.info.price.toLocaleString() + ' 원';
+                                    
+                                    // imgByProduct가 계산될 때까지 기다림
+                                    const productImage = (self.imgByProduct && self.imgByProduct[String(self.productNo)])
+                                        ? self.imgByProduct[String(self.productNo)]
+                                        : '/img/no-image.jpg';
+                                    
+                                    let recentProducts = window.RecentProducts.get() || [];
+                                    recentProducts = recentProducts.filter(p => p.productNo !== self.productNo);
+                                    
+                                    const productInfo = {
+                                        productNo: self.productNo,
+                                        productName: productName,
+                                        productPrice: productPrice,
+                                        productImage: productImage,
+                                        viewDate: new Date().toISOString()
+                                    };
+                                    
+                                    recentProducts.unshift(productInfo);
+                                    if (recentProducts.length > 3) {
+                                        recentProducts = recentProducts.slice(0, 3);
+                                    }
+                                    
+                                    localStorage.setItem('recentProducts', JSON.stringify(recentProducts));
+                                    
+                                    // 위젯이 있으면 업데이트
+                                    window.RecentProducts.render();
+                                } catch (error) {
+                                    console.error('최근 본 상품 저장 오류:', error);
+                                }
+                            };
+                            
+                            // imgByProduct가 로드될 때까지 약간의 지연
+                            setTimeout(function() {
+                                self.saveProductToRecent();
+                            }, 500);
                         }
                     });
                 },
@@ -598,6 +655,13 @@
                         success: function (data) {
                             console.log(data);
                             self.imgList = data.imgList;
+                            
+                            // 이미지 로드 후 최근 본 상품 저장 (fnInfo가 이미 완료된 경우)
+                            if (self.saveProductToRecent && typeof self.saveProductToRecent === 'function') {
+                                self.$nextTick(function() {
+                                    self.saveProductToRecent();
+                                });
+                            }
                         }
                     });
                 },

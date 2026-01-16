@@ -245,4 +245,12 @@ public interface AdminMapper {
     
     // 활동 로그 총 개수 조회
     int selectAdminActivityLogCount(HashMap<String, Object> map);
+    
+    // 알림 개수 조회
+    int selectNewInquiryCount(HashMap<String, Object> map);
+    int selectNewOrderCount(HashMap<String, Object> map);
+    int selectNewBoardReportCount(HashMap<String, Object> map);
+    
+    // 알림 읽음 처리
+    void insertNotificationRead(HashMap<String, Object> map);
 }
