@@ -197,7 +197,7 @@
                                             @click="selectCategory(p.typeNo)">
                                             {{ p.typeName }}
                                             <span v-if="newCategorySet.has(String(p.typeNo))"
-                                                class="new-product-badge">N</span>
+                                                class="new-product-badge">New</span>
                                         </div>
 
                                         <div class="subcategory-children"
@@ -208,7 +208,7 @@
                                                 @click="selectCategory(c.typeNo)">
                                                 {{ c.typeName }}
                                                 <span v-if="newCategorySet.has(String(c.typeNo))"
-                                                    class="new-product-badge">N</span>
+                                                    class="new-product-badge">New</span>
                                             </div>
                                             <div v-if="!childrenByParent[String(p.typeNo)] || childrenByParent[String(p.typeNo)].length === 0"
                                                 class="subcategory child empty">
