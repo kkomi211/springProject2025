@@ -119,7 +119,7 @@
                 productNo: productNo,
                 productName: productName || `상품 ${productNo}`,
                 productPrice: productPrice || '',
-                productImage: productImage || '/img/no-image.jpg',
+                productImage: productImage || '/img/no-image.png',
                 viewDate: new Date().toISOString()
             };
 
@@ -178,7 +178,7 @@
         listContainer.innerHTML = displayProducts.map(product => `
             <a href="/home/product-info.do?productNo=${product.productNo}" class="recent-product-item" title="${escapeHtml(product.productName)}">
                 <img src="${product.productImage}" alt="${product.productName}" class="recent-product-image" 
-                     onerror="this.src='/img/no-image.jpg'">
+                     onerror="this.onerror=null; this.src='/img/no-image.png';">
             </a>
         `).join('');
     }
