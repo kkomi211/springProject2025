@@ -150,10 +150,11 @@ public class ProductService {
 		try {
 			Product info = productmapper.selectProductInfoUser(map);
 			List<Product> sizeList = productmapper.selectSizeAndQuantity(map);
+			Product imgInfo = productmapper.selectProductImg(map);
 			System.out.println("sizeList은" + sizeList);
 			resultMap.put("info", info);
 			resultMap.put("sizeList", sizeList);
-			
+			resultMap.put("imgInfo", imgInfo);
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 			resultMap.put("result", "fail");

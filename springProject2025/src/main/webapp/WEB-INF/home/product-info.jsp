@@ -34,7 +34,7 @@
 
         <!-- session timeout modal -->
         <script src="/js/session-timeout.js"></script>
-
+        <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
         <style>
             html,
             body {
@@ -413,12 +413,13 @@
                         <div class="infoMain-container">
                             <!-- 수정 부분 -->
                             <div class="img-box">
-                                <!-- <img 
-                                src="/img/shoe-img.png" 
-                                class="big-img" 
-                                alt="Running shoes for sale"> -->
-                                <img :src="imgByProduct[String(productNo)] || '/img/no-image.png'" class="big-img"
-                                    :alt="info.productName">
+                                <model-viewer v-if="imgInfo.imgEtc === '.glb'" :src="imgByProduct[String(productNo)]"
+                                    auto-rotate camera-controls shadow-intensity="1" environment-image="neutral"
+                                    style="width: 100%; height: 500px; background-color: #f8f8f8; border-radius: 15px;">
+                                </model-viewer>
+
+                                <img v-else :src="imgByProduct[String(productNo)] || '/img/no-image.png'"
+                                    class="big-img" :alt="info.productName">
                             </div>
                             <!-- 수정 부분 -->
                             <div class="infoText-box">
@@ -774,7 +775,7 @@
                     maxQuantity: 1,
                     sessionId: "${sessionId}", // HARDCODING for test purposes 
                     userName: "",
-
+                    imgInfo : {},
                     userType: '${userType}',
 
                     cartCount: 0, // 장바구니 수량 변수 추가 (jgh260114)
@@ -830,6 +831,7 @@
                             self.category = data.typeNo;
                             self.size = data.sizeList[0].productSize;
                             self.maxQuantity = data.sizeList[0].quantity;
+                            self.imgInfo = data.imgInfo;
 
                             // 최근 본 상품 저장 (Vue.js 데이터 로드 후)
                             // imgByProduct가 로드될 때까지 약간의 지연
@@ -1315,6 +1317,6 @@
                 self.clearSessionTimers();
             }
         });
-
+        app.config.compilerOptions.isCustomElement = tag => tag === 'model-viewer';
         app.mount('#app');
     </script>
