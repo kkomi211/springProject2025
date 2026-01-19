@@ -8,9 +8,11 @@
         <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="stylesheet" href="/css/post-style.css">
         <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/modal-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
         <title>Community</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -18,6 +20,8 @@
         <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
         <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
         <style>
             html,
             body {
@@ -179,6 +183,8 @@
                 position: relative;
                 /* 버튼 기준점을 주기 위해 필요 */
             }
+
+         
         </style>
     </head>
 
@@ -219,20 +225,24 @@
                             <h2 class="sidebar-heading"> COMMUNITY ></h2>
                             <nav class="mypage-menu">
                                 <ul>
-                                    <li class="active">
-                                        <span class="icon">📝</span>
+                                    <li @click="moveToBoard">
+                                        <!-- <span class="icon">📝</span> -->
+                                         <span class="material-symbols-outlined icon"> forum </span>
                                         <a href="/home/community/board.do">게시판</a>
                                     </li>
-                                    <li>
-                                        <span class="icon">📦</span>
+                                    <li @click="moveToCrew" class="active">
+                                        <!-- <span class="icon">📦</span> -->
+                                         <span class="material-symbols-outlined icon"> groups </span>
                                         <a href="/home/community/crew.do">크루 찾기</a>
                                     </li>
-                                    <li>
-                                        <span class="icon">💬</span>
+                                    <li @click="moveToRally">
+                                        <!-- <span class="icon">💬</span> -->
+                                         <span class="material-symbols-outlined icon"> event </span>
                                         <a href="/home/community/rally.do">대회정보</a>
                                     </li>
-                                    <li>
-                                        <span class="icon">👤</span>
+                                    <li @click="moveToChat">
+                                        <!-- <span class="icon">👤</span> -->
+                                        <span class="material-symbols-outlined icon"> mobile_chat </span>
                                         <a href="/home/community/chat.do">채팅방</a>
                                     </li>
                                 </ul>
@@ -283,7 +293,6 @@
                                 </div>
 
                                 <!-- If the user is not logged in -->
-
                                 <div v-if="!isLoggedIn" class="modal-overlay">
                                     <div class="modal-content">
                                         <h2>로그인 후 이용해주세요.</h2>
@@ -291,6 +300,15 @@
                                             <button @click="moveToLogin">로그인</button>
                                             <button @click="moveToBoard">닫기</button>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <!-- Success modal -->
+                                <div v-if="showSuccessModal" class="modal-overlay">
+                                    <div class="modal-content">
+                                        <h2>{{ successMessage }}</h2>
+                                        <div class="modal_btn"><button @click="closeSuccessModal">확인</button></div>
+                                        
                                     </div>
                                 </div>
 
@@ -325,6 +343,8 @@
                         </div>
                     </div>
                 </footer>
+                <!-- session time out modal -->
+                <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
         </div>
         </div>
     </body>
@@ -334,6 +354,7 @@
     <script>
         lucide.createIcons();
         const app = Vue.createApp({
+            mixins: [sessionTimeoutMixin],
             data() {
                 return {
                     sessionId: "${sessionId}",
@@ -349,7 +370,8 @@
                     pageSize: 10,
                     index: 0,
                     isLoggedIn: true,
-
+                    showSuccessModal: false,
+                    successMessage: "",
                     userType: '${userType}',
                 };
             },
@@ -377,8 +399,6 @@
                         keyword: self.keyword.trim(),
                         page: self.page,
                         pageSize: self.pageSize,
-
-
                     };
                     $.ajax({
                         url: "/board/list.dox",
@@ -401,13 +421,13 @@
                 fnPost() {
                     let self = this;
                     if (self.title.trim() === "") {
-                        alert("제목을 입력해주세요.");
-                        document.querySelector("#title").focus();
+                        self.successMessage = "제목을 입력해주세요.";
+                        self.showSuccessModal = true;
                         return;
                     }
                     if (self.intro.trim() === "") {
-                        alert("내용을 입력해주세요.");
-                        document.querySelector("#intro").focus();
+                        self.successMessage = "내용을 입력해주세요.";
+                        self.showSuccessModal = true;
                         return;
                     }
 
@@ -416,26 +436,31 @@
                         title: self.title,
                         intro: self.intro,
                         name: self.title,
-
                     };
 
                     $.ajax({
-                        // url: "/board/post.dox",
                         url: "/crew/chatInsert.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
                             if (data.result == "success") {
-                                alert("채팅방이 개설되었습니다!");
-                                location.href = "/home/community/crew.do";
+                                self.successMessage = "채팅방이 개설되었습니다.";
+                                self.showSuccessModal = true;
                             } else {
-                                alert("채팅방 개설에 실패했습니다.");
+                                self.successMessage = "채팅방 개설에 실패했습니다.";
+                                self.showSuccessModal = true;
                             }
                         }
                     });
                 },
-
+                closeSuccessModal() {
+                    let self = this;
+                    self.showSuccessModal = false;
+                    if (self.successMessage === "채팅방이 개설되었습니다.") {
+                        location.href = "/home/community/crew.do";
+                    }
+                },
                 // 장바구니 수량을 서버에서 가져오는 함수
                 fetchCartCount() {
                     // 세션 아이디가 없으면 실행하지 않음
@@ -445,7 +470,6 @@
                     $.ajax({
                         url: '/api/cartCount.dox',
                         method: 'GET',
-                        // ★ 서버의 @RequestParam HashMap map으로 전달될 데이터 ★
                         data: {
                             sessionId: self.sessionId
                         },
@@ -453,7 +477,7 @@
                         success: (response) => {
                             console.log("서버 응답 데이터:", response);
                             if (response.result === 'success') {
-                                self.cartCount = response.count; // 서버에서 보낸 count 값을 Vue 변수에 저장
+                                self.cartCount = response.count;
                             }
                         },
                         error: (err) => {
@@ -461,7 +485,6 @@
                         }
                     });
                 },
-
                 moveToLogin() {
                     location.href = "/home/login.do";
                 },
@@ -473,7 +496,23 @@
                 },
                 fnNotice() {
                     location.href = "/home/community/board.do?type=B";
-                }
+                },
+                fnLogout: function () {
+                    let self = this;
+                    self.clearSessionTimers();
+                    let param = {};
+                    $.ajax({
+                        url: "/member/logout.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            if (data.result == "success") {
+                                location.href = "/home.do";
+                            }
+                        }
+                    })
+                },
             },
             mounted() {
                 let self = this;
@@ -486,13 +525,19 @@
                     self.isLoggedIn = false;
                 }
 
-                // 2. 조건문을 잠시 제거하거나, 로그를 찍어 확인합니다.
                 if (self.sessionId && self.sessionId !== '') {
                     console.log("장바구니 수량 조회를 시작합니다.");
                     self.fetchCartCount();
+                    self.setupActivityListeners();
+                    self.startSessionTimer();
                 } else {
                     console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                 }
+            },
+            beforeUnmount() {
+                let self = this;
+                self.removeActivityListeners();
+                self.clearSessionTimers();
             }
         });
 

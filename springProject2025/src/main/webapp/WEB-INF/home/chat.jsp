@@ -6,17 +6,21 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/css/chat-style.css">
+        <link rel="stylesheet" href="/css/modal-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
             rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
         <title>Community</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
         <style>
             html,
             body {
@@ -214,9 +218,9 @@
                 color: inherit;
             }
 
-            a:hover {
+            /* a:hover {
                 text-decoration: underline;
-            }
+            } */
 
             header {
                 width: 100%;
@@ -395,6 +399,171 @@
             .socials span:first-child {
                 margin-left: 0;
             }
+
+            /* 기본 폰트 및 레이아웃 채팅 리스트와 통일 */
+            html,
+            body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                font-family: 'Inter', 'Jost', Arial, sans-serif;
+                /* Jost 폰트 우선 적용 */
+                color: #333;
+            }
+
+            #app {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+
+            /* 히어로 섹션 텍스트 스타일 통일 */
+            .main-hero-slider .crew-overlay-text {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-family: 'Jost', sans-serif;
+                font-size: 5em;
+                font-weight: 900;
+                /* 600에서 900으로 상향 */
+                color: #fff;
+                text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+                letter-spacing: 0.2em;
+                z-index: 10;
+            }
+
+            /* 사이드바 및 헤더 유저 정보 글씨체 통일 */
+            /* .header-user {
+                font-family: 'Jost', sans-serif;
+                font-weight: 700;
+                font-size: 1.2em;
+            } */
+
+            /* 테이블 디자인 채팅 리스트와 일치화 */
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+
+            table th {
+                font-family: 'Jost', sans-serif;
+                font-weight: 600;
+                padding: 15px;
+                border-bottom: 2px solid #000;
+                /* 채팅 리스트 스타일의 강조선 */
+                text-align: left;
+            }
+
+            table td {
+                padding: 15px;
+                border-bottom: 1px solid #eee;
+                font-size: 0.95em;
+            }
+
+            /* NEW 배지 스타일 채팅 리스트와 완벽 일치 */
+            .sidebar-new-badge,
+            .new-crew-badge {
+                display: inline-block;
+                background: linear-gradient(135deg, #ff4444, #ff6b6b);
+                color: white;
+                padding: 2px 8px;
+                border-radius: 10px;
+                font-size: 0.7em;
+                font-weight: bold;
+                margin-left: 8px;
+                box-shadow: 0 2px 6px rgba(255, 68, 68, 0.5);
+                animation: badgePulse 2s infinite;
+                vertical-align: middle;
+            }
+
+            /* 행 하이라이트 효과 통일 */
+            table tr.new-crew {
+                background-color: #fff5f5;
+                border-left: 4px solid #ff6b6b;
+            }
+
+            table tr:hover {
+                background-color: #f9f9f9;
+                cursor: pointer;
+            }
+
+            /* 버튼 디자인 채팅 리스트 스타일로 깔끔하게 수정 */
+            .entry-btn {
+                padding: 8px 20px;
+                border-radius: 20px;
+                /* 더 둥글게 */
+                background: #000;
+                color: #fff;
+                font-family: 'Jost', sans-serif;
+                font-weight: 500;
+                border: none;
+                transition: all 0.3s ease;
+            }
+
+            .entry-btn:hover {
+                background: #333;
+                transform: translateY(-2px);
+            }
+
+            .write-btn-wrapper button {
+                font-family: 'Jost', sans-serif;
+                font-weight: 600;
+                letter-spacing: 1px;
+            }
+
+            /* 검색바 전체 레이아웃 (우측 정렬 및 여백) */
+            .search-bar {
+                display: flex;
+                justify-content: flex-end;
+                margin-bottom: 20px;
+                /* 테이블과의 간격 */
+            }
+
+            /* 검색 박스 디자인 (둥근 테두리 및 내부 레이아웃) */
+            .search-box {
+                display: flex;
+                align-items: center;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                /* 타원형(25px)에서 네모(4px)로 변경 */
+                padding: 2px 10px;
+                /* 내부 여백 최적화 */
+                background: #fff;
+                height: 40px;
+                /* 크루 찾기 페이지와 높이 통일 */
+                box-sizing: border-box;
+            }
+
+            .search-box:focus-within {
+                border-color: #000;
+                /* 포커스 시 테두리 강조 */
+            }
+
+            /* 입력창 스타일 */
+            .search-box input.search {
+                border: none !important;
+                /* 기존 스타일 무력화 */
+                outline: none !important;
+                padding: 8px;
+                width: 250px;
+                font-family: 'Jost', sans-serif;
+                font-size: 14px;
+            }
+
+            /* 돋보기 아이콘 영역 */
+            .search-box a div {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #333;
+            }
+
+            .search-box a:hover {
+                text-decoration: none;
+                /* 아이콘 호버 시 밑줄 방지 */
+            }
         </style>
     </head>
 
@@ -434,46 +603,55 @@
                                 <nav class="mypage-menu">
                                     <ul>
                                         <li @click="moveToBoard">
-                                            <span class="icon">📝</span>
+                                            <!-- <span class="icon">📝</span> -->
+                                            <span class="material-symbols-outlined icon"> forum </span>
                                             <a href="/home/community/board.do">게시판</a>
                                         </li>
                                         <li @click="moveToCrew">
-                                            <span class="icon">📦</span>
+                                            <!-- <span class="icon">📦</span> -->
+                                            <span class="material-symbols-outlined icon"> groups </span>
                                             <a href="/home/community/crew.do">크루 찾기</a>
                                         </li>
                                         <li @click="moveToRally">
-                                            <span class="icon">💬</span>
+                                            <!-- <span class="icon">💬</span> -->
+                                            <span class="material-symbols-outlined icon"> event </span>
                                             <a href="/home/community/rally.do">대회정보</a>
                                         </li>
                                         <li @click="moveToChat" class="active">
-                                            <span class="icon">👤</span>
-                                            <a href="javascript:void(0)">
-                                                채팅방
-                                                <span v-if="hasNewChatroom" class="sidebar-new-badge">NEW</span>
-                                            </a>
+                                            <!-- <span class="icon">👤</span> -->
+                                            <span class="material-symbols-outlined icon"> mobile_chat </span>
+                                            <a href="/home/community/chat.do">채팅방</a>
                                         </li>
                                     </ul>
                                 </nav>
                             </aside>
                             <main class="main-content">
                                 <div class="board-header">
-                                    <h1 class="main-title">
-                                        나의 채팅방
-                                    </h1>
+                                    <h1 class="main-title">나의 채팅방</h1>
+
+                                    <div class="search-bar">
+                                        <div class="search-box">
+                                            <input class="search" type="text" placeholder="채팅방 제목을 입력하세요"
+                                                v-model="keyword" @keyup.enter="fnSearchChat">
+                                            <a href="javascript:;" @click="fnSearchChat">
+                                                <div><i data-lucide="search" stroke-width="1.5"></i></div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                                 <table>
-                                    <tr>
+                                    <tr style="background-color: #f7f7f7;">
                                         <th>채팅방이름</th>
-                                        <th>생성날짜</th>
+                                        <th>최근활동날짜</th>
                                     </tr>
                                     <tr v-for="item in chatList" @click="fnShowChat(item.chatroomNo)"
                                         :class="{ 'new-chatroom': isNewChatroom(item.chatroomNo) }">
-                                        <td>
+                                        <td class="post-title">
                                             {{item.name}}
                                             <span v-if="isNewChatroom(item.chatroomNo)"
                                                 class="new-chat-badge">NEW</span>
                                         </td>
-                                        <td>{{item.cdate}}</td>
+                                        <td>{{item.udate.split(' ')[0]}}</td>
                                     </tr>
                                 </table>
                             </main>
@@ -506,6 +684,8 @@
                             </div>
                         </div>
                     </footer>
+                    <!-- session time out modal -->
+                    <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
             </div>
         </div>
     </body>
@@ -515,6 +695,7 @@
     <script>
         lucide.createIcons();
         const app = Vue.createApp({
+            mixins: [sessionTimeoutMixin],
             data() {
                 return {
                     sessionId: "${sessionId}",
@@ -698,6 +879,7 @@
                 },
                 fnLogout: function () {
                     let self = this;
+                    self.clearSessionTimers();
                     let param = {};
                     $.ajax({
                         url: "/member/logout.dox",
@@ -753,15 +935,15 @@
                         }
                     });
                 },
-                
+
                 // 새 답변 개수 체크 (localStorage 기반)
-                checkNewReplyCount: function() {
+                checkNewReplyCount: function () {
                     let self = this;
                     if (!self.sessionId || self.sessionId === '') {
                         self.newReplyCount = 0;
                         return;
                     }
-                    
+
                     // localStorage에서 확인한 답변 목록 불러오기
                     const storageKey = `checkedReplies_${self.sessionId}`;
                     const saved = localStorage.getItem(storageKey);
@@ -773,7 +955,7 @@
                             checkedReplies = [];
                         }
                     }
-                    
+
                     // 서버에서 답변 완료된 문의 목록 가져오기
                     $.ajax({
                         url: "/home/mypage/my-inquiry.dox",
@@ -787,7 +969,7 @@
                         success: function (data) {
                             if (data.result == "success" && data.list) {
                                 let uncheckedCount = 0;
-                                data.list.forEach(function(item) {
+                                data.list.forEach(function (item) {
                                     if (item.status === 'Y' && !checkedReplies.includes(item.inquiryNo)) {
                                         uncheckedCount++;
                                     }
@@ -798,11 +980,32 @@
                                 self.newReplyCount = 0;
                             }
                         },
-                        error: function() {
+                        error: function () {
                             self.newReplyCount = 0;
                         }
                     });
                 },
+                fnSearchChat() {
+                    let self = this;
+                    let param = {
+                        userId: self.sessionId,
+                        keyword: self.keyword
+                    };
+
+                    $.ajax({
+                        url: "/home/mypage/chatroom/list.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            self.chatList = data.chatlist;
+                            self.checkNewChatroom();
+                            self.$nextTick(() => {
+                                lucide.createIcons(); // 아이콘 재렌더링
+                            });
+                        }
+                    });
+                }
 
             },
             mounted() {
@@ -815,16 +1018,23 @@
                     console.log("장바구니 수량 조회를 시작합니다.");
                     self.fetchCartCount();
                     self.checkNewReplyCount(); // 새 답변 개수 체크
+                    self.setupActivityListeners();
+                    self.startSessionTimer();
                 } else {
                     console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                 }
-                
+
                 // 주기적으로 새 답변 체크 (30초마다)
-                setInterval(function() {
+                setInterval(function () {
                     if (self.sessionId && self.sessionId !== '') {
                         self.checkNewReplyCount();
                     }
                 }, 30000);
+            },
+            beforeUnmount() {
+                let self = this;
+                self.removeActivityListeners();
+                self.clearSessionTimers();
             }
         });
 

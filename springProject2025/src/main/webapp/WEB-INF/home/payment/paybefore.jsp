@@ -10,7 +10,8 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet">
         <title>주문서</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -18,6 +19,7 @@
         <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
         <script src="/js/page-change.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
         <style>
             /* 주문서 페이지 스타일 */
             .paybefore-body {
@@ -394,193 +396,240 @@
                 gap: 10px;
                 margin-top: 18px;
             }
-             /* New CSS from homepage */
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            color: #333;
-        }
-        #app { /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
 
-        /* --- Header Section (화면 전체 너비) --- */
-        header { /* default 헤더 스타일이 header 태그에 직접 적용되도록 재구성 */
-            width: 100%;
-            background-color: black; /* default top-header의 배경색을 header 전체로 */
-            color: white; /* default top-header의 글자색을 header 전체로 */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+            /* New CSS from homepage */
+            html,
+            body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                color: #333;
+            }
 
-        .top-header { /* default top-header가 header의 유일한 자식이 됨 */
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 150px; /* default top-header의 높이 */
-            padding: 0 40px; /* default footer padding과 맞춤 */
-            box-sizing: border-box; /* 패딩이 width에 포함되도록 */
-        }
-        .top-header div {
-            display: inline-block;
-            text-align: left;
-            font-size: 15px;
-            margin-right: 0; /* flex gap 사용을 위해 개별 div 마진 제거 */
-        }
-        .top-header input {
-            height: 25px;
-            border-radius: 8px;
-            width: 200px;
-        }
+            #app {
+                /* Vue.js root이자 전체 페이지 Flex 컨테이너 */
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
 
-        .brand-name { /* top-header 내 brand-name */
-            margin-right: 0; /* top-header div의 default margin-right 상쇄 */
-        }
-        .brand-name div {
-			font-family: 'Jost', sans-serif;
-			font-size: 60px;
-			font-weight: 900;
-			letter-spacing: 3px;
-			margin-left: 0;
-			/* top-header div의 default margin-left 상쇄 */
-			display: block;
-			color: white;
-			/* default 유지 */
-		}
-		.brand-name a:hover {
-			text-decoration: none;
-		}
-        .brand-name a {
-            color: white;
-        }
+            a {
+                text-decoration: none;
+                color: inherit;
+            }
 
-        #right-items {
-            display: flex;
-            align-items: center;
-            gap: 20px; /* 요소들 간 간격 */
-        }
-        #right-items div {
-            font-size: 15px;
-            white-space: nowrap;
-        }
-        #right-items div a {
-            color: white; /* default top-header의 글자색 */
-        }
-        #right-items div a:hover {
-            color: #eee;
-        }
+            a:hover {
+                text-decoration: underline;
+            }
 
-        .bottom-header {
-            display: flex;
-            justify-content: center;
-            font-size: 25px;
-            /* default bottom-header 폰트 사이즈 */
-            background-color: white;
-            /* bottom-header 배경색 추가 */
-            border-bottom: 1px solid #eee;
-            /* 하단 경계선 */
-            padding: 20px 0;
-            /* 세로 패딩 */
-            letter-spacing: 3px;
-        }
+            /* --- Header Section (화면 전체 너비) --- */
+            header {
+                /* default 헤더 스타일이 header 태그에 직접 적용되도록 재구성 */
+                width: 100%;
+                background-color: black;
+                /* default top-header의 배경색을 header 전체로 */
+                color: white;
+                /* default top-header의 글자색을 header 전체로 */
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
 
-        .bottom-header a:hover {
-            text-decoration: none;
-            transform: scale(1.1);
-            transition: transform 0.3s ease-out; /* faster ease-out */
-        }
+            .top-header {
+                /* default top-header가 header의 유일한 자식이 됨 */
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                height: 150px;
+                /* default top-header의 높이 */
+                padding: 0 40px;
+                /* default footer padding과 맞춤 */
+                box-sizing: border-box;
+                /* 패딩이 width에 포함되도록 */
+            }
 
-        .bottom-header a {
-            color: black;
-            transition: transform 0.2s ease-in; /* slower ease-in */
-            display: inline-block;
-        }
-        .bottom-header div {
-            display: inline-block;
-            margin-right: 100px; /* default bottom-header div의 마진 */
-            margin-top: 0; /* flex-align으로 중앙 정렬 */
-            text-align: center;
-        }
-        .bottom-header div:last-child {
-            margin-right: 0;
-        }
-        /* .bottom-header a:hover {
+            .top-header div {
+                display: inline-block;
+                text-align: left;
+                font-size: 15px;
+                margin-right: 0;
+                /* flex gap 사용을 위해 개별 div 마진 제거 */
+            }
+
+            .top-header input {
+                height: 25px;
+                border-radius: 8px;
+                width: 200px;
+            }
+
+            .brand-name {
+                /* top-header 내 brand-name */
+                margin-right: 0;
+                /* top-header div의 default margin-right 상쇄 */
+            }
+
+            .brand-name div {
+                font-family: 'Jost', sans-serif;
+                font-size: 60px;
+                font-weight: 900;
+                letter-spacing: 3px;
+                margin-left: 0;
+                /* top-header div의 default margin-left 상쇄 */
+                display: block;
+                color: white;
+                /* default 유지 */
+            }
+
+            .brand-name a:hover {
+                text-decoration: none;
+            }
+
+            .brand-name a {
+                color: white;
+            }
+
+            #right-items {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                /* 요소들 간 간격 */
+            }
+
+            #right-items div {
+                font-size: 15px;
+                white-space: nowrap;
+            }
+
+            #right-items div a {
+                color: white;
+                /* default top-header의 글자색 */
+            }
+
+            #right-items div a:hover {
+                color: #eee;
+            }
+
+            .bottom-header {
+                display: flex;
+                justify-content: center;
+                font-size: 25px;
+                /* default bottom-header 폰트 사이즈 */
+                background-color: white;
+                /* bottom-header 배경색 추가 */
+                border-bottom: 1px solid #eee;
+                /* 하단 경계선 */
+                padding: 20px 0;
+                /* 세로 패딩 */
+                letter-spacing: 3px;
+            }
+
+            .bottom-header a:hover {
+                text-decoration: none;
+                transform: scale(1.1);
+                transition: transform 0.3s ease-out;
+                /* faster ease-out */
+            }
+
+            .bottom-header a {
+                color: black;
+                transition: transform 0.2s ease-in;
+                /* slower ease-in */
+                display: inline-block;
+            }
+
+            .bottom-header div {
+                display: inline-block;
+                margin-right: 100px;
+                /* default bottom-header div의 마진 */
+                margin-top: 0;
+                /* flex-align으로 중앙 정렬 */
+                text-align: center;
+            }
+
+            .bottom-header div:last-child {
+                margin-right: 0;
+            }
+
+            /* .bottom-header a:hover {
             color: #007bff;
         } */
 
-                /* --- Footer Section (화면 전체 너비) --- */
-        footer { /* default 푸터 스타일 */
-            width: 100%;
-            height: 200px;
-            background-color: black;
-            color: white;
-            align-items: center;
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            padding: 0 40px; /* default footer의 padding */
-            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
-            margin-top: auto; /* #app이 flex-direction: column일 때 푸터를 아래로 밀어냄 */
-            box-sizing: border-box; /* 패딩이 width에 포함되도록 */
-        }
+            /* --- Footer Section (화면 전체 너비) --- */
+            footer {
+                /* default 푸터 스타일 */
+                width: 100%;
+                height: 200px;
+                background-color: black;
+                color: white;
+                align-items: center;
+                display: flex;
+                justify-content: space-between;
+                font-size: 12px;
+                padding: 0 40px;
+                /* default footer의 padding */
+                box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+                margin-top: auto;
+                /* #app이 flex-direction: column일 때 푸터를 아래로 밀어냄 */
+                box-sizing: border-box;
+                /* 패딩이 width에 포함되도록 */
+            }
 
-        .footer-left {
-            margin-left: 0; /* padding이 있으므로 margin-left 제거 */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .footer-left .company-info div {
-            margin-bottom: 5px;
-            white-space: nowrap;
-        }
-        .copyright {
-            margin-top: 8px;
-            font-size: 0.9em;
-            color: #bbb;
-            white-space: nowrap;
-        }
+            .footer-left {
+                margin-left: 0;
+                /* padding이 있으므로 margin-left 제거 */
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
 
-        .footer-right {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-end;
-        }
-        .other {
-            margin-bottom: 10px;
-            white-space: nowrap;
-        }
-        .other span {
-            margin-left: 20px;
-            cursor: pointer;
-        }
-        .other span:hover {
-            text-decoration: underline;
-        }
-        .other span:first-child {
-            margin-left: 0;
-        }
-        .socials span {
-            margin-left: 20px;
-            cursor: pointer;
-        }
-        .socials span:hover {
-            text-decoration: underline;
-        }
-        .socials span:first-child {
-            margin-left: 0;
-        }
+            .footer-left .company-info div {
+                margin-bottom: 5px;
+                white-space: nowrap;
+            }
+
+            .copyright {
+                margin-top: 8px;
+                font-size: 0.9em;
+                color: #bbb;
+                white-space: nowrap;
+            }
+
+            .footer-right {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: flex-end;
+            }
+
+            .other {
+                margin-bottom: 10px;
+                white-space: nowrap;
+            }
+
+            .other span {
+                margin-left: 20px;
+                cursor: pointer;
+            }
+
+            .other span:hover {
+                text-decoration: underline;
+            }
+
+            .other span:first-child {
+                margin-left: 0;
+            }
+
+            .socials span {
+                margin-left: 20px;
+                cursor: pointer;
+            }
+
+            .socials span:hover {
+                text-decoration: underline;
+            }
+
+            .socials span:first-child {
+                margin-left: 0;
+            }
         </style>
     </head>
 
@@ -588,153 +637,169 @@
         <div id="app">
             <div class="container">
                 <%-- 공통 헤더 컴포넌트 --%>
-                <jsp:include page="/WEB-INF/header/header.jsp" />
+                    <jsp:include page="/WEB-INF/header/header.jsp" />
 
-                <main>
-                    <div class="header">
-                        <div class="header-welcome">
-                            Welcome,
+                    <main>
+                        <div class="header">
+                            <div class="header-welcome">
+                                Welcome,
+                            </div>
+                            <div class="header-user">
+                                {{ userName }}
+                            </div>
                         </div>
-                        <div class="header-user">
-                            {{ userName }}
-                        </div>
-                    </div>
-                    <main class="main-content-wrapper">
-                        <h1 class="main-title">주문서</h1>
+                        <main class="main-content-wrapper">
+                            <h1 class="main-title">주문서</h1>
 
-                        <div class="order-layout">
-                            <!-- 배송 정보 (왼쪽) -->
-                            <div class="delivery-info">
-                                <div class="delivery-info-box">
-                                    <div class="delivery-info-header">
-                                        <h2 class="delivery-info-title">배송 정보</h2>
-                                        <button @click="fnChangeDeliveryAddress" class="btn-change-address">
-                                            수신인 배송지 변경</button>
-                                    </div>
+                            <div class="order-layout">
+                                <!-- 배송 정보 (왼쪽) -->
+                                <div class="delivery-info">
+                                    <div class="delivery-info-box">
+                                        <div class="delivery-info-header">
+                                            <h2 class="delivery-info-title">배송 정보</h2>
+                                            <button @click="fnChangeDeliveryAddress" class="btn-change-address">
+                                                수신인 배송지 변경</button>
+                                        </div>
 
-                                    <div class="delivery-info-content">
-                                        <label>수신인</label>
-                                        <input type="text" v-model="deliveryInfo.name" placeholder="수신인 이름을 입력하세요"
-                                            disabled style="width: 40%;">
+                                        <div class="delivery-info-content">
+                                            <label>수신인</label>
+                                            <input type="text" v-model="deliveryInfo.name" placeholder="수신인 이름을 입력하세요"
+                                                disabled style="width: 40%;">
 
-                                        <label>주소</label>
-                                        <!--<input type="text" v-model="deliveryInfo.addr" placeholder="배송 주소를 입력하세요" disabled style="width: 96%;">-->
-                                        <textarea v-model="deliveryInfo.addr" placeholder="배송 주소를 입력하세요"
-                                            class="delivery-request-input" disabled style="width: 96%; resize: none;">
+                                            <label>주소</label>
+                                            <!--<input type="text" v-model="deliveryInfo.addr" placeholder="배송 주소를 입력하세요" disabled style="width: 96%;">-->
+                                            <textarea v-model="deliveryInfo.addr" placeholder="배송 주소를 입력하세요"
+                                                class="delivery-request-input" disabled
+                                                style="width: 96%; resize: none;">
                                         </textarea>
 
-                                        <p class="delivery-phone">전화번호: {{ deliveryInfo.phone }}</p>
-                                    </div>
+                                            <p class="delivery-phone">전화번호: {{ deliveryInfo.phone }}</p>
+                                        </div>
 
-                                    <div class="delivery-request-section">
-                                        <label>배송 요청 사항</label>
-                                        <input type="text" v-model="orderRequest" placeholder="최대 50자까지 입력 가능합니다."
-                                            maxlength="50" class="delivery-request-input" style="width: 96%;">
-                                        <!--<textarea v-model="orderRequest" placeholder="최대 50자까지 입력 가능합니다." maxlength="50"
+                                        <div class="delivery-request-section">
+                                            <label>배송 요청 사항</label>
+                                            <input type="text" v-model="orderRequest" placeholder="최대 50자까지 입력 가능합니다."
+                                                maxlength="50" class="delivery-request-input" style="width: 96%;">
+                                            <!--<textarea v-model="orderRequest" placeholder="최대 50자까지 입력 가능합니다." maxlength="50"
                                             class="delivery-request-input" style="width: 96%; resize: none;"></textarea>-->
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- 결제 금액 (오른쪽) -->
-                            <div class="payment-summary">
-                                <h2 class="payment-summary-title">결제 금액</h2>
-                                <div class="summary-item">
-                                    <span>상품 금액</span>
-                                    <span>{{ formatCurrency(totalProductPrice) }}원</span>
-                                    <!-- <span>할인된 금액</span>
+                                <!-- 결제 금액 (오른쪽) -->
+                                <div class="payment-summary">
+                                    <h2 class="payment-summary-title">결제 금액</h2>
+                                    <div class="summary-item">
+                                        <span>상품 금액</span>
+                                        <span>{{ formatCurrency(totalProductPrice) }}원</span>
+                                        <!-- <span>할인된 금액</span>
                                     <span>{{ formatCurrency(totalFinalProductPrice) }}원</span> -->
-                                </div>
-                                <div class="summary-item">
-                                    <span>할인 금액</span>
-                                    <span class="summary-discount">{{ formatCurrency(totalDiscountAmount) }}원</span>
-                                </div>
-                                <div class="summary-item-border">
-                                    <span>배송비</span>
-                                    <span v-if="deliveryFee === 0" class="summary-delivery-free">무료배송</span>
-                                    <span v-else>{{ formatCurrency(deliveryFee) }}원</span>
-                                </div>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span>할인 금액</span>
+                                        <span class="summary-discount">{{ formatCurrency(totalDiscountAmount) }}원</span>
+                                    </div>
+                                    <div class="summary-item-border">
+                                        <span>배송비</span>
+                                        <span v-if="deliveryFee === 0" class="summary-delivery-free">무료배송</span>
+                                        <span v-else>{{ formatCurrency(deliveryFee) }}원</span>
+                                    </div>
 
-                                <div class="summary-total">
-                                    <span>총 결제 금액</span>
-                                    <span class="summary-total-amount">{{ formatCurrency(totalPaymentAmount) }}원</span>
-                                </div>
+                                    <div class="summary-total">
+                                        <span>총 결제 금액</span>
+                                        <span class="summary-total-amount">{{ formatCurrency(totalPaymentAmount)
+                                            }}원</span>
+                                    </div>
 
-                                <button @click="fnProceedToPayment" class="btn-payment">
-                                    {{ formatCurrency(totalPaymentAmount) }}원 결제하기
-                                </button>
+                                    <button @click="fnProceedToPayment" class="btn-payment">
+                                        {{ formatCurrency(totalPaymentAmount) }}원 결제하기
+                                    </button>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- 주문 상품 목록 -->
-                        <div class="ordered-items">
-                            <h2 class="ordered-items-title">주문 상품 {{ selectedItems.length }} 종류</h2>
+                            <!-- 주문 상품 목록 -->
+                            <div class="ordered-items">
+                                <h2 class="ordered-items-title">주문 상품 {{ selectedItems.length }} 종류</h2>
 
-                            <div class="order-items-list">
-                                <template v-for="(item, index) in selectedItems"
-                                    :key="item.cartNo || item.productNo || index">
-                                    <section class="order-item">
-                                        <img :src="getImagePath(item.imgPath)" :alt="item.productName"
-                                            class="order-item-image" onerror="this.src='/img/no-image.png'">
+                                <div class="order-items-list">
+                                    <template v-for="(item, index) in selectedItems"
+                                        :key="item.cartNo || item.productNo || index">
+                                        <section class="order-item">
+                                            <div
+                                                style="width: 120px; height: 120px; margin-right: 20px; border: 1px solid #eee; border-radius: 4px; overflow: hidden; flex-shrink: 0; background: #f9f9f9;">
+                                                <model-viewer
+                                                    v-if="item.imgPath && item.imgPath.toLowerCase().endsWith('.glb')"
+                                                    :src="getImagePath(item.imgPath)" auto-rotate
+                                                    rotation-per-second="40deg" disable-zoom
+                                                    style="width: 100%; height: 100%;">
+                                                </model-viewer>
 
-                                        <div class="product-info">
-                                            <div>
-                                                <p class="product-name">{{ item.productName }}</p>
-                                                <p class="product-detail">수량: {{ item.quantity }} / 사이즈 : {{
-                                                    item.productSize || 'FREE' }}</p>
-                                                <p class="product-detail">주문번호: {{ fnGenerateOrderNumber(item, index) }}
-                                                </p>
-                                                <p class="product-price">상품 총가격 : {{ formatCurrency(parseInt(item.price)
-                                                    *
-                                                    parseInt(item.quantity || 1)) }}원</p>
-                                                <p v-if="item.saleYN === 'Y'"
-                                                    style="font-size: 16px; font-weight: bold; color: #e74c3c;">
-                                                    할인된 상품 총가격 : {{ formatCurrency(parseInt(item.salePrice) *
-                                                    parseInt(item.quantity || 1)) }}원
-                                                </p>
+                                                <img v-else :src="getImagePath(item.imgPath)" :alt="item.productName"
+                                                    class="order-item-image"
+                                                    style="width: 100%; height: 100%; margin-right: 0;"
+                                                    onerror="this.src='/img/no-image.png'">
                                             </div>
 
-                                            <!-- <button @click="fnUseCoupon(item)" class="btn-coupon">
-                                                쿠폰 사용</button> -->
-                                        </div>
-                                    </section>
-                                </template>
+                                            <div class="product-info">
+                                                <div>
+                                                    <p class="product-name">{{ item.productName }}</p>
+                                                    <p class="product-detail">수량: {{ item.quantity }} / 사이즈 : {{
+                                                        item.productSize || 'FREE' }}</p>
+                                                    <p class="product-detail">주문번호: {{ fnGenerateOrderNumber(item,
+                                                        index) }}
+                                                    </p>
+                                                    <p class="product-price">상품 총가격 : {{
+                                                        formatCurrency(parseInt(item.price)
+                                                        *
+                                                        parseInt(item.quantity || 1)) }}원</p>
+                                                    <p v-if="item.saleYN === 'Y'"
+                                                        style="font-size: 16px; font-weight: bold; color: #e74c3c;">
+                                                        할인된 상품 총가격 : {{ formatCurrency(parseInt(item.salePrice) *
+                                                        parseInt(item.quantity || 1)) }}원
+                                                    </p>
+                                                </div>
 
-                                <div v-if="selectedItems.length === 0" class="empty-order-message">
-                                    주문할 상품이 없습니다.
+                                                <!-- <button @click="fnUseCoupon(item)" class="btn-coupon">
+                                                쿠폰 사용</button> -->
+                                            </div>
+                                        </section>
+                                    </template>
+
+                                    <div v-if="selectedItems.length === 0" class="empty-order-message">
+                                        주문할 상품이 없습니다.
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
+                        </main>
                     </main>
-                </main>
 
-                <footer>
-                    <div class="footer-left">
-                        <div class="company-info">
-                            <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
-                            <div><strong>대표:</strong> 김재</div>
-                            <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
-                            <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
-                            <div><strong>부가세 번호:</strong> KR123456789</div>
+                    <footer>
+                        <div class="footer-left">
+                            <div class="company-info">
+                                <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
+                                <div><strong>대표:</strong> 김재</div>
+                                <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
+                                <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
+                                <div><strong>부가세 번호:</strong> KR123456789</div>
+                            </div>
+                            <div class="copyright">
+                                COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                            </div>
                         </div>
-                        <div class="copyright">
-                            COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                        <div class="footer-right">
+                            <div class="other">
+                                <span><a href="/home/about.do">회사소개</a></span>
+                                <span><a @click="fnNotice">공지사항</a></span>
+                                <span><a href="/home/terms.do">이용약관</a></span>
+                                <span><a href="/home/privacy.do">개인정보처리방침</a></span>
+                            </div>
+                            <div class="socials">
+                                <span>INSTAGRAM</span>
+                                <span>NAVER</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="footer-right">
-                        <div class="other">
-                            <span><a href="/home/about.do">회사소개</a></span>
-                            <span><a @click="fnNotice">공지사항</a></span>
-                            <span><a href="/home/terms.do">이용약관</a></span>
-                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
-                        </div>
-                        <div class="socials">
-                            <span>INSTAGRAM</span>
-                            <span>NAVER</span>
-                        </div>
-                    </div>
-                </footer>
+                    </footer>
             </div>
 
             <!-- 주소 변경 모달 -->
@@ -802,7 +867,7 @@
                     totalProductPrice: 0,
                     totalDiscount: 0,
                     deliveryFee: 0,
-                    userType : '${userType}',
+                    userType: '${userType}',
                     cartCount: 0, // 장바구니 수량 변수 추가
                 };
             },
@@ -1150,10 +1215,10 @@
                                 // 제품 정보를 결제 페이지 형식에 맞게 변환
                                 let productInfo = data.info;
                                 let sizeInfo = data.sizeList || [];
-                                console.log("sizeInfo " + JSON.stringify(sizeInfo) );
+                                console.log("sizeInfo " + JSON.stringify(sizeInfo));
                                 // 선택한 사이즈에 맞는 정보 찾기
                                 let selectedSizeInfo = sizeInfo.find(s => String(s.productSize) === String(productSize)) || sizeInfo[0];
-                                console.log("selectedSizeInfo "+ JSON.stringify(selectedSizeInfo));
+                                console.log("selectedSizeInfo " + JSON.stringify(selectedSizeInfo));
                                 // 이미지 정보 조회
                                 $.ajax({
                                     url: "/product/img/list.dox",
@@ -1174,9 +1239,9 @@
                                         let salePrice = selectedSizeInfo.salePrice || originalPrice; // 할인 가격이 없으면 원가와 동일하게
                                         let saleYN = selectedSizeInfo.saleYN;
 
-                                        console.log("originalPrice는 " +originalPrice);
-                                        console.log("salePrice는 " +salePrice);
-                                        console.log("saleYN는 " +saleYN);
+                                        console.log("originalPrice는 " + originalPrice);
+                                        console.log("salePrice는 " + salePrice);
+                                        console.log("saleYN는 " + saleYN);
 
                                         // selectedItems에 추가
                                         self.selectedItems = [{
@@ -1248,7 +1313,7 @@
                     let self = this;
                     // alert("fnCalculateTotals함수동작");
                     console.log("selectedItems는 " + JSON.stringify(self.selectedItems));
-                    
+
                     let totalOriginalPrice = 0;
                     let totalDiscountAmount = 0;
 
@@ -1369,7 +1434,7 @@
                 }
             }
         });
-
+        app.config.compilerOptions.isCustomElement = tag => tag === 'model-viewer';
         app.mount('#app');
     </script>
 

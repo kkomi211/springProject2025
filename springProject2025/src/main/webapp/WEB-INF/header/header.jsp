@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%-- 공통 헤더 컴포넌트 (body에 include) --%>
 <header>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <div class="top-header">
         <div class="brand-name">
             <div><a href="/home.do" style="text-decoration: none;">RUNNERS' HOUSE</a></div>

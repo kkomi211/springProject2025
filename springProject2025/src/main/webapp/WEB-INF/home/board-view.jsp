@@ -7,6 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="stylesheet" href="/css/post-style.css">
+        <link rel="stylesheet" href="/css/modal-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -22,7 +23,9 @@
         <script src="https://unpkg.com/lucide@latest"></script> 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-        
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
 
         <style>
             /* community top banner style */
@@ -483,19 +486,23 @@
                             <nav class="mypage-menu">
                                 <ul>
                                     <li @click="moveToBoard"  class="active">
-                                        <span class="icon">📝</span>
+                                        <!-- <span class="icon">📝</span> -->
+                                         <span class="material-symbols-outlined icon"> forum </span>
                                         <a href="/home/community/board.do">게시판</a>
                                     </li>
                                     <li @click="moveToCrew">
-                                        <span class="icon">📦</span>
+                                        <!-- <span class="icon">📦</span> -->
+                                         <span class="material-symbols-outlined icon"> groups </span>
                                         <a href="/home/community/crew.do">크루 찾기</a>
                                     </li>
                                     <li @click="moveToRally">
-                                        <span class="icon">💬</span>
+                                        <!-- <span class="icon">💬</span> -->
+                                         <span class="material-symbols-outlined icon"> event </span>
                                         <a href="/home/community/rally.do">대회정보</a>
                                     </li>
                                     <li @click="moveToChat">
-                                        <span class="icon">👤</span>
+                                        <!-- <span class="icon">👤</span> -->
+                                        <span class="material-symbols-outlined icon"> mobile_chat </span>
                                         <a href="/home/community/chat.do">채팅방</a>
                                     </li>
                                 </ul>
@@ -668,6 +675,27 @@
                                 </template>
                             </div>
 
+                            <!-- Modal to login page -->
+                              <div v-if="!isLoggedIn" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>로그인 후 이용해 주세요.</h2>
+                                    <div>
+                                        <button class="btn" @click="fnCloseModal">취소</button>
+                                        <a href="/home/login.do"><button class="btn">로그인 후 이용해 주세요.</button></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal for comment section -->
+                              <div v-if="isCommentEmpty" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>빈 댓글은 등록할 수 없습니다.</h2>
+                                    <div>
+                                        <button class="btn" @click="fnCloseModal">닫기</button>
+                                    </div>
+                                </div>
+                            </div>
+
                         </main>
 
                     </div>
@@ -700,6 +728,8 @@
                         </div>
                     </div>
                 </footer>
+                <!-- session time out modal -->
+                <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
             </div>
         </div>
     </body>
@@ -709,6 +739,7 @@
     <script>
         lucide.createIcons();
         const app = Vue.createApp({
+            mixins: [sessionTimeoutMixin],
             data() {
                 return {
                     // 변수 - (key : value)
@@ -734,6 +765,7 @@
                     isLoggedIn: true,
                     confirmDelete: false,
                     deleted: false,
+                    isCommentEmpty: false,
 
                     // post comment
                     commentContent: "",
@@ -856,7 +888,7 @@
                     let self = this;
                     
                     if (self.sessionId === '') {
-                        alert("로그인이 필요합니다.");
+                        self.needLogin = true;
                         return;
                     }
                     
@@ -894,7 +926,7 @@
                         boardNo: self.boardNo
                     };
                     if (self.commentContent.trim() == "") {
-                        alert("빈 댓글은 등록할 수 없습니다.");
+                        self.isCommentEmpty = true;
                         return;
                     }
                     $.ajax({
@@ -904,7 +936,7 @@
                         data: param,
                         success: function (data) {
                             if (data.result == "success") {
-                                alert("등록되었습니다!");
+                                self.isCommentEmpty = false;
                                 self.fnViewComment();
                                 self.commentContent = "";
                             } else {
@@ -915,6 +947,7 @@
                 },
                 fnLogout: function () {
                     let self = this;
+                    self.clearSessionTimers();
                     let param = {};
                     $.ajax({
                         url: "/member/logout.dox",
@@ -966,6 +999,8 @@
                 fnCloseModal: function () {
                     let self = this;
                     self.confirmReport = false;
+                    self.isLoggedIn = true;
+                    self.isCommentEmpty = false;
 
                 },
                 fnReportCnt: function () {
@@ -992,7 +1027,12 @@
                 },
                 fnConfirmReport: function () {
                     let self = this;
-                    self.fnReportCnt();
+                    if(self.sessionId){
+                        self.fnReportCnt();
+                    } else {
+                        self.isLoggedIn = false;
+                    }
+                    
                     // self.confirmReport = true;
 
                 },
@@ -1108,10 +1148,19 @@
             mounted() {
                 // 처음 시작할 때 실행되는 부분
                 let self = this;
+                if (self.sessionId && self.sessionId !== '') {
+                    self.setupActivityListeners();
+                    self.startSessionTimer();
+                }
                 self.fnBoardInfo();
                 self.fnGetUserInfo();
                 self.fnViewComment();
                 self.fnGetLikeInfo();
+            },
+            beforeUnmount() {
+                let self = this;
+                self.removeActivityListeners();
+                self.clearSessionTimers();
             }
         });
 

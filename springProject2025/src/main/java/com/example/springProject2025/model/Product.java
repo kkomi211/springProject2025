@@ -23,6 +23,7 @@ public class Product {
 	private String typeName;
 	private String typePart;
 	private String depth;
+	private String imgEtc;
 	
 	private String salePrice;
 	private String saleYN;

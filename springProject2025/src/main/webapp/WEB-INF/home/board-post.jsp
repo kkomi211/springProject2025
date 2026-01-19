@@ -8,10 +8,12 @@
         <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="stylesheet" href="/css/post-style.css">
         <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/modal-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
         <title>Community</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -19,6 +21,8 @@
         <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
         <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
         <style>
             /* community top banner style */
 
@@ -240,20 +244,24 @@
                             <h2 class="sidebar-heading"> COMMUNITY ></h2>
                             <nav class="mypage-menu">
                                 <ul>
-                                    <li class="active">
-                                        <span class="icon">📝</span>
+                                    <li @click="moveToBoard"  class="active">
+                                        <!-- <span class="icon">📝</span> -->
+                                         <span class="material-symbols-outlined icon"> forum </span>
                                         <a href="/home/community/board.do">게시판</a>
                                     </li>
-                                    <li>
-                                        <span class="icon">📦</span>
+                                    <li @click="moveToCrew">
+                                        <!-- <span class="icon">📦</span> -->
+                                         <span class="material-symbols-outlined icon"> groups </span>
                                         <a href="/home/community/crew.do">크루 찾기</a>
                                     </li>
-                                    <li>
-                                        <span class="icon">💬</span>
+                                    <li @click="moveToRally">
+                                        <!-- <span class="icon">💬</span> -->
+                                         <span class="material-symbols-outlined icon"> event </span>
                                         <a href="/home/community/rally.do">대회정보</a>
                                     </li>
-                                    <li>
-                                        <span class="icon">👤</span>
+                                    <li @click="moveToChat">
+                                        <!-- <span class="icon">👤</span> -->
+                                        <span class="material-symbols-outlined icon"> mobile_chat </span>
                                         <a href="/home/community/chat.do">채팅방</a>
                                     </li>
                                 </ul>
@@ -369,6 +377,14 @@
                                     <a href="/home.do"><button class="btn">메인 화면으로 가기</button></a>
                                 </div>
                             </div>
+
+                            <!-- Empty fields modals -->
+                            <div v-if="showModal" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>{{ modalMessage }}</h2>
+                                    <button @click="closeModal">확인</button>
+                                </div>
+                            </div>
                     </div>
                 </main>
             </div>
@@ -400,6 +416,8 @@
                     </div>
                 </div>
             </footer>
+            <!-- session time out modal -->
+            <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
         </div>
         </div>
     </body>
@@ -409,6 +427,7 @@
     <script>
         lucide.createIcons();
         const app = Vue.createApp({
+            mixins: [sessionTimeoutMixin],
             data() {
                 return {
                     // 변수 - (key : value)
@@ -430,12 +449,28 @@
                     // popup modal
                     isLoggedIn: true,
                     isLoggedOut: false,
+                    showModal: false,
+                    modalMessage: '',
+                    modalCallback: null,
                     userType : '${userType}',
 
                 };
             },
             methods: {
                 // 함수(메소드) - (key : function())
+                openModal: function(message, callback) {
+                    this.modalMessage = message;
+                    this.modalCallback = callback || null;
+                    this.showModal = true;
+                },
+                
+                closeModal: function() {
+                    this.showModal = false;
+                    if (this.modalCallback) {
+                        this.modalCallback();
+                        this.modalCallback = null;
+                    }
+                },
                 fnGetUserInfo: function () {
                     let self = this;
                     $.ajax({
@@ -487,24 +522,25 @@
                 fnMoveToBoard: function () {
                     let self = this;
                     // make a modal here
-                    if (!confirm("게시글이 저장되지 않습니다. 계속 진행하시겠습니까?")) {
-                        return;
-                    }
-                    location.href = "/home/community/board.do";
+                    self.openModal("게시글이 저장되지 않습니다. 계속 진행하시겠습니까?", function(){
+                        location.href = "/home/community/board.do";
+                    })
                 },
                 fnPost: function () {
                     let self = this;
                     // 제목이 비어있으면
                     if (self.title.trim() === "") {
-                        alert("제목을 입력해주세요.");
-                        document.querySelector("#title").focus();
+                        self.openModal("제목을 입력해주세요.", function() {
+                            document.querySelector("#title").focus();
+                        });
                         return;
                     }
 
                     // 내용이 비어있으면
                     if (self.content.trim() === "" || self.content === "<p><br></p>") {
-                        alert("내용을 입력해주세요.");
-                        document.querySelector("#editor").focus();
+                        self.openModal("내용을 입력해주세요.", function() {
+                            document.querySelector("#editor").focus();
+                        });
                         return;
                     }
 
@@ -529,8 +565,9 @@
                         success: function (data) {
                             if (data.result == "success") {
                                 console.log(data);
-                                alert("게시글이 등록되었습니다!");
-                                location.href = "/home/community/board.do";
+                                self.openModal("게시글이 등록되었습니다!", function() {
+                                    location.href = "/home/community/board.do";
+                                });
                             } else {
                                 console.log("오류");
                             }
@@ -552,6 +589,7 @@
                 },
                 fnLogout: function () {
                     let self = this;
+                    self.clearSessionTimers();
                     let param = {};
                     $.ajax({
                         url: "/member/logout.dox",
@@ -582,6 +620,8 @@
                     self.isLoggedIn = false;
                 } else {
                     self.isLoggedIn = true;
+                    self.setupActivityListeners();
+    +               self.startSessionTimer();
                 }
 
                 // text editor
@@ -602,6 +642,11 @@
                 quill.on('text-change', function () {
                     self.content = quill.root.innerHTML;
                 });
+            },
+            beforeUnmount() {
+                let self = this;
+                self.removeActivityListeners();
+                self.clearSessionTimers();
             }
         });
 

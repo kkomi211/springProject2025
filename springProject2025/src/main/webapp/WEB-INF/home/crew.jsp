@@ -8,19 +8,23 @@
         <link rel="stylesheet" href="/css/user-style.css">
         <link rel="stylesheet" href="/css/crew-style.css">
         <link rel="stylesheet" href="/css/board-style.css">
+        <link rel="stylesheet" href="/css/modal-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
             rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
         <script src="/js/page-change.js"></script>
-        <title>커뮤니티 게시판</title>
+        <title>Community</title>
 
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
 
         <style>
             html,
@@ -260,9 +264,9 @@
                 color: inherit;
             }
 
-            a:hover {
+            /* a:hover {
                 text-decoration: underline;
-            }
+            } */
 
             /* --- Header Section (화면 전체 너비) --- */
             header {
@@ -590,22 +594,23 @@
                                 <nav class="mypage-menu">
                                     <ul>
                                         <li @click="moveToBoard">
-                                            <span class="icon">📝</span>
+                                            <!-- <span class="icon">📝</span> -->
+                                            <span class="material-symbols-outlined icon"> forum </span>
                                             <a href="/home/community/board.do">게시판</a>
                                         </li>
                                         <li @click="moveToCrew" class="active">
-                                            <span class="icon">📦</span>
-                                            <a href="javascript:void(0)">
-                                                크루 찾기
-                                                <span v-if="hasNewCrew" class="sidebar-new-badge">NEW</span>
-                                            </a>
+                                            <!-- <span class="icon">📦</span> -->
+                                            <span class="material-symbols-outlined icon"> groups </span>
+                                            <a href="/home/community/crew.do">크루 찾기</a>
                                         </li>
                                         <li @click="moveToRally">
-                                            <span class="icon">💬</span>
+                                            <!-- <span class="icon">💬</span> -->
+                                            <span class="material-symbols-outlined icon"> event </span>
                                             <a href="/home/community/rally.do">대회정보</a>
                                         </li>
                                         <li @click="moveToChat">
-                                            <span class="icon">👤</span>
+                                            <!-- <span class="icon">👤</span> -->
+                                            <span class="material-symbols-outlined icon"> mobile_chat </span>
                                             <a href="/home/community/chat.do">채팅방</a>
                                         </li>
                                     </ul>
@@ -643,7 +648,7 @@
                                         <td>
                                             <!-- ★★★ 제목 클릭 시 멤버 모달 표시 ★★★ -->
                                             <a href="javascript:;" @click="fnShowMembers(item.chatroomNo)">
-                                                {{item.title}}
+                                                <span class="post-title">{{item.title}}</span>
                                                 <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
                                                 <span v-if="isNewCrew(item.chatroomNo)"
                                                     class="new-crew-badge">NEW</span>
@@ -712,6 +717,8 @@
                                 </div>
                             </main>
                         </div>
+                        <!-- session time out modal -->
+                        <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
 
                     </main>
 
@@ -751,6 +758,7 @@
         <script>
             lucide.createIcons();
             const app = Vue.createApp({
+                mixins: [sessionTimeoutMixin],
                 data() {
                     return {
                         list: [],
@@ -935,6 +943,7 @@
 
                     fnLogout() {
                         let self = this;
+                        self.clearSessionTimers();
                         $.ajax({
                             url: "/member/logout.dox",
                             dataType: "json",
@@ -1106,12 +1115,19 @@
                     if (self.sessionId && self.sessionId !== '') {
                         console.log("장바구니 수량 조회를 시작합니다.");
                         self.fetchCartCount();
+                        self.setupActivityListeners();
+                        self.startSessionTimer();
                     } else {
                         console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                     }
 
-                    self.checkNewReplyCount();
+                    self.checkNewReplyCount();      
 
+                },
+                beforeUnmount() {
+                    let self = this;
+                    self.removeActivityListeners();
+                    self.clearSessionTimers();
                 }
             });
 

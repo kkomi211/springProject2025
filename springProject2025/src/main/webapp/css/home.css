@@ -37,6 +37,36 @@ header {
     /* default top-header의 글자색을 header 전체로 */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+.recent-product-item {
+    width: 80px;         /* 위젯 크기에 맞춰 조절 (보통 60~80px) */
+    height: 80px;
+    display: block;
+    overflow: hidden;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background-color: #f8f8f8;
+    border: 1px solid #eee;
+    transition: transform 0.2s ease;
+}
+
+.recent-product-item:hover {
+    transform: scale(1.05);
+}
+
+/* 3D 모델 뷰어 스타일 */
+.recent-product-item model-viewer {
+    width: 100%;
+    height: 100%;
+    outline: none;
+    --poster-color: transparent;
+}
+
+/* 일반 이미지 스타일 */
+.recent-product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
 
 .top-header {
     /* default top-header가 header의 유일한 자식이 됨 */

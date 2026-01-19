@@ -8,6 +8,7 @@
         <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="stylesheet" href="/css/jghstyle.css">
         <link rel="stylesheet" href="/css/mypage.css">
+        <link rel="stylesheet" href="/css/modal-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -18,6 +19,8 @@
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="/js/page-change.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
 
     </head>
     <style>
@@ -493,6 +496,8 @@
                         </div>
                     </div>
                 </footer>
+                <!-- session time out modal -->
+                <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
             </div>
         </div>
     </body>
@@ -503,6 +508,7 @@
         lucide.createIcons();
         // Vue 인스턴스를 전역에서 접근 가능하도록 'app' 변수로 선언
         const app = Vue.createApp({
+            mixins: [sessionTimeoutMixin],
             data() {
                 return {
                     orderList: [],
@@ -694,6 +700,7 @@
                 },
                 fnLogout: function () {
                     let self = this;
+                    self.clearSessionTimers();
                     let param = {};
                     $.ajax({
                         url: "/member/logout.dox",
@@ -766,6 +773,8 @@
                 // 장바구니 수량 조회 (jgh260114)
                 if (self.sessionId && self.sessionId !== '') {
                     self.fetchCartCount();
+                    self.setupActivityListeners();
+                    self.startSessionTimer();
                 }
                 self.fnList(); // 실제 데이터 조회 시작 (리스트 로드 후 새 답변 개수 계산됨)
                 
@@ -780,6 +789,11 @@
                 setTimeout(function() {
                     lucide.createIcons();
                 }, 100);
+            },
+            beforeUnmount() {
+                let self = this;
+                self.removeActivityListeners();
+                self.clearSessionTimers();
             }
         });
 

@@ -8,6 +8,7 @@
         <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="/css/modal-style.css">
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
             rel="stylesheet">
@@ -24,13 +25,16 @@
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
         <script src="/js/page-change.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
-        
+
         <!-- 최근 본 상품 컴포넌트 스크립트 -->
         <script src="/js/recent-products.js"></script>
-        
+
         <!-- 위젯 위치 동적 조정 스크립트 -->
         <script src="/js/widget-position.js"></script>
 
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
+        <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
         <style>
             html,
             body {
@@ -141,6 +145,224 @@
                     transform: translateY(0);
                 }
             }
+
+            /* --- 문의 상세 모달 디자인 개선 --- */
+            .modal-backdrop {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 3000;
+                backdrop-filter: blur(4px);
+            }
+
+            .modal-card {
+                position: relative;
+                background: #fff;
+                width: 600px;
+                max-width: 90%;
+                border-radius: 16px;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+                overflow: hidden;
+                animation: slideUp 0.3s ease-out;
+            }
+
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .modal-header {
+                padding: 24px;
+                background: #f8f9fa;
+                border-bottom: 1px solid #eee;
+            }
+
+            .modal-title {
+                margin: 0;
+                font-size: 20px;
+                font-weight: 800;
+                color: #111;
+            }
+
+            .modal-body-content {
+                padding: 24px;
+                max-height: 60vh;
+                overflow-y: auto;
+            }
+
+            /* 비밀번호 입력 화면 스타일 */
+            .pwd-section {
+                padding: 40px 20px;
+                text-align: center;
+            }
+
+            .modal-input {
+                width: 80% !important;
+                padding: 12px 16px;
+                border: 2px solid #eee;
+                border-radius: 8px;
+                margin: 15px 0;
+                font-size: 16px;
+                transition: border-color 0.3s;
+            }
+
+            .modal-input:focus {
+                border-color: #000;
+                outline: none;
+            }
+
+            /* 메타 정보 (작성자, 날짜 등) */
+            .meta-info {
+                display: flex;
+                gap: 15px;
+                font-size: 13px;
+                color: #888;
+                margin-top: 8px;
+            }
+
+            /* 본문 디자인 */
+            .q-box,
+            .a-box {
+                position: relative;
+                padding: 20px;
+                border-radius: 12px;
+                margin-bottom: 20px;
+            }
+
+            .q-box {
+                background: #f1f3f5;
+                color: #333;
+            }
+
+            .a-box {
+                background: #e7f5ff;
+                border-left: 4px solid #228be6;
+            }
+
+            .label-badge {
+                display: inline-block;
+                padding: 2px 8px;
+                border-radius: 4px;
+                font-size: 11px;
+                font-weight: bold;
+                text-transform: uppercase;
+                margin-bottom: 10px;
+            }
+
+            .q-label {
+                background: #adb5bd;
+                color: #fff;
+            }
+
+            .a-label {
+                background: #228be6;
+                color: #fff;
+            }
+
+            .content-text {
+                line-height: 1.7;
+                white-space: pre-wrap;
+                word-break: break-all;
+            }
+
+            .modal-footer {
+                padding: 16px 24px;
+                background: #f8f9fa;
+                display: flex;
+                justify-content: flex-end;
+                border-top: 1px solid #eee;
+            }
+
+            .error-text {
+                color: #fa5252;
+                font-size: 13px;
+                margin-top: 5px;
+            }
+
+            .cancel-btn {
+                padding: 8px 18px;
+                background-color: #fff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 0.95rem;
+                font-weight: 600;
+                transition: background-color 0.2s ease, transform 0.1s ease;
+            }
+
+            .cancel-btn2 {
+                padding: 10px 24px;
+                border-radius: 6px;
+                border: 1px solid #ddd;
+                background: #fff;
+                cursor: pointer;
+                font-weight: bold;
+            }
+
+            .cancel-btn:hover {
+                background: #f1f3f5;
+            }
+
+            .cancel-btn2:hover {
+                background: #f1f3f5;
+            }
+
+            .modal-close-x {
+                position: absolute;
+                top: 15px;
+                right: 20px;
+                background: none;
+                border: none;
+                font-size: 24px;
+                font-weight: bold;
+                color: #888;
+                cursor: pointer;
+                line-height: 1;
+                transition: color 0.2s;
+            }
+
+            .modal-close-x:hover {
+                color: #000;
+            }
+
+            /* 확인 버튼 디자인 변경: 흰색 배경 -> 호버 시 검정 */
+            .btn-verify {
+                padding: 10px 40px;
+                background-color: #fff;
+                color: #333;
+                border: 2px solid #333;
+                border-radius: 30px;
+                font-size: 15px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .btn-verify:hover {
+                background-color: #000;
+                color: #fff;
+                border-color: #000;
+                transform: translateY(-2px);
+            }
+
+            .btn-verify:disabled {
+                border-color: #ccc;
+                color: #ccc;
+                cursor: not-allowed;
+            }
         </style>
     </head>
 
@@ -191,12 +413,13 @@
                         <div class="infoMain-container">
                             <!-- 수정 부분 -->
                             <div class="img-box">
-                                <!-- <img 
-                                src="/img/shoe-img.png" 
-                                class="big-img" 
-                                alt="Running shoes for sale"> -->
-                                <img :src="imgByProduct[String(productNo)] || '/img/no-image.png'" class="big-img"
-                                    :alt="info.productName">
+                                <model-viewer v-if="imgInfo.imgEtc === '.glb'" :src="imgByProduct[String(productNo)]"
+                                    auto-rotate camera-controls shadow-intensity="1" environment-image="neutral"
+                                    style="width: 100%; height: 500px; background-color: #f8f8f8; border-radius: 15px;">
+                                </model-viewer>
+
+                                <img v-else :src="imgByProduct[String(productNo)] || '/img/no-image.png'"
+                                    class="big-img" :alt="info.productName">
                             </div>
                             <!-- 수정 부분 -->
                             <div class="infoText-box">
@@ -407,40 +630,49 @@
                         <!-- 문의 상세 모달 -->
                         <div v-if="showInquiryModal" class="modal-backdrop" @click.self="closeInquiry">
                             <div class="modal-card">
-                                <!-- 잠금 글: 비밀번호 확인 화면 -->
+                                <button class="modal-close-x" @click="closeInquiry">&times;</button>
 
-                                <div v-if="needPwd && !authorized">
+                                <div v-if="needPwd && !authorized" class="pwd-section">
                                     <h3 class="modal-title">비공개 문의</h3>
-                                    <p class="modal-desc">비밀번호를 입력하세요.</p>
-                                    <input style="width: 700px;" type="password" v-model="pwdInput" class="modal-input"
-                                        placeholder="비밀번호" @keyup.enter="confirmPwd">
-                                    <div class="modal-actions">
-                                        <button class="bluebutton height40" @click="confirmPwd"
-                                            :disabled="loading">확인</button>
-                                        <button class="cancel-btn" @click="closeInquiry">취소</button>
+                                    <p style="color: #666; margin-top: 10px;">작성 시 설정한 비밀번호를 입력해주세요.</p>
+                                    <input type="password" v-model="pwdInput" class="modal-input" placeholder="Password"
+                                        @keyup.enter="confirmPwd">
+                                    <div class="error-text" v-if="pwdError">{{ pwdError }}</div>
+                                    <div class="modal-actions" style="margin-top: 20px;">
+                                        <button class="btn-verify" @click="confirmPwd" :disabled="loading">확인</button>
                                     </div>
-                                    <div class="error" v-if="pwdError">{{ pwdError }}</div>
                                 </div>
 
-
-                                <!-- 상세 내용 화면 -->
                                 <div v-else>
-                                    <h3 class="modal-title">{{ inquiryDetail.title }}</h3>
-                                    <div class="meta">
-                                        <span>작성자: {{ inquiryDetail.userId }}</span>
-                                        <span>작성일: {{ inquiryDetail.cdate }}</span>
-                                        <span>상태: {{ inquiryDetail.status }}</span>
-                                        <span
-                                            v-if="inquiryDetail.answer != null && inquiryDetail.answer != undefined">답변내용:
-                                            {{ inquiryDetail.status }}</span>
+                                    <div class="modal-header">
+                                        <h3 class="modal-title">{{ inquiryDetail.title }}</h3>
+                                        <div class="meta-info">
+                                            <span><strong>작성자</strong> {{ inquiryDetail.userId }}</span>
+                                            <span><strong>작성일</strong> {{ inquiryDetail.cdate }}</span>
+                                        </div>
                                     </div>
-                                    <div class="modal-content" v-html="inquiryDetail.content"></div>
-                                    <div v-if="inquiryDetail.status == 'Y'">
-                                        <br><br>
-                                        <div class="modal-content" v-html="inquiryDetail.answer"></div>
+
+                                    <div class="modal-body-content">
+                                        <div class="q-box">
+                                            <span class="label-badge q-label">Question</span>
+                                            <div class="content-text" v-html="inquiryDetail.content"></div>
+                                        </div>
+
+                                        <div v-if="inquiryDetail.status == 'Y'" class="a-box">
+                                            <span class="label-badge a-label">Answer</span>
+                                            <div class="content-text" v-html="inquiryDetail.answer"></div>
+                                        </div>
+                                        <div v-else class="a-box"
+                                            style="background: #fff5f5; border-left: 4px solid #ff8787;">
+                                            <span class="label-badge"
+                                                style="background: #ff8787; color: #fff;">Status</span>
+                                            <div class="content-text" style="color: #fa5252;">담당자가 문의 내용을 확인 중입니다. 조금만
+                                                기다려주세요!</div>
+                                        </div>
                                     </div>
-                                    <div class="modal-actions">
-                                        <button class="cancel-btn" @click="closeInquiry">닫기</button>
+
+                                    <div class="modal-footer">
+                                        <button class="cancel-btn2" @click="closeInquiry">닫기</button>
                                     </div>
                                 </div>
                             </div>
@@ -460,39 +692,42 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- 최근 본 상품 컴포넌트 -->
-                <div id="recent-products-widget"></div>
-                
-                <footer>
-                    <div class="footer-left">
-                        <div class="company-info">
-                            <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
-                            <div><strong>대표:</strong> 김재</div>
-                            <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
-                            <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
-                            <div><strong>부가세 번호:</strong> KR123456789</div>
+
+                <!-- session time out modal -->
+                <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
+
+                    <!-- 최근 본 상품 컴포넌트 -->
+                    <div id="recent-products-widget"></div>
+
+                    <footer>
+                        <div class="footer-left">
+                            <div class="company-info">
+                                <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
+                                <div><strong>대표:</strong> 김재</div>
+                                <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
+                                <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
+                                <div><strong>부가세 번호:</strong> KR123456789</div>
+                            </div>
+                            <div class="copyright">
+                                COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                            </div>
                         </div>
-                        <div class="copyright">
-                            COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
-                        </div>
-                    </div>
-                    <div class="footer-right">
-                        <div class="other">
-                            <span><a href="/home/about.do">회사소개</a></span>
-                            <span><a @click="fnNotice">공지사항</a></span>
-                            <span><a href="/home/terms.do">이용약관</a></span>
-                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
-                        </div>
-                        <div class="socials">
-                            <span>INSTAGRAM</span>
-                            <span>NAVER</span>
+                        <div class="footer-right">
+                            <div class="other">
+                                <span><a href="/home/about.do">회사소개</a></span>
+                                <span><a @click="fnNotice">공지사항</a></span>
+                                <span><a href="/home/terms.do">이용약관</a></span>
+                                <span><a href="/home/privacy.do">개인정보처리방침</a></span>
+                            </div>
+                            <div class="socials">
+                                <span>INSTAGRAM</span>
+                                <span>NAVER</span>
+                            </div>
+
                         </div>
 
-                    </div>
 
-
-                </footer>
+                    </footer>
         </div>
     </body>
 
@@ -501,6 +736,7 @@
     <script>
         lucide.createIcons();
         const app = Vue.createApp({
+            mixins: [sessionTimeoutMixin],
             data() {
                 return {
                     // 변수 - (key : value)
@@ -539,7 +775,7 @@
                     maxQuantity: 1,
                     sessionId: "${sessionId}", // HARDCODING for test purposes 
                     userName: "",
-
+                    imgInfo : {},
                     userType: '${userType}',
 
                     cartCount: 0, // 장바구니 수량 변수 추가 (jgh260114)
@@ -595,26 +831,27 @@
                             self.category = data.typeNo;
                             self.size = data.sizeList[0].productSize;
                             self.maxQuantity = data.sizeList[0].quantity;
-                            
+                            self.imgInfo = data.imgInfo;
+
                             // 최근 본 상품 저장 (Vue.js 데이터 로드 후)
                             // imgByProduct가 로드될 때까지 약간의 지연
-                            self.saveProductToRecent = function() {
+                            self.saveProductToRecent = function () {
                                 if (!window.RecentProducts || !data.info) return;
-                                
+
                                 try {
                                     const productName = data.info.productName || '';
-                                    const productPrice = data.info.saleYN === 'Y' && data.info.salePrice 
-                                        ? data.info.salePrice.toLocaleString() + ' 원' 
+                                    const productPrice = data.info.saleYN === 'Y' && data.info.salePrice
+                                        ? data.info.salePrice.toLocaleString() + ' 원'
                                         : data.info.price.toLocaleString() + ' 원';
-                                    
+
                                     // imgByProduct가 계산될 때까지 기다림
                                     const productImage = (self.imgByProduct && self.imgByProduct[String(self.productNo)])
                                         ? self.imgByProduct[String(self.productNo)]
                                         : '/img/no-image.png';
-                                    
+
                                     let recentProducts = window.RecentProducts.get() || [];
                                     recentProducts = recentProducts.filter(p => p.productNo !== self.productNo);
-                                    
+
                                     const productInfo = {
                                         productNo: self.productNo,
                                         productName: productName,
@@ -622,23 +859,23 @@
                                         productImage: productImage,
                                         viewDate: new Date().toISOString()
                                     };
-                                    
+
                                     recentProducts.unshift(productInfo);
                                     if (recentProducts.length > 3) {
                                         recentProducts = recentProducts.slice(0, 3);
                                     }
-                                    
+
                                     localStorage.setItem('recentProducts', JSON.stringify(recentProducts));
-                                    
+
                                     // 위젯이 있으면 업데이트
                                     window.RecentProducts.render();
                                 } catch (error) {
                                     console.error('최근 본 상품 저장 오류:', error);
                                 }
                             };
-                            
+
                             // imgByProduct가 로드될 때까지 약간의 지연
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 self.saveProductToRecent();
                             }, 500);
                         }
@@ -655,10 +892,10 @@
                         success: function (data) {
                             console.log(data);
                             self.imgList = data.imgList;
-                            
+
                             // 이미지 로드 후 최근 본 상품 저장 (fnInfo가 이미 완료된 경우)
                             if (self.saveProductToRecent && typeof self.saveProductToRecent === 'function') {
-                                self.$nextTick(function() {
+                                self.$nextTick(function () {
                                     self.saveProductToRecent();
                                 });
                             }
@@ -864,15 +1101,15 @@
                         }
                     });
                 },
-                
+
                 // 새 답변 개수 체크 (localStorage 기반)
-                checkNewReplyCount: function() {
+                checkNewReplyCount: function () {
                     let self = this;
                     if (!self.sessionId || self.sessionId === '') {
                         self.newReplyCount = 0;
                         return;
                     }
-                    
+
                     // localStorage에서 확인한 답변 목록 불러오기
                     const storageKey = `checkedReplies_${self.sessionId}`;
                     const saved = localStorage.getItem(storageKey);
@@ -884,7 +1121,7 @@
                             checkedReplies = [];
                         }
                     }
-                    
+
                     // 서버에서 답변 완료된 문의 목록 가져오기
                     $.ajax({
                         url: "/home/mypage/my-inquiry.dox",
@@ -898,7 +1135,7 @@
                         success: function (data) {
                             if (data.result == "success" && data.list) {
                                 let uncheckedCount = 0;
-                                data.list.forEach(function(item) {
+                                data.list.forEach(function (item) {
                                     if (item.status === 'Y' && !checkedReplies.includes(item.inquiryNo)) {
                                         uncheckedCount++;
                                     }
@@ -909,7 +1146,7 @@
                                 self.newReplyCount = 0;
                             }
                         },
-                        error: function() {
+                        error: function () {
                             self.newReplyCount = 0;
                         }
                     });
@@ -1003,6 +1240,7 @@
                 },
                 fnLogout: function () {
                     let self = this;
+                    self.clearSessionTimers();
                     let param = {};
                     $.ajax({
                         url: "/member/logout.dox",
@@ -1060,18 +1298,25 @@
                     console.log("장바구니 수량 조회를 시작합니다.");
                     self.fetchCartCount();
                     self.checkNewReplyCount(); // 새 답변 개수 체크
+                    self.setupActivityListeners();
+                    self.startSessionTimer();
                 } else {
                     console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                 }
-                
+
                 // 주기적으로 새 답변 체크 (30초마다)
-                setInterval(function() {
+                setInterval(function () {
                     if (self.sessionId && self.sessionId !== '') {
                         self.checkNewReplyCount();
                     }
                 }, 30000);
+            },
+            beforeUnmount() {
+                let self = this;
+                self.removeActivityListeners();
+                self.clearSessionTimers();
             }
         });
-
+        app.config.compilerOptions.isCustomElement = tag => tag === 'model-viewer';
         app.mount('#app');
     </script>

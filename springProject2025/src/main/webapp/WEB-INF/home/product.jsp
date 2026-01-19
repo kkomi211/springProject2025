@@ -6,6 +6,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/css/user-style.css">
+        <link rel="stylesheet" href="/css/modal-style.css">
         <!-- <link rel="stylesheet" href="/css/style.css"> -->
         <!-- Google Fonts (Jost)  -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,12 +22,15 @@
         <link rel="stylesheet" href="/css/home_product_category-style.css">
         <link rel="stylesheet" href="/css/home.css">
         <script src="https://unpkg.com/lucide@latest"></script>
-        
+
         <!-- 최근 본 상품 컴포넌트 스크립트 -->
         <script src="/js/recent-products.js"></script>
-        
+
         <!-- 위젯 위치 동적 조정 스크립트 -->
         <script src="/js/widget-position.js"></script>
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
+        <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
         <style>
             html,
             body {
@@ -147,6 +151,23 @@
                 /* 떠오르는 효과 */
                 transform: translateY(-1px);
             }
+
+            .product-image-container model-viewer {
+                width: 100%;
+                height: 100%;
+                --poster-color: transparent;
+                /* 로딩 전 배경 투명하게 */
+                min-height: 200px;
+                /* 상품 박스 크기에 맞춰 조절 */
+            }
+
+            /* 3D 모델 위에 마우스를 올려도 상품 클릭이 가능하도록 (필요 시) */
+            model-viewer {
+                pointer-events: none;
+                /* 3D 조작을 막고 상품 상세 이동을 우선할 경우 */
+            }
+
+            /* 만약 목록에서도 직접 돌려보게 하고 싶다면 위 pointer-events를 삭제하세요 */
         </style>
     </head>
 
@@ -224,7 +245,17 @@
                                         @click="fnProductView(item.productNo)">
                                         <a :href="'/home/product-info.do?productNo=' + item.productNo">
                                             <div class="product-image-container">
-                                                <img :src="imgByProduct[String(item.productNo)] || '/img/no-image.png'"
+                                                <template
+                                                    v-if="imgByProduct[String(item.productNo)] && imgByProduct[String(item.productNo)].endsWith('.glb')">
+                                                    <model-viewer :src="imgByProduct[String(item.productNo)]"
+                                                        auto-rotate rotation-per-second="30deg"
+                                                        style="width: 100%; height: 100%; background-color: #f8f8f8;"
+                                                        disable-zoom loading="lazy">
+                                                    </model-viewer>
+                                                </template>
+
+                                                <img v-else
+                                                    :src="imgByProduct[String(item.productNo)] || '/img/no-image.png'"
                                                     class="small-img" :alt="item.productName">
                                             </div>
                                             <div class="product-info-text">
@@ -287,9 +318,11 @@
                         </div>
                     </div>
                 </footer>
-                
-                <!-- 최근 본 상품 컴포넌트 -->
-                <div id="recent-products-widget"></div>
+                <!-- session time out modal -->
+                <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
+
+                    <!-- 최근 본 상품 컴포넌트 -->
+                    <div id="recent-products-widget"></div>
         </div>
     </body>
 
@@ -298,6 +331,7 @@
     <script>
         lucide.createIcons();
         const app = Vue.createApp({
+            mixins: [sessionTimeoutMixin],
             data() {
                 return {
                     // 변수 - (key : value)
@@ -487,6 +521,7 @@
                 },
                 fnLogout: function () {
                     let self = this;
+                    self.clearSessionTimers();
                     let param = {};
                     $.ajax({
                         url: "/member/logout.dox",
@@ -546,15 +581,15 @@
                         }
                     });
                 },
-                
+
                 // 새 답변 개수 체크 (localStorage 기반)
-                checkNewReplyCount: function() {
+                checkNewReplyCount: function () {
                     let self = this;
                     if (!self.sessionId || self.sessionId === '') {
                         self.newReplyCount = 0;
                         return;
                     }
-                    
+
                     // localStorage에서 확인한 답변 목록 불러오기
                     const storageKey = `checkedReplies_${self.sessionId}`;
                     const saved = localStorage.getItem(storageKey);
@@ -566,7 +601,7 @@
                             checkedReplies = [];
                         }
                     }
-                    
+
                     // 서버에서 답변 완료된 문의 목록 가져오기
                     $.ajax({
                         url: "/home/mypage/my-inquiry.dox",
@@ -580,7 +615,7 @@
                         success: function (data) {
                             if (data.result == "success" && data.list) {
                                 let uncheckedCount = 0;
-                                data.list.forEach(function(item) {
+                                data.list.forEach(function (item) {
                                     if (item.status === 'Y' && !checkedReplies.includes(item.inquiryNo)) {
                                         uncheckedCount++;
                                     }
@@ -591,7 +626,7 @@
                                 self.newReplyCount = 0;
                             }
                         },
-                        error: function() {
+                        error: function () {
                             self.newReplyCount = 0;
                         }
                     });
@@ -755,18 +790,25 @@
                     console.log("장바구니 수량 조회를 시작합니다.");
                     self.fetchCartCount();
                     self.checkNewReplyCount(); // 새 답변 개수 체크
+                    self.setupActivityListeners();
+                    self.startSessionTimer();
                 } else {
                     console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                 }
-                
+
                 // 주기적으로 새 답변 체크 (30초마다)
-                setInterval(function() {
+                setInterval(function () {
                     if (self.sessionId && self.sessionId !== '') {
                         self.checkNewReplyCount();
                     }
                 }, 30000);
+            },
+            beforeUnmount() {
+                let self = this;
+                self.removeActivityListeners();
+                self.clearSessionTimers();
             }
         });
-
+        app.config.compilerOptions.isCustomElement = tag => tag === 'model-viewer';
         app.mount('#app');
     </script>

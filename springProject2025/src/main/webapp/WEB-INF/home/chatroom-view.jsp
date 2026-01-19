@@ -7,11 +7,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="stylesheet" href="/css/chat-style.css">
+        <link rel="stylesheet" href="/css/modal-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
             rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
         <title>Community</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -21,6 +23,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
         <script src="/js/header-component.js"></script>
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
 
         <style>
             /* 기본 레이아웃 및 폰트 설정 */
@@ -45,9 +49,9 @@
                 color: inherit;
             }
 
-            a:hover {
+            /* a:hover {
                 text-decoration: underline;
-            }
+            } */
 
             /* Header & Footer 공통 영역 */
             header {
@@ -652,19 +656,23 @@
                                 <nav class="mypage-menu">
                                     <ul>
                                         <li @click="moveToBoard">
-                                            <span class="icon">📝</span>
+                                            <!-- <span class="icon">📝</span> -->
+                                            <span class="material-symbols-outlined icon"> forum </span>
                                             <a href="/home/community/board.do">게시판</a>
                                         </li>
                                         <li @click="moveToCrew">
-                                            <span class="icon">📦</span>
+                                            <!-- <span class="icon">📦</span> -->
+                                            <span class="material-symbols-outlined icon"> groups </span>
                                             <a href="/home/community/crew.do">크루 찾기</a>
                                         </li>
                                         <li @click="moveToRally">
-                                            <span class="icon">💬</span>
+                                            <!-- <span class="icon">💬</span> -->
+                                            <span class="material-symbols-outlined icon"> event </span>
                                             <a href="/home/community/rally.do">대회정보</a>
                                         </li>
                                         <li @click="moveToChat" class="active">
-                                            <span class="icon">👤</span>
+                                            <!-- <span class="icon">👤</span> -->
+                                            <span class="material-symbols-outlined icon"> mobile_chat </span>
                                             <a href="/home/community/chat.do">채팅방</a>
                                         </li>
                                     </ul>
@@ -882,6 +890,8 @@
                             </div>
                         </div>
                     </div>
+                    <!-- session time out modal -->
+                    <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
                 </div>
 
         </div>
@@ -892,6 +902,7 @@
     <script>
         lucide.createIcons();
         const app = Vue.createApp({
+            mixins: [sessionTimeoutMixin],
             data() {
                 return {
                     // 변수 - (key : value)
@@ -1238,6 +1249,7 @@
                 },
                 fnLogout: function () {
                     let self = this;
+                    self.clearSessionTimers();
                     let param = {};
                     $.ajax({
                         url: "/member/logout.dox",
@@ -1536,6 +1548,8 @@
                 if (self.sessionId && self.sessionId !== '') {
                     console.log("장바구니 수량 조회를 시작합니다.");
                     self.fetchCartCount();
+                    self.setupActivityListeners();
+                    self.startSessionTimer();
                 } else {
                     console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                 }
@@ -1568,6 +1582,11 @@
                         this.activeUserMenu = null;
                     }
                 });
+            },
+            beforeUnmount() {
+                let self = this;
+                self.removeActivityListeners();
+                self.clearSessionTimers();
             }
         });
 

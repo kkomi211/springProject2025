@@ -92,7 +92,7 @@
                         </tr>
                         <tr>
                             <th>이미지</th>
-                            <td><input type="file" id="file1" name="file1" accept=".jpg, .png"></td>
+                            <td><input type="file" id="file1" name="file1" accept=".jpg, .png, .glb"></td>
                         </tr>
                     </table>
                 </div>
@@ -159,7 +159,7 @@
                     console.log(self.productSize[i]);
                     console.log(self.quantity[i]);
                     console.log(param);
-                    
+
 
                     $.ajax({
                         url: "/product/add.dox",
@@ -238,9 +238,13 @@
                 fnimgexist() {
                     // jQuery를 사용하여 'file1' ID를 가진 input 요소에서 파일 목록을 가져옵니다.
                     let fileInput = $("#file1")[0];
-                    // fileInput.files는 FileList 객체이며, length가 0보다 크면 파일이 선택된 것입니다.
-                    return fileInput && fileInput.files && fileInput.files.length > 0;
-                    //있으면 true 없으면 false의도
+                    if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                        let fileName = fileInput.files[0].name;
+                        let ext = fileName.split('.').pop().toLowerCase();
+                        // 허용할 확장자 목록에 glb 추가
+                        return ['jpg', 'jpeg', 'png', 'glb'].includes(ext);
+                    }
+                    return false;
                 }
             }, // methods
             mounted() {

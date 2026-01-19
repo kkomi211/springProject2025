@@ -8,15 +8,19 @@
         <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/board-style.css">
         <link rel="stylesheet" href="/css/rally-style.css">
+        <link rel="stylesheet" href="/css/modal-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
         <script src="/js/page-change.js"></script>
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
         <style>
             html,
             body {
@@ -408,19 +412,23 @@
                                 <nav class="mypage-menu">
                                     <ul>
                                         <li @click="moveToBoard">
-                                            <span class="icon">📝</span>
+                                            <!-- <span class="icon">📝</span> -->
+                                            <span class="material-symbols-outlined icon"> forum </span>
                                             <a href="/home/community/board.do">게시판</a>
                                         </li>
                                         <li @click="moveToCrew">
-                                            <span class="icon">📦</span>
+                                            <!-- <span class="icon">📦</span> -->
+                                            <span class="material-symbols-outlined icon"> groups </span>
                                             <a href="/home/community/crew.do">크루 찾기</a>
                                         </li>
                                         <li @click="moveToRally" class="active">
-                                            <span class="icon">💬</span>
+                                            <!-- <span class="icon">💬</span> -->
+                                            <span class="material-symbols-outlined icon"> event </span>
                                             <a href="/home/community/rally.do">대회정보</a>
                                         </li>
                                         <li @click="moveToChat">
-                                            <span class="icon">👤</span>
+                                            <!-- <span class="icon">👤</span> -->
+                                            <span class="material-symbols-outlined icon"> mobile_chat </span>
                                             <a href="/home/community/chat.do">채팅방</a>
                                         </li>
                                     </ul>
@@ -497,6 +505,8 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- session time out modal -->
+                        <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
                     </main>
 
             </div>
@@ -592,6 +602,7 @@
     <script>
         lucide.createIcons();
         const app = Vue.createApp({
+            mixins: [sessionTimeoutMixin],
             data() {
                 return {
                     list: [],
@@ -772,6 +783,7 @@
 
                 fnLogout: function () {
                     let self = this;
+                    self.clearSessionTimers();
                     let param = {};
                     $.ajax({
                         url: "/member/logout.dox",
@@ -994,6 +1006,8 @@
                 if (self.sessionId && self.sessionId !== '') {
                     console.log("장바구니 수량 조회를 시작합니다.");
                     self.fetchCartCount();
+                    self.setupActivityListeners();
+                    self.startSessionTimer();
                 } else {
                     console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                 }
@@ -1006,9 +1020,10 @@
 
             // beforeUnmount 추가 (컴포넌트 제거 시 이벤트 리스너 정리) 
             beforeUnmount() {
+                let self = this;
                 window.removeEventListener('keydown', this.handleKeyDown);
-
-                
+                self.removeActivityListeners();
+                self.clearSessionTimers();
             }
 
         });

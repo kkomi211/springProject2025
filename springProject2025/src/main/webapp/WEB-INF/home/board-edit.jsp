@@ -8,10 +8,12 @@
         <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="stylesheet" href="/css/post-style.css">
         <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/modal-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
         <title>Community</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -20,6 +22,8 @@
         <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
         <script src="/js/page-change.js"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <!-- session timeout modal -->
+        <script src="/js/session-timeout.js"></script>
         <style>
             /* community top banner style */
 
@@ -241,20 +245,24 @@
                             <h2 class="sidebar-heading"> COMMUNITY ></h2>
                             <nav class="mypage-menu">
                                 <ul>
-                                    <li class="active">
-                                        <span class="icon">📝</span>
+                                    <li @click="moveToBoard"  class="active">
+                                        <!-- <span class="icon">📝</span> -->
+                                         <span class="material-symbols-outlined icon"> forum </span>
                                         <a href="/home/community/board.do">게시판</a>
                                     </li>
-                                    <li>
-                                        <span class="icon">📦</span>
+                                    <li @click="moveToCrew">
+                                        <!-- <span class="icon">📦</span> -->
+                                         <span class="material-symbols-outlined icon"> groups </span>
                                         <a href="/home/community/crew.do">크루 찾기</a>
                                     </li>
-                                    <li>
-                                        <span class="icon">💬</span>
+                                    <li @click="moveToRally">
+                                        <!-- <span class="icon">💬</span> -->
+                                         <span class="material-symbols-outlined icon"> event </span>
                                         <a href="/home/community/rally.do">대회정보</a>
                                     </li>
-                                    <li>
-                                        <span class="icon">👤</span>
+                                    <li @click="moveToChat">
+                                        <!-- <span class="icon">👤</span> -->
+                                        <span class="material-symbols-outlined icon"> mobile_chat </span>
                                         <a href="/home/community/chat.do">채팅방</a>
                                     </li>
                                 </ul>
@@ -362,8 +370,13 @@
                                 </div>
                             </div>
 
-
-
+                            <!-- Empty fields modals -->
+                            <div v-if="showModal" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>{{ modalMessage }}</h2>
+                                    <button @click="closeModal">확인</button>
+                                </div>
+                            </div>
                     </div>
                 </main>
             </div>
@@ -395,6 +408,8 @@
                     </div>
                 </div>
             </footer>
+            <!-- session time out modal -->
+            <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
         </div>
         </div>
     </body>
@@ -404,6 +419,7 @@
     <script>
         lucide.createIcons();
         const app = Vue.createApp({
+            mixins: [sessionTimeoutMixin],
             data() {
                 return {
                     // 변수 - (key : value)
@@ -426,12 +442,28 @@
 
                     // popup modal
                     isLoggedIn: true,
+                    showModal: false,
+                    modalMessage: '',
+                    modalCallback: null,
                     userType : '${userType}',
 
                 };
             },
             methods: {
                 // 함수(메소드) - (key : function())
+                openModal: function(message, callback) {
+                    this.modalMessage = message;
+                    this.modalCallback = callback || null;
+                    this.showModal = true;
+                },
+                
+                closeModal: function() {
+                    this.showModal = false;
+                    if (this.modalCallback) {
+                        this.modalCallback();
+                        this.modalCallback = null;
+                    }
+                },
                 fnGetUserInfo: function () {
                     let self = this;
                     $.ajax({
@@ -474,8 +506,9 @@
                         data: param,
                         success: function (data) {
                             if (data.result == "success") {
-                                alert("게시글이 수정되었습니다.");
-                                pageChange("/home/community/board/view.do", { boardNo: self.boardInfo.boardNo });
+                                self.openModal("게시글이 수정되었습니다.", function(){
+                                    pageChange("/home/community/board/view.do", { boardNo: self.boardInfo.boardNo });
+                                })
                             } else {
                                 alert("수정 중 오류가 발생했습니다.");
                             }
@@ -514,10 +547,9 @@
                 fnMoveToBoard: function () {
                     let self = this;
                     // make a modal here
-                    if (!confirm("게시글이 저장되지 않습니다. 계속 진행하시겠습니까?")) {
-                        return;
-                    }
-                    location.href = "/home/community/board.do";
+                    self.openModal("게시글이 저장되지 않습니다. 계속 진행하시겠습니까?", function(){
+                        location.href = "/home/community/board.do";
+                    });
                 },
                 fnMoveToLogin: function () {
                     let self = this;
@@ -546,6 +578,7 @@
                 },
                 fnLogout: function () {
                     let self = this;
+                    self.clearSessionTimers();
                     let param = {};
                     $.ajax({
                         url: "/member/logout.dox",
@@ -566,10 +599,12 @@
 
                 self.fnGetUserInfo();
 
-                if (self.sessionId == "") {
-                    self.isLoggedIn = false;
-                } else {
+                if (self.sessionId && self.sessionId !== '') {
                     self.isLoggedIn = true;
+                    self.setupActivityListeners();
+    +               self.startSessionTimer();
+                } else {
+                    self.isLoggedIn = false;
                 }
 
                 // text editor
@@ -590,6 +625,11 @@
                     self.content = self.quill.root.innerHTML;
                 });
                 self.fnBoardInfo();
+            },
+            beforeUnmount() {
+                let self = this;
+                self.removeActivityListeners();
+                self.clearSessionTimers();
             }
         });
 

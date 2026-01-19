@@ -13,7 +13,7 @@
         <script src="/js/page-change.js"></script>
         <link rel="stylesheet" href="/css/jes.css">
         <link rel="stylesheet" href="/css/admin-inquiry.css">
-
+        <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     </head>
 
     <body class="adminbody">
@@ -99,10 +99,16 @@
                         <tr>
                             <th>이미지</th>
                             <td>
-                                <input type="file" id="file1" name="file1" accept=".jpg, .png">
-                                <a v-if="img != undefined">
-                                    <img :src="img.imgPath">
-                                </a>
+                                <input type="file" id="file1" name="file1" accept=".jpg, .png, .glb">
+
+                                <div v-if="img != undefined" style="margin-top: 10px;">
+                                    <model-viewer v-if="img.imgEtc === '.glb'" :src="img.imgPath" auto-rotate
+                                        camera-controls
+                                        style="width: 300px; height: 300px; background-color: #eee; border-radius: 10px;">
+                                    </model-viewer>
+
+                                    <img v-else :src="img.imgPath" style="max-width: 300px; border-radius: 10px;">
+                                </div>
                             </td>
                         </tr>
                     </table>
@@ -162,11 +168,11 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            console.log(data);                      
+                            console.log(data);
                             self.info = data.info;
                             self.img = data.img;
                         },
-                        complete: function() {
+                        complete: function () {
                             self.loading = false; // 로딩 종료
                         }
                     });
@@ -186,18 +192,18 @@
                         url: "/product/edit.dox",
                         dataType: "json",
                         type: "POST",
-                        data: self.info, 
+                        data: self.info,
                         success: function (data) {
                             alert("수정되었습니다!");
                             var form = new FormData();
                             // alert("form에 뭐가 들어가나" + JSON.stringify(form));
                             form.append("file1", $("#file1")[0].files[0]);
                             form.append("productNo", self.productNo); // 임시 pk
-                           
+
                             self.upload(form);
                             self.fnBack();
                         },
-                        error: function() {
+                        error: function () {
                             alert("수정 중 오류가 발생했습니다.");
                         }
                     });
@@ -214,7 +220,7 @@
                         , data: form
                         , success: function (data) {
                             console.log("사진 == >");
-                            
+
                             console.log(data);
 
                         }
@@ -263,6 +269,6 @@
                 self.fnInfo();
             }
         });
-
+        app.config.compilerOptions.isCustomElement = tag => tag === 'model-viewer';
         app.mount('#app');
     </script>
