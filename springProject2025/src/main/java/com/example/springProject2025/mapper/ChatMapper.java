@@ -51,5 +51,7 @@ public interface ChatMapper {
 	int updateChatMemberToM(HashMap<String, Object> map);
 
 	int updateChatMemberToO(HashMap<String, Object> map);
+
+	int updateChatRoomTime(HashMap<String, Object> map);
 	
 }
