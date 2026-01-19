@@ -286,22 +286,26 @@
                                 <nav class="mypage-menu">
                                     <ul>
                                         <li class="active" @click="moveToBoard">
-                                            <span class="icon">📝</span>
+                                            <!-- <span class="icon">📝</span> -->
+                                            <span class="material-symbols-outlined icon"> forum </span>
                                             <a href="javascript:void(0)">
                                                 게시판
                                                 <span v-if="hasNewPost" class="sidebar-new-badge">NEW</span>
                                             </a>
                                         </li>
                                         <li @click="moveToCrew">
-                                            <span class="icon">📦</span>
+                                            <!-- <span class="icon">📦</span> -->
+                                            <span class="material-symbols-outlined icon"> groups </span>
                                             <a href="/home/community/crew.do">크루 찾기</a>
                                         </li>
                                         <li @click="moveToRally">
-                                            <span class="icon">💬</span>
+                                            <!-- <span class="icon">💬</span> -->
+                                            <span class="material-symbols-outlined icon"> event </span>
                                             <a href="/home/community/rally.do">대회정보</a>
                                         </li>
                                         <li @click="moveToChat">
-                                            <span class="icon">👤</span>
+                                            <!-- <span class="icon">👤</span> -->
+                                             <span class="material-symbols-outlined icon"> mobile_chat </span>
                                             <a href="/home/community/chat.do">채팅방</a>
                                         </li>
                                     </ul>
