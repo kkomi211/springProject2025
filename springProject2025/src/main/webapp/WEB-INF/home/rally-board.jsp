@@ -12,6 +12,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
         <script src="/js/page-change.js"></script>
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
@@ -411,19 +412,23 @@
                                 <nav class="mypage-menu">
                                     <ul>
                                         <li @click="moveToBoard">
-                                            <span class="icon">📝</span>
+                                            <!-- <span class="icon">📝</span> -->
+                                            <span class="material-symbols-outlined icon"> forum </span>
                                             <a href="/home/community/board.do">게시판</a>
                                         </li>
                                         <li @click="moveToCrew">
-                                            <span class="icon">📦</span>
+                                            <!-- <span class="icon">📦</span> -->
+                                            <span class="material-symbols-outlined icon"> groups </span>
                                             <a href="/home/community/crew.do">크루 찾기</a>
                                         </li>
                                         <li @click="moveToRally" class="active">
-                                            <span class="icon">💬</span>
+                                            <!-- <span class="icon">💬</span> -->
+                                            <span class="material-symbols-outlined icon"> event </span>
                                             <a href="/home/community/rally.do">대회정보</a>
                                         </li>
                                         <li @click="moveToChat">
-                                            <span class="icon">👤</span>
+                                            <!-- <span class="icon">👤</span> -->
+                                            <span class="material-symbols-outlined icon"> mobile_chat </span>
                                             <a href="/home/community/chat.do">채팅방</a>
                                         </li>
                                     </ul>

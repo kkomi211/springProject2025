@@ -23,6 +23,7 @@
         <script src="https://unpkg.com/lucide@latest"></script> 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
         <!-- session timeout modal -->
         <script src="/js/session-timeout.js"></script>
 
@@ -485,19 +486,23 @@
                             <nav class="mypage-menu">
                                 <ul>
                                     <li @click="moveToBoard"  class="active">
-                                        <span class="icon">📝</span>
+                                        <!-- <span class="icon">📝</span> -->
+                                         <span class="material-symbols-outlined icon"> forum </span>
                                         <a href="/home/community/board.do">게시판</a>
                                     </li>
                                     <li @click="moveToCrew">
-                                        <span class="icon">📦</span>
+                                        <!-- <span class="icon">📦</span> -->
+                                         <span class="material-symbols-outlined icon"> groups </span>
                                         <a href="/home/community/crew.do">크루 찾기</a>
                                     </li>
                                     <li @click="moveToRally">
-                                        <span class="icon">💬</span>
+                                        <!-- <span class="icon">💬</span> -->
+                                         <span class="material-symbols-outlined icon"> event </span>
                                         <a href="/home/community/rally.do">대회정보</a>
                                     </li>
                                     <li @click="moveToChat">
-                                        <span class="icon">👤</span>
+                                        <!-- <span class="icon">👤</span> -->
+                                        <span class="material-symbols-outlined icon"> mobile_chat </span>
                                         <a href="/home/community/chat.do">채팅방</a>
                                     </li>
                                 </ul>
@@ -670,6 +675,27 @@
                                 </template>
                             </div>
 
+                            <!-- Modal to login page -->
+                              <div v-if="!isLoggedIn" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>로그인 후 이용해 주세요.</h2>
+                                    <div>
+                                        <button class="btn" @click="fnCloseModal">취소</button>
+                                        <a href="/home/login.do"><button class="btn">로그인 후 이용해 주세요.</button></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal for comment section -->
+                              <div v-if="isCommentEmpty" class="modal-overlay">
+                                <div class="modal-content">
+                                    <h2>빈 댓글은 등록할 수 없습니다.</h2>
+                                    <div>
+                                        <button class="btn" @click="fnCloseModal">닫기</button>
+                                    </div>
+                                </div>
+                            </div>
+
                         </main>
 
                     </div>
@@ -739,6 +765,7 @@
                     isLoggedIn: true,
                     confirmDelete: false,
                     deleted: false,
+                    isCommentEmpty: false,
 
                     // post comment
                     commentContent: "",
@@ -861,7 +888,7 @@
                     let self = this;
                     
                     if (self.sessionId === '') {
-                        alert("로그인이 필요합니다.");
+                        self.needLogin = true;
                         return;
                     }
                     
@@ -899,7 +926,7 @@
                         boardNo: self.boardNo
                     };
                     if (self.commentContent.trim() == "") {
-                        alert("빈 댓글은 등록할 수 없습니다.");
+                        self.isCommentEmpty = true;
                         return;
                     }
                     $.ajax({
@@ -909,7 +936,7 @@
                         data: param,
                         success: function (data) {
                             if (data.result == "success") {
-                                alert("등록되었습니다!");
+                                self.isCommentEmpty = false;
                                 self.fnViewComment();
                                 self.commentContent = "";
                             } else {
@@ -972,6 +999,8 @@
                 fnCloseModal: function () {
                     let self = this;
                     self.confirmReport = false;
+                    self.isLoggedIn = true;
+                    self.isCommentEmpty = false;
 
                 },
                 fnReportCnt: function () {
@@ -998,7 +1027,12 @@
                 },
                 fnConfirmReport: function () {
                     let self = this;
-                    self.fnReportCnt();
+                    if(self.sessionId){
+                        self.fnReportCnt();
+                    } else {
+                        self.isLoggedIn = false;
+                    }
+                    
                     // self.confirmReport = true;
 
                 },
