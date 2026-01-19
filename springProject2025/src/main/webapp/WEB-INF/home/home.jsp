@@ -308,6 +308,7 @@
                         dragUpdateTimer: null,
                         cartCount: 0, // 장바구니 수량 변수 추가
                         newReplyCount: 0, // 새 답변 개수
+                        shippingNotificationCount: 0, // 배송 알림 개수
                     };
                 },
                 methods: {
@@ -385,6 +386,64 @@
                             },
                             error: function() {
                                 self.newReplyCount = 0;
+                            }
+                        });
+                    },
+                    
+                    // 배송 알림 개수 체크 (문의내역 방식과 동일)
+                    checkShippingNotificationCount: function() {
+                        let self = this;
+                        if (!self.sessionId || self.sessionId === '') {
+                            self.shippingNotificationCount = 0;
+                            return;
+                        }
+                        
+                        // localStorage에서 확인한 배송 주문 목록 불러오기
+                        const storageKey = `checkedShippingOrders_${self.sessionId}`;
+                        const saved = localStorage.getItem(storageKey);
+                        let checkedOrders = [];
+                        if (saved) {
+                            try {
+                                checkedOrders = JSON.parse(saved);
+                            } catch (e) {
+                                checkedOrders = [];
+                            }
+                        }
+                        
+                        // 서버에서 주문 목록 가져오기 (모든 주문)
+                        $.ajax({
+                            url: "/home/mypage/orders.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: {
+                                sessionId: self.sessionId,
+                                page: 1,
+                                pageSize: 1000, // 모든 주문 가져오기
+                                startRow: 1,
+                                endRow: 1000
+                            },
+                            success: function (data) {
+                                console.log("배송 알림 - 주문 목록 API 응답:", data);
+                                if (data.result == "success" && data.list) {
+                                    let uncheckedCount = 0;
+                                    console.log("배송 알림 - 주문 목록 개수:", data.list.length);
+                                    data.list.forEach(function(order) {
+                                        console.log("배송 알림 - 주문 확인:", order.orderNo, "상태:", order.status, "확인 목록 포함:", checkedOrders.includes(String(order.orderNo)));
+                                        // 배송중 상태이고 확인하지 않은 주문만 카운트
+                                        if (order.status === '배송중' && !checkedOrders.includes(String(order.orderNo))) {
+                                            uncheckedCount++;
+                                        }
+                                    });
+                                    self.shippingNotificationCount = uncheckedCount;
+                                    console.log("배송 알림 개수:", uncheckedCount);
+                                } else {
+                                    console.log("배송 알림 - API 실패 또는 주문 없음");
+                                    self.shippingNotificationCount = 0;
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error("배송 알림 - API 오류:", error, "상태:", status, "응답:", xhr.responseText);
+                                self.shippingNotificationCount = 0;
                             }
                         });
                     },
@@ -1569,6 +1628,7 @@
                         console.log("장바구니 수량 조회를 시작합니다.");
                         self.fetchCartCount();
                         self.checkNewReplyCount(); // 새 답변 개수 체크
+                        self.checkShippingNotificationCount(); // 배송 알림 개수 체크
                         self.setupActivityListeners();
                         self.startSessionTimer();
                         self.setupActivityListeners();
@@ -1576,10 +1636,11 @@
                         console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                     }
                     
-                    // 주기적으로 새 답변 체크 (30초마다)
+                    // 주기적으로 새 답변 및 배송 알림 체크 (30초마다)
                     setInterval(function() {
                         if (self.sessionId && self.sessionId !== '') {
                             self.checkNewReplyCount();
+                            self.checkShippingNotificationCount();
                         }
                     }, 30000);
                 },
