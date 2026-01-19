@@ -44,6 +44,7 @@ public class ChatService {
 		System.out.println(map);
 		try {
 			int cnt = chatMapper.insertMessage(map);
+			int cnt2 = chatMapper.updateChatRoomTime(map);
 			resultMap.put("result", "success");
 		} catch(Exception e) {
 			System.out.println(e.getMessage());

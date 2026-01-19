@@ -13,7 +13,7 @@
         <script src="/js/page-change.js"></script>
         <link rel="stylesheet" href="/css/jes.css">
         <link rel="stylesheet" href="/css/admin-inquiry.css">
-
+        
     </head>
 
     <body class="adminbody">

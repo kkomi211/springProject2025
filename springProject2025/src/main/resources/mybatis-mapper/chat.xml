@@ -18,6 +18,13 @@
 		<if test="chatroomNo != '' and chatroomNo != 'undefined' and chatroomNo != null">
 			AND CHATROOM_NO = #{chatroomNo}
 		</if>
+		<if test="keyword != '' and keyword != 'undefined' and keyword != null">
+			AND (
+			 	TITLE LIKE '%' || #{keyword} || '%'
+	         	OR NAME LIKE '%' || #{keyword} || '%'
+			)
+		</if>
+		ORDER BY UDATE DESC
 	</select>
 	
 	<insert id="insertMessage" parameterType="hashmap">
@@ -144,5 +151,12 @@
 		WHERE
 			CHATROOM_NO = #{chatroomNo}
 			AND USER_ID = #{newOwnerId}
+	</update>
+	
+	<update id="updateChatRoomTime" parameterType="hashmap">
+		UPDATE CHAT
+		SET UDATE = SYSDATE
+		WHERE
+			CHATROOM_NO = #{chatroomNo}
 	</update>
 </mapper>
