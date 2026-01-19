@@ -433,12 +433,6 @@
                 z-index: 10;
             }
 
-            /* 사이드바 및 헤더 유저 정보 글씨체 통일 */
-            .header-user {
-                font-family: 'Jost', sans-serif;
-                font-weight: 700;
-                font-size: 1.2em;
-            }
 
             /* 테이블 디자인 채팅 리스트와 일치화 */
             table {
