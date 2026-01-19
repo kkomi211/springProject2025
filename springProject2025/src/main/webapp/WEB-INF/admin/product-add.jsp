@@ -13,7 +13,41 @@
         <script src="/js/page-change.js"></script>
         <link rel="stylesheet" href="/css/jes.css">
         <link rel="stylesheet" href="/css/admin-inquiry.css">
+        <style>
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            }
 
+            /* 모달 박스 */
+            .modal-content {
+                background: white;
+                padding: 30px;
+                border-radius: 15px;
+                text-align: center;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            }
+
+            .modal-body {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+
+            .modal-actions {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+            }
+        </style>
     </head>
 
     <body class="adminbody">
@@ -101,6 +135,17 @@
                     <button class="margin30 height40 bluebutton leftbutton" @click="fnBack">돌아가기</button>
                 </div>
                 <div class="bottom200"></div>
+                <div class="modal-overlay" v-if="showSuccessModal" @click.self="fnBack">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            상품 등록이 완료되었습니다!
+                        </div>
+                        <div class="modal-actions">
+                            <button class="bluebutton height40" @click="fnBack">목록으로 돌아가기</button>
+                            <button class="redbutton height40" @click="showSuccessModal = false">추가 등록하기</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
@@ -122,7 +167,8 @@
                     productDetail: "",
                     sizeNum: 1,
                     sessionId: "${sessionId}",
-                    loading: false // 로딩 상태
+                    loading: false, // 로딩 상태
+                    showSuccessModal: false
                 };
             },
             methods: {
