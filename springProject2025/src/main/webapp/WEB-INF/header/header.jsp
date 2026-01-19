@@ -26,6 +26,12 @@
                     <span v-if="newReplyCount > 0" style="position: absolute; top: -8px; right: -10px; background-color: #ff0000; color: white; font-size: 11px; font-weight: bold; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5); z-index: 10;">{{ newReplyCount > 99 ? '99+' : newReplyCount }}</span>
                 </a>
             </div>
+            <div v-if="sessionId != '' && userType != 'K'" class="shipping-wrapper" style="position: relative; display: inline-block;">
+                <a href="/home/mypage/orders.do">
+                    <i data-lucide="truck" stroke-width="1.5"></i>
+                    <span v-if="shippingNotificationCount > 0" style="position: absolute; top: -8px; right: -10px; background-color: #ff0000; color: white; font-size: 11px; font-weight: bold; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5); z-index: 10;">{{ shippingNotificationCount > 99 ? '99+' : shippingNotificationCount }}</span>
+                </a>
+            </div>
             <div v-if="sessionId != ''" class="cart-wrapper" style="position: relative; display: inline-block;">
                 <a href="/home/cart.do">
                     <i data-lucide="shopping-cart" stroke-width="1.5"></i>
