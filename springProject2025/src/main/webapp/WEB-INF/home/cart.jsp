@@ -21,6 +21,7 @@
         <script src="https://unpkg.com/lucide@latest"></script>
         <!-- session timeout modal -->
         <script src="/js/session-timeout.js"></script>
+        <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
         <style>
             /* 모달 오버레이 / 콘텐츠 기본 */
@@ -421,10 +422,21 @@
                                             <input type="checkbox" v-model="list.selected" @change="recomputeSummary"
                                                 style="margin-right: 15px; width: 18px; height: 18px; flex-shrink: 0;">
 
-                                            <img :src="getImagePath(list.imgPath)" :alt="list.productName"
-                                                @click="goToProductDetail(list.productNo)"
-                                                style="width: 100px; height: 100px; object-fit: contain; margin-right: 20px; border: 1px solid #eee; flex-shrink: 0; cursor: pointer;"
-                                                onerror="this.src='/img/no-image.png'">
+                                            <div
+                                                style="width: 100px; height: 100px; margin-right: 20px; border: 1px solid #eee; flex-shrink: 0; cursor: pointer; overflow: hidden;">
+
+                                                <model-viewer
+                                                    v-if="list.imgPath && list.imgPath.toLowerCase().endsWith('.glb')"
+                                                    :src="getImagePath(list.imgPath)" auto-rotate
+                                                    rotation-per-second="30deg" disable-zoom camera-controls
+                                                    style="width: 100%; height: 100%; background-color: #f9f9f9;">
+                                                </model-viewer>
+
+                                                <img v-else :src="getImagePath(list.imgPath)" :alt="list.productName"
+                                                    @click="goToProductDetail(list.productNo)"
+                                                    style="width: 100%; height: 100%; object-fit: contain;"
+                                                    onerror="this.src='/img/no-image.png'">
+                                            </div>
 
                                             <div class="product-info" style="flex-grow: 1;">
                                                 <p class="product-name"
@@ -573,7 +585,7 @@
 
     </html>
 
-    
+
     <script>
         lucide.createIcons();
         const app = Vue.createApp({
@@ -598,7 +610,7 @@
                     currentQty: 1,
                     unitPrice: 156000,
 
-                    userType : '${userType}',
+                    userType: '${userType}',
 
                     cartCount: 0, // 장바구니 수량 변수 추가 (jgh260114)
                     newReplyCount: 0, // 새 답변 개수
@@ -620,9 +632,9 @@
                     if (this.sessionId == '' || this.sessionId == null) return;
                     let self = this;
                     $.ajax({
-                        url: '/api/cartCount.dox', 
+                        url: '/api/cartCount.dox',
                         method: 'GET',
-                        data: { sessionId: self.sessionId }, 
+                        data: { sessionId: self.sessionId },
                         dataType: 'json',
                         success: (response) => {
                             if (response.result === 'success') {
@@ -815,15 +827,15 @@
                         }
                     });
                 },
-                
+
                 // 새 답변 개수 체크 (localStorage 기반)
-                checkNewReplyCount: function() {
+                checkNewReplyCount: function () {
                     let self = this;
                     if (!self.sessionId || self.sessionId === '') {
                         self.newReplyCount = 0;
                         return;
                     }
-                    
+
                     // localStorage에서 확인한 답변 목록 불러오기
                     const storageKey = `checkedReplies_${self.sessionId}`;
                     const saved = localStorage.getItem(storageKey);
@@ -835,7 +847,7 @@
                             checkedReplies = [];
                         }
                     }
-                    
+
                     // 서버에서 답변 완료된 문의 목록 가져오기
                     $.ajax({
                         url: "/home/mypage/my-inquiry.dox",
@@ -849,7 +861,7 @@
                         success: function (data) {
                             if (data.result == "success" && data.list) {
                                 let uncheckedCount = 0;
-                                data.list.forEach(function(item) {
+                                data.list.forEach(function (item) {
                                     if (item.status === 'Y' && !checkedReplies.includes(item.inquiryNo)) {
                                         uncheckedCount++;
                                     }
@@ -860,7 +872,7 @@
                                 self.newReplyCount = 0;
                             }
                         },
-                        error: function() {
+                        error: function () {
                             self.newReplyCount = 0;
                         }
                     });
@@ -1159,9 +1171,9 @@
                         }
                     })
                 },
-                
+
                 // 상품 상세 페이지로 이동
-                goToProductDetail: function(productNo) {
+                goToProductDetail: function (productNo) {
                     let self = this;
                     if (productNo) {
                         pageChange("/home/product-info.do", { productNo: productNo });
@@ -1182,9 +1194,9 @@
                     self.setupActivityListeners();
                     self.startSessionTimer();
                 }
-                
+
                 // 주기적으로 새 답변 체크 (30초마다)
-                setInterval(function() {
+                setInterval(function () {
                     if (self.sessionId && self.sessionId !== '') {
                         self.checkNewReplyCount();
                     }
@@ -1196,7 +1208,7 @@
                 self.clearSessionTimers();
             }
         });
-
+        app.config.compilerOptions.isCustomElement = tag => tag === 'model-viewer';
         app.mount('#app');
 
         window.closeModal = function () {

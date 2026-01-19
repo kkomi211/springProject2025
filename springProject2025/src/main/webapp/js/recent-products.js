@@ -159,29 +159,45 @@
     /**
      * 최근 본 상품 목록 렌더링
      */
-    function renderRecentProducts() {
-        const listContainer = document.getElementById('recent-products-list');
-        if (!listContainer) {
-            return;
-        }
+	function renderRecentProducts() {
+	        const listContainer = document.getElementById('recent-products-list');
+	        if (!listContainer) {
+	            return;
+	        }
 
-        const recentProducts = getRecentProducts();
+	        const recentProducts = getRecentProducts();
 
-        if (recentProducts.length === 0) {
-            listContainer.innerHTML = '<div class="recent-products-empty">최근 본 상품이 없습니다.</div>';
-            return;
-        }
+	        if (recentProducts.length === 0) {
+	            listContainer.innerHTML = '<div class="recent-products-empty">최근 본 상품이 없습니다.</div>';
+	            return;
+	        }
 
-        // 최대 3개만 표시
-        const displayProducts = recentProducts.slice(0, MAX_RECENT_PRODUCTS);
+	        // 최대 3개만 표시
+	        const displayProducts = recentProducts.slice(0, MAX_RECENT_PRODUCTS);
 
-        listContainer.innerHTML = displayProducts.map(product => `
-            <a href="/home/product-info.do?productNo=${product.productNo}" class="recent-product-item" title="${escapeHtml(product.productName)}">
-                <img src="${product.productImage}" alt="${product.productName}" class="recent-product-image" 
-                     onerror="this.onerror=null; this.src='/img/no-image.png';">
-            </a>
-        `).join('');
-    }
+	        listContainer.innerHTML = displayProducts.map(product => {
+	            // 파일 경로가 .glb로 끝나는지 확인
+	            const isGlb = product.productImage && product.productImage.toLowerCase().endsWith('.glb');
+	            
+	            return `	
+	                <a href="/home/product-info.do?productNo=${product.productNo}" class="recent-product-item" title="${escapeHtml(product.productName)}">
+	                    ${isGlb ? `
+	                        <model-viewer 
+	                            src="${product.productImage}" 
+	                            auto-rotate 
+	                            rotation-per-second="60deg"
+	                            interaction-prompt="none"
+	                            disable-zoom
+	                            style="width: 100%; height: 100%; pointer-events: none;">
+	                        </model-viewer>
+	                    ` : `
+	                        <img src="${product.productImage}" alt="${product.productName}" class="recent-product-image" 
+	                             onerror="this.onerror=null; this.src='/img/no-image.png';">
+	                    `}
+	                </a>
+	            `;
+	        }).join('');
+	    }
 
     /**
      * 최근 본 상품에서 제거
