@@ -520,6 +520,26 @@
                     </div>
                 </div>
             </div>
+            <div v-if="selectionModalVisible" class="modal-overlay" @click.self="closeSelectionModal">
+                <div class="modal" role="dialog" aria-modal="true" aria-labelledby="selectionModalTitle">
+                    <h3 id="selectionModalTitle">주문 선택 필요</h3>
+                    <p>반품/교환 신청할 주문을 하나 이상 선택해주세요.</p>
+                    
+                    <div class="btns">
+                        <button class="btn secondary" @click="closeSelectionModal">확인</button>
+                    </div>
+                </div>
+            </div>
+            <div v-if="successModalVisible" class="modal-overlay" @click.self="closeSuccessModal">
+            <div class="modal" role="dialog" aria-modal="true" aria-labelledby="successModalTitle">
+                <h3 id="successModalTitle">신청 완료</h3>
+                <p>정상적으로 신청이 접수되었습니다.</p>
+                
+                <div class="btns">
+                    <button class="btn secondary" @click="closeSuccessModal">확인</button>
+                </div>
+            </div>
+        </div>
             <!-- session time out modal -->
             <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
 
@@ -552,7 +572,9 @@
 
                     // 모달 관련
                     reasonModalVisible: false,
-                    missingReasons: [], // [{ orderNo: 'xxx' }, ...]
+                    missingReasons: [],
+                    selectionModalVisible: false, // [{ orderNo: 'xxx' }, ...]
+                    successModalVisible: false,
                     userType: '${userType}',
                     cartCount: 0, // 장바구니 수량 변수 추가
                     newReplyCount: 0, // 새 답변 개수
@@ -736,7 +758,24 @@
                     this.missingReasons = [];
                     document.body.style.overflow = 'auto';
                 },
-
+                showSelectionModal: function () {
+                    this.selectionModalVisible = true;
+                    document.body.style.overflow = 'hidden';
+                },
+                closeSelectionModal: function () {
+                    this.selectionModalVisible = false;
+                    document.body.style.overflow = 'auto';
+                },
+                 showSuccessModal: function () {
+                    this.successModalVisible = true;
+                    document.body.style.overflow = 'hidden';
+                },
+                closeSuccessModal: function () {
+                    this.successModalVisible = false;
+                    document.body.style.overflow = 'auto';
+                    // 모달 닫을 때 목록 새로고침
+                    this.fnList();
+                },
 
                 /**
                  * 💡 [최종] JSON 전송 방식으로 변경
@@ -748,7 +787,8 @@
                     const selected = (self.orderList || []).filter(o => o.isChecked);
 
                     if (!selected || selected.length === 0) {
-                        alert("반품/교환 신청할 주문을 하나 이상 선택해주세요.");
+                        // alert("반품/교환 신청할 주문을 하나 이상 선택해주세요.");
+                        self.showSelectionModal();
                         return;
                     }
 
@@ -793,7 +833,8 @@
                         data: param,
                         success: function (res) {
                             if (res && (res.result === "success" || res.success === true)) {
-                                alert("정상적으로 신청이 접수되었습니다.");
+                                // alert("정상적으로 신청이 접수되었습니다.");
+                                self.showSuccessModal();
                                 self.fnList();
                             } else {
                                 const msg = (res && res.message) ? res.message : "서버에서 처리 중 문제가 발생했습니다.";
