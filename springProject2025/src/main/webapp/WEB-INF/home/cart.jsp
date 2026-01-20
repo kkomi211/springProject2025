@@ -8,6 +8,7 @@
         <!-- <link rel="stylesheet" href="/css/user-style.css"> -->
         <link rel="stylesheet" href="/css/jghstyle.css">
         <link rel="stylesheet" href="/css/modal-style.css">
+        <link rel="stylesheet" href="/css/board-style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -496,7 +497,7 @@
                                         <span style="color: #000;">{{ formatCurrency(totalPaymentAmount) }}원</span>
                                     </div>
 
-                                    <button :disabled="selectedCount === 0" @click="proceedToCheckout"
+                                    <button :disabled="selectedCount === 0" class="write-btn" @click="proceedToCheckout"
                                         style="width: 100%; padding: 15px; background: #000; color: #fff; border: none; font-size: 16px; cursor: pointer;"
                                         :style="{ opacity: selectedCount === 0 ? 0.5 : 1, cursor: selectedCount === 0 ? 'not-allowed' : 'pointer' }">
                                         {{ formatCurrency(totalPaymentAmount) }}원 구매하기 ({{ selectedCount }}종류)

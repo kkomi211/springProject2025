@@ -646,7 +646,7 @@
                                         :class="{ 'new-crew': isNewCrew(item.chatroomNo) }">
                                         <td>{{item.chatroomNo}}</td>
                                         <td>
-                                            <!-- ★★★ 제목 클릭 시 멤버 모달 표시 ★★★ -->
+                                            <!--  제목 클릭 시 멤버 모달 표시  -->
                                             <a href="javascript:;" @click="fnShowMembers(item.chatroomNo)">
                                                 <span class="post-title">{{item.title}}</span>
                                                 <span v-if="item.pwd && item.pwd > 0" title="비밀글 🔒">🔒</span>
@@ -656,8 +656,8 @@
                                         </td>
                                         <td>{{item.intro}}</td>
                                         <td class="entry-btn-cell">
-                                            <button class="entry-btn" @click="fnEnterChat(item.chatroomNo)"
-                                                style="padding: 5px 25px; border-radius: 8px; background: #000; color: #fff; cursor: pointer; border: none;">
+                                            <button class="write-btn" @click="fnEnterChat(item.chatroomNo)"
+                                                style="background-color: #000; color: white; border-radius: 10px;">
                                                 입장하기
                                             </button>
                                         </td>
@@ -697,7 +697,7 @@
                                 </div>
 
                                 <div class="write-btn-wrapper">
-                                    <button @click="moveToPost"
+                                    <button class="write-btn" @click="moveToPost"
                                         style="padding: 12px; border-radius: 8px; background: #000; color: #fff; cursor: pointer;">크루
                                         생성</button>
                                 </div>
