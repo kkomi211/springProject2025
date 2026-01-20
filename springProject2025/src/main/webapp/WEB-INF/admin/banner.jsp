@@ -15,7 +15,7 @@
         <script src="/js/page-change.js"></script>
         <script src="/js/admin-notifications.js"></script>
         <style>
-            
+
         </style>
     </head>
 
@@ -27,14 +27,15 @@
                     <!-- 알림 아이콘 -->
                     <div class="notification-icon-wrapper" @click="toggleNotificationPanel">
                         <span class="notification-bell">🔔</span>
-                        <span v-if="notificationCounts.totalCount > 0" class="notification-badge">{{ notificationCounts.totalCount }}</span>
+                        <span v-if="notificationCounts.totalCount > 0" class="notification-badge">{{
+                            notificationCounts.totalCount }}</span>
                     </div>
                     <div style="line-height: 1.2;">관리자 ${sessionId} 님 안녕하세요 &nbsp;
                         <a href="javascript:;" class="text-white text-decoration-none" @click="fnLogout">로그오프</a>
                     </div>
                 </div>
             </div>
-            
+
             <!-- 알림 패널 -->
             <div v-if="showNotificationPanel" class="notification-panel" @click.stop>
                 <div class="notification-header">
@@ -42,24 +43,24 @@
                     <button @click="toggleNotificationPanel" class="notification-close">×</button>
                 </div>
                 <div class="notification-content">
-                    <div class="notification-item" v-if="notificationCounts.newInquiryCount > 0" 
-                         @click="markAsReadAndGo('inquiry', '/admin/inquiry.do')">
+                    <div class="notification-item" v-if="notificationCounts.newInquiryCount > 0"
+                        @click="markAsReadAndGo('inquiry', '/admin/inquiry.do')">
                         <div class="notification-item-icon">📝</div>
                         <div class="notification-item-text">
                             <strong>새 문의</strong>
                             <span>{{ notificationCounts.newInquiryCount }}건</span>
                         </div>
                     </div>
-                    <div class="notification-item" v-if="notificationCounts.newOrderCount > 0" 
-                         @click="markAsReadAndGo('order', '/admin/orders.do')">
+                    <div class="notification-item" v-if="notificationCounts.newOrderCount > 0"
+                        @click="markAsReadAndGo('order', '/admin/orders.do')">
                         <div class="notification-item-icon">📦</div>
                         <div class="notification-item-text">
                             <strong>신규 주문</strong>
                             <span>{{ notificationCounts.newOrderCount }}건</span>
                         </div>
                     </div>
-                    <div class="notification-item" v-if="notificationCounts.newBoardReportCount > 0" 
-                         @click="markAsReadAndGo('report', '/admin/board-report.do')">
+                    <div class="notification-item" v-if="notificationCounts.newBoardReportCount > 0"
+                        @click="markAsReadAndGo('report', '/admin/board-report.do')">
                         <div class="notification-item-icon">🚨</div>
                         <div class="notification-item-text">
                             <strong>신고 게시물</strong>
@@ -71,7 +72,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- 알림 패널 오버레이 -->
             <div v-if="showNotificationPanel" class="notification-overlay" @click="toggleNotificationPanel"></div>
 
@@ -100,55 +101,56 @@
                         </div>
                         <div class="content-wrapper">
                             <table>
-                    <tr>
-                        <th>배너 ID</th>
-                        <th>배너 제목</th>
-                        <th>이미지 경로</th>
-                        <th>URL</th>
-                        <th>등록 날짜</th>
-                        <th>수정</th>
-                    </tr>
+                                <tr>
+                                    <th>배너 ID</th>
+                                    <th>배너 제목</th>
+                                    <th>이미지 경로</th>
+                                    <th>URL</th>
+                                    <th>등록 날짜</th>
+                                    <th>수정</th>
+                                </tr>
 
-                    <template v-for="(item, index) in list" :key="item.bannerId">
-                        <tr>
-                            <template v-if="!item.isEditing">
-                                <td>{{item.bannerId}}</td>
-                                <td @click="toggleImage(index)"
-                                    style="cursor:pointer; color:#007bff; text-decoration:underline;">
-                                    <span class="text-clamp">{{item.title}}</span>
-                                </td>
-                                <td><span class="text-clamp">{{item.imageDir}}</span></td>
-                                <td><span class="text-clamp">{{item.linkUrl}}</span></td>
-                                <td>{{item.cDate}}</td>
-                                <td>
-                                    <button @click="item.isEditing = true"
-                                        class="banner-btn-primary">수정</button>
-                                </td>
-                            </template>
+                                <template v-for="(item, index) in list" :key="item.bannerId">
+                                    <tr>
+                                        <template v-if="!item.isEditing">
+                                            <td>{{item.bannerId}}</td>
+                                            <td @click="toggleImage(index)"
+                                                style="cursor:pointer; color:#007bff; text-decoration:underline;">
+                                                <span class="text-clamp">{{item.title}}</span>
+                                            </td>
+                                            <td><span class="text-clamp">{{item.imageDir}}</span></td>
+                                            <td><span class="text-clamp">{{item.linkUrl}}</span></td>
+                                            <td>{{item.cDate}}</td>
+                                            <td>
+                                                <button @click="item.isEditing = true"
+                                                    class="banner-btn-primary">수정</button>
+                                            </td>
+                                        </template>
 
-                            <template v-else>
-                                <td>{{item.bannerId}}</td>
-                                <td><input style="height: 78px;" v-model="item.title"></td>
-                                <td><input style="height: 78px;" v-model="item.imageDir"></td>
-                                <td><input style="height: 78px;" v-model="item.linkUrl"></td>
-                                <td>{{item.cDate}}</td>
-                                <td>
-                                    <button @click="saveMainBanner(index)"
-                                        class="banner-btn-primary">저장</button>
-                                    <button @click="item.isEditing = false"
-                                        class="banner-btn-secondary">취소</button>
-                                    <button @click="openMainDeleteModal(item)"
-                                        class="banner-btn-danger">삭제</button>
-                                </td>
-                            </template>
-                        </tr>
+                                        <template v-else>
+                                            <td>{{item.bannerId}}</td>
+                                            <td><input style="height: 78px;" v-model="item.title"></td>
+                                            <td><input style="height: 78px;" v-model="item.imageDir"></td>
+                                            <td><input style="height: 78px;" v-model="item.linkUrl"></td>
+                                            <td>{{item.cDate}}</td>
+                                            <td>
+                                                <button @click="saveMainBanner(index)"
+                                                    class="banner-btn-primary">저장</button>
+                                                <button @click="item.isEditing = false"
+                                                    class="banner-btn-secondary">취소</button>
+                                                <button @click="openMainDeleteModal(item)"
+                                                    class="banner-btn-danger">삭제</button>
+                                            </td>
+                                        </template>
+                                    </tr>
 
-                        <tr v-if="item.showImage">
-                            <td colspan="6" style="text-align:center; background-color:#f9f9f9;">
-                                <img :src="item.imageDir" alt="배너 이미지" style="max-width:600px; border-radius:6px;">
-                            </td>
-                        </tr>
-                    </template>
+                                    <tr v-if="item.showImage">
+                                        <td colspan="6" style="text-align:center; background-color:#f9f9f9;">
+                                            <img :src="item.imageDir" alt="배너 이미지"
+                                                style="max-width:600px; border-radius:6px;">
+                                        </td>
+                                    </tr>
+                                </template>
 
                             </table>
                         </div>
@@ -206,7 +208,8 @@
 
                                 <tr v-if="item.showImage">
                                     <td colspan="5" style="text-align:center; background-color:#f9f9f9;">
-                                        <img :src="item.imgPath" alt="제품 배너 이미지" style="max-width:600px; border-radius:6px;">
+                                        <img :src="item.imgPath" alt="제품 배너 이미지"
+                                            style="max-width:600px; border-radius:6px;">
                                     </td>
                                 </tr>
                             </template>
@@ -284,7 +287,8 @@
 
                                 <tr v-if="item.showImage">
                                     <td colspan="10" style="text-align:center; background-color:#f9f9f9;">
-                                        <img :src="item.imgPath" alt="대회 배너 이미지" style="max-width:600px; border-radius:6px;">
+                                        <img :src="item.imgPath" alt="대회 배너 이미지"
+                                            style="max-width:600px; border-radius:6px;">
                                     </td>
                                 </tr>
                             </template>
@@ -365,7 +369,8 @@
             </div>
 
             <!-- 대회 배너 추가 모달 -->
-            <div v-if="showRallyAddModal" class="modal-overlay" @click.self="closeRallyAddModal" v-show="showRallyAddModal">
+            <div v-if="showRallyAddModal" class="modal-overlay" @click.self="closeRallyAddModal"
+                v-show="showRallyAddModal">
                 <div class="modal-content" @click.stop>
                     <h3>대회 배너 추가</h3>
                     <div class="modal-input">
@@ -383,6 +388,16 @@
                     <div class="modal-buttons">
                         <button @click="confirmRallyAdd" style="background-color:r#007bff;">등록</button>
                         <button @click="closeRallyAddModal" style="background-color:#7e7e7e;">취소</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-overlay" v-if="alertModal.show" @click.self="fnCloseAlert">
+                <div class="modal-content">
+                    <h3>알림</h3>
+                    <div class="modal-body" v-html="alertModal.message"></div>
+                    <div class="modal-actions">
+                        <button class="banner-btn-primary height40" @click="fnConfirmAlert">확인</button>
                     </div>
                 </div>
             </div>
@@ -454,10 +469,27 @@
                         totalCount: 0
                     },
                     showNotificationPanel: false,
-                    notificationInterval: null
+                    notificationInterval: null,
+                    alertModal: {
+                        show: false,
+                        message: "",
+                        callback: null
+                    }
                 };
             },
             methods: {
+                fnAlert(msg, callback = null) {
+                    this.alertModal.message = msg;
+                    this.alertModal.callback = callback;
+                    this.alertModal.show = true;
+                },
+                fnCloseAlert() {
+                    this.alertModal.show = false;
+                },
+                fnConfirmAlert() {
+                    if (this.alertModal.callback) this.alertModal.callback();
+                    this.fnCloseAlert();
+                },
                 fnLogout: function () {
                     let self = this;
                     let param = {};
@@ -519,7 +551,7 @@
                             linkUrl: item.linkUrl
                         },
                         success: (res) => {
-                            alert("메인 배너 저장 완료!");
+                            this.fnAlert("메인 배너 저장 완료!");
                             this.list[index].isEditing = false; // 수정모드 해제
                             this.fnList();
                         },
@@ -533,7 +565,7 @@
                         if (i !== index) item.showImage = false;
                     });
                 },
-                toggleImage: function(index) {
+                toggleImage: function (index) {
                     this.list[index].showImage = !this.list[index].showImage;
                 },
                 openMainDeleteModal(item) {
@@ -552,9 +584,10 @@
                         dataType: "json",
                         data: { bannerId: this.mainDeleteItem.bannerId },
                         success: (res) => {
-                            alert("메인 배너 삭제 완료!");
-                            this.closeMainDeleteModal();
-                            this.fnList(); // 리스트 갱신
+                            this.fnAlert("메인 배너 삭제 완료!",()=>{
+                                this.closeMainDeleteModal();
+                                this.fnList(); // 리스트 갱신
+                            });
                         },
                         error: () => {
                             alert("메인 배너 삭제 중 오류 발생!");
@@ -573,7 +606,7 @@
                 confirmMainAdd() {
                     let item = this.newMainBanner;
                     if (!item.title || !item.imageDir) {
-                        alert("모든 항목을 입력해주세요!");
+                        this.fnAlert("모든 항목을 입력해주세요!");
                         return;
                     }
                     $.ajax({
@@ -582,9 +615,10 @@
                         dataType: "json",
                         data: item,
                         success: (res) => {
-                            alert("메인 배너 등록 완료!");
-                            this.closeMainAddModal();
-                            this.fnList();
+                            this.fnAlert("메인 배너 등록 완료!", () => {
+                                this.closeMainAddModal();
+                                this.fnList();
+                            });
                         },
                         error: () => alert("메인 배너 등록 오류 발생!")
                     });
@@ -603,9 +637,10 @@
                             productNo: item.productNo
                         },
                         success: (res) => {
-                            alert("제품 배너 저장 완료!");
-                            this.list1[index].isEditing = false; // 수정모드 해제
-                            this.fnList();
+                            this.fnAlert("제품 배너 저장 완료!", () => {
+                                this.list1[index].isEditing = false; // 수정모드 해제
+                                this.fnList();
+                            });
                         },
                         error: () => {
                             alert("제품 배너 저장 오류 발생!");
@@ -639,9 +674,10 @@
                         dataType: "json",
                         data: { pBannerImgNo: this.productDeleteItem.pBannerImgNo },
                         success: (res) => {
-                            alert("제품 배너 삭제 완료!");
-                            this.closeProductDeleteModal();
-                            this.fnList(); // 리스트 갱신
+                            this.fnAlert("제품 배너 삭제 완료!", () => {
+                                this.closeProductDeleteModal();
+                                this.fnList(); // 리스트 갱신
+                            });
                         },
                         error: () => {
                             alert("제품 배너 삭제 중 오류 발생!");
@@ -660,7 +696,7 @@
                 confirmProductAdd() {
                     let item = this.newProductBanner;
                     if (!item.title || !item.productImgNo || !item.productNo) {
-                        alert("모든 항목을 입력해주세요!");
+                        this.fnAlert("모든 항목을 입력해주세요!");
                         return;
                     }
                     // 제품 배너 추가는 새로운 API URL을 사용한다고 가정합니다.
@@ -670,9 +706,10 @@
                         dataType: "json",
                         data: item,
                         success: (res) => {
-                            alert("제품 배너 등록 완료!");
-                            this.closeProductAddModal();
-                            this.fnList();
+                            this.fnAlert("제품 배너 등록 완료!", () => {
+                                this.closeProductAddModal();
+                                this.fnList();
+                            });
                         },
                         error: () => alert("제품 배너 등록 오류 발생!")
                     });
@@ -696,9 +733,10 @@
                             host: item.host
                         },
                         success: (res) => {
-                            alert("대회 배너 저장 완료!");
-                            this.list2[index].isEditing = false; // 수정모드 해제
-                            this.fnList();
+                            this.fnAlert("대회 배너 저장 완료!", () => {
+                                this.list2[index].isEditing = false; // 수정모드 해제
+                                this.fnList();
+                            });
                         },
                         error: () => {
                             alert("대회 배너 저장 오류 발생!");
@@ -729,9 +767,10 @@
                         dataType: "json",
                         data: { rallyNo: this.rallyDeleteItem.rallyNo },
                         success: (res) => {
-                            alert("대회 배너 삭제 완료!");
-                            this.closeRallyDeleteModal();
-                            this.fnList(); // 리스트 갱신
+                            self.fnAlert("대회 배너 삭제 완료!", ()=>{
+                                this.closeRallyDeleteModal();
+                                this.fnList(); // 리스트 갱신
+                            });
                         },
                         error: () => {
                             alert("대회 배너 삭제 중 오류 발생!");
@@ -781,7 +820,7 @@
                             form.append("file1", $("#file1")[0].files[0]);
                             form.append("rallyNo", data.rallyNo); // 임시 pk
                             self.upload(form);
-                           
+
                             alert("대회 배너 등록 완료!");
                             this.closeRallyAddModal();
                             this.fnList();
@@ -809,13 +848,13 @@
                     });
                 },
                 // 알림 관련 메서드
-                fetchNotifications: function() {
+                fetchNotifications: function () {
                     AdminNotifications.fetchNotifications(this);
                 },
-                toggleNotificationPanel: function() {
+                toggleNotificationPanel: function () {
                     AdminNotifications.toggleNotificationPanel(this);
                 },
-                markAsReadAndGo: function(type, url) {
+                markAsReadAndGo: function (type, url) {
                     AdminNotifications.markAsReadAndGo(this, type, url);
                 }
             },
@@ -845,12 +884,12 @@
                 self.showProductDeleteModal = false;
                 self.showRallyAddModal = false;
                 self.showRallyDeleteModal = false;
-                
+
                 // DOM 업데이트 후 다시 확인
                 self.$nextTick(() => {
                     self.showRallyAddModal = false;
                 });
-                
+
                 // 추가 안전장치: 여러 번 확인
                 setTimeout(() => {
                     self.showRallyAddModal = false;
@@ -864,7 +903,7 @@
                         self.showRallyAddModal = false;
                     }
                 }, 100);
-                
+
                 self.fnList();
                 AdminNotifications.init(self);
             },
