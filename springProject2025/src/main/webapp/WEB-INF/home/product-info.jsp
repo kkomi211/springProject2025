@@ -363,6 +363,92 @@
                 color: #ccc;
                 cursor: not-allowed;
             }
+
+            /* 장바구니/결제 버튼 컨테이너 */
+            .check-out {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                gap: 15px;
+                margin-bottom: 50px;
+            }
+
+            /* 장바구니/결제 버튼 스타일 */
+            .check-out button {
+                background-color: black;
+                color: white;
+                border-radius: 8px;
+                padding: 10px 15px;
+                border: 1px solid #333;
+                cursor: pointer;
+                font-size: 14px;
+                min-width: 100px;
+                text-align: center;
+                transition: all 0.2s ease;
+            }
+
+            /* 호버 효과 - 살짝 커지는 효과만 */
+            .check-out button:hover {
+                transform: scale(1.05);
+                background-color: black !important;
+                color: white !important;
+            }
+
+            /* bluebutton 클래스의 빨간색 호버 효과 제거 */
+            .check-out .bluebutton:hover {
+                background-color: black !important;
+                color: white !important;
+            }
+
+            /* 작성하기 버튼 스타일 (orders.jsp와 동일하게) */
+            .write-inquiry button {
+                background-color: black;
+                color: white;
+                border-radius: 8px;
+                padding: 10px 15px;
+                border: 1px solid #333;
+                cursor: pointer;
+                font-size: 14px;
+                min-width: 100px;
+                text-align: center;
+                transition: all 0.2s ease;
+                border: solid 1px gray;
+            }
+
+            /* 작성하기 버튼 호버 효과 */
+            .write-inquiry button:hover {
+                transform: scale(1.05);
+                background-color: black !important;
+                color: white !important;
+            }
+
+            /* 기존 스타일 오버라이드 제거 */
+            .write-inquiry button:hover {
+                cursor: pointer;
+                background-color: black !important;
+                color: white !important;
+                font-weight: normal;
+            }
+
+            /* text-right 버튼들도 동일하게 적용 */
+            .text-right button {
+                background-color: black;
+                color: white;
+                border-radius: 8px;
+                padding: 10px 15px;
+                border: 1px solid #333;
+                cursor: pointer;
+                font-size: 14px;
+                min-width: 100px;
+                text-align: center;
+                transition: all 0.2s ease;
+            }
+
+            .text-right button:hover {
+                transform: scale(1.05);
+                background-color: black !important;
+                color: white !important;
+            }
         </style>
     </head>
 
@@ -775,7 +861,7 @@
                     maxQuantity: 1,
                     sessionId: "${sessionId}", // HARDCODING for test purposes 
                     userName: "",
-                    imgInfo : {},
+                    imgInfo: {},
                     userType: '${userType}',
 
                     cartCount: 0, // 장바구니 수량 변수 추가 (jgh260114)
