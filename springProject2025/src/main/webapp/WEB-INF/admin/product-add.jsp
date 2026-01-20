@@ -13,7 +13,41 @@
         <script src="/js/page-change.js"></script>
         <link rel="stylesheet" href="/css/jes.css">
         <link rel="stylesheet" href="/css/admin-inquiry.css">
+        <style>
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            }
 
+            /* 모달 박스 */
+            .modal-content {
+                background: white;
+                padding: 30px;
+                border-radius: 15px;
+                text-align: center;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            }
+
+            .modal-body {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+
+            .modal-actions {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+            }
+        </style>
     </head>
 
     <body class="adminbody">
@@ -80,11 +114,28 @@
                         </tr>
                         <tr>
                             <th>성별</th>
-                            <td><input v-model="gender"></td>
+                            <td><input v-model="gender" placeholder="남녀 공용 : A, 남성 : M, 여성 : F"></td>
                         </tr>
                         <tr>
                             <th>제품분류</th>
-                            <td><input v-model="typeNo"></td>
+                            <td>
+                                <select v-model="typeNo" id="type-menu">
+                                    <option value="10">러닝화</option>
+                                    <option value="20">보호대</option>
+                                    <option value="30">모자</option>
+                                    <option value="40">건강보조식품</option>
+                                    <option value="50">러닝복</option>
+                                    <option value="101">일반러닝화</option>
+                                    <option value="102">트레일러닝화</option>
+                                    <option value="103">카본화</option>
+                                    <option value="201">무릎보호대</option>
+                                    <option value="202">허리보호대</option>
+                                    <option value="301">일반모자</option>
+                                    <option value="401">에너지젤</option>
+                                    <option value="501">상의</option>
+                                    <option value="502">하의</option>
+                                </select>
+                            </td>
                         </tr>
                         <tr>
                             <th>상세설명</th>
@@ -101,6 +152,17 @@
                     <button class="margin30 height40 bluebutton leftbutton" @click="fnBack">돌아가기</button>
                 </div>
                 <div class="bottom200"></div>
+                <div class="modal-overlay" v-if="showSuccessModal" @click.self="fnBack">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            상품 등록이 완료되었습니다!
+                        </div>
+                        <div class="modal-actions">
+                            <button class="bluebutton height40" @click="fnBack">목록으로 돌아가기</button>
+                            <button class="redbutton height40" @click="showSuccessModal = false">추가 등록하기</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
@@ -122,7 +184,8 @@
                     productDetail: "",
                     sizeNum: 1,
                     sessionId: "${sessionId}",
-                    loading: false // 로딩 상태
+                    loading: false, // 로딩 상태
+                    showSuccessModal: false
                 };
             },
             methods: {
@@ -176,6 +239,7 @@
                             //    alert("form 내용확인 " + JSON.stringify(form));
                             //    self.upload(form);
                             //}, 100);
+                            self.fnBack();
 
 
                         }

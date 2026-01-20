@@ -61,7 +61,8 @@ h1 {
 table,
 th,
 td,
-tr {
+tr,
+select {
     border-collapse: collapse;
     padding: 10px 10px;
 }
@@ -166,6 +167,11 @@ td input {
     height: 40px;
 }
 
+td select {
+    width: 620px;
+    height: 45px;
+}
+
 .redbutton:hover {
     background-color: #BD2915;
 }
@@ -244,12 +250,14 @@ td input {
 }
 
 .newtable th,
-.newtable td {
+.newtable td
+.newtable select {
     padding: 15px;
     border: 1px solid #e9ecef;
 }
 
-.newtable td {
+.newtable td
+.newtable select {
     width: 90% !important;
     min-width: 90% !important;
     max-width: 90% !important;
@@ -259,7 +267,8 @@ td input {
     background-color: #f1f3f5;
 }
 
-.newtable td {
+.newtable td
+.newtable select {
     color: #343a40;
     font-size: 0.9rem;
 }

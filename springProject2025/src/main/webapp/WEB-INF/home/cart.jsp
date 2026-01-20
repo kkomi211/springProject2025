@@ -25,7 +25,7 @@
 
         <style>
             /* 모달 오버레이 / 콘텐츠 기본 */
-            .modal-overlay {
+            /* .modal-overlay {
                 position: fixed;
                 inset: 0;
                 display: flex;
@@ -43,15 +43,15 @@
                 box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
                 position: relative;
                 font-family: "Noto Sans KR", sans-serif;
-            }
+            } */
 
             /* 타이틀 */
-            .modal-title {
+            /* .modal-title {
                 margin: 0 0 14px;
                 text-align: center;
                 font-size: 18px;
                 font-weight: 700;
-            }
+            } */
 
             /* 본문 레이아웃 */
             .option-body {
@@ -577,6 +577,17 @@
                             </div>
                         </div>
                     </footer>
+                    <!-- 범용 안내 모달 -->
+                    <div v-if="alertModalVisible" class="modal-overlay" @click.self="closeAlertModal">
+                        <div class="modal-content">
+                            <h3 class="modal-title">{{ alertModalTitle }}</h3>
+                            <p style="text-align: center; padding: 20px 0;">{{ alertModalMessage }}</p>
+                            <button @click="closeAlertModal">확인</button>
+                            <!-- <div class="modal-actions">
+                                
+                            </div> -->
+                        </div>
+                    </div>
                     <!-- session time out modal -->
                     <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
             </div>
@@ -614,6 +625,13 @@
 
                     cartCount: 0, // 장바구니 수량 변수 추가 (jgh260114)
                     newReplyCount: 0, // 새 답변 개수
+                    shippingNotificationCount: 0, // 배송 알림 개수
+
+                    // 범용 안내 모달
+                    alertModalVisible: false,
+                    alertModalTitle: '',
+                    alertModalMessage: '',
+                    alertModalOnClose: null,
                 };
             },
             computed: {
@@ -627,6 +645,23 @@
                 }
             },
             methods: {
+                showAlertModal: function (title, message, onClose) {
+                    this.alertModalTitle = title;
+                    this.alertModalMessage = message;
+                    this.alertModalVisible = true;
+                    this.alertModalOnClose = onClose || null;
+                    document.body.style.overflow = 'hidden';
+                },
+                
+                closeAlertModal: function () {
+                    this.alertModalVisible = false;
+                    document.body.style.overflow = 'auto';
+                    
+                    if (this.alertModalOnClose && typeof this.alertModalOnClose === 'function') {
+                        this.alertModalOnClose();
+                        this.alertModalOnClose = null;
+                    }
+                },
                 // 장바구니 수량을 서버에서 가져오는 함수 (jgh260114)
                 fetchCartCount() {
                     if (this.sessionId == '' || this.sessionId == null) return;
@@ -877,6 +912,59 @@
                         }
                     });
                 },
+                
+                // 배송 알림 개수 체크 (문의내역 방식과 동일)
+                checkShippingNotificationCount: function() {
+                    let self = this;
+                    if (!self.sessionId || self.sessionId === '') {
+                        self.shippingNotificationCount = 0;
+                        return;
+                    }
+                    
+                    // localStorage에서 확인한 배송 주문 목록 불러오기
+                    const storageKey = `checkedShippingOrders_${self.sessionId}`;
+                    const saved = localStorage.getItem(storageKey);
+                    let checkedOrders = [];
+                    if (saved) {
+                        try {
+                            checkedOrders = JSON.parse(saved);
+                        } catch (e) {
+                            checkedOrders = [];
+                        }
+                    }
+                    
+                    // 서버에서 주문 목록 가져오기 (모든 주문)
+                    $.ajax({
+                        url: "/home/mypage/orders.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: {
+                            sessionId: self.sessionId,
+                            page: 1,
+                            pageSize: 1000, // 모든 주문 가져오기
+                            startRow: 1,
+                            endRow: 1000
+                        },
+                        success: function (data) {
+                            if (data.result == "success" && data.list) {
+                                let uncheckedCount = 0;
+                                data.list.forEach(function(order) {
+                                    // 배송중 상태이고 확인하지 않은 주문만 카운트
+                                    if (order.status === '배송중' && !checkedOrders.includes(String(order.orderNo))) {
+                                        uncheckedCount++;
+                                    }
+                                });
+                                self.shippingNotificationCount = uncheckedCount;
+                                console.log("배송 알림 개수:", uncheckedCount);
+                            } else {
+                                self.shippingNotificationCount = 0;
+                            }
+                        },
+                        error: function() {
+                            self.shippingNotificationCount = 0;
+                        }
+                    });
+                },
 
 
                 formatCurrency: function (value) {
@@ -908,6 +996,11 @@
                         // selectedCartNos: selectedCartNos //이거 배열임
                         selectedCartNosJson: JSON.stringify(selectedCartNos)
                     };
+                    if(selectedCartNos.length == 0){
+                        self.showAlertModal("삭제 실패", "삭제할 상품을 선택해주세요.");
+                        return;
+
+                    }
 
                     // 3. 프론트엔드에서만! 빠르게? 먼저 선택된 항목을 제거하여 화면을 업데이트합니다.
                     this.cartList = this.cartList.filter(item => !item.selected);
@@ -922,17 +1015,15 @@
                         success: function (data) {
                             // 서버에서 실제 삭제가 성공적으로 완료되었음을 확인 후 사용자에게 알립니다.
                             if (data.result === 'success') {
-                                alert("선택된 상품이 장바구니에서 삭제되었습니다.");
+                                self.showAlertModal('삭제 완료', '선택된 상품이 장바구니에서 삭제되었습니다.');
                             } else {
-                                // 서버에서 삭제에 실패했을 경우, 사용자에게 알려주고 
-                                // 장바구니 목록을 다시 불러오거나 (self.fnList()) 알림을 줍니다.
-                                alert("삭제 처리 중 오류가 발생했습니다.");
+                                self.showAlertModal('삭제 실패', '삭제 처리 중 오류가 발생했습니다.');
                             }
                             // 백앤드상태를 다시 맞춰봅니다.(안해도 될듯한데 확실하게 하기위해서)
                             self.fnList();
                         },
                         error: function (xhr, status, error) {
-                            alert("서버 통신 오류: 장바구니 삭제에 실패했습니다.");
+                            self.showAlertModal('서버 오류', '서버 통신 오류: 장바구니 삭제에 실패했습니다.');
                             console.error("삭제 실패:", error);
                             // 필요에 따라 목록을 다시 불러와서 프론트엔드와 백엔드 상태를 맞춥니다.
                             self.fnList();
@@ -1044,7 +1135,7 @@
                         : null;
                     if (stock !== null) {
                         if (q > stock) {
-                            alert(`선택한 옵션의 재고 수량을 초과합니다`);
+                            this.showAlertModal('재고 초과', '선택한 옵션의 재고 수량을 초과합니다.');
                             q = stock;
                         }
                     }
@@ -1053,22 +1144,22 @@
 
                 // --- 변경 전송 : 재고 재검사 포함
                 changeProcess: function () {
-                    const self = this;
+                    const self = this;  
 
                     // 기본 검증
                     if (!this.currentOptionChangeProductNo) {
-                        alert("원본 상품 정보가 없습니다.");
+                        self.showAlertModal('오류', '원본 상품 정보가 없습니다.');
                         return;
                     }
                     if (!this.currentSelectedOptionNo) {
-                        alert("변경할 옵션을 선택해 주세요.");
+                        self.showAlertModal('선택 필요', '변경할 옵션을 선택해 주세요.');
                         return;
                     }
 
                     // 수량 정수화 및 최소값 보정
                     let qty = parseInt(this.currentQty) || 1;
                     if (qty <= 0) {
-                        alert("수량은 1 이상이어야 합니다.");
+                        self.showAlertModal('수량 오류', '수량은 1 이상이어야 합니다.');
                         return;
                     }
 
@@ -1077,7 +1168,7 @@
                         ? parseInt(this.selectedOption.quantity || this.selectedOption.stock)
                         : null;
                     if (stock !== null && qty > stock) {
-                        alert(`선택한 옵션의 재고가 부족합니다. (최대 ${stock}개)`);
+                        self.showAlertModal('재고 부족', `선택한 옵션의 재고가 부족합니다. (최대 ${stock}개)`); 
                         this.currentQty = stock;
                         return;
                     }
@@ -1105,16 +1196,18 @@
                             console.log("changeProcess response:", res);
                             if (res && res.result === 'success') {
                                 closeModal();
-                                alert("옵션이 변경되었습니다.");
+                                self.showAlertModal('변경 완료', '옵션이 변경되었습니다.', function() {
+                                    self.fnList();
+                                });
                                 self.fnList();
                             } else {
                                 const msg = (res && res.message) ? res.message : "옵션 변경에 실패했습니다.";
-                                alert(msg);
+                                self.showAlertModal('변경 실패', msg);
                             }
                         },
                         error: function (xhr, status, err) {
                             console.error("changeProcess error:", err, xhr);
-                            alert("서버 오류가 발생했습니다. 다시 시도해 주세요.");
+                            self.showAlertModal('서버 오류', '서버 오류가 발생했습니다. 다시 시도해 주세요.');
                         }
                     });
                 },
@@ -1123,7 +1216,7 @@
                     let selectedItems = this.cartList.filter(item => item.selected);
 
                     if (selectedItems.length === 0) {
-                        alert("주문할 상품을 선택해주세요.");
+                        this.showAlertModal('선택 필요', '주문할 상품을 선택해주세요.');
                         return;
                     }
 
@@ -1191,14 +1284,16 @@
                 if (self.sessionId && self.sessionId !== '') {
                     self.fetchCartCount();
                     self.checkNewReplyCount(); // 새 답변 개수 체크
+                    self.checkShippingNotificationCount(); // 배송 알림 개수 체크
                     self.setupActivityListeners();
                     self.startSessionTimer();
                 }
 
-                // 주기적으로 새 답변 체크 (30초마다)
+                // 주기적으로 새 답변 및 배송 알림 체크 (30초마다)
                 setInterval(function () {
                     if (self.sessionId && self.sessionId !== '') {
                         self.checkNewReplyCount();
+                        self.checkShippingNotificationCount();
                     }
                 }, 30000);
             },

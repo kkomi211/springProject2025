@@ -355,9 +355,10 @@
                             <h2 class="sidebar-heading">MY PAGE ></h2>
                             <nav class="mypage-menu">
                                 <ul>
-                                    <li @click="moveToOrder">
+                                    <li @click="moveToOrder" style="position: relative;">
                                         <span class="icon">📝</span>
                                         <a href="javascript:;">주문•배송 내역</a>
+                                        <span v-if="shippingNotificationCount > 0" style="position: absolute; top: 50%; transform: translateY(-50%); right: 30px; background-color: #ff0000; color: white; font-size: 11px; font-weight: bold; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">{{ shippingNotificationCount > 99 ? '99+' : shippingNotificationCount }}</span>
                                     </li>
                                     <li class="active">
                                         <span class="icon">📦</span>
@@ -520,6 +521,26 @@
                     </div>
                 </div>
             </div>
+            <div v-if="selectionModalVisible" class="modal-overlay" @click.self="closeSelectionModal">
+                <div class="modal" role="dialog" aria-modal="true" aria-labelledby="selectionModalTitle">
+                    <h3 id="selectionModalTitle">주문 선택 필요</h3>
+                    <p>반품/교환 신청할 주문을 하나 이상 선택해주세요.</p>
+                    
+                    <div class="btns">
+                        <button class="btn secondary" @click="closeSelectionModal">확인</button>
+                    </div>
+                </div>
+            </div>
+            <div v-if="successModalVisible" class="modal-overlay" @click.self="closeSuccessModal">
+            <div class="modal" role="dialog" aria-modal="true" aria-labelledby="successModalTitle">
+                <h3 id="successModalTitle">신청 완료</h3>
+                <p>정상적으로 신청이 접수되었습니다.</p>
+                
+                <div class="btns">
+                    <button class="btn secondary" @click="closeSuccessModal">확인</button>
+                </div>
+            </div>
+        </div>
             <!-- session time out modal -->
             <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
 
@@ -552,10 +573,13 @@
 
                     // 모달 관련
                     reasonModalVisible: false,
-                    missingReasons: [], // [{ orderNo: 'xxx' }, ...]
+                    missingReasons: [],
+                    selectionModalVisible: false, // [{ orderNo: 'xxx' }, ...]
+                    successModalVisible: false,
                     userType: '${userType}',
                     cartCount: 0, // 장바구니 수량 변수 추가
                     newReplyCount: 0, // 새 답변 개수
+                    shippingNotificationCount: 0, // 배송 알림 개수
                 };
             },
             methods: {
@@ -736,7 +760,24 @@
                     this.missingReasons = [];
                     document.body.style.overflow = 'auto';
                 },
-
+                showSelectionModal: function () {
+                    this.selectionModalVisible = true;
+                    document.body.style.overflow = 'hidden';
+                },
+                closeSelectionModal: function () {
+                    this.selectionModalVisible = false;
+                    document.body.style.overflow = 'auto';
+                },
+                 showSuccessModal: function () {
+                    this.successModalVisible = true;
+                    document.body.style.overflow = 'hidden';
+                },
+                closeSuccessModal: function () {
+                    this.successModalVisible = false;
+                    document.body.style.overflow = 'auto';
+                    // 모달 닫을 때 목록 새로고침
+                    this.fnList();
+                },
 
                 /**
                  * 💡 [최종] JSON 전송 방식으로 변경
@@ -748,7 +789,8 @@
                     const selected = (self.orderList || []).filter(o => o.isChecked);
 
                     if (!selected || selected.length === 0) {
-                        alert("반품/교환 신청할 주문을 하나 이상 선택해주세요.");
+                        // alert("반품/교환 신청할 주문을 하나 이상 선택해주세요.");
+                        self.showSelectionModal();
                         return;
                     }
 
@@ -793,7 +835,8 @@
                         data: param,
                         success: function (res) {
                             if (res && (res.result === "success" || res.success === true)) {
-                                alert("정상적으로 신청이 접수되었습니다.");
+                                // alert("정상적으로 신청이 접수되었습니다.");
+                                self.showSuccessModal();
                                 self.fnList();
                             } else {
                                 const msg = (res && res.message) ? res.message : "서버에서 처리 중 문제가 발생했습니다.";
@@ -933,6 +976,59 @@
                         }
                     });
                 },
+                
+                // 배송 알림 개수 체크 (문의내역 방식과 동일)
+                checkShippingNotificationCount: function() {
+                    let self = this;
+                    if (!self.sessionId || self.sessionId === '') {
+                        self.shippingNotificationCount = 0;
+                        return;
+                    }
+                    
+                    // localStorage에서 확인한 배송 주문 목록 불러오기
+                    const storageKey = `checkedShippingOrders_${self.sessionId}`;
+                    const saved = localStorage.getItem(storageKey);
+                    let checkedOrders = [];
+                    if (saved) {
+                        try {
+                            checkedOrders = JSON.parse(saved);
+                        } catch (e) {
+                            checkedOrders = [];
+                        }
+                    }
+                    
+                    // 서버에서 주문 목록 가져오기 (모든 주문)
+                    $.ajax({
+                        url: "/home/mypage/orders.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: {
+                            sessionId: self.sessionId,
+                            page: 1,
+                            pageSize: 1000, // 모든 주문 가져오기
+                            startRow: 1,
+                            endRow: 1000
+                        },
+                        success: function (data) {
+                            if (data.result == "success" && data.list) {
+                                let uncheckedCount = 0;
+                                data.list.forEach(function(order) {
+                                    // 배송중 상태이고 확인하지 않은 주문만 카운트
+                                    if (order.status === '배송중' && !checkedOrders.includes(String(order.orderNo))) {
+                                        uncheckedCount++;
+                                    }
+                                });
+                                self.shippingNotificationCount = uncheckedCount;
+                                console.log("배송 알림 개수:", uncheckedCount);
+                            } else {
+                                self.shippingNotificationCount = 0;
+                            }
+                        },
+                        error: function() {
+                            self.shippingNotificationCount = 0;
+                        }
+                    });
+                },
             }, // methods
             mounted() {
                 let self = this;
@@ -944,16 +1040,18 @@
                     console.log("장바구니 수량 조회를 시작합니다.");
                     self.fetchCartCount();
                     self.checkNewReplyCount(); // 새 답변 개수 체크
+                    self.checkShippingNotificationCount(); // 배송 알림 개수 체크
                     self.setupActivityListeners();
                     self.startSessionTimer();
                 } else {
                     console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                 }
                 
-                // 주기적으로 새 답변 체크 (30초마다)
+                // 주기적으로 새 답변 및 배송 알림 체크 (30초마다)
                 setInterval(function() {
                     if (self.sessionId && self.sessionId !== '') {
                         self.checkNewReplyCount();
+                        self.checkShippingNotificationCount();
                     }
                 }, 30000);
             },

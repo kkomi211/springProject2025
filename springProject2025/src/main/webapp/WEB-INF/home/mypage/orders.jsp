@@ -297,9 +297,10 @@
                             <h2 class="sidebar-heading">MY PAGE ></h2>
                             <nav class="mypage-menu">
                                 <ul>
-                                    <li class="active">
+                                    <li class="active" style="position: relative;">
                                         <span class="icon">📝</span>
                                         <a href="#">주문•배송 내역</a>
+                                        <span v-if="shippingNotificationCount > 0" style="position: absolute; top: 50%; transform: translateY(-50%); right: 30px; background-color: #ff0000; color: white; font-size: 11px; font-weight: bold; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">{{ shippingNotificationCount > 99 ? '99+' : shippingNotificationCount }}</span>
                                     </li>
                                     <li @click="moveToRefund">
                                         <span class="icon">📦</span>
@@ -330,6 +331,12 @@
                                     <div class="order-status-header" :class="getStatusClass(order.status)">
                                         ORDER STATUS :
                                         <span class="status-text">{{ order.status }}</span>
+                                        <span v-if="isNewShippingNotification(order.orderNo)" 
+                                              class="new-badge" 
+                                              style="margin-left: 10px; background-color: #ff0000; color: white; font-size: 11px; font-weight: bold; padding: 2px 8px; border-radius: 10px; cursor: pointer;"
+                                              @click="markShippingOrderAsRead(order.orderNo)">
+                                            NEW
+                                        </span>
                                     </div>
                                     <div class="order-details">
                                         <!-- <img v-if="order.imgPath && order.imgName"
@@ -461,6 +468,7 @@
                     userType : '${userType}',
                     cartCount: 0, // 장바구니 수량 변수 추가
                     newReplyCount: 0, // 새 답변 개수
+                    shippingNotificationCount: 0, // 배송 알림 개수
                 };
             },
             methods: {
@@ -492,6 +500,9 @@
                                 self.cnt = data.cnt;
                                 self.index = Math.ceil(self.cnt / self.pageSize);
                                 console.log("주문 리스트 업데이트 완료 - 전체 개수:", self.cnt, "현재 페이지:", self.page);
+                                
+                                // 주문 목록을 불러온 후 배송 알림 개수 업데이트
+                                self.checkShippingNotificationCount();
                             } else {
                                 console.log("주문 내역 조회 실패");
                                 self.orderList = [];
@@ -761,6 +772,116 @@
                         }
                     });
                 },
+                
+                // 배송 알림 개수 체크 (문의내역 방식과 동일)
+                checkShippingNotificationCount: function() {
+                    let self = this;
+                    if (!self.sessionId || self.sessionId === '') {
+                        self.shippingNotificationCount = 0;
+                        return;
+                    }
+                    
+                    // localStorage에서 확인한 배송 주문 목록 불러오기
+                    const storageKey = `checkedShippingOrders_${self.sessionId}`;
+                    const saved = localStorage.getItem(storageKey);
+                    let checkedOrders = [];
+                    if (saved) {
+                        try {
+                            checkedOrders = JSON.parse(saved);
+                        } catch (e) {
+                            checkedOrders = [];
+                        }
+                    }
+                    
+                    // 서버에서 주문 목록 가져오기 (모든 주문)
+                    $.ajax({
+                        url: "/home/mypage/orders.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: {
+                            sessionId: self.sessionId,
+                            page: 1,
+                            pageSize: 1000, // 모든 주문 가져오기
+                            startRow: 1,
+                            endRow: 1000
+                        },
+                        success: function (data) {
+                            console.log("[orders.jsp] 배송 알림 - 주문 목록 API 응답:", data);
+                            if (data.result == "success" && data.list) {
+                                let uncheckedCount = 0;
+                                console.log("[orders.jsp] 배송 알림 - 주문 목록 개수:", data.list.length);
+                                data.list.forEach(function(order) {
+                                    console.log("[orders.jsp] 배송 알림 - 주문 확인:", order.orderNo, "상태:", order.status, "확인 목록 포함:", checkedOrders.includes(String(order.orderNo)));
+                                    // 배송중 상태이고 확인하지 않은 주문만 카운트
+                                    if (order.status === '배송중' && !checkedOrders.includes(String(order.orderNo))) {
+                                        uncheckedCount++;
+                                    }
+                                });
+                                self.shippingNotificationCount = uncheckedCount;
+                                console.log("[orders.jsp] 배송 알림 개수:", uncheckedCount);
+                            } else {
+                                console.log("[orders.jsp] 배송 알림 - API 실패 또는 주문 없음");
+                                self.shippingNotificationCount = 0;
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("[orders.jsp] 배송 알림 - API 오류:", error, "상태:", status, "응답:", xhr.responseText);
+                            self.shippingNotificationCount = 0;
+                        }
+                    });
+                },
+                
+                // 해당 주문이 새로운 배송 알림인지 확인
+                isNewShippingNotification: function(orderNo) {
+                    let self = this;
+                    if (!orderNo) return false;
+                    
+                    // localStorage에서 확인한 배송 주문 목록 불러오기
+                    const storageKey = `checkedShippingOrders_${self.sessionId}`;
+                    const saved = localStorage.getItem(storageKey);
+                    let checkedOrders = [];
+                    if (saved) {
+                        try {
+                            checkedOrders = JSON.parse(saved);
+                        } catch (e) {
+                            checkedOrders = [];
+                        }
+                    }
+                    
+                    // 배송중 상태이고 확인하지 않은 주문인지 확인
+                    const order = self.orderList.find(o => o.orderNo === orderNo);
+                    if (order && order.status === '배송중') {
+                        return !checkedOrders.includes(String(orderNo));
+                    }
+                    return false;
+                },
+                
+                // 배송 주문을 확인 처리 (NEW 배지 클릭 시)
+                markShippingOrderAsRead: function(orderNo) {
+                    let self = this;
+                    if (!orderNo || !self.sessionId) return;
+                    
+                    const storageKey = `checkedShippingOrders_${self.sessionId}`;
+                    const saved = localStorage.getItem(storageKey);
+                    let checkedOrders = [];
+                    if (saved) {
+                        try {
+                            checkedOrders = JSON.parse(saved);
+                        } catch (e) {
+                            checkedOrders = [];
+                        }
+                    }
+                    
+                    // 이미 확인한 주문이 아니면 추가
+                    if (!checkedOrders.includes(String(orderNo))) {
+                        checkedOrders.push(String(orderNo));
+                        localStorage.setItem(storageKey, JSON.stringify(checkedOrders));
+                        console.log("배송 주문 확인 처리:", orderNo);
+                        
+                        // 알림 개수 다시 계산
+                        self.checkShippingNotificationCount();
+                    }
+                },
             }, // methods
             mounted() {
                 let self = this;
@@ -772,16 +893,18 @@
                     console.log("장바구니 수량 조회를 시작합니다.");
                     self.fetchCartCount();
                     self.checkNewReplyCount(); // 새 답변 개수 체크
+                    self.checkShippingNotificationCount(); // 배송 알림 개수 체크
                     self.setupActivityListeners();
                     self.startSessionTimer();
                 } else {
                     console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                 }
                 
-                // 주기적으로 새 답변 체크 (30초마다)
+                // 주기적으로 새 답변 및 배송 알림 체크 (30초마다)
                 setInterval(function() {
                     if (self.sessionId && self.sessionId !== '') {
                         self.checkNewReplyCount();
+                        self.checkShippingNotificationCount();
                     }
                 }, 30000);
             },

@@ -16,7 +16,7 @@
 			)
 		</if>
 		<if test="chatroomNo != '' and chatroomNo != 'undefined' and chatroomNo != null">
-			AND CHATROOM_NO = #{chatroomNo}
+			AND CHATROOM_NO = #{chatroomNo} 
 		</if>
 		<if test="keyword != '' and keyword != 'undefined' and keyword != null">
 			AND (

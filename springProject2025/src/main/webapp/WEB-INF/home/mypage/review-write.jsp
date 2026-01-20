@@ -480,6 +480,13 @@ html, body {
                         </div>
                     </div>
                 </footer>
+                <!-- Modals -->
+                <div v-if="showModal" class="modal-overlay">
+                    <div class="modal-content">
+                        <h2>{{ modalMessage }}</h2>
+                        <button @click="closeModal">확인</button>
+                    </div>
+                </div>
                 <!-- session time out modal -->
                 <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
             </div>
@@ -530,9 +537,27 @@ html, body {
 
                     editorInstance: null,
                     userType : '${userType}',
+
+                    // modals
+                    showModal: false,
+                    modalMessage: '',
+                    modalCallback: null
                 };
             },
             methods: {
+                openModal: function(message, callback) {
+                    this.modalMessage = message;
+                    this.modalCallback = callback || null;
+                    this.showModal = true;
+                },
+                
+                closeModal: function() {
+                    this.showModal = false;
+                    if (this.modalCallback) {
+                        this.modalCallback();
+                        this.modalCallback = null;
+                    }
+                },
                 formatCurrency: function (value) {
                     if (!value) return '0';
                     const numValue = typeof value === 'string' ? parseInt(value) : value;
@@ -706,11 +731,13 @@ html, body {
                     let self = this;
 
                     if (self.rating === 0) {
-                        alert('별점을 선택해 주세요.');
+                        self.openModal("별점을 선택해 주세요.", function() {
+                        });
                         return;
                     }
                     if (self.reviewTitle.trim().length === 0) {
-                        alert('리뷰 제목을 입력해 주세요.');
+                        self.openModal("리뷰 제목을 입력해 주세요.", function() {
+                        });
                         return;
                     }
                     //alert("self.reviewContent.trim().length는" + self.reviewContent.trim().length);
@@ -724,7 +751,8 @@ html, body {
                     const plainText = tempDiv.textContent || tempDiv.innerText || '';
 
                     if (plainText.trim().length < 10) {
-                        alert('리뷰 내용을 10자 이상 입력해 주세요.');
+                        self.openModal("리뷰 내용을 10자 이상 입력해 주세요.", function() {
+                        });
                         return;
                     }
 
@@ -750,9 +778,10 @@ html, body {
                         data: param,
                         success: function (data) {
                             if (data.result === "success") {
-                                alert("리뷰가 성공적으로 등록되었습니다!");
-                                // 등록 배송완료 상품리뷰 목록 이동
-                                pageChange("review.do", { sessionId: self.sessionId });
+                                self.openModal("리뷰가 성공적으로 등록되었습니다!", function(){
+                                    pageChange("review.do", { sessionId: self.sessionId });
+                                });
+                                // 등록 배송완료 상품리뷰 목록 이동 
                             } else {
                                 alert("리뷰 등록 실패: " + (data.message || "서버 오류"));
                             }
@@ -854,8 +883,9 @@ html, body {
                 // alert("데이터 확인 self.status " + self.status);
 
                 if (self.sessionId == "") {
-                    alert("로그인이 필요합니다.");
-                    location.href = "/home/login.do";
+                    self.openModal("로그인이 필요합니다.", function(){
+                        location.href = "/home/login.do";
+                    });
                     return;
                 } else {
                     self.setupActivityListeners();
