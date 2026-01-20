@@ -183,6 +183,8 @@
                 position: relative;
                 /* 버튼 기준점을 주기 위해 필요 */
             }
+
+         
         </style>
     </head>
 
@@ -291,7 +293,6 @@
                                 </div>
 
                                 <!-- If the user is not logged in -->
-
                                 <div v-if="!isLoggedIn" class="modal-overlay">
                                     <div class="modal-content">
                                         <h2>로그인 후 이용해주세요.</h2>
@@ -299,6 +300,15 @@
                                             <button @click="moveToLogin">로그인</button>
                                             <button @click="moveToBoard">닫기</button>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <!-- Success modal -->
+                                <div v-if="showSuccessModal" class="modal-overlay">
+                                    <div class="modal-content">
+                                        <h2>{{ successMessage }}</h2>
+                                        <div class="modal_btn"><button @click="closeSuccessModal">확인</button></div>
+                                        
                                     </div>
                                 </div>
 
@@ -360,7 +370,8 @@
                     pageSize: 10,
                     index: 0,
                     isLoggedIn: true,
-
+                    showSuccessModal: false,
+                    successMessage: "",
                     userType: '${userType}',
                 };
             },
@@ -388,8 +399,6 @@
                         keyword: self.keyword.trim(),
                         page: self.page,
                         pageSize: self.pageSize,
-
-
                     };
                     $.ajax({
                         url: "/board/list.dox",
@@ -412,13 +421,13 @@
                 fnPost() {
                     let self = this;
                     if (self.title.trim() === "") {
-                        alert("제목을 입력해주세요.");
-                        document.querySelector("#title").focus();
+                        self.successMessage = "제목을 입력해주세요.";
+                        self.showSuccessModal = true;
                         return;
                     }
                     if (self.intro.trim() === "") {
-                        alert("내용을 입력해주세요.");
-                        document.querySelector("#intro").focus();
+                        self.successMessage = "내용을 입력해주세요.";
+                        self.showSuccessModal = true;
                         return;
                     }
 
@@ -427,26 +436,31 @@
                         title: self.title,
                         intro: self.intro,
                         name: self.title,
-
                     };
 
                     $.ajax({
-                        // url: "/board/post.dox",
                         url: "/crew/chatInsert.dox",
                         dataType: "json",
                         type: "POST",
                         data: param,
                         success: function (data) {
                             if (data.result == "success") {
-                                alert("채팅방이 개설되었습니다!");
-                                location.href = "/home/community/crew.do";
+                                self.successMessage = "채팅방이 개설되었습니다.";
+                                self.showSuccessModal = true;
                             } else {
-                                alert("채팅방 개설에 실패했습니다.");
+                                self.successMessage = "채팅방 개설에 실패했습니다.";
+                                self.showSuccessModal = true;
                             }
                         }
                     });
                 },
-
+                closeSuccessModal() {
+                    let self = this;
+                    self.showSuccessModal = false;
+                    if (self.successMessage === "채팅방이 개설되었습니다.") {
+                        location.href = "/home/community/crew.do";
+                    }
+                },
                 // 장바구니 수량을 서버에서 가져오는 함수
                 fetchCartCount() {
                     // 세션 아이디가 없으면 실행하지 않음
@@ -456,7 +470,6 @@
                     $.ajax({
                         url: '/api/cartCount.dox',
                         method: 'GET',
-                        // ★ 서버의 @RequestParam HashMap map으로 전달될 데이터 ★
                         data: {
                             sessionId: self.sessionId
                         },
@@ -464,7 +477,7 @@
                         success: (response) => {
                             console.log("서버 응답 데이터:", response);
                             if (response.result === 'success') {
-                                self.cartCount = response.count; // 서버에서 보낸 count 값을 Vue 변수에 저장
+                                self.cartCount = response.count;
                             }
                         },
                         error: (err) => {
@@ -472,7 +485,6 @@
                         }
                     });
                 },
-
                 moveToLogin() {
                     location.href = "/home/login.do";
                 },
@@ -498,7 +510,6 @@
                             if (data.result == "success") {
                                 location.href = "/home.do";
                             }
-
                         }
                     })
                 },
@@ -514,7 +525,6 @@
                     self.isLoggedIn = false;
                 }
 
-                // 2. 조건문을 잠시 제거하거나, 로그를 찍어 확인합니다.
                 if (self.sessionId && self.sessionId !== '') {
                     console.log("장바구니 수량 조회를 시작합니다.");
                     self.fetchCartCount();

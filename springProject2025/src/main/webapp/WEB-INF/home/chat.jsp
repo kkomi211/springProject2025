@@ -445,8 +445,8 @@
                 font-family: 'Jost', sans-serif;
                 font-weight: 600;
                 padding: 15px;
-                border-bottom: 2px solid #000;
-                /* 채팅 리스트 스타일의 강조선 */
+                border-bottom: none;
+                /* 2px solid #000에서 none으로 변경 */
                 text-align: left;
             }
 
@@ -481,6 +481,11 @@
             table tr:hover {
                 background-color: #f9f9f9;
                 cursor: pointer;
+            }
+
+            /* 채팅방 제목 밑줄 제거 */
+            table td.post-title {
+                text-decoration: none !important;
             }
 
             /* 버튼 디자인 채팅 리스트 스타일로 깔끔하게 수정 */
