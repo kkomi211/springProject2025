@@ -154,9 +154,10 @@
 		    SELECT 
 		        COUNT(*) 
 		    FROM 
-		        CART 
+		        CART C
+		    INNER JOIN PRODUCT P ON C.PRODUCT_NO = P.PRODUCT_NO
 		    WHERE 
-		        USER_ID = #{sessionId} 
+		        C.USER_ID = #{sessionId} 
         </select>
 	
 	</mapper>
