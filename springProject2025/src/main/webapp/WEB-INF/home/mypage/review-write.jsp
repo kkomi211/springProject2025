@@ -270,6 +270,35 @@ html, body {
             main {
             flex: 1; /* makes main take up all remaining vertical space */
         }   
+
+        .main-content button {
+            display: block;
+            /* 버튼을 블록요소로 만들어 */
+            margin-left: auto;
+            /* 오른쪽으로 밀어냄 */
+            margin-top: 1px;
+            /* 위 요소와의 간격 */
+            margin-right: 5px;
+            /* 오른쪽 여백 (조절 가능) */
+            padding: 10px 20px;
+            background-color: rgb(194, 194, 194);
+            color: black;
+            border: none;
+            border-radius: 5px;
+
+            cursor: pointer;
+            /* 마우스 올렸을 때 손가락 커서 */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            /* 부드러운 변화 */
+        }
+
+        /*  hover 효과 */
+        .main-content button:hover {
+            background-color: gray;
+            /*  */
+            transform: scale(1.02);
+            /* 살짝 커지는 느낌 */
+        }
     </style>
 
     <body>
@@ -433,10 +462,11 @@ html, body {
 
                                         <div style="text-align: right;">
                                             <button type="button" class="submit-button"
-                                                style="padding: 10px 20px; background-color: #ff6600; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.2s;"
+                    
                                                 @click="submitReview">
                                                 리뷰 등록
                                             </button>
+                                            <!-- style="padding: 10px 20px; background-color: #ff6600; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.2s;" -->
                                         </div>
                                     </div>
 
