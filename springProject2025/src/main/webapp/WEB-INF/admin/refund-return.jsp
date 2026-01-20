@@ -26,13 +26,14 @@
                     <!-- 알림 아이콘 -->
                     <div class="notification-icon-wrapper" @click="toggleNotificationPanel">
                         <span class="notification-bell">🔔</span>
-                        <span v-if="notificationCounts.totalCount > 0" class="notification-badge">{{ notificationCounts.totalCount }}</span>
+                        <span v-if="notificationCounts.totalCount > 0" class="notification-badge">{{
+                            notificationCounts.totalCount }}</span>
                     </div>
-                    <div style="line-height: 1.2;">관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
-                            @click="fnLogout">로그오프</a></div>
+                    <div style="line-height: 1.2;">관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;"
+                            class="text-white text-decoration-none" @click="fnLogout">로그오프</a></div>
                 </div>
             </div>
-            
+
             <!-- 알림 패널 -->
             <div v-if="showNotificationPanel" class="notification-panel" @click.stop>
                 <div class="notification-header">
@@ -40,24 +41,24 @@
                     <button @click="toggleNotificationPanel" class="notification-close">×</button>
                 </div>
                 <div class="notification-content">
-                    <div class="notification-item" v-if="notificationCounts.newInquiryCount > 0" 
-                         @click="markAsReadAndGo('inquiry', '/admin/inquiry.do')">
+                    <div class="notification-item" v-if="notificationCounts.newInquiryCount > 0"
+                        @click="markAsReadAndGo('inquiry', '/admin/inquiry.do')">
                         <div class="notification-item-icon">📝</div>
                         <div class="notification-item-text">
                             <strong>새 문의</strong>
                             <span>{{ notificationCounts.newInquiryCount }}건</span>
                         </div>
                     </div>
-                    <div class="notification-item" v-if="notificationCounts.newOrderCount > 0" 
-                         @click="markAsReadAndGo('order', '/admin/orders.do')">
+                    <div class="notification-item" v-if="notificationCounts.newOrderCount > 0"
+                        @click="markAsReadAndGo('order', '/admin/orders.do')">
                         <div class="notification-item-icon">📦</div>
                         <div class="notification-item-text">
                             <strong>신규 주문</strong>
                             <span>{{ notificationCounts.newOrderCount }}건</span>
                         </div>
                     </div>
-                    <div class="notification-item" v-if="notificationCounts.newBoardReportCount > 0" 
-                         @click="markAsReadAndGo('report', '/admin/board-report.do')">
+                    <div class="notification-item" v-if="notificationCounts.newBoardReportCount > 0"
+                        @click="markAsReadAndGo('report', '/admin/board-report.do')">
                         <div class="notification-item-icon">🚨</div>
                         <div class="notification-item-text">
                             <strong>신고 게시물</strong>
@@ -69,10 +70,10 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- 알림 패널 오버레이 -->
             <div v-if="showNotificationPanel" class="notification-overlay" @click="toggleNotificationPanel"></div>
-            
+
             <!-- 메뉴 바 (검은색) -->
             <div class="nav-black">
                 <a href="/admin.do">MAIN</a>
@@ -131,7 +132,8 @@
 
                     <!-- 엑셀 다운로드 버튼 -->
                     <div class="filter-group">
-                        <button @click="downloadExcel()" style="background-color: #28a745; color: white; padding: 8px 18px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
+                        <button @click="downloadExcel()"
+                            style="background-color: #28a745; color: white; padding: 8px 18px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
                             📥 엑셀 다운로드
                         </button>
                     </div>
@@ -143,17 +145,31 @@
                         <div class="loading-spinner"></div>
                         <div class="loading-text">데이터를 불러오는 중...</div>
                     </div>
-                    
+
                     <!-- 테이블 -->
                     <table id="refund-return-list-table" v-if="!loading && list.length > 0">
                         <tr>
-                            <th class="sortable-header" @click="sortTable('orderNo')" :class="{'sort-asc': sortColumn === 'orderNo' && sortDirection === 'asc', 'sort-desc': sortColumn === 'orderNo' && sortDirection === 'desc'}">주문번호</th>
-                            <th class="sortable-header" @click="sortTable('productName')" :class="{'sort-asc': sortColumn === 'productName' && sortDirection === 'asc', 'sort-desc': sortColumn === 'productName' && sortDirection === 'desc'}">상품명</th>
-                            <th class="sortable-header" @click="sortTable('userId')" :class="{'sort-asc': sortColumn === 'userId' && sortDirection === 'asc', 'sort-desc': sortColumn === 'userId' && sortDirection === 'desc'}">유저ID</th>
-                            <th class="sortable-header" @click="sortTable('name')" :class="{'sort-asc': sortColumn === 'name' && sortDirection === 'asc', 'sort-desc': sortColumn === 'name' && sortDirection === 'desc'}">유저이름</th>
-                            <th class="sortable-header" @click="sortTable('phone')" :class="{'sort-asc': sortColumn === 'phone' && sortDirection === 'asc', 'sort-desc': sortColumn === 'phone' && sortDirection === 'desc'}">연락처</th>
-                            <th class="sortable-header" @click="sortTable('cDate')" :class="{'sort-asc': sortColumn === 'cDate' && sortDirection === 'asc', 'sort-desc': sortColumn === 'cDate' && sortDirection === 'desc'}">신청일</th>
-                            <th class="sortable-header" @click="sortTable('status')" :class="{'sort-asc': sortColumn === 'status' && sortDirection === 'asc', 'sort-desc': sortColumn === 'status' && sortDirection === 'desc'}">상태</th>
+                            <th class="sortable-header" @click="sortTable('orderNo')"
+                                :class="{'sort-asc': sortColumn === 'orderNo' && sortDirection === 'asc', 'sort-desc': sortColumn === 'orderNo' && sortDirection === 'desc'}">
+                                주문번호</th>
+                            <th class="sortable-header" @click="sortTable('productName')"
+                                :class="{'sort-asc': sortColumn === 'productName' && sortDirection === 'asc', 'sort-desc': sortColumn === 'productName' && sortDirection === 'desc'}">
+                                상품명</th>
+                            <th class="sortable-header" @click="sortTable('userId')"
+                                :class="{'sort-asc': sortColumn === 'userId' && sortDirection === 'asc', 'sort-desc': sortColumn === 'userId' && sortDirection === 'desc'}">
+                                유저ID</th>
+                            <th class="sortable-header" @click="sortTable('name')"
+                                :class="{'sort-asc': sortColumn === 'name' && sortDirection === 'asc', 'sort-desc': sortColumn === 'name' && sortDirection === 'desc'}">
+                                유저이름</th>
+                            <th class="sortable-header" @click="sortTable('phone')"
+                                :class="{'sort-asc': sortColumn === 'phone' && sortDirection === 'asc', 'sort-desc': sortColumn === 'phone' && sortDirection === 'desc'}">
+                                연락처</th>
+                            <th class="sortable-header" @click="sortTable('cDate')"
+                                :class="{'sort-asc': sortColumn === 'cDate' && sortDirection === 'asc', 'sort-desc': sortColumn === 'cDate' && sortDirection === 'desc'}">
+                                신청일</th>
+                            <th class="sortable-header" @click="sortTable('status')"
+                                :class="{'sort-asc': sortColumn === 'status' && sortDirection === 'asc', 'sort-desc': sortColumn === 'status' && sortDirection === 'desc'}">
+                                상태</th>
                         </tr>
                         <tr v-for="item in sortedList" :key="item.orderNo">
                             <td>{{item.orderNo}}</td>
@@ -170,7 +186,7 @@
                             </td>
                         </tr>
                     </table>
-                    
+
                     <!-- 빈 데이터 메시지 -->
                     <div v-if="!loading && list.length === 0" class="empty-state-card">
                         <div class="empty-icon">🔄</div>
@@ -227,7 +243,8 @@
                                 <option value="">교환할 옵션 선택</option>
                                 <option v-for="option in productOptions" :value="option.productNo"
                                     :key="option.productNo" :disabled="option.quantity === 0">
-                                    {{ option.productName }} / 사이즈: {{ option.productSize }} (재고: {{ option.quantity }}) - {{
+                                    {{ option.productName }} / 사이즈: {{ option.productSize }} (재고: {{ option.quantity }})
+                                    - {{
                                     option.price.toLocaleString() }}원
                                 </option>
                             </select>
@@ -256,10 +273,28 @@
                             </div>
                         </div>
                     </div>
+                    <div class="modal-overlay" v-if="alertModal.show" @click.self="fnCloseAlert"
+                        style="z-index: 10001;">
+                        <div class="modal-content" style="max-width: 400px;">
+                            <div class="modal-header">
+                                <h3>{{ alertModal.isConfirm ? '확인' : '알림' }}</h3>
+                                <button @click="fnCloseAlert" class="modal-close-btn">&times;</button>
+                            </div>
+                            <div class="modal-body" style="padding: 20px 0; font-size: 16px;">
+                                <div v-html="alertModal.message"></div>
+                            </div>
+                            <div class="modal-footer" style="justify-content: center; gap: 10px; border-top: none;">
+                                <button class="btn-register-answer" @click="fnConfirmAlert">확인</button>
+                                <button v-if="alertModal.isConfirm" class="btn-back" @click="fnCloseAlert">취소</button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="modal-footer">
                         <button class="btn-back" @click="closeModal()">취소</button>
-                        <button class="btn-register-answer" @click="processStatusChange()">{{ processButtonText }}</button>
-                        <button class="btn-register-answer" @click="processStatusChange2()" v-if="productOptions == 0">반품 처리</button>
+                        <button class="btn-register-answer" @click="processStatusChange()">{{ processButtonText
+                            }}</button>
+                        <button class="btn-register-answer" @click="processStatusChange2()"
+                            v-if="productOptions == 0">반품 처리</button>
                     </div>
                 </div>
             </div>
@@ -305,7 +340,13 @@
                         totalCount: 0
                     },
                     showNotificationPanel: false,
-                    notificationInterval: null
+                    notificationInterval: null,
+                    alertModal: {
+                        show: false,
+                        message: "",
+                        isConfirm: false, // true면 취소 버튼 보임
+                        callback: null
+                    }
                 };
             },
             computed: {
@@ -326,33 +367,47 @@
                 // 정렬된 리스트
                 sortedList() {
                     if (!this.sortColumn) return this.list;
-                    
+
                     const sorted = [...this.list];
                     sorted.sort((a, b) => {
                         let aVal = a[this.sortColumn];
                         let bVal = b[this.sortColumn];
-                        
+
                         // 날짜 정렬
                         if (this.sortColumn === 'cDate') {
                             aVal = new Date(aVal);
                             bVal = new Date(bVal);
                         }
-                        
+
                         // 숫자 정렬
                         if (this.sortColumn === 'orderNo') {
                             aVal = parseInt(aVal);
                             bVal = parseInt(bVal);
                         }
-                        
+
                         if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
                         if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
                         return 0;
                     });
-                    
+
                     return sorted;
                 }
             },
             methods: {
+                fnAlert(msg, callback = null) {
+                    this.alertModal = { show: true, message: msg, isConfirm: false, callback: callback };
+                },
+                fnConfirm(msg, callback) {
+                    this.alertModal = { show: true, message: msg, isConfirm: true, callback: callback };
+                },
+                fnCloseAlert() {
+                    this.alertModal.show = false;
+                },
+                fnConfirmAlert() {
+                    if (this.alertModal.callback) this.alertModal.callback();
+                    this.fnCloseAlert();
+                },
+
                 fnLogout: function () {
                     let self = this;
                     let param = {};
@@ -405,12 +460,12 @@
                             console.error("AJAX Error:", status, error, xhr.responseText);
                             alert("데이터 로드 중 오류가 발생했습니다.");
                         },
-                        complete: function() {
+                        complete: function () {
                             self.loading = false; // 로딩 종료
                         }
                     });
                 },
-                sortTable: function(column) {
+                sortTable: function (column) {
                     if (this.sortColumn === column) {
                         // 같은 컬럼 클릭 시 정렬 방향 전환
                         this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
@@ -571,28 +626,24 @@
                             return;
                     }
 
-                    if (!confirm(confirmMsg)) {
-                        return;
-                    }
-
-                    $.ajax({
-                        url: url,
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-                            if (data.result === "success") {
-                                alert(data.message);
-                                self.closeModal();
-                                self.fnGetRefundReturnList(self.currentPage); // 리스트 새로고침
-                            } else {
-                                alert("처리 실패: " + data.message);
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("처리 AJAX 오류:", status, error, xhr.responseText);
-                            alert("요청 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
-                        }
+                    self.fnConfirm(confirmMsg, () => {
+                        $.ajax({
+                            url: url,
+                            dataType: "json",
+                            type: "POST",
+                            data: param,
+                            success: function (data) {
+                                if (data.result === "success") {
+                                    self.fnAlert("처리가 완료되었습니다.", () => {
+                                        self.closeModal();
+                                        self.fnGetRefundReturnList(self.currentPage);
+                                    });
+                                } else {
+                                    self.fnAlert("처리 실패: " + data.message);
+                                }
+                            },
+                            error: function () { self.fnAlert("처리 중 서버 오류가 발생했습니다."); }
+                        });
                     });
                 },
                 processStatusChange2() {
@@ -610,48 +661,39 @@
                     confirmMsg = "삭제된 제품으로, 반품 처리를 완료했습니다.";
                     url = "/admin/refund-return/updateStatus.dox";
 
-                    if (!confirm(confirmMsg)) {
-                        return;
-                    }
-
-                    $.ajax({
-                        url: url,
-                        dataType: "json",
-                        type: "POST",
-                        data: param,
-                        success: function (data) {
-                            if (data.result === "success") {
-                                alert(data.message);
-                                self.closeModal();
-                                self.fnGetRefundReturnList(self.currentPage); // 리스트 새로고침
-                            } else {
-                                alert("처리 실패: " + data.message);
+                    self.fnConfirm("삭제된 제품입니다. <strong>반품완료</strong>로 강제 처리하시겠습니까?", () => {
+                        $.ajax({
+                            url: "/admin/refund-return/updateStatus.dox",
+                            dataType: "json",
+                            type: "POST",
+                            data: { orderNo: self.selectedOrder.orderNo, currentStatus: self.selectedOrder.status, newStatus: '반품완료' },
+                            success: function (data) {
+                                self.fnAlert("반품 처리가 완료되었습니다.", () => {
+                                    self.closeModal();
+                                    self.fnGetRefundReturnList(self.currentPage);
+                                });
                             }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("처리 AJAX 오류:", status, error, xhr.responseText);
-                            alert("요청 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
-                        }
+                        });
                     });
                 },
-                downloadExcel: function() {
+                downloadExcel: function () {
                     let self = this;
                     let params = new URLSearchParams();
                     if (self.keyword) params.append('keyword', self.keyword);
                     if (self.statusOption) params.append('statusOption', self.statusOption);
                     if (self.startDate) params.append('startDate', self.startDate);
                     if (self.endDate) params.append('endDate', self.endDate);
-                    
+
                     window.location.href = '/admin/refund-return/excel.dox?' + params.toString();
                 },
                 // 알림 관련 메서드
-                fetchNotifications: function() {
+                fetchNotifications: function () {
                     AdminNotifications.fetchNotifications(this);
                 },
-                toggleNotificationPanel: function() {
+                toggleNotificationPanel: function () {
                     AdminNotifications.toggleNotificationPanel(this);
                 },
-                markAsReadAndGo: function(type, url) {
+                markAsReadAndGo: function (type, url) {
                     AdminNotifications.markAsReadAndGo(this, type, url);
                 }
             },
@@ -664,7 +706,7 @@
                 self.startDate = thirtyDaysAgo.toISOString().split('T')[0];
 
                 self.pageSize = "10";
-                
+
                 // 모달 초기화 보장
                 self.showModal = false;
                 self.selectedOrder = {};
@@ -672,7 +714,7 @@
                 self.selectedNewProductNo = "";
                 self.newProductDetails = null;
                 self.exchangeQuantity = 1;
-                
+
                 self.fnGetRefundReturnList();
                 AdminNotifications.init(self);
             },

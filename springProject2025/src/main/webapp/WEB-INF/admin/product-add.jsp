@@ -47,6 +47,113 @@
                 justify-content: center;
                 gap: 10px;
             }
+
+            /* 통합 알림 모달 스타일 */
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+                backdrop-filter: blur(3px);
+                /* 배경 블러 효과 */
+            }
+
+            .modal-content {
+                background: white;
+                padding: 40px 60px;
+                border-radius: 20px;
+                text-align: center;
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+                min-width: 380px;
+                border-top: 8px solid #667eea;
+                /* 상단 포인트 컬러 */
+            }
+
+            .modal-body {
+                font-size: 19px;
+                font-weight: 700;
+                color: #2c3e50;
+                margin-bottom: 30px;
+                line-height: 1.5;
+                word-break: keep-all;
+            }
+
+            /* 메인 보라색 그라데이션 버튼 (페이징 버튼 스타일) */
+            .btn-purple-grad {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                padding: 12px 30px;
+                border-radius: 30px;
+                font-size: 16px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+                outline: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                margin: 5px;
+            }
+
+            .btn-purple-grad:hover {
+                filter: brightness(1.1);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(102, 126, 234, 0.5);
+            }
+
+            /* 추가 등록용 붉은색 계열 그라데이션 (선택사항) */
+            .btn-red-grad {
+                background: linear-gradient(135deg, #ff6b6b 0%, #ee5253 100%);
+                color: white;
+                border: none;
+                padding: 12px 30px;
+                border-radius: 30px;
+                font-size: 16px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 12px rgba(238, 82, 83, 0.3);
+            }
+
+            .btn-red-grad:hover {
+                filter: brightness(1.1);
+                transform: translateY(-2px);
+            }
+
+            /* 돌아가기 버튼용 아웃라인 스타일 */
+            .btn-purple-outline {
+                background: white;
+                color: #667eea;
+                border: 2px solid #667eea;
+                padding: 10px 28px;
+                border-radius: 30px;
+                font-size: 16px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                margin: 5px;
+            }
+
+            .btn-purple-outline:hover {
+                background: #f7fafc;
+                transform: translateY(-1px);
+            }
+
+            /* 페이지 하단 버튼 컨테이너 */
+            .button {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                margin-top: 40px;
+            }
         </style>
     </head>
 
@@ -148,18 +255,22 @@
                     </table>
                 </div>
                 <div class="button">
-                    <button class="margin30 height40 redbutton rightbutton" @click="fnAddSystem">등록하기</button>
-                    <button class="margin30 height40 bluebutton leftbutton" @click="fnBack">돌아가기</button>
+                    <button class="btn-purple-grad" @click="fnAddSystem">등록하기</button>
+                    <button class="btn-purple-outline" @click="fnBack">돌아가기</button>
                 </div>
                 <div class="bottom200"></div>
-                <div class="modal-overlay" v-if="showSuccessModal" @click.self="fnBack">
+                <div class="modal-overlay" v-if="showSuccessModal" @click.self="fnCloseModal">
                     <div class="modal-content">
-                        <div class="modal-body">
-                            상품 등록이 완료되었습니다!
-                        </div>
+                        <div class="modal-body" v-html="modalMessage"></div>
                         <div class="modal-actions">
-                            <button class="bluebutton height40" @click="fnBack">목록으로 돌아가기</button>
-                            <button class="redbutton height40" @click="showSuccessModal = false">추가 등록하기</button>
+                            <template v-if="isSuccess">
+                                <button class="btn-purple-grad" @click="fnBack">목록으로 돌아가기</button>
+                                <button class="btn-red-grad" @click="fnReset">추가 등록하기</button>
+                            </template>
+
+                            <template v-else>
+                                <button class="btn-purple-grad" @click="fnCloseModal">확인</button>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -185,7 +296,9 @@
                     sizeNum: 1,
                     sessionId: "${sessionId}",
                     loading: false, // 로딩 상태
-                    showSuccessModal: false
+                    showSuccessModal: false,
+                    modalMessage: "", // 모달에 띄울 메시지
+                    isSuccess: false  // 성공 여부 (버튼 구성을 위해)
                 };
             },
             methods: {
@@ -278,7 +391,7 @@
 
                     // 이미지 파일이 선택되었는지 확인
                     if (!self.fnimgexist()) {
-                        alert("이미지 파일을 선택해 주세요.");
+                        self.fnOpenModal("이미지 파일을 선택해 주세요.", false);
                         return;
                     }
 
@@ -293,7 +406,7 @@
                     }
 
                     setTimeout(function () {
-                        alert("작성이 완료되었습니다!");
+                        self.fnOpenModal("상품 등록이 완료되었습니다!", true);
                         self.loading = false; // 로딩 종료
                         // self.fnBack();
                     }, 850);
@@ -309,7 +422,20 @@
                         return ['jpg', 'jpeg', 'png', 'glb'].includes(ext);
                     }
                     return false;
-                }
+                },
+                fnOpenModal(msg, success = false) {
+                    this.modalMessage = msg;
+                    this.isSuccess = success;
+                    this.showSuccessModal = true;
+                },
+                fnCloseModal() {
+                    this.showSuccessModal = false;
+                },
+                // 추가 등록을 위해 상태 초기화
+                fnReset() {
+                    this.showSuccessModal = false;
+                    // 필요한 경우 입력값 초기화 로직 추가 가능
+                },
             }, // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분
