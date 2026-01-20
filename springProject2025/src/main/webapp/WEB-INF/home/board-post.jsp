@@ -315,7 +315,7 @@
                                         아이디
                                     </h3>
                                     <div class="post-author">
-                                        <strong>{{ userName }}</strong>
+                                        <strong>{{ sessionId }}</strong>
                                     </div>
                                 </div>
 
@@ -324,10 +324,14 @@
                                         카테고리
                                     </h3>
                                     <div class="post-type">
-                                        <input type="radio" value="B" v-model="type">공지
-                                        <input type="radio" value="Q" v-model="type">문의
-                                        <input type="radio" value="F" v-model="type">자유
-                                        <input type="radio" value="R" v-model="type">대회
+                                        <template v-if=" userType == 'A'">
+                                            <input type="radio" value="B" v-model="type">공지
+                                        </template>
+                                        <template v-else>
+                                            <input type="radio" value="Q" v-model="type">문의
+                                            <input type="radio" value="F" v-model="type">자유
+                                            <input type="radio" value="R" v-model="type">대회
+                                        </template>
                                     </div>
                                 </div>
                                 <div class="sub-section">
@@ -452,9 +456,23 @@
                     showModal: false,
                     modalMessage: '',
                     modalCallback: null,
-                    userType : '${userType}',
+
+                    userType : '',
 
                 };
+            },
+            watch: {
+                userType(newVal) {
+                    console.log("WATCHER FIRED, newVal =", newVal);
+
+                    if (newVal === 'A') {
+                        this.type = 'B';
+                    } else {
+                        this.type = 'Q';
+                    }
+
+                    console.log("type is now:", this.type);
+                }
             },
             methods: {
                 // 함수(메소드) - (key : function())
@@ -474,13 +492,13 @@
                 fnGetUserInfo: function () {
                     let self = this;
                     $.ajax({
-                        url: "/home/mypage/userInfo.dox",
+                        url: "/home/mypage/info.dox",
                         dataType: "json",
                         type: "POST",
                         data: { userId: self.sessionId },
                         success: function (data) {
-                            console.log("사용자 이름:", data);
-                            self.userName = data;
+                            self.userName = data.info.name;
+                            self.userType = data.info.usertype;
                         },
                         error: function (xhr, status, error) {
                             console.error("사용자 정보 조회 실패:", error);
@@ -615,7 +633,7 @@
                 let self = this;
                 self.fnBoardList();
                 self.fnGetUserInfo();
-                console.log("User ID : " + self.userId);
+                console.log("User ID : " + self.sessionId);
                 if (self.sessionId == "") {
                     self.isLoggedIn = false;
                 } else {

@@ -114,11 +114,28 @@
                         </tr>
                         <tr>
                             <th>성별</th>
-                            <td><input v-model="gender"></td>
+                            <td><input v-model="gender" placeholder="남녀 공용 : A, 남성 : M, 여성 : F"></td>
                         </tr>
                         <tr>
                             <th>제품분류</th>
-                            <td><input v-model="typeNo"></td>
+                            <td>
+                                <select v-model="typeNo" id="type-menu">
+                                    <option value="10">러닝화</option>
+                                    <option value="20">보호대</option>
+                                    <option value="30">모자</option>
+                                    <option value="40">건강보조식품</option>
+                                    <option value="50">러닝복</option>
+                                    <option value="101">일반러닝화</option>
+                                    <option value="102">트레일러닝화</option>
+                                    <option value="103">카본화</option>
+                                    <option value="201">무릎보호대</option>
+                                    <option value="202">허리보호대</option>
+                                    <option value="301">일반모자</option>
+                                    <option value="401">에너지젤</option>
+                                    <option value="501">상의</option>
+                                    <option value="502">하의</option>
+                                </select>
+                            </td>
                         </tr>
                         <tr>
                             <th>상세설명</th>
@@ -222,6 +239,7 @@
                             //    alert("form 내용확인 " + JSON.stringify(form));
                             //    self.upload(form);
                             //}, 100);
+                            self.fnBack();
 
 
                         }
