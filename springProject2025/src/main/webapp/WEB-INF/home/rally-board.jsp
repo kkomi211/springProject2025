@@ -629,7 +629,9 @@
                     showRallyModal: false,
                     selectedRally: {},
 
-                    newReplyCount: 0 // 새 답변 개수
+                    newReplyCount: 0, // 새 답변 개수
+                    shippingNotificationCount: 0, // 배송 알림 개수
+                    cartCount: 0 // 장바구니 수량
                 };
             },
             methods: {
@@ -913,6 +915,59 @@
                     });
                 },
 
+                // 배송 알림 개수 체크 (문의내역 방식과 동일)
+                checkShippingNotificationCount: function () {
+                    let self = this;
+                    if (!self.sessionId || self.sessionId === '') {
+                        self.shippingNotificationCount = 0;
+                        return;
+                    }
+                    
+                    // localStorage에서 확인한 배송 주문 목록 불러오기
+                    const storageKey = `checkedShippingOrders_${self.sessionId}`;
+                    const saved = localStorage.getItem(storageKey);
+                    let checkedOrders = [];
+                    if (saved) {
+                        try {
+                            checkedOrders = JSON.parse(saved);
+                        } catch (e) {
+                            checkedOrders = [];
+                        }
+                    }
+                    
+                    // 서버에서 주문 목록 가져오기 (모든 주문)
+                    $.ajax({
+                        url: "/home/mypage/orders.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: {
+                            sessionId: self.sessionId,
+                            page: 1,
+                            pageSize: 1000, // 모든 주문 가져오기
+                            startRow: 1,
+                            endRow: 1000
+                        },
+                        success: function (data) {
+                            if (data.result == "success" && data.list) {
+                                let uncheckedCount = 0;
+                                data.list.forEach(function (order) {
+                                    // 배송중 상태이고 확인하지 않은 주문만 카운트
+                                    if (order.status === '배송중' && !checkedOrders.includes(String(order.orderNo))) {
+                                        uncheckedCount++;
+                                    }
+                                });
+                                self.shippingNotificationCount = uncheckedCount;
+                                console.log("배송 알림 개수:", uncheckedCount);
+                            } else {
+                                self.shippingNotificationCount = 0;
+                            }
+                        },
+                        error: function () {
+                            self.shippingNotificationCount = 0;
+                        }
+                    });
+                },
+                
                 // 새 답변 개수 체크 (localStorage 기반)
                 checkNewReplyCount: function () {
                     // alert("답변개수 확인 진입");
@@ -1006,6 +1061,7 @@
                 if (self.sessionId && self.sessionId !== '') {
                     console.log("장바구니 수량 조회를 시작합니다.");
                     self.fetchCartCount();
+                    self.checkShippingNotificationCount(); // 배송 알림 개수 체크
                     self.setupActivityListeners();
                     self.startSessionTimer();
                 } else {
@@ -1013,6 +1069,14 @@
                 }
 
                 self.checkNewReplyCount();
+                
+                // 주기적으로 새 답변 및 배송 알림 체크 (30초마다)
+                setInterval(function () {
+                    if (self.sessionId && self.sessionId !== '') {
+                        self.checkNewReplyCount();
+                        self.checkShippingNotificationCount();
+                    }
+                }, 30000);
 
                 //  ESC 키 이벤트 리스너 추가 
                 window.addEventListener('keydown', self.handleKeyDown);
