@@ -324,16 +324,27 @@
                                         카테고리
                                     </h3>
                                     <div class="post-type">
-                                        <template v-if=" userType == 'A'">
-                                            <input type="radio" value="B" v-model="type">공지
+                                        <template v-if="userType == 'A'">
+                                            <label>
+                                                <input type="radio" value="B" v-model="type">
+                                                <span>공지</span>
+                                            </label>
                                         </template>
                                         <template v-else>
-                                            <input type="radio" value="Q" v-model="type">문의
-                                            <input type="radio" value="F" v-model="type">자유
-                                            <input type="radio" value="R" v-model="type">대회
+                                            <label>
+                                                <input type="radio" value="Q" v-model="type">
+                                                <span>문의</span>
+                                            </label>
+                                            <label>
+                                                <input type="radio" value="F" v-model="type">
+                                                <span>자유</span>
+                                            </label>
+                                            <label>
+                                                <input type="radio" value="R" v-model="type">
+                                                <span>대회</span>
+                                            </label>
                                         </template>
                                     </div>
-                                </div>
                                 <div class="sub-section">
                                     <h3 class="comment-title">
                                         제목

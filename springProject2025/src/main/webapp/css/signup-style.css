@@ -335,3 +335,8 @@ html, body {
             gap:10px;
             margin-right: 10px;
         }
+
+        .gender-radio-btn span {
+            white-space: nowrap; /* Ensure text stays on one line */
+            font-size: 14px;
+        }

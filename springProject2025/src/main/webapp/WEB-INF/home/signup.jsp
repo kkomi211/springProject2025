@@ -96,8 +96,14 @@
                                     <label>성별</label>
                                     <label>
                                         <div class="gender-section">
-                                        <div class="gender-radio-btn"><input type="radio" v-model="gender" value="F"> <span>F</span></div>
-                                        <div class="gender-radio-btn"><input type="radio" v-model="gender" value="M"> <span>M</span></div>
+                                            <label class="gender-radio-btn">
+                                                <input type="radio" v-model="gender" value="F">
+                                                <span>여성</span>
+                                            </label>
+                                            <label class="gender-radio-btn">
+                                                <input type="radio" v-model="gender" value="M">
+                                                <span>남성</span>
+                                            </label>
                                         </div>
                                     </label>
                                 </div>
