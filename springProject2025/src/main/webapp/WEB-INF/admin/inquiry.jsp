@@ -26,13 +26,14 @@
                     <!-- 알림 아이콘 -->
                     <div class="notification-icon-wrapper" @click="toggleNotificationPanel">
                         <span class="notification-bell">🔔</span>
-                        <span v-if="notificationCounts.totalCount > 0" class="notification-badge">{{ notificationCounts.totalCount }}</span>
+                        <span v-if="notificationCounts.totalCount > 0" class="notification-badge">{{
+                            notificationCounts.totalCount }}</span>
                     </div>
-                    <div style="line-height: 1.2;">관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
-                            @click="fnLogout">로그오프</a></div>
+                    <div style="line-height: 1.2;">관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;"
+                            class="text-white text-decoration-none" @click="fnLogout">로그오프</a></div>
                 </div>
             </div>
-            
+
             <!-- 알림 패널 -->
             <div v-if="showNotificationPanel" class="notification-panel" @click.stop>
                 <div class="notification-header">
@@ -40,24 +41,24 @@
                     <button @click="toggleNotificationPanel" class="notification-close">×</button>
                 </div>
                 <div class="notification-content">
-                    <div class="notification-item" v-if="notificationCounts.newInquiryCount > 0" 
-                         @click="markAsReadAndGo('inquiry', '/admin/inquiry.do')">
+                    <div class="notification-item" v-if="notificationCounts.newInquiryCount > 0"
+                        @click="markAsReadAndGo('inquiry', '/admin/inquiry.do')">
                         <div class="notification-item-icon">📝</div>
                         <div class="notification-item-text">
                             <strong>새 문의</strong>
                             <span>{{ notificationCounts.newInquiryCount }}건</span>
                         </div>
                     </div>
-                    <div class="notification-item" v-if="notificationCounts.newOrderCount > 0" 
-                         @click="markAsReadAndGo('order', '/admin/orders.do')">
+                    <div class="notification-item" v-if="notificationCounts.newOrderCount > 0"
+                        @click="markAsReadAndGo('order', '/admin/orders.do')">
                         <div class="notification-item-icon">📦</div>
                         <div class="notification-item-text">
                             <strong>신규 주문</strong>
                             <span>{{ notificationCounts.newOrderCount }}건</span>
                         </div>
                     </div>
-                    <div class="notification-item" v-if="notificationCounts.newBoardReportCount > 0" 
-                         @click="markAsReadAndGo('report', '/admin/board-report.do')">
+                    <div class="notification-item" v-if="notificationCounts.newBoardReportCount > 0"
+                        @click="markAsReadAndGo('report', '/admin/board-report.do')">
                         <div class="notification-item-icon">🚨</div>
                         <div class="notification-item-text">
                             <strong>신고 게시물</strong>
@@ -69,7 +70,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- 알림 패널 오버레이 -->
             <div v-if="showNotificationPanel" class="notification-overlay" @click="toggleNotificationPanel"></div>
 
@@ -127,7 +128,8 @@
 
                     <!-- 엑셀 다운로드 버튼 -->
                     <div class="filter-group">
-                        <button @click="downloadExcel()" style="background-color: #28a745; color: white; padding: 8px 18px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
+                        <button @click="downloadExcel()"
+                            style="background-color: #28a745; color: white; padding: 8px 18px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
                             📥 엑셀 다운로드
                         </button>
                     </div>
@@ -138,17 +140,31 @@
                         <div class="loading-spinner"></div>
                         <div class="loading-text">데이터를 불러오는 중...</div>
                     </div>
-                    
+
                     <!-- 테이블 -->
                     <table id="inquiry-list-table" v-if="!loading && list.length > 0">
                         <tr>
-                            <th class="sortable-header" @click="sortTable('inquiryNo')" :class="{'sort-asc': sortColumn === 'inquiryNo' && sortDirection === 'asc', 'sort-desc': sortColumn === 'inquiryNo' && sortDirection === 'desc'}">문의번호</th>
-                            <th class="sortable-header" @click="sortTable('productName')" :class="{'sort-asc': sortColumn === 'productName' && sortDirection === 'asc', 'sort-desc': sortColumn === 'productName' && sortDirection === 'desc'}">상품명</th>
-                            <th class="sortable-header" @click="sortTable('title')" :class="{'sort-asc': sortColumn === 'title' && sortDirection === 'asc', 'sort-desc': sortColumn === 'title' && sortDirection === 'desc'}">문의제목</th>
-                            <th class="sortable-header" @click="sortTable('userId')" :class="{'sort-asc': sortColumn === 'userId' && sortDirection === 'asc', 'sort-desc': sortColumn === 'userId' && sortDirection === 'desc'}">ID</th>
-                            <th class="sortable-header" @click="sortTable('name')" :class="{'sort-asc': sortColumn === 'name' && sortDirection === 'asc', 'sort-desc': sortColumn === 'name' && sortDirection === 'desc'}">이름</th>
-                            <th class="sortable-header" @click="sortTable('cDate')" :class="{'sort-asc': sortColumn === 'cDate' && sortDirection === 'asc', 'sort-desc': sortColumn === 'cDate' && sortDirection === 'desc'}">등록일</th>
-                            <th class="sortable-header" @click="sortTable('status')" :class="{'sort-asc': sortColumn === 'status' && sortDirection === 'asc', 'sort-desc': sortColumn === 'status' && sortDirection === 'desc'}">상태</th>
+                            <th class="sortable-header" @click="sortTable('inquiryNo')"
+                                :class="{'sort-asc': sortColumn === 'inquiryNo' && sortDirection === 'asc', 'sort-desc': sortColumn === 'inquiryNo' && sortDirection === 'desc'}">
+                                문의번호</th>
+                            <th class="sortable-header" @click="sortTable('productName')"
+                                :class="{'sort-asc': sortColumn === 'productName' && sortDirection === 'asc', 'sort-desc': sortColumn === 'productName' && sortDirection === 'desc'}">
+                                상품명</th>
+                            <th class="sortable-header" @click="sortTable('title')"
+                                :class="{'sort-asc': sortColumn === 'title' && sortDirection === 'asc', 'sort-desc': sortColumn === 'title' && sortDirection === 'desc'}">
+                                문의제목</th>
+                            <th class="sortable-header" @click="sortTable('userId')"
+                                :class="{'sort-asc': sortColumn === 'userId' && sortDirection === 'asc', 'sort-desc': sortColumn === 'userId' && sortDirection === 'desc'}">
+                                ID</th>
+                            <th class="sortable-header" @click="sortTable('name')"
+                                :class="{'sort-asc': sortColumn === 'name' && sortDirection === 'asc', 'sort-desc': sortColumn === 'name' && sortDirection === 'desc'}">
+                                이름</th>
+                            <th class="sortable-header" @click="sortTable('cDate')"
+                                :class="{'sort-asc': sortColumn === 'cDate' && sortDirection === 'asc', 'sort-desc': sortColumn === 'cDate' && sortDirection === 'desc'}">
+                                등록일</th>
+                            <th class="sortable-header" @click="sortTable('status')"
+                                :class="{'sort-asc': sortColumn === 'status' && sortDirection === 'asc', 'sort-desc': sortColumn === 'status' && sortDirection === 'desc'}">
+                                상태</th>
                         </tr>
                         <tr v-for="item in sortedList" :key="item.inquiryNo">
                             <td>{{item.inquiryNo}}</td>
@@ -167,7 +183,7 @@
                             </td>
                         </tr>
                     </table>
-                    
+
                     <!-- 빈 데이터 메시지 -->
                     <div v-if="!loading && list.length === 0" class="empty-state-card">
                         <div class="empty-icon">📭</div>
@@ -194,7 +210,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- 문의 상세보기 모달 -->
             <div v-if="showInquiryModal" class="modal-overlay" @click.self="closeInquiryModal">
                 <div class="modal-content inquiry-modal">
@@ -242,7 +258,8 @@
                                 <td>
                                     <!-- inquiryDetail.status가 'N'일 때만 답변 입력 필드와 버튼 표시 -->
                                     <div v-if="inquiryDetail.status === 'N'">
-                                        <textarea v-model="newAnswer" rows="5" cols="50" placeholder="답변을 입력하세요" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"></textarea>
+                                        <textarea v-model="newAnswer" rows="5" cols="50" placeholder="답변을 입력하세요"
+                                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;"></textarea>
                                     </div>
                                     <!-- inquiryDetail.status가 'Y'일 때는 기존 답변 내용만 표시 -->
                                     <div v-else>
@@ -252,9 +269,25 @@
                             </tr>
                         </table>
                     </div>
+                    <div class="modal-overlay" v-if="alertModal.show" @click.self="fnCloseAlert">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>알림</h3>
+                                <button @click="fnCloseAlert" class="modal-close-btn">&times;</button>
+                            </div>
+                            <div class="modal-body" style="padding: 20px 0; font-size: 16px;">
+                                {{ alertModal.message }}
+                            </div>
+                            <div class="modal-footer" style="justify-content: center; border-top: none;">
+                                <button class="bluebutton height40" @click="fnConfirmAlert"
+                                    style="min-width: 100px;">확인</button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="modal-footer">
                         <!-- 상태가 'N'일 때만 답변 등록 버튼 표시 -->
-                        <button v-if="inquiryDetail && inquiryDetail.status === 'N'" @click="fnRegisterAnswer" class="btn-register-answer">답변 등록</button>
+                        <button v-if="inquiryDetail && inquiryDetail.status === 'N'" @click="fnRegisterAnswer"
+                            class="btn-register-answer">답변 등록</button>
                         <button @click="closeInquiryModal" class="btn-back">닫기</button>
                     </div>
                 </div>
@@ -293,10 +326,16 @@
                         totalCount: 0
                     },
                     showNotificationPanel: false,
-                    notificationInterval: null
+                    notificationInterval: null,
+                    alertModal: {
+                        show: false,
+                        message: "",
+                        callback: null
+                    }
                 };
             },
             computed: {
+                
                 // 페이지 번호 배열 계산 (최대 5개 페이지 번호만 표시)
                 pageNumbers() {
                     const pages = [];
@@ -317,33 +356,45 @@
                 // 정렬된 리스트
                 sortedList() {
                     if (!this.sortColumn) return this.list;
-                    
+
                     const sorted = [...this.list];
                     sorted.sort((a, b) => {
                         let aVal = a[this.sortColumn];
                         let bVal = b[this.sortColumn];
-                        
+
                         // 날짜 정렬
                         if (this.sortColumn === 'cDate') {
                             aVal = new Date(aVal);
                             bVal = new Date(bVal);
                         }
-                        
+
                         // 숫자 정렬
                         if (this.sortColumn === 'inquiryNo') {
                             aVal = parseInt(aVal);
                             bVal = parseInt(bVal);
                         }
-                        
+
                         if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
                         if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
                         return 0;
                     });
-                    
+
                     return sorted;
                 }
             },
             methods: {
+                fnAlert(msg, callback = null) {
+                    this.alertModal.message = msg;
+                    this.alertModal.callback = callback;
+                    this.alertModal.show = true;
+                },
+                fnCloseAlert() {
+                    this.alertModal.show = false;
+                },
+                fnConfirmAlert() {
+                    if (this.alertModal.callback) this.alertModal.callback();
+                    this.fnCloseAlert();
+                },
                 // 함수(메소드) - (key : function())
                 fnLogout: function () {
                     let self = this;
@@ -394,15 +445,15 @@
                                 self.fnChangePage(1);
                             }
                         },
-                        error: function() {
-                            alert("데이터를 불러오는 중 오류가 발생했습니다.");
+                        error: function () {
+                            self.fnAlert("데이터를 불러오는 중 오류가 발생했습니다.");
                         },
-                        complete: function() {
+                        complete: function () {
                             self.loading = false; // 로딩 종료
                         }
                     });
                 },
-                sortTable: function(column) {
+                sortTable: function (column) {
                     if (this.sortColumn === column) {
                         // 같은 컬럼 클릭 시 정렬 방향 전환
                         this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
@@ -423,7 +474,7 @@
                     let self = this;
                     self.showInquiryModal = true;
                     self.newAnswer = "";
-                    
+
                     let param = {
                         inquiryNo: inquiryNo
                     };
@@ -436,24 +487,24 @@
                             console.log(data);
                             self.inquiryDetail = data.info;
                         },
-                        error: function() {
-                            alert("문의 상세 정보를 불러오는 중 오류가 발생했습니다.");
+                        error: function () {
+                            self.fnAlert("문의 상세 정보를 불러오는 중 오류가 발생했습니다.");
                             self.closeInquiryModal();
                         }
                     });
                 },
-                closeInquiryModal: function() {
+                closeInquiryModal: function () {
                     this.showInquiryModal = false;
                     this.inquiryDetail = null;
                     this.newAnswer = "";
                 },
-                fnRegisterAnswer: function() {
+                fnRegisterAnswer: function () {
                     let self = this;
                     if (!self.inquiryDetail) return;
-                    
+
                     // 답변 내용이 비어있는지 확인
                     if (!self.newAnswer.trim()) {
-                        alert("답변 내용을 입력해주세요.");
+                        self.fnAlert("답변 내용을 입력해주세요.");
                         return;
                     }
 
@@ -470,44 +521,43 @@
                         data: param,
                         success: function (data) {
                             if (data.result === "success") {
-                                alert("답변이 성공적으로 등록되었습니다.");
-                                // 답변 등록 후 최신 정보로 갱신
-                                self.fnInquiryView(self.inquiryDetail.inquiryNo);
-                                // 리스트 새로고침
-                                self.fnInquiryList(self.currentPage);
+                                self.fnAlert("답변이 성공적으로 등록되었습니다.", () => {
+                                    self.fnInquiryView(self.inquiryDetail.inquiryNo);
+                                    self.fnInquiryList(self.currentPage);
+                                });
                             } else {
-                                alert("답변 등록에 실패했습니다.");
+                                self.fnAlert("답변 등록에 실패했습니다.");
                             }
                         },
                         error: function (xhr, status, error) {
                             console.error("답변 등록 실패:", status, error);
-                            alert("답변 등록 중 오류가 발생했습니다.");
+                            self.fnAlert("답변 등록 중 오류가 발생했습니다.");
                         }
                     });
                 },
-                downloadExcel: function() {
+                downloadExcel: function () {
                     let self = this;
                     let params = new URLSearchParams();
                     if (self.keyword) params.append('keyword', self.keyword);
                     if (self.statusOption) params.append('statusOption', self.statusOption);
                     if (self.startDate) params.append('startDate', self.startDate);
                     if (self.endDate) params.append('endDate', self.endDate);
-                    
+
                     window.location.href = '/admin/inquiry/excel.dox?' + params.toString();
                 },
                 // 실시간 알림 개수 가져오기
                 // 페이지 이동
-                goToPage: function(url) {
+                goToPage: function (url) {
                     window.location.href = url;
                 },
                 // 알림 관련 메서드
-                fetchNotifications: function() {
+                fetchNotifications: function () {
                     AdminNotifications.fetchNotifications(this);
                 },
-                toggleNotificationPanel: function() {
+                toggleNotificationPanel: function () {
                     AdminNotifications.toggleNotificationPanel(this);
                 },
-                markAsReadAndGo: function(type, url) {
+                markAsReadAndGo: function (type, url) {
                     AdminNotifications.markAsReadAndGo(this, type, url);
                 }
             }, // methods

@@ -14,7 +14,44 @@
         <link rel="stylesheet" href="/css/admin-inquiry.css">
         <script src="/js/page-change.js"></script>
         <script src="/js/admin-notifications.js"></script>
+        <style>
+            /* 등록하기 버튼 전용 보라색 그라데이션 스타일 */
+            .btn-register-main {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                padding: 12px 30px;
+                border-radius: 30px;
+                font-size: 16px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+                outline: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
 
+            .btn-register-main:hover {
+                filter: brightness(1.1);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(102, 126, 234, 0.5);
+            }
+
+            .btn-register-main:active {
+                transform: translateY(0);
+            }
+
+            /* 버튼 컨테이너 정렬 보정 */
+            .button {
+                display: flex;
+                justify-content: flex-end;
+                /* 우측 정렬 */
+                margin-top: 20px;
+                padding-right: 10px;
+            }
+        </style>
     </head>
 
     <body class="adminbody">
@@ -27,13 +64,14 @@
                     <!-- 알림 아이콘 -->
                     <div class="notification-icon-wrapper" @click="toggleNotificationPanel">
                         <span class="notification-bell">🔔</span>
-                        <span v-if="notificationCounts.totalCount > 0" class="notification-badge">{{ notificationCounts.totalCount }}</span>
+                        <span v-if="notificationCounts.totalCount > 0" class="notification-badge">{{
+                            notificationCounts.totalCount }}</span>
                     </div>
-                    <div style="line-height: 1.2;">관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;" class="text-white text-decoration-none"
-                            @click="fnLogout">로그오프</a></div>
+                    <div style="line-height: 1.2;">관리자 ${sessionId} 님 안녕하세요 &nbsp; <a href="javascript:;"
+                            class="text-white text-decoration-none" @click="fnLogout">로그오프</a></div>
                 </div>
             </div>
-            
+
             <!-- 알림 패널 -->
             <div v-if="showNotificationPanel" class="notification-panel" @click.stop>
                 <div class="notification-header">
@@ -41,24 +79,24 @@
                     <button @click="toggleNotificationPanel" class="notification-close">×</button>
                 </div>
                 <div class="notification-content">
-                    <div class="notification-item" v-if="notificationCounts.newInquiryCount > 0" 
-                         @click="markAsReadAndGo('inquiry', '/admin/inquiry.do')">
+                    <div class="notification-item" v-if="notificationCounts.newInquiryCount > 0"
+                        @click="markAsReadAndGo('inquiry', '/admin/inquiry.do')">
                         <div class="notification-item-icon">📝</div>
                         <div class="notification-item-text">
                             <strong>새 문의</strong>
                             <span>{{ notificationCounts.newInquiryCount }}건</span>
                         </div>
                     </div>
-                    <div class="notification-item" v-if="notificationCounts.newOrderCount > 0" 
-                         @click="markAsReadAndGo('order', '/admin/orders.do')">
+                    <div class="notification-item" v-if="notificationCounts.newOrderCount > 0"
+                        @click="markAsReadAndGo('order', '/admin/orders.do')">
                         <div class="notification-item-icon">📦</div>
                         <div class="notification-item-text">
                             <strong>신규 주문</strong>
                             <span>{{ notificationCounts.newOrderCount }}건</span>
                         </div>
                     </div>
-                    <div class="notification-item" v-if="notificationCounts.newBoardReportCount > 0" 
-                         @click="markAsReadAndGo('report', '/admin/board-report.do')">
+                    <div class="notification-item" v-if="notificationCounts.newBoardReportCount > 0"
+                        @click="markAsReadAndGo('report', '/admin/board-report.do')">
                         <div class="notification-item-icon">🚨</div>
                         <div class="notification-item-text">
                             <strong>신고 게시물</strong>
@@ -70,7 +108,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- 알림 패널 오버레이 -->
             <div v-if="showNotificationPanel" class="notification-overlay" @click="toggleNotificationPanel"></div>
 
@@ -110,7 +148,8 @@
 
                     <!-- 엑셀 다운로드 버튼 -->
                     <div class="filter-group">
-                        <button @click="downloadExcel()" style="background-color: #28a745; color: white; padding: 8px 18px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
+                        <button @click="downloadExcel()"
+                            style="background-color: #28a745; color: white; padding: 8px 18px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
                             📥 엑셀 다운로드
                         </button>
                     </div>
@@ -122,22 +161,35 @@
                         <div class="loading-spinner"></div>
                         <div class="loading-text">데이터를 불러오는 중...</div>
                     </div>
-                    
+
                     <!-- 테이블 -->
                     <table class="newtable" v-if="!loading && list.length > 0">
                         <tr>
-                            <th class="sortable-header" @click="sortTable('productNo')" :class="{'sort-asc': sortColumn === 'productNo' && sortDirection === 'asc', 'sort-desc': sortColumn === 'productNo' && sortDirection === 'desc'}">제품번호</th>
-                            <th class="sortable-header" @click="sortTable('productName')" :class="{'sort-asc': sortColumn === 'productName' && sortDirection === 'asc', 'sort-desc': sortColumn === 'productName' && sortDirection === 'desc'}">제품이름</th>
-                            <th class="sortable-header" @click="sortTable('price')" :class="{'sort-asc': sortColumn === 'price' && sortDirection === 'asc', 'sort-desc': sortColumn === 'price' && sortDirection === 'desc'}">제품가격</th>
-                            <th class="sortable-header" @click="sortTable('quantity')" :class="{'sort-asc': sortColumn === 'quantity' && sortDirection === 'asc', 'sort-desc': sortColumn === 'quantity' && sortDirection === 'desc'}">
+                            <th class="sortable-header" @click="sortTable('productNo')"
+                                :class="{'sort-asc': sortColumn === 'productNo' && sortDirection === 'asc', 'sort-desc': sortColumn === 'productNo' && sortDirection === 'desc'}">
+                                제품번호</th>
+                            <th class="sortable-header" @click="sortTable('productName')"
+                                :class="{'sort-asc': sortColumn === 'productName' && sortDirection === 'asc', 'sort-desc': sortColumn === 'productName' && sortDirection === 'desc'}">
+                                제품이름</th>
+                            <th class="sortable-header" @click="sortTable('price')"
+                                :class="{'sort-asc': sortColumn === 'price' && sortDirection === 'asc', 'sort-desc': sortColumn === 'price' && sortDirection === 'desc'}">
+                                제품가격</th>
+                            <th class="sortable-header" @click="sortTable('quantity')"
+                                :class="{'sort-asc': sortColumn === 'quantity' && sortDirection === 'asc', 'sort-desc': sortColumn === 'quantity' && sortDirection === 'desc'}">
                                 제품재고
                                 <div class="stock-btns" style="display: inline-block; margin-left: 5px;">
-                                    <button v-if="orderBy == 'down'" @click.stop="fnOrderBy('up')" style="background: none; border: none; padding: 0; font-size: 0.8em;">△</button>
-                                    <button v-if="orderBy == 'up'" @click.stop="fnOrderBy('down')" style="background: none; border: none; padding: 0; font-size: 0.8em;">▽</button>
+                                    <button v-if="orderBy == 'down'" @click.stop="fnOrderBy('up')"
+                                        style="background: none; border: none; padding: 0; font-size: 0.8em;">△</button>
+                                    <button v-if="orderBy == 'up'" @click.stop="fnOrderBy('down')"
+                                        style="background: none; border: none; padding: 0; font-size: 0.8em;">▽</button>
                                 </div>
                             </th>
-                            <th class="sortable-header" @click="sortTable('productSize')" :class="{'sort-asc': sortColumn === 'productSize' && sortDirection === 'asc', 'sort-desc': sortColumn === 'productSize' && sortDirection === 'desc'}">사이즈</th>
-                            <th class="sortable-header" @click="sortTable('udate')" :class="{'sort-asc': sortColumn === 'udate' && sortDirection === 'asc', 'sort-desc': sortColumn === 'udate' && sortDirection === 'desc'}">등록/수정일자</th>
+                            <th class="sortable-header" @click="sortTable('productSize')"
+                                :class="{'sort-asc': sortColumn === 'productSize' && sortDirection === 'asc', 'sort-desc': sortColumn === 'productSize' && sortDirection === 'desc'}">
+                                사이즈</th>
+                            <th class="sortable-header" @click="sortTable('udate')"
+                                :class="{'sort-asc': sortColumn === 'udate' && sortDirection === 'asc', 'sort-desc': sortColumn === 'udate' && sortDirection === 'desc'}">
+                                등록/수정일자</th>
                         </tr>
                         <tr v-for="item in sortedList" :class="getStockClass(item.quantity)">
                             <td>{{item.productNo}}</td>
@@ -161,7 +213,7 @@
                             <td>{{item.udate}}</td>
                         </tr>
                     </table>
-                    
+
                     <!-- 빈 데이터 메시지 -->
                     <div v-if="!loading && list.length === 0" class="empty-state-card">
                         <div class="empty-icon">📦</div>
@@ -170,23 +222,21 @@
                     </div>
                 </div>
                 <div class="pagination">
-                    <a href="javascript:;" @click="fnPage(1)"
-                            :class="{'disabled': page === 1}">&laquo;</a>
-                        <a href="javascript:;" @click="fnPage(page - 1)"
-                            :class="{'disabled': page === 1}">&lt;</a>
+                    <a href="javascript:;" @click="fnPage(1)" :class="{'disabled': page === 1}">&laquo;</a>
+                    <a href="javascript:;" @click="fnPage(page - 1)" :class="{'disabled': page === 1}">&lt;</a>
 
-                        <template v-for="num in pageNumbers">
-                            <a href="javascript:;" @click="fnPage(num)"
-                                :class="{'active': page === num}">{{ num }}</a>
-                        </template>
+                    <template v-for="num in pageNumbers">
+                        <a href="javascript:;" @click="fnPage(num)" :class="{'active': page === num}">{{ num }}</a>
+                    </template>
 
-                        <a href="javascript:;" @click="fnPage(page + 1)"
-                            :class="{'disabled': page === totalPage}">&gt;</a>
-                        <a href="javascript:;" @click="fnPage(totalPage)"
-                            :class="{'disabled': page === totalPage}">&raquo;</a>
+                    <a href="javascript:;" @click="fnPage(page + 1)" :class="{'disabled': page === totalPage}">&gt;</a>
+                    <a href="javascript:;" @click="fnPage(totalPage)"
+                        :class="{'disabled': page === totalPage}">&raquo;</a>
                 </div>
                 <div class="button">
-                    <button class="margin30 height40 bluebutton rightbutton" @click="fnAddProduct">등록하기</button>
+                    <button class="btn-register-main" @click="fnAddProduct">
+                        <span>+ 상품 등록하기</span>
+                    </button>
                 </div>
                 <div class="bottom200"></div>
             </div>
@@ -243,29 +293,29 @@
                 // 정렬된 리스트
                 sortedList() {
                     if (!this.sortColumn) return this.list;
-                    
+
                     const sorted = [...this.list];
                     sorted.sort((a, b) => {
                         let aVal = a[this.sortColumn];
                         let bVal = b[this.sortColumn];
-                        
+
                         // 날짜 정렬
                         if (this.sortColumn === 'udate') {
                             aVal = new Date(aVal);
                             bVal = new Date(bVal);
                         }
-                        
+
                         // 숫자 정렬
                         if (this.sortColumn === 'productNo' || this.sortColumn === 'quantity' || this.sortColumn === 'price') {
                             aVal = parseFloat(aVal);
                             bVal = parseFloat(bVal);
                         }
-                        
+
                         if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
                         if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
                         return 0;
                     });
-                    
+
                     return sorted;
                 }
             },
@@ -290,7 +340,7 @@
                 fnList() {
                     let self = this;
                     self.loading = true; // 로딩 시작
-                    
+
                     let param = {
                         keyword: self.keyword,
                         keytype: self.keytype,
@@ -308,15 +358,15 @@
                             self.list = data.list;
                             self.totalPage = Math.ceil(data.total / self.pageSize);
                         },
-                        error: function() {
+                        error: function () {
                             alert("데이터를 불러오는 중 오류가 발생했습니다.");
                         },
-                        complete: function() {
+                        complete: function () {
                             self.loading = false; // 로딩 종료
                         }
                     });
                 },
-                sortTable: function(column) {
+                sortTable: function (column) {
                     if (this.sortColumn === column) {
                         // 같은 컬럼 클릭 시 정렬 방향 전환
                         this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
@@ -342,38 +392,38 @@
                     self.orderBy = status;
                     self.fnList();
                 },
-                downloadExcel: function() {
+                downloadExcel: function () {
                     let self = this;
                     let params = new URLSearchParams();
                     if (self.keyword) params.append('keyword', self.keyword);
                     if (self.keytype) params.append('keytype', self.keytype);
                     if (self.orderBy) params.append('orderBy', self.orderBy);
-                    
+
                     window.location.href = '/admin/product/excel.dox?' + params.toString();
                 },
                 // 재고 상태에 따른 CSS 클래스 반환
-                getStockClass: function(quantity) {
+                getStockClass: function (quantity) {
                     if (quantity === 0) return 'stock-out-row';
                     if (quantity < 5) return 'stock-low-row';
                     return '';
                 },
                 // 재고 배지 클래스 반환
-                getStockBadgeClass: function(quantity) {
+                getStockBadgeClass: function (quantity) {
                     if (quantity === 0) return 'stock-badge-out';
                     if (quantity < 5) return 'stock-badge-low';
                     return '';
                 },
-                goToPage: function(url) {
+                goToPage: function (url) {
                     window.location.href = url;
                 },
                 // 알림 관련 메서드
-                fetchNotifications: function() {
+                fetchNotifications: function () {
                     AdminNotifications.fetchNotifications(this);
                 },
-                toggleNotificationPanel: function() {
+                toggleNotificationPanel: function () {
                     AdminNotifications.toggleNotificationPanel(this);
                 },
-                markAsReadAndGo: function(type, url) {
+                markAsReadAndGo: function (type, url) {
                     AdminNotifications.markAsReadAndGo(this, type, url);
                 }
             }, // methods

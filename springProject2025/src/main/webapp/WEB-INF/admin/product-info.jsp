@@ -14,6 +14,117 @@
         <link rel="stylesheet" href="/css/jes.css">
         <link rel="stylesheet" href="/css/admin-inquiry.css">
         <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+        <style>
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                /* 배경 조금 더 어둡게 */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+                backdrop-filter: blur(3px);
+                /* 배경 블러 효과 */
+            }
+
+            .modal-content {
+                background: white;
+                padding: 40px 60px;
+                border-radius: 20px;
+                text-align: center;
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+                min-width: 350px;
+                border-top: 8px solid #8e44ad;
+                /* 상단 보라색 포인트 */
+            }
+
+            .modal-body {
+                font-size: 19px;
+                font-weight: 600;
+                color: #2c3e50;
+                margin-bottom: 30px;
+                line-height: 1.5;
+                word-break: keep-all;
+            }
+
+            /* 보라색 그라데이션 버튼 */
+            /* 수정된 보라색 그라데이션 버튼 (페이징 active 스타일 적용) */
+            .btn-purple-grad {
+                /* 보내주신 그라데이션 색상 적용 */
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                padding: 12px 35px;
+                border-radius: 30px;
+                font-size: 16px;
+                font-weight: 700;
+                /* 폰트 두께 상향 */
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+                /* 그림자 색상 동기화 */
+                outline: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+            }
+
+            /* 마우스 올렸을 때 효과 (페이징 hover 스타일 참고) */
+            .btn-purple-grad:hover {
+                filter: brightness(1.1);
+                /* 살짝 밝게 */
+                transform: translateY(-2px);
+                /* 페이징 active 처럼 살짝 위로 */
+                box-shadow: 0 6px 15px rgba(102, 126, 234, 0.5);
+            }
+
+            /* 돌아가기 버튼용 (보조 버튼 스타일) */
+            .btn-purple-outline {
+                background: white;
+                color: #667eea;
+                border: 2px solid #667eea;
+                padding: 10px 33px;
+                /* 보더 두께만큼 패딩 조정 */
+                border-radius: 30px;
+                font-size: 16px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .btn-purple-outline:hover {
+                background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+                box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+                transform: translateY(-1px);
+            }
+
+            .button {
+                display: flex;
+                justify-content: space-around;
+                /* 버튼 사이 간격을 일정하게 배분 */
+                align-items: center;
+                max-width: 800px;
+                /* 중앙 정렬을 위해 적절한 너비 설정 */
+                margin: 40px auto;
+                /* 페이지 중앙 정렬 및 위아래 여백 */
+                gap: 10px;
+                /* 최소 간격 보장 */
+            }
+
+            /* 개별 버튼 마진 제거 (Flex가 간격을 조절하므로 기존 마진은 방해가 됨) */
+            .button button {
+                margin: 0 !important;
+                flex: 1;
+                /* 모든 버튼의 크기를 동일하게 맞춤 (선택사항) */
+                max-width: 200px;
+                /* 버튼이 너무 커지는 것 방지 */
+            }
+        </style>
     </head>
 
     <body class="adminbody">
@@ -114,11 +225,24 @@
                     </table>
                 </div>
                 <div class="button">
-                    <button class="margin30 height40 redbutton rightbutton" @click="fnDeleteProduct">삭제하기</button>
-                    <button class="margin30 height40 bluebutton centerbutton" @click="fnEditProduct">수정하기</button>
-                    <button class="margin30 height40 bluebutton leftbutton" @click="fnBack">돌아가기</button>
+                    <button class="btn-purple-grad" style="filter: hue-rotate(300deg);"
+                        @click="fnDeleteProduct">삭제하기</button>
+
+                    <button class="btn-purple-grad" @click="fnEditProduct">수정하기</button>
+
+                    <button class="btn-purple-outline" @click="fnBack">돌아가기</button>
                 </div>
                 <div class="bottom200"></div>
+                <div class="modal-overlay" v-if="modal.show" @click.self="fnCloseModal">
+                    <div class="modal-content">
+                        <div class="modal-body" v-html="modal.message"></div>
+                        <div class="modal-actions">
+                            <button class="btn-purple-grad" @click="fnConfirmModal">확인</button>
+
+                            <button v-if="modal.isConfirm" class="btn-purple-outline" @click="fnCloseModal">취소</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
@@ -136,7 +260,12 @@
                     img: {},
                     salePrice: 0,
                     quantityFlg: false,
-                    loading: true // 로딩 상태 (초기값 true)
+                    loading: true, // 로딩 상태 (초기값 true)
+                    modal: {
+                        show: false,
+                        message: "",
+                        callback: null
+                    }
                 };
             },
             methods: {
@@ -194,17 +323,16 @@
                         type: "POST",
                         data: self.info,
                         success: function (data) {
-                            alert("수정되었습니다!");
-                            var form = new FormData();
-                            // alert("form에 뭐가 들어가나" + JSON.stringify(form));
-                            form.append("file1", $("#file1")[0].files[0]);
-                            form.append("productNo", self.productNo); // 임시 pk
-
-                            self.upload(form);
-                            self.fnBack();
+                            self.fnAlert("상품 정보가 수정되었습니다!", () => {
+                                var form = new FormData();
+                                form.append("file1", $("#file1")[0].files[0]);
+                                form.append("productNo", self.productNo);
+                                self.upload(form);
+                                self.fnBack();
+                            });
                         },
                         error: function () {
-                            alert("수정 중 오류가 발생했습니다.");
+                            self.fnAlert("수정 중 오류가 발생했습니다.");
                         }
                     });
                 },
@@ -237,8 +365,9 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            alert("삭제되었습니다!");
-                            self.fnBack();
+                            self.fnAlert("상품이 삭제되었습니다.", () => {
+                                self.fnBack();
+                            });
                         }
                     });
                 },
@@ -257,11 +386,26 @@
                         type: "POST",
                         data: param,
                         success: function (data) {
-                            alert("수정되었습니다!");
-                            self.fnBack();
+                            self.fnAlert("재고 수량이 변경되었습니다.", () => {
+                                location.reload(); // 현재 페이지 새로고침
+                            });
                         }
                     });
-                }
+                },
+                fnAlert(msg, callback = null) {
+                    this.modal.message = msg;
+                    this.modal.callback = callback;
+                    this.modal.show = true;
+                },
+                fnCloseModal() {
+                    this.modal.show = false;
+                },
+                fnConfirmModal() {
+                    if (this.modal.callback) {
+                        this.modal.callback();
+                    }
+                    this.fnCloseModal();
+                },
             }, // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분
