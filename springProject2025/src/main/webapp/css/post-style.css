@@ -520,6 +520,13 @@ button:hover {
   color: #666;
 }
 
+.post-type label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 8px;
+}
+
 .post-type {
   display: flex;
   gap: 15px;
