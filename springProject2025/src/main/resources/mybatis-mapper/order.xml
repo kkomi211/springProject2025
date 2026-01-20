@@ -72,6 +72,7 @@
 		LEFT JOIN PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
 		WHERE O.USER_ID = #{sessionId}
 		AND O.STATUS != '신규주문'
+		AND O.STATUS != '취소완료'
 	</select>
 	
 	<!-- 반품/교환 가능한 주문 목록 -->
@@ -108,6 +109,7 @@
 				) PI ON P.PRODUCT_NO = PI.PRODUCT_NO
 				WHERE O.USER_ID = #{sessionId}
 				AND O.STATUS != '신규주문'
+				AND O.STATUS != '취소완료'
 				ORDER BY O.UDATE DESC , O.ORDER_NO DESC
 			) a
 		) WHERE rnum BETWEEN #{startRow} AND #{endRow}
