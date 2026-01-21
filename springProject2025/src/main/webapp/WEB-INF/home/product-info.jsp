@@ -1295,6 +1295,9 @@
                         s => String(s.productSize) === String(this.size)
                     );
                     this.maxQuantity = found ? Number(found.quantity) : 0;
+                    if(this.maxQuantity < this.quantity){
+                        this.quantity = this.maxQuantity;
+                    }
                 },
                 fnUserInfo() {
                     let self = this;
