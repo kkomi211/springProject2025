@@ -64,11 +64,11 @@
     ORDER BY
     <choose>
         <when test="orderType == 'PRICE_DESC'">
-            PRICE DESC
+            (CASE WHEN SALE_YN = 'Y' THEN SALE_PRICE ELSE PRICE END) DESC
         </when>
         
         <when test="orderType == 'PRICE_ASC'">
-            PRICE ASC
+            (CASE WHEN SALE_YN = 'Y' THEN SALE_PRICE ELSE PRICE END) ASC
         </when>
         
         <otherwise>

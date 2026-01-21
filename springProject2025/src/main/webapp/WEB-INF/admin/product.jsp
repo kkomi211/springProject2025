@@ -296,19 +296,25 @@
 
                     const sorted = [...this.list];
                     sorted.sort((a, b) => {
-                        let aVal = a[this.sortColumn];
-                        let bVal = b[this.sortColumn];
+                        let aVal, bVal;
 
-                        // 날짜 정렬
-                        if (this.sortColumn === 'udate') {
-                            aVal = new Date(aVal);
-                            bVal = new Date(bVal);
-                        }
-
-                        // 숫자 정렬
-                        if (this.sortColumn === 'productNo' || this.sortColumn === 'quantity' || this.sortColumn === 'price') {
-                            aVal = parseFloat(aVal);
-                            bVal = parseFloat(bVal);
+                        // 가격(price) 정렬일 때 특별 처리
+                        if (this.sortColumn === 'price') {
+                            // 할인 여부(saleYN)에 따라 실제 적용되는 가격을 비교 대상으로 설정
+                            aVal = (a.saleYN === 'Y' && a.salePrice) ? parseFloat(a.salePrice) : parseFloat(a.price);
+                            bVal = (b.saleYN === 'Y' && b.salePrice) ? parseFloat(b.salePrice) : parseFloat(b.price);
+                        } else if (this.sortColumn === 'udate') {
+                            // 날짜 정렬
+                            aVal = new Date(a.udate);
+                            bVal = new Date(b.udate);
+                        } else if (this.sortColumn === 'productNo' || this.sortColumn === 'quantity') {
+                            // 기타 숫자 정렬
+                            aVal = parseFloat(a[this.sortColumn]);
+                            bVal = parseFloat(b[this.sortColumn]);
+                        } else {
+                            // 기본 문자열 정렬
+                            aVal = a[this.sortColumn];
+                            bVal = b[this.sortColumn];
                         }
 
                         if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;

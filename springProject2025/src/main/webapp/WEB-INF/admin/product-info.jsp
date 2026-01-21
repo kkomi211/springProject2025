@@ -124,6 +124,64 @@
                 max-width: 200px;
                 /* 버튼이 너무 커지는 것 방지 */
             }
+
+            /* 공통 보라색 그라데이션 버튼 (재고변경 등) */
+            .btn-purple-sm {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+                margin-left: 10px;
+            }
+
+            .btn-purple-sm:hover {
+                filter: brightness(1.1);
+                transform: translateY(-1px);
+                box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+            }
+
+            /* 이미지 선택(파일 업로드) 버튼 커스텀 */
+            .file-upload-wrapper {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            /* 실제 input 파일은 숨김 */
+            #file1 {
+                display: none;
+            }
+
+            /* 커스텀된 파일 선택 버튼 (Label) */
+            .custom-file-upload {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 10px 20px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 700;
+                display: inline-block;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+            }
+
+            .custom-file-upload:hover {
+                filter: brightness(1.1);
+                transform: translateY(-1px);
+            }
+
+            /* 선택된 파일명을 보여주는 텍스트 */
+            .file-name-display {
+                font-size: 14px;
+                color: #666;
+                font-style: italic;
+            }
         </style>
     </head>
 
@@ -185,13 +243,13 @@
                         <tr>
                             <th>재고</th>
                             <td>
-                                <a v-if="!quantityFlg">
+                                <a v-if="!quantityFlg" style="display: flex; align-items: center;">
                                     <input v-model="info.quantity" class="smallInput" disabled>
-                                    <button @click="quantityFlg = true">재고 변경</button>
+                                    <button class="btn-purple-sm" @click="quantityFlg = true">재고 변경</button>
                                 </a>
-                                <a v-else>
+                                <a v-else style="display: flex; align-items: center;">
                                     <input v-model="info.quantity" class="smallInput">
-                                    <button @click="fnQuantity">변경 하기</button>
+                                    <button class="btn-purple-sm" @click="fnQuantity">변경 하기</button>
                                 </a>
                             </td>
                         </tr>
@@ -229,15 +287,22 @@
                         <tr>
                             <th>이미지</th>
                             <td>
-                                <input type="file" id="file1" name="file1" accept=".jpg, .png, .glb">
+                                <div class="file-upload-wrapper">
+                                    <label for="file1" class="custom-file-upload">
+                                        📸 이미지 선택하기
+                                    </label>
+                                    <input type="file" id="file1" name="file1" accept=".jpg, .png, .glb"
+                                        @change="fnFileChange">
+                                    <span class="file-name-display" id="fileName">파일을 선택해주세요.</span>
+                                </div>
 
-                                <div v-if="img != undefined" style="margin-top: 10px;">
+                                <div v-if="img != undefined" style="margin-top: 15px;">
                                     <model-viewer v-if="img.imgEtc === '.glb'" :src="img.imgPath" auto-rotate
                                         camera-controls
-                                        style="width: 300px; height: 300px; background-color: #eee; border-radius: 10px;">
+                                        style="width: 300px; height: 300px; background-color: #f8f9fa; border-radius: 15px; border: 1px solid #ddd;">
                                     </model-viewer>
-
-                                    <img v-else :src="img.imgPath" style="max-width: 300px; border-radius: 10px;">
+                                    <img v-else :src="img.imgPath"
+                                        style="max-width: 300px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
                                 </div>
                             </td>
                         </tr>
@@ -304,6 +369,10 @@
                         }
                     });
 
+                },
+                fnFileChange(event) {
+                    const fileName = event.target.files[0] ? event.target.files[0].name : "파일을 선택해주세요.";
+                    document.getElementById("fileName").innerText = fileName;
                 },
                 fnInfo() {
                     let self = this;
