@@ -41,22 +41,20 @@ public class HomeService {
         String[] categories = {"러닝화", "보호대", "러닝복 상의", "러닝복 하의"};
         List<HashMap<String, Object>> result = new ArrayList<>();
         
-        // 각 카테고리별로 예산을 균등하게 분배 (또는 전체 예산 기준으로 조회)
-        // 일단 각 카테고리별로 전체 예산을 기준으로 상품을 조회하되, 
-        // 각 카테고리당 예산의 25%를 기본 할당
+        // 각 카테고리별로 예산을 균등하게 분배 (전체 예산을 4개 카테고리로 나눔)
         int categoryBudget = budget / categories.length;
         
         for (String categoryName : categories) {
             HashMap<String, Object> categoryMap = new HashMap<>();
             categoryMap.put("categoryName", categoryName);
             
-            // 각 카테고리별로 예산 내 상품 조회 (전체 예산 기준)
+            // 각 카테고리별로 할당된 예산 내에서만 상품 조회
             HashMap<String, Object> paramMap = new HashMap<>();
             paramMap.put("categoryName", categoryName);
-            paramMap.put("budget", budget); // 전체 예산을 기준으로 조회
+            paramMap.put("budget", categoryBudget); // 카테고리별 예산을 기준으로 조회
             
             List<Home> products = homeMapper.selectBudgetProductsByCategory(paramMap);
-            System.out.println("카테고리: " + categoryName + ", 조회된 상품 수: " + (products != null ? products.size() : 0));
+            System.out.println("카테고리: " + categoryName + ", 할당 예산: " + categoryBudget + ", 조회된 상품 수: " + (products != null ? products.size() : 0));
             
             List<HashMap<String, Object>> recommendedProducts = new ArrayList<>();
             int categoryTotal = 0;
@@ -72,8 +70,8 @@ public class HomeService {
                     finalPrice = mostExpensiveProduct.getProductPrice();
                 }
                 
-                // 예산을 초과하더라도 최소 1개는 추천
-                if (finalPrice <= categoryBudget * 2) {
+                // 카테고리 예산 내에서만 추천 (예산 초과 방지)
+                if (finalPrice <= categoryBudget) {
                     HashMap<String, Object> productMap = new HashMap<>();
                     productMap.put("productNo", mostExpensiveProduct.getProductNo());
                     productMap.put("productName", mostExpensiveProduct.getProductName());
@@ -85,10 +83,10 @@ public class HomeService {
                 }
             }
             
-            // 상품이 하나도 없으면, 예산 범위를 늘려서 최소 1개라도 추천
+            // 상품이 하나도 없으면, 예산 범위를 약간 늘려서 최소 1개라도 추천 (최대 1.5배까지)
             if (recommendedProducts.isEmpty() && categoryBudget > 0) {
-                // 예산을 2배로 늘려서 다시 조회
-                paramMap.put("budget", categoryBudget * 2);
+                int fallbackBudget = (int)(categoryBudget * 1.5); // 예산의 1.5배까지 허용
+                paramMap.put("budget", fallbackBudget);
                 List<Home> fallbackProducts = homeMapper.selectBudgetProductsByCategory(paramMap);
                 
                 if (fallbackProducts != null && !fallbackProducts.isEmpty()) {
@@ -101,8 +99,8 @@ public class HomeService {
                         finalPrice = mostExpensiveProduct.getProductPrice();
                     }
                     
-                    // 예산을 초과하더라도 최소 1개는 추천
-                    if (finalPrice <= categoryBudget * 2) {
+                    // fallback 예산 내에서만 추천 (1.5배까지 허용)
+                    if (finalPrice <= fallbackBudget) {
                         HashMap<String, Object> productMap = new HashMap<>();
                         productMap.put("productNo", mostExpensiveProduct.getProductNo());
                         productMap.put("productName", mostExpensiveProduct.getProductName());
@@ -155,8 +153,8 @@ public class HomeService {
                 finalPrice = mostExpensiveProduct.getProductPrice();
             }
             
-            // 예산을 초과하더라도 최소 1개는 추천
-            if (finalPrice <= budget * 2) {
+            // 사용자가 조정한 예산 내에서만 추천 (예산 초과 방지)
+            if (finalPrice <= budget) {
                 HashMap<String, Object> productMap = new HashMap<>();
                 productMap.put("productNo", mostExpensiveProduct.getProductNo());
                 productMap.put("productName", mostExpensiveProduct.getProductName());
@@ -168,10 +166,10 @@ public class HomeService {
             }
         }
         
-        // 상품이 하나도 없으면, 예산 범위를 늘려서 최소 1개라도 추천
+        // 상품이 하나도 없으면, 예산 범위를 약간 늘려서 최소 1개라도 추천 (최대 1.5배까지)
         if (recommendedProducts.isEmpty() && budget > 0) {
-            // 예산을 2배로 늘려서 다시 조회
-            paramMap.put("budget", budget * 2);
+            int fallbackBudget = (int)(budget * 1.5); // 예산의 1.5배까지 허용
+            paramMap.put("budget", fallbackBudget);
             List<Home> fallbackProducts = homeMapper.selectBudgetProductsByCategory(paramMap);
             
             if (fallbackProducts != null && !fallbackProducts.isEmpty()) {
@@ -184,8 +182,8 @@ public class HomeService {
                     finalPrice = mostExpensiveProduct.getProductPrice();
                 }
                 
-                // 예산을 초과하더라도 최소 1개는 추천
-                if (finalPrice <= budget * 2) {
+                // fallback 예산 내에서만 추천 (1.5배까지 허용)
+                if (finalPrice <= fallbackBudget) {
                     HashMap<String, Object> productMap = new HashMap<>();
                     productMap.put("productNo", mostExpensiveProduct.getProductNo());
                     productMap.put("productName", mostExpensiveProduct.getProductName());

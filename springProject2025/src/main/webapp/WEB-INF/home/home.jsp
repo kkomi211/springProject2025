@@ -795,9 +795,8 @@
 
                         const categories = this.budgetRecommendations.map(cat => cat.categoryName);
                         // 차트는 adjustedPrice가 있으면 그것을, 없으면 totalPrice를 사용
-                        const prices = this.budgetRecommendations.map(cat => {
-                            return cat.adjustedPrice !== undefined ? cat.adjustedPrice : (cat.totalPrice || 0);
-                        });
+                        // 도넛 차트는 실제 추천 금액(totalPrice) 기준으로 표시
+                        const prices = this.budgetRecommendations.map(cat => (cat.totalPrice || 0));
                         const total = prices.reduce((a, b) => a + b, 0);
                         const budget = this.originalBudget || parseInt(this.budgetAmount) || 0;
 
@@ -1053,10 +1052,8 @@
                         if (this.budgetRecommendations.length === 0) return;
                         if (!this.budgetChart) return;
 
-                        // adjustedPrice를 우선 사용, 없으면 totalPrice 사용
-                        const prices = this.budgetRecommendations.map(cat => {
-                            return cat.adjustedPrice !== undefined && cat.adjustedPrice > 0 ? cat.adjustedPrice : (cat.totalPrice || 0);
-                        });
+                        // 도넛 차트는 실제 추천 금액(totalPrice) 기준으로 표시
+                        const prices = this.budgetRecommendations.map(cat => (cat.totalPrice || 0));
                         const total = prices.reduce((a, b) => a + b, 0);
                         const budget = this.originalBudget || parseInt(this.budgetAmount) || 0;
 
