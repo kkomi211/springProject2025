@@ -12,7 +12,8 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet">
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -21,11 +22,11 @@
         <script src="https://unpkg.com/lucide@latest"></script>
         <!-- session timeout modal -->
         <script src="/js/session-timeout.js"></script>
-
+        <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
     </head>
     <style>
-         textarea {
+        textarea {
             /* !important를 사용하여 다른 CSS보다 우선순위를 높입니다. */
             resize: none !important;
         }
@@ -162,9 +163,10 @@
         .brand-name a {
             color: white;
         }
+
         .brand-name a:hover {
-			text-decoration: none;
-		}
+            text-decoration: none;
+        }
 
         #right-items {
             display: flex;
@@ -204,12 +206,14 @@
         .bottom-header a:hover {
             text-decoration: none;
             transform: scale(1.1);
-            transition: transform 0.3s ease-out; /* faster ease-out */
+            transition: transform 0.3s ease-out;
+            /* faster ease-out */
         }
 
         .bottom-header a {
             color: black;
-            transition: transform 0.2s ease-in; /* slower ease-in */
+            transition: transform 0.2s ease-in;
+            /* slower ease-in */
             display: inline-block;
         }
 
@@ -230,7 +234,8 @@
             color: black;
             /* default bottom-header 링크색 */
         }
-/* 
+
+        /* 
         .bottom-header a:hover {
             color: #007bff;
         } */
@@ -339,20 +344,24 @@
                         <div id="right-items">
                             <div>
                                 <!-- <template > -->
-                                    <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i data-lucide="log-out" stroke-width="1.5"></i></a></div>
+                                <div v-if="sessionId != ''"><a href="javascript:;" @click="fnLogout"><i
+                                            data-lucide="log-out" stroke-width="1.5"></i></a></div>
                                 <!-- </template> -->
                                 <!-- <template > -->
-                                    <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a></div>
+                                <div v-else><a href="/home/login.do"><i data-lucide="log-in" stroke-width="1.5"></i></a>
+                                </div>
                                 <!-- </template> -->
                             </div>
                             <div v-if="sessionId == ''">
                                 <a href="/home/signup.do"><i data-lucide="user-plus" stroke-width="1.5"></i></a>
                             </div>
-                            <div v-if="sessionId != '' && userType != 'K'"><a
-                                    href="/home/mypage/information.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
+                            <div v-if="sessionId != '' && userType != 'K'"><a href="/home/mypage/information.do"><i
+                                        data-lucide="user" stroke-width="1.5"></i></a></div>
                             <div v-else-if="sessionId != '' && userType == 'K'"><a
-                                    href="home/mypage/information/change.do"><i data-lucide="user" stroke-width="1.5"></i></a></div>
-                            <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart" stroke-width="1.5"></i></a></div>
+                                    href="home/mypage/information/change.do"><i data-lucide="user"
+                                        stroke-width="1.5"></i></a></div>
+                            <div v-if="sessionId != ''"><a href="/home/cart.do"><i data-lucide="shopping-cart"
+                                        stroke-width="1.5"></i></a></div>
                         </div>
                     </div>
                     <div class="bottom-header">
@@ -424,13 +433,22 @@
                                     <tr>
                                         <td rowspan="2" style="width: 200px; padding-right: 20px; vertical-align: top;">
                                             <div
-                                                style="width: 150px; height: 150px; overflow: hidden; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd;">
-                                                <img :src="review.imgPath" alt="상품 이미지"
-                                                    style="width: 100%; height: 100%; object-fit: cover;"
-                                                    v-if="review.imgPath && review.imgName">
-                                                <span v-else>
-                                                    이미지 없음
-                                                </span>
+                                                style="width: 150px; height: 150px; overflow: hidden; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd; border-radius: 10px;">
+
+                                                <template
+                                                    v-if="review.imgPath && review.imgPath.toLowerCase().endsWith('.glb')">
+                                                    <model-viewer :src="review.imgPath" auto-rotate camera-controls
+                                                        shadow-intensity="1"
+                                                        style="width: 100%; height: 100%; background-color: #f8f9fa;">
+                                                    </model-viewer>
+                                                </template>
+
+                                                <template v-else-if="review.imgPath">
+                                                    <img :src="review.imgPath" alt="상품 이미지"
+                                                        style="width: 100%; height: 100%; object-fit: cover;">
+                                                </template>
+
+                                                <span v-else>이미지 없음</span>
                                             </div>
                                         </td>
                                         <td style="font-size: 1.1rem;  padding: 0 0 5px 0;">
@@ -559,7 +577,7 @@
                     orderNo: '${orderNo}',
                     productNo: '${productNo}',
                     review: {},
-                    userType : '${userType}',
+                    userType: '${userType}',
                 };
             },
             methods: {
@@ -682,7 +700,7 @@
                     let self = this;
                     pageChange("/home/community/board.do", { type: "B" });
                 },
-                fnSale(){
+                fnSale() {
                     let self = this;
                     self.saleYN = 'Y';
                     pageChange("/home/product.do", { category: "", sessionId: self.sessionId, saleYN: self.saleYN });
@@ -704,6 +722,6 @@
                 self.clearSessionTimers();
             }
         });
-
+        app.config.compilerOptions.isCustomElement = tag => tag === 'model-viewer';
         app.mount('#app');
     </script>

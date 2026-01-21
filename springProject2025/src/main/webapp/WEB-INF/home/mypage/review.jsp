@@ -12,7 +12,8 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet">
         <title>Homepage</title>
         <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -21,7 +22,7 @@
         <script src="https://unpkg.com/lucide@latest"></script>
         <!-- session timeout modal -->
         <script src="/js/session-timeout.js"></script>
-
+        <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
     </head>
     <style>
@@ -172,9 +173,10 @@
         .brand-name a {
             color: white;
         }
+
         .brand-name a:hover {
-			text-decoration: none;
-		}
+            text-decoration: none;
+        }
 
         #right-items {
             display: flex;
@@ -214,12 +216,14 @@
         .bottom-header a:hover {
             text-decoration: none;
             transform: scale(1.1);
-            transition: transform 0.3s ease-out; /* faster ease-out */
+            transition: transform 0.3s ease-out;
+            /* faster ease-out */
         }
 
         .bottom-header a {
             color: black;
-            transition: transform 0.2s ease-in; /* slower ease-in */
+            transition: transform 0.2s ease-in;
+            /* slower ease-in */
             display: inline-block;
         }
 
@@ -371,120 +375,142 @@
 
             <div class="container">
                 <%-- 공통 헤더 컴포넌트 --%>
-                <jsp:include page="/WEB-INF/header/header.jsp" />
+                    <jsp:include page="/WEB-INF/header/header.jsp" />
 
 
-                <main>
-                    <div class="header">
-                        <div class="header-welcome">
-                            Welcome,
+                    <main>
+                        <div class="header">
+                            <div class="header-welcome">
+                                Welcome,
+                            </div>
+                            <div class="header-user">
+                                {{ userName }}
+                            </div>
                         </div>
-                        <div class="header-user">
-                            {{ userName }}
-                        </div>
-                    </div>
 
-                    <div class="page-container">
-                        <aside class="sidebar">
-                            <h2 class="sidebar-heading">MY PAGE ></h2>
-                            <nav class="mypage-menu">
-                                <ul>
-                                    <li @click="moveToOrder" style="position: relative;">
-                                        <span class="icon">📝</span>
-                                        <a href="#">주문•배송 내역</a>
-                                        <span v-if="shippingNotificationCount > 0" style="position: absolute; top: 50%; transform: translateY(-50%); right: 30px; background-color: #ff0000; color: white; font-size: 11px; font-weight: bold; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">{{ shippingNotificationCount > 99 ? '99+' : shippingNotificationCount }}</span>
-                                    </li>
-                                    <li @click="moveToRefund">
-                                        <span class="icon">📦</span>
-                                        <a href="javascript:;">반품•교환 내역</a>
-                                    </li>
-                                    <li @click="moveToMyinquiry" style="position: relative;">
-                                        <span class="icon">💬</span>
-                                        <a href="#">문의 내역</a>
-                                        <span v-if="newReplyCount > 0" style="position: absolute; top: 50%; transform: translateY(-50%); right: 30px; background-color: #ff0000; color: white; font-size: 11px; font-weight: bold; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">{{ newReplyCount > 99 ? '99+' : newReplyCount }}</span>
-                                    </li>
-                                    <li @click="mvInfo">
-                                        <span class="icon">👤</span>
-                                        <a href="#">나의 정보</a>
-                                    </li>
-                                    <li @click="moveToReview" class="active">
-                                        <span class="icon">⭐️</span>
-                                        <a href="#">상품 리뷰</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </aside>
+                        <div class="page-container">
+                            <aside class="sidebar">
+                                <h2 class="sidebar-heading">MY PAGE ></h2>
+                                <nav class="mypage-menu">
+                                    <ul>
+                                        <li @click="moveToOrder" style="position: relative;">
+                                            <span class="icon">📝</span>
+                                            <a href="#">주문•배송 내역</a>
+                                            <span v-if="shippingNotificationCount > 0"
+                                                style="position: absolute; top: 50%; transform: translateY(-50%); right: 30px; background-color: #ff0000; color: white; font-size: 11px; font-weight: bold; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">{{
+                                                shippingNotificationCount > 99 ? '99+' : shippingNotificationCount
+                                                }}</span>
+                                        </li>
+                                        <li @click="moveToRefund">
+                                            <span class="icon">📦</span>
+                                            <a href="javascript:;">반품•교환 내역</a>
+                                        </li>
+                                        <li @click="moveToMyinquiry" style="position: relative;">
+                                            <span class="icon">💬</span>
+                                            <a href="#">문의 내역</a>
+                                            <span v-if="newReplyCount > 0"
+                                                style="position: absolute; top: 50%; transform: translateY(-50%); right: 30px; background-color: #ff0000; color: white; font-size: 11px; font-weight: bold; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">{{
+                                                newReplyCount > 99 ? '99+' : newReplyCount }}</span>
+                                        </li>
+                                        <li @click="mvInfo">
+                                            <span class="icon">👤</span>
+                                            <a href="#">나의 정보</a>
+                                        </li>
+                                        <li @click="moveToReview" class="active">
+                                            <span class="icon">⭐️</span>
+                                            <a href="#">상품 리뷰</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </aside>
 
-                        <main class="main-content">
-                            <h1 class="main-title">상품 리뷰</h1>
+                            <main class="main-content">
+                                <h1 class="main-title">상품 리뷰</h1>
 
-                            <template v-for="(order, index) in orderList" :key="order.orderNo">
+                                <template v-for="(order, index) in orderList" :key="order.orderNo">
 
-                                <section class="order-item">
+                                    <section class="order-item">
 
-                                    <div class="order-status-header" :class="getStatusClass(order.status)"
-                                        :style="isRefundOrExchangeRequested(order.status) ? 'color: red;' : ''">
-                                        ORDER STATUS :
-                                        <span class="status-text"
-                                            :style="isRefundOrExchangeRequested(order.status) ? 'color: red; font-weight: bold;' : ''">{{
-                                            order.status }}</span>
-                                    </div>
+                                        <div class="order-status-header" :class="getStatusClass(order.status)"
+                                            :style="isRefundOrExchangeRequested(order.status) ? 'color: red;' : ''">
+                                            ORDER STATUS :
+                                            <span class="status-text"
+                                                :style="isRefundOrExchangeRequested(order.status) ? 'color: red; font-weight: bold;' : ''">{{
+                                                order.status }}</span>
+                                        </div>
 
-                                    <div class="order-details" style="display: flex; align-items: center;">
-                                        <!-- <div v-if="!isRefundOrExchangeRequested(order.status)">
+                                        <div class="order-details" style="display: flex; align-items: center;">
+                                            <!-- <div v-if="!isRefundOrExchangeRequested(order.status)">
                                 
                                             <input type="checkbox" v-model="order.isChecked"
                                                 style="transform: scale(1.5); margin-right: 10px; transform-origin: left center;">
                                         </div> -->
-                                        <img v-if="order.imgPath" :src="order.imgPath" :alt="order.productName"
-                                            class="product-image"
-                                            style="width: 150px; height: 150px; object-fit: cover;">
-                                        <div v-else class="product-image"
-                                            style="background: #f0f0f0; min-width: 150px; height: 150px; display: flex; align-items: center; justify-content: center;">
-                                            이미지 없음
-                                        </div>
-                                        <div class="product-info" style="flex: 1; margin-left: 20px;">
-                                            <p class="product-name" style="font-size: 18px; font-weight: bold;">상품명 : {{
-                                                order.productName || order.productNo }}</p>
-                                            <p>수량 : {{ order.quantity }}</p>
-                                            <p>주문번호 : {{ order.orderNo }}</p>
-                                            <p>브랜드 : {{ order.brand }}</p>
-                                            <p>상품가격 : {{ formatCurrency(order.paymentAmount) }}원</p>
-                                            <p>주문일자 : {{ order.udate }}</p> <!--분명뭔가 요청을했고 그순간의 마지막 날짜를 기준잡았음-->
-                                            <!-- <p>이미지주소: {{ order.imgPath || '이미지주소보려고' }}</p> -->
-                                            <!-- <p>별점: {{ order.rating || '평점 없음' }}</p> -->
-                                        </div>
+                                            <div class="product-image"
+                                                style="width: 150px; height: 150px; overflow: hidden; border-radius: 10px; flex-shrink: 0;">
+                                                <template
+                                                    v-if="order.imgPath && order.imgPath.toLowerCase().endsWith('.glb')">
+                                                    <model-viewer :src="order.imgPath" auto-rotate camera-controls
+                                                        shadow-intensity="1"
+                                                        style="width: 100%; height: 100%; background-color: #f8f9fa;">
+                                                    </model-viewer>
+                                                </template>
 
-                                        <div v-if="!isRefundOrExchangeRequested(order.status)">
-                                            <div>
-                                                <!-- <label style="margin-right: 10px;">
+                                                <template v-else-if="order.imgPath">
+                                                    <img :src="order.imgPath" :alt="order.productName"
+                                                        style="width: 100%; height: 100%; object-fit: contain;">
+                                                </template>
+
+                                                <template v-else>
+                                                    <div
+                                                        style="background: #f0f0f0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                                                        이미지 없음
+                                                    </div>
+                                                </template>
+                                            </div>
+                                            <div class="product-info" style="flex: 1; margin-left: 20px;">
+                                                <p class="product-name" style="font-size: 18px; font-weight: bold;">상품명
+                                                    : {{
+                                                    order.productName || order.productNo }}</p>
+                                                <p>수량 : {{ order.quantity }}</p>
+                                                <p>주문번호 : {{ order.orderNo }}</p>
+                                                <p>브랜드 : {{ order.brand }}</p>
+                                                <p>상품가격 : {{ formatCurrency(order.paymentAmount) }}원</p>
+                                                <p>주문일자 : {{ order.udate }}</p> <!--분명뭔가 요청을했고 그순간의 마지막 날짜를 기준잡았음-->
+                                                <!-- <p>이미지주소: {{ order.imgPath || '이미지주소보려고' }}</p> -->
+                                                <!-- <p>별점: {{ order.rating || '평점 없음' }}</p> -->
+                                            </div>
+
+                                            <div v-if="!isRefundOrExchangeRequested(order.status)">
+                                                <div>
+                                                    <!-- <label style="margin-right: 10px;">
                                                     <input type="radio" v-model="order.actionType" value="R">반품
                                                 </label>
                                                 <label>
                                                     <input type="radio" v-model="order.actionType" value="C">교환
                                                 </label> -->
-                                                <br>
-                                                <div v-if="order.rating">
-                                                    <button @click="moveToReviewView(order)"
-                                                        style="background-color: gray;">
-                                                        리뷰 보기
-                                                    </button>
-                                                </div>
-                                                <div v-else>
-                                                    <button @click="moveToReviewWrite(order)" style="background-color: black;color: white;border-radius: 8px; font-weight: 400;">
-                                                        리뷰 작성하기
-                                                    </button>
-                                                </div>
-                                                <div class="star-rating" v-if="order.rating">
-                                                    {{ displayStars(order.rating) }}    
-                                                </div>
-                                                <div class="star-rating" v-else>
-                                                    &#9734; &#9734; &#9734; &#9734; &#9734;
-                                                </div>
-                                                <!-- <div class="star-rating">
+                                                    <br>
+                                                    <div v-if="order.rating">
+                                                        <button @click="moveToReviewView(order)"
+                                                            style="background-color: gray;">
+                                                            리뷰 보기
+                                                        </button>
+                                                    </div>
+                                                    <div v-else>
+                                                        <button @click="moveToReviewWrite(order)"
+                                                            style="background-color: black;color: white;border-radius: 8px; font-weight: 400;">
+                                                            리뷰 작성하기
+                                                        </button>
+                                                    </div>
+                                                    <div class="star-rating" v-if="order.rating">
+                                                        {{ displayStars(order.rating) }}
+                                                    </div>
+                                                    <div class="star-rating" v-else>
+                                                        &#9734; &#9734; &#9734; &#9734; &#9734;
+                                                    </div>
+                                                    <!-- <div class="star-rating">
                                                     &#9734;&#9734;&#9734;&#9734;&#9734;
                                                 </div> -->
-                                                <!-- <div class="star-rating">
+                                                    <!-- <div class="star-rating">
                                                     <i class="far fa-star"></i>
                                                     <i class="far fa-star"></i>
                                                     <i class="far fa-star"></i>
@@ -494,76 +520,76 @@
                                                 <div class="star-rating">
                                                     <i v-for="n in 5" :key="n" class="far fa-star"></i>
                                                 </div> -->
-                                                <!-- <div>
+                                                    <!-- <div>
                                                     <textarea type="text" style="height: 80px; width: 250px;"
                                                         placeholder="상세사유입력" v-model="order.reason"></textarea>
                                                 </div> -->
+                                                </div>
+
+
                                             </div>
-
-
-                                        </div>
-                                </section>
-                            </template>
+                                    </section>
+                                </template>
 
 
 
-                            <div v-if="orderList.length === 0" style="text-align: center; padding: 50px;">
-                                주문 내역이 없습니다.
+                                <div v-if="orderList.length === 0" style="text-align: center; padding: 50px;">
+                                    주문 내역이 없습니다.
+                                </div>
+
+
+
+
+                                <div v-if="index > 0" class="pagination">
+                                    <!-- <a v-if="page != 1" @click="fnMove(1)" href="javascript:void(0)">←</a> -->
+                                    <a v-if="page >= 2" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
+                                    <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index"
+                                        :key="num">
+                                        <span :class="{ active: page == num }">{{ num }}</span>
+                                    </a>
+                                    <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
+                                    <!-- <a v-if="page != index" @click="fnMove(index)" href="javascript:void(0)">→</a> -->
+                                </div>
+
+                            </main>
+
+                        </div>
+
+
+                    </main>
+
+
+
+
+
+                    <footer>
+                        <div class="footer-left">
+                            <div class="company-info">
+                                <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
+                                <div><strong>대표:</strong> 김재</div>
+                                <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
+                                <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
+                                <div><strong>부가세 번호:</strong> KR123456789</div>
                             </div>
-
-
-
-
-                            <div v-if="index > 0" class="pagination">
-                                <!-- <a v-if="page != 1" @click="fnMove(1)" href="javascript:void(0)">←</a> -->
-                                <a v-if="page >= 2" @click="fnMove(page - 1)" href="javascript:void(0)">◀</a>
-                                <a @click="fnMove(num)" id="index" href="javascript:void(0)" v-for="num in index"
-                                    :key="num">
-                                    <span :class="{ active: page == num }">{{ num }}</span>
-                                </a>
-                                <a v-if="page != index" @click="fnMove(page + 1)" href="javascript:void(0)">▶</a>
-                                <!-- <a v-if="page != index" @click="fnMove(index)" href="javascript:void(0)">→</a> -->
+                            <div class="copyright">
+                                COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
                             </div>
-
-                        </main>
-
-                    </div>
-
-
-                </main>
-
-
-
-
-
-                <footer>
-                    <div class="footer-left">
-                        <div class="company-info">
-                            <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
-                            <div><strong>대표:</strong> 김재</div>
-                            <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
-                            <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
-                            <div><strong>부가세 번호:</strong> KR123456789</div>
                         </div>
-                        <div class="copyright">
-                            COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                        <div class="footer-right">
+                            <div class="other">
+                                <span><a href="/home/about.do">회사소개</a></span>
+                                <span><a @click="fnNotice">공지사항</a></span>
+                                <span><a href="/home/terms.do">이용약관</a></span>
+                                <span><a href="/home/privacy.do">개인정보처리방침</a></span>
+                            </div>
+                            <div class="socials">
+                                <span>INSTAGRAM</span>
+                                <span>NAVER</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="footer-right">
-                        <div class="other">
-                            <span><a href="/home/about.do">회사소개</a></span>
-                            <span><a @click="fnNotice">공지사항</a></span>
-                            <span><a href="/home/terms.do">이용약관</a></span>
-                            <span><a href="/home/privacy.do">개인정보처리방침</a></span>
-                        </div>
-                        <div class="socials">
-                            <span>INSTAGRAM</span>
-                            <span>NAVER</span>
-                        </div>
-                    </div>
-                </footer>
-                <!-- session time out modal -->
-                <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
+                    </footer>
+                    <!-- session time out modal -->
+                    <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
             </div>
 
 
@@ -595,7 +621,7 @@
                     // sau : 'R',
                     // because: '',
                     rating: "${rating}",
-                    userType : '${userType}',
+                    userType: '${userType}',
                     cartCount: 0, // 장바구니 수량 변수 추가
                     newReplyCount: 0, // 새 답변 개수
                     shippingNotificationCount: 0, // 배송 알림 개수
@@ -908,15 +934,15 @@
                         }
                     });
                 },
-                
+
                 // 새 답변 개수 체크 (localStorage 기반)
-                checkNewReplyCount: function() {
+                checkNewReplyCount: function () {
                     let self = this;
                     if (!self.sessionId || self.sessionId === '') {
                         self.newReplyCount = 0;
                         return;
                     }
-                    
+
                     // localStorage에서 확인한 답변 목록 불러오기
                     const storageKey = `checkedReplies_${self.sessionId}`;
                     const saved = localStorage.getItem(storageKey);
@@ -928,7 +954,7 @@
                             checkedReplies = [];
                         }
                     }
-                    
+
                     // 서버에서 답변 완료된 문의 목록 가져오기
                     $.ajax({
                         url: "/home/mypage/my-inquiry.dox",
@@ -942,7 +968,7 @@
                         success: function (data) {
                             if (data.result == "success" && data.list) {
                                 let uncheckedCount = 0;
-                                data.list.forEach(function(item) {
+                                data.list.forEach(function (item) {
                                     if (item.status === 'Y' && !checkedReplies.includes(item.inquiryNo)) {
                                         uncheckedCount++;
                                     }
@@ -953,20 +979,20 @@
                                 self.newReplyCount = 0;
                             }
                         },
-                        error: function() {
+                        error: function () {
                             self.newReplyCount = 0;
                         }
                     });
                 },
-                
+
                 // 배송 알림 개수 체크 (문의내역 방식과 동일)
-                checkShippingNotificationCount: function() {
+                checkShippingNotificationCount: function () {
                     let self = this;
                     if (!self.sessionId || self.sessionId === '') {
                         self.shippingNotificationCount = 0;
                         return;
                     }
-                    
+
                     // localStorage에서 확인한 배송 주문 목록 불러오기
                     const storageKey = `checkedShippingOrders_${self.sessionId}`;
                     const saved = localStorage.getItem(storageKey);
@@ -978,7 +1004,7 @@
                             checkedOrders = [];
                         }
                     }
-                    
+
                     // 서버에서 주문 목록 가져오기 (모든 주문)
                     $.ajax({
                         url: "/home/mypage/orders.dox",
@@ -994,7 +1020,7 @@
                         success: function (data) {
                             if (data.result == "success" && data.list) {
                                 let uncheckedCount = 0;
-                                data.list.forEach(function(order) {
+                                data.list.forEach(function (order) {
                                     // 배송중 상태이고 확인하지 않은 주문만 카운트
                                     if (order.status === '배송중' && !checkedOrders.includes(String(order.orderNo))) {
                                         uncheckedCount++;
@@ -1006,7 +1032,7 @@
                                 self.shippingNotificationCount = 0;
                             }
                         },
-                        error: function() {
+                        error: function () {
                             self.shippingNotificationCount = 0;
                         }
                     });
@@ -1028,9 +1054,9 @@
                 } else {
                     console.warn("로그인 상태가 아니라서 장바구니 수량을 가져오지 않습니다.");
                 }
-                
+
                 // 주기적으로 새 답변 및 배송 알림 체크 (30초마다)
-                setInterval(function() {
+                setInterval(function () {
                     if (self.sessionId && self.sessionId !== '') {
                         self.checkNewReplyCount();
                         self.checkShippingNotificationCount();
@@ -1043,7 +1069,7 @@
                 self.clearSessionTimers();
             }
         });
-
+        app.config.compilerOptions.isCustomElement = tag => tag === 'model-viewer';
         app.mount('#app');
 
 
