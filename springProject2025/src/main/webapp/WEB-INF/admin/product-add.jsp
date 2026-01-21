@@ -206,7 +206,7 @@
                         <tr>
                             <th>사이즈</th>
                             <td>
-                                <input v-for="num in sizeNum" v-model="productSize[num]" class="smallInput">
+                                <input v-for="num in sizeNum" v-model="productSize[num-1]" class="smallInput">
                                 <button class="bluebutton height40" @click="fnSizeNum(1)">+</button>
                             </td>
                         </tr>
@@ -215,18 +215,24 @@
                                 재고
                             </th>
                             <td>
-                                <input v-for="num in sizeNum" v-model="quantity[num]" class="smallInput">
+                                <input v-for="num in sizeNum" v-model="quantity[num-1]" class="smallInput">
                                 <button class="bluebutton height40" @click="fnSizeNum(-1)">-</button>
                             </td>
                         </tr>
                         <tr>
                             <th>성별</th>
-                            <td><input v-model="gender" placeholder="남녀 공용 : A, 남성 : M, 여성 : F"></td>
+                            <td><select v-model="gender" id="gender-menu">
+                                    <option value="">성별 선택</option>
+                                    <option value="A">남녀 공용 (A)</option>
+                                    <option value="M">남성용 (M)</option>
+                                    <option value="F">여성용 (F)</option>
+                                </select></td>
                         </tr>
                         <tr>
                             <th>제품분류</th>
                             <td>
                                 <select v-model="typeNo" id="type-menu">
+                                    <option value="">제품분류 선택</option>
                                     <option value="10">러닝화</option>
                                     <option value="20">보호대</option>
                                     <option value="30">모자</option>
@@ -288,8 +294,8 @@
                     productName: "",
                     brand: "",
                     price: "",
-                    productSize: [""],
-                    quantity: [""],
+                    productSize: [],
+                    quantity: [],
                     gender: "",
                     typeNo: "",
                     productDetail: "",
@@ -326,14 +332,14 @@
                         productName: self.productName,
                         brand: self.brand,
                         price: self.price,
-                        productSize: self.productSize[i],
-                        quantity: self.quantity[i],
+                        productSize: self.productSize[i-1],
+                        quantity: self.quantity[i-1],
                         gender: self.gender,
                         typeNo: self.typeNo,
                         productDetail: self.productDetail
                     };
-                    console.log(self.productSize[i]);
-                    console.log(self.quantity[i]);
+                    console.log(self.productSize[i-1]);
+                    console.log(self.quantity[i-1]);
                     console.log(param);
 
 
@@ -352,7 +358,7 @@
                             //    alert("form 내용확인 " + JSON.stringify(form));
                             //    self.upload(form);
                             //}, 100);
-                            self.fnBack();
+                            // self.fnBack();
 
 
                         }
@@ -389,9 +395,46 @@
                 fnAddSystem() {
                     let self = this;
 
-                    // 이미지 파일이 선택되었는지 확인
+                    // 1. 기본 정보 빈칸 체크
+                    if (!self.productName || !self.brand || !self.price || !self.gender || !self.typeNo) {
+                        self.fnOpenModal("상품의 기본 정보를 모두 입력해 주세요.", false);
+                        return;
+                    }
+
+                    // 2. 가격 및 재고용 숫자 체크 정규식
+                    const numRegex = /^[0-9]+$/;
+
+                    // 가격 숫자 체크
+                    if (!numRegex.test(self.price)) {
+                        self.fnOpenModal("가격은 숫자만 입력할 수 있습니다.", false);
+                        return;
+                    }
+
+                    // 3. 사이즈(빈칸 체크) 및 재고(숫자 체크) 반복문 검증
+                    for (let i = 0; i < self.sizeNum; i++) {
+                        let s = self.productSize[i];
+                        let q = self.quantity[i];
+
+                        // [사이즈] 빈칸만 아니면 됨 (문자/숫자 혼용 가능)
+                        if (s === undefined || s === null || String(s).trim() === "") {
+                            self.fnOpenModal(`사이즈를 입력해 주세요.`, false);
+                            return;
+                        }
+
+                        // [재고] 무조건 숫자여야 함
+                        if (q === undefined || q === null || String(q).trim() === "") {
+                            self.fnOpenModal(`재고를 입력해 주세요.`, false);
+                            return;
+                        }
+                        if (!numRegex.test(String(q))) {
+                            self.fnOpenModal(`재고는 숫자만 입력 가능합니다.`, false);
+                            return;
+                        }
+                    }
+
+                    // 4. 이미지 파일 선택 확인
                     if (!self.fnimgexist()) {
-                        self.fnOpenModal("이미지 파일을 선택해 주세요.", false);
+                        self.fnOpenModal("이미지 파일을 선택해 주세요 (jpg, png, glb).", false);
                         return;
                     }
 

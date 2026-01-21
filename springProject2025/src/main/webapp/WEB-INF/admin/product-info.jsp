@@ -197,11 +197,30 @@
                         </tr>
                         <tr>
                             <th>성별</th>
-                            <td><input v-model="info.gender"></td>
+                            <td><select v-model="info.gender" id="gender-menu">
+                                    <option value="A">남녀 공용 (A)</option>
+                                    <option value="M">남성용 (M)</option>
+                                    <option value="F">여성용 (F)</option>
+                                </select></td>
                         </tr>
                         <tr>
                             <th>제품분류</th>
-                            <td><input v-model="info.typeNo"></td>
+                            <td><select v-model="info.typeNo" id="type-menu">
+                                    <option value="10">러닝화</option>
+                                    <option value="20">보호대</option>
+                                    <option value="30">모자</option>
+                                    <option value="40">건강보조식품</option>
+                                    <option value="50">러닝복</option>
+                                    <option value="101">일반러닝화</option>
+                                    <option value="102">트레일러닝화</option>
+                                    <option value="103">카본화</option>
+                                    <option value="201">무릎보호대</option>
+                                    <option value="202">허리보호대</option>
+                                    <option value="301">일반모자</option>
+                                    <option value="401">에너지젤</option>
+                                    <option value="501">상의</option>
+                                    <option value="502">하의</option>
+                                </select></td>
                         </tr>
                         <tr>
                             <th>상세설명</th>
@@ -308,10 +327,30 @@
                 },
                 fnEditProduct() {
                     let self = this;
-                    if (self.info.salePrice != null && self.info.salePrice != '0') {
-                        self.info.saleYN = "Y";
+                    // 1. 숫자 체크 정규식
+                    const numRegex = /^[0-9]+$/;
+
+                    // 2. 필수 입력값 및 숫자 검증 (가격, 성별, 분류 등)
+                    if (!self.info.productName || !self.info.brand || !self.info.price || !self.info.gender || !self.info.typeNo) {
+                        self.fnAlert("모든 정보를 입력해 주세요.");
+                        return;
                     }
-                    else {
+
+                    if (!numRegex.test(String(self.info.price))) {
+                        self.fnAlert("가격은 숫자만 입력 가능합니다.");
+                        return;
+                    }
+
+                    // 할인 가격이 있을 경우 숫자 체크
+                    if (self.info.salePrice && !numRegex.test(String(self.info.salePrice))) {
+                        self.fnAlert("할인 가격은 숫자만 입력 가능합니다.");
+                        return;
+                    }
+
+                    // 3. 성별 코드 자동 설정
+                    if (self.info.salePrice != null && self.info.salePrice != '0' && self.info.salePrice != "") {
+                        self.info.saleYN = "Y";
+                    } else {
                         self.info.saleYN = "N";
                     }
                     // alert("버튼 확인");
@@ -376,6 +415,18 @@
                 },
                 fnQuantity() {
                     let self = this;
+                    const numRegex = /^[0-9]+$/;
+
+                    // 1. 재고 빈칸 및 숫자 체크
+                    if (self.info.quantity === "" || self.info.quantity === null || self.info.quantity === undefined) {
+                        self.fnAlert("재고 수량을 입력해 주세요.");
+                        return;
+                    }
+
+                    if (!numRegex.test(String(self.info.quantity))) {
+                        self.fnAlert("재고는 숫자만 입력 가능합니다.");
+                        return;
+                    }
                     let param = {
                         productNo: self.productNo,
                         quantity: self.info.quantity
