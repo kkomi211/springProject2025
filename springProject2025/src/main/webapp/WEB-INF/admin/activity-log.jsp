@@ -155,7 +155,6 @@
                         <th>작업 내용</th>
                         <th>대상 타입</th>
                         <th>대상 ID</th>
-                        <th>IP 주소</th>
                     </tr>
                     <tr v-for="item in sortedList" :key="item.logNo">
                         <td>{{item.cDate}}</td>
@@ -168,7 +167,6 @@
                         <td>{{item.actionDescription}}</td>
                         <td>{{item.targetType}}</td>
                         <td>{{item.targetId}}</td>
-                        <td>{{item.ipAddress}}</td>
                     </tr>
                 </table>
                 
