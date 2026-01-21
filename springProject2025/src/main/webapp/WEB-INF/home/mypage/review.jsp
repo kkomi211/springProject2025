@@ -471,12 +471,12 @@
                                                     </button>
                                                 </div>
                                                 <div v-else>
-                                                    <button @click="moveToReviewWrite(order)">
+                                                    <button @click="moveToReviewWrite(order)" style="background-color: black;color: white;border-radius: 8px; font-weight: 400;">
                                                         리뷰 작성하기
                                                     </button>
                                                 </div>
                                                 <div class="star-rating" v-if="order.rating">
-                                                    {{ displayStars(order.rating) }}
+                                                    {{ displayStars(order.rating) }}    
                                                 </div>
                                                 <div class="star-rating" v-else>
                                                     &#9734; &#9734; &#9734; &#9734; &#9734;

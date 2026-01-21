@@ -461,7 +461,7 @@
                                 <!-- <a v-if="page != index" @click="fnMove(index)" href="javascript:void(0)">→</a> -->
                             </div>
 
-                            <button @click="submitReturnExchange">
+                            <button @click="submitReturnExchange" style="background-color: black;color: white;border-radius: 8px; font-weight: 400;">
                                 반품/교환 신청
                             </button>
 
