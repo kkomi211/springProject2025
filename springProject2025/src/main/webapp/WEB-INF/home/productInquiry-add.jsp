@@ -345,6 +345,46 @@
                     transform: translateY(0);
                 }
             }
+
+            /* text-right 버튼들에 product-info와 동일한 스타일 적용 */
+            .text-right button {
+                background-color: black;
+                color: white;
+                border-radius: 8px;
+                padding: 10px 15px;
+                border: 1px solid #333;
+                cursor: pointer;
+                font-size: 14px;
+                min-width: 100px;
+                text-align: center;
+                transition: all 0.2s ease;
+            }
+
+            .text-right button:hover {
+                transform: scale(1.05);
+                background-color: black !important;
+                color: white !important;
+            }
+
+            /* inquiry-btn 클래스가 있다면 동일하게 적용 */
+            .inquiry-btn {
+                background-color: black;
+                color: white;
+                border-radius: 8px;
+                padding: 10px 15px;
+                border: 1px solid #333;
+                cursor: pointer;
+                font-size: 14px;
+                min-width: 100px;
+                text-align: center;
+                transition: all 0.2s ease;
+            }
+
+            .inquiry-btn:hover {
+                transform: scale(1.05);
+                background-color: black !important;
+                color: white !important;
+            }
         </style>
     </head>
 
