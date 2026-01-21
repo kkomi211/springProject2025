@@ -116,7 +116,7 @@
                             <!-- Require to enter fields -->
                              <div v-if="emptyFields" class="modal-overlay">
                                 <div class="modal-content">
-                                    <h2>아이디와 비밀벌호를 입력해주세요.</h2>
+                                    <h2>아이디와 비밀번호를 입력해주세요.</h2>
                                     <button @click="closeModal">닫기</button>
                                 </div>
                             </div>
