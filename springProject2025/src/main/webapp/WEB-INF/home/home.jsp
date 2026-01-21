@@ -221,7 +221,26 @@
                                         <div v-for="product in category.products" :key="product.productNo" 
                                              class="budget-product-item" 
                                              @click="goToProduct(product.productNo)">
-                                            <img :src="product.imgPath || '/img/no-image.jpg'" :alt="product.productName" @error="handleImageError($event)">
+                                            <!-- 이미지/모델(3D)/동영상 분기 렌더링 -->
+                                            <model-viewer
+                                                v-if="isModelAsset(product.imgPath)"
+                                                :src="product.imgPath"
+                                                style="width: 60px; height: 60px;"
+                                                camera-controls
+                                                auto-rotate
+                                                disable-zoom
+                                                interaction-prompt="none">
+                                            </model-viewer>
+                                            <video
+                                                v-else-if="isVideoAsset(product.imgPath)"
+                                                :src="product.imgPath"
+                                                style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px;"
+                                                autoplay
+                                                muted
+                                                loop
+                                                playsinline>
+                                            </video>
+                                            <img v-else :src="product.imgPath || '/img/no-image.jpg'" :alt="product.productName" @error="handleImageError($event)">
                                             <div class="budget-product-info">
                                                 <div class="product-name">{{ product.productName }}</div>
                                                 <div class="product-price">{{ formatCurrency(product.finalPrice) }}</div>
@@ -610,6 +629,18 @@
                         if (event.target.src && !event.target.src.includes('no-image.jpg')) {
                             event.target.src = '/img/no-image.jpg';
                         }
+                    },
+                    // 예산 추천: 3D 모델 파일이면 model-viewer로 표시
+                    isModelAsset(path) {
+                        if (!path) return false;
+                        const p = String(path).toLowerCase();
+                        return p.endsWith('.glb') || p.endsWith('.gltf');
+                    },
+                    // 예산 추천: 동영상 파일이면 video로 표시
+                    isVideoAsset(path) {
+                        if (!path) return false;
+                        const p = String(path).toLowerCase();
+                        return p.endsWith('.mp4') || p.endsWith('.webm') || p.endsWith('.mov');
                     },
                     formatCurrency(value) { // 통화 형식 포맷 함수
                         if (value === null || value === undefined) return '0 원';
