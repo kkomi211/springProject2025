@@ -376,7 +376,16 @@
                                         </table>
                                     </section>
                                     <div class="bottom-btn">
-                                        <button @click="fnMypage(info.userId)" class="btn">확인</button>
+                                        <button @click="fnMypage(info.userId)" class="btn" style="background-color: black;color: white;border-radius: 8px; font-weight: 400; width: 100px;">확인</button>
+                                    </div>
+                                    
+                                    <!-- Popup for empty passsword field -->
+
+                                    <div v-if="emptyField" class="modal-overlay">
+                                        <div class="modal-content">
+                                            <h2>비밀번호를 입력해주세요.</h2>
+                                            <button class="btn" @click="closeModal">닫기</button>
+                                        </div>
                                     </div>
 
                                     <!-- Popup message confirming password is correct -->
@@ -454,6 +463,7 @@
                     pwdMatch: false,
                     pwdCorrect: null,
                     isLoggedOut: false,
+                    emptyField: false,
 
                     userType: '${userType}',
                     cartCount: 0, // 장바구니 수량 변수 추가
@@ -487,7 +497,7 @@
                 fnMypage: function (userId) {
                     let self = this;
                     if (self.pwd == "") {
-                        alert("비밀번호를 입력해주세요.");
+                        self.emptyField = true;
                         document.querySelector("#pwd").focus();
                         return;
                     }
@@ -669,6 +679,7 @@
                 closeModal() {
                     let self = this;
                     self.pwdMatch = false;
+                    self.emptyField = false;
                 },
 
                 mvInfo: function () {

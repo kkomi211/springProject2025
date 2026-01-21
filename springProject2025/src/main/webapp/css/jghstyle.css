@@ -202,9 +202,9 @@ ul {
 .btn-return,
 .btn-review {
 
-	border-color: #bbb;
-	background-color: #e0e0e0;
-	color: #333;
+	background-color: black;
+	color: white;
+	border-radius: 8px;
 
 }
 

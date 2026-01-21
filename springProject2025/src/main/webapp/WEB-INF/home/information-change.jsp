@@ -461,7 +461,7 @@
                                         </table>
                                     </section>
                                     <div class="bottom-btn">
-                                        <button class="btn" @click="fnConfirmDelete">탈퇴하기</button>
+                                        <button class="btn" @click="fnConfirmDelete" style="background-color: black;color: white;border-radius: 8px; font-weight: 400;">탈퇴하기</button>
                                     </div>
 
                                     <!-- Popup asking the user really wants to delete their account -->

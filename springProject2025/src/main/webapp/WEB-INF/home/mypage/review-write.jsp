@@ -461,7 +461,7 @@ html, body {
                                         </div>
 
                                         <div style="text-align: right;">
-                                            <button type="button" class="submit-button"
+                                            <button type="button" class="submit-button" style="background-color: black;color: white;border-radius: 8px; font-weight: 400;"
                     
                                                 @click="submitReview">
                                                 리뷰 등록

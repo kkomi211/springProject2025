@@ -156,6 +156,9 @@ table input {
     gap: 10px;              
     margin-top: 20px;        
 }
+.bottom-btn button:hover {
+	transform: scale(1.02);
+}
 .bottom-btn button {
 	margin: 10px;
 }
