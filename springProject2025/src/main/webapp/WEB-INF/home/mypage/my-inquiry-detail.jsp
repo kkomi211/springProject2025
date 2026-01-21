@@ -411,7 +411,7 @@
                                                 style="position: absolute; top: 50%; transform: translateY(-50%); right: 30px; background-color: #ff0000; color: white; font-size: 11px; font-weight: bold; min-width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">{{
                                                 newReplyCount > 99 ? '99+' : newReplyCount }}</span>
                                         </li>
-                                        <li>
+                                        <li @click="mvInfo">
                                             <span class="icon">👤</span>
                                             <a href="#">나의 정보</a>
                                         </li>
@@ -465,7 +465,7 @@
                                 </div>
 
                                 <div class="button-area" style="text-align: right; margin-top: 20px;">
-                                    <button class="write-btn" onclick="history.back()">목록으로 돌아가기</button>
+                                    <button class="write-btn" style="background-color: black;color: white;border-radius: 8px; font-weight: 400;" onclick="history.back()">목록으로 돌아가기</button>
                                 </div>
                             </main>
                         </div>
@@ -744,6 +744,10 @@
                     let sessionId = self.sessionId;
 
                     pageChange("my-inquiry.do", { sessionId: sessionId });
+                },
+                mvInfo: function () {
+                    let self = this;
+                    pageChange("/home/mypage/information.do", {});
                 },
                 onRowClick(item) {
                     // 상세 페이지 이동, 모달, 또는 페이징 등
