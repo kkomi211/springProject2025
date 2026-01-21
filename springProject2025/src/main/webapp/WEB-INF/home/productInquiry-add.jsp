@@ -26,6 +26,7 @@
         <!-- session timeout modal -->
         <script src="/js/session-timeout.js"></script>
         <link rel="stylesheet" href="/css/product-info2.css">
+        <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
         <style>
             /* New CSS from homepage */
             html,
@@ -393,8 +394,20 @@
                         </div>
                         <div class="infoMain-container">
                             <h1>제품 문의 작성 </h1>
-                            <div class="img-box"><img :src="imgByProduct[String(productNo)] || '/img/no-image.png'"
-                                    class="big-img" :alt="info.productName"></div>
+                            <div class="img-box">
+                                <template
+                                    v-if="imgByProduct[String(productNo)] && imgByProduct[String(productNo)].toLowerCase().endsWith('.glb')">
+                                    <model-viewer :src="imgByProduct[String(productNo)]" auto-rotate camera-controls
+                                        shadow-intensity="1"
+                                        style="width: 100%; height: 400px; background-color: #f8f9fa; border-radius: 15px;">
+                                    </model-viewer>
+                                </template>
+
+                                <template v-else>
+                                    <img :src="imgByProduct[String(productNo)] || '/img/no-image.png'" class="big-img"
+                                        :alt="info.productName">
+                                </template>
+                            </div>
                             <div class="infoText-box">
                                 <div class="product-name">{{info.productName}}</div>
                                 <!-- <div class="margin80 font20">상품명 : {{info.productName}}</div> -->
@@ -433,32 +446,32 @@
                     </div>
                     <!-- session time out modal -->
                     <%@ include file="/WEB-INF/home/session-timeout-modal.jsp" %>
-                    <footer>
-                        <div class="footer-left">
-                            <div class="company-info">
-                                <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
-                                <div><strong>대표:</strong> 김재</div>
-                                <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
-                                <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
-                                <div><strong>부가세 번호:</strong> KR123456789</div>
+                        <footer>
+                            <div class="footer-left">
+                                <div class="company-info">
+                                    <div><strong>회사명:</strong> 러너스 하우스 주식회사</div>
+                                    <div><strong>대표:</strong> 김재</div>
+                                    <div><strong>사업자등록번호:</strong> 123‑45‑67890</div>
+                                    <div><strong>통신판매업 신고번호:</strong> 2025‑서울‑00987</div>
+                                    <div><strong>부가세 번호:</strong> KR123456789</div>
+                                </div>
+                                <div class="copyright">
+                                    COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                                </div>
                             </div>
-                            <div class="copyright">
-                                COPYRIGHT© 2025 RUNNERS HOUSE COMPANY. ALL RIGHT RESERVED.
+                            <div class="footer-right">
+                                <div class="other">
+                                    <span><a href="/home/about.do">회사소개</a></span>
+                                    <span><a @click="fnNotice">공지사항</a></span>
+                                    <span><a href="/home/terms.do">이용약관</a></span>
+                                    <span><a href="/home/privacy.do">개인정보처리방침</a></span>
+                                </div>
+                                <div class="socials">
+                                    <span>INSTAGRAM</span>
+                                    <span>NAVER</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="footer-right">
-                            <div class="other">
-                                <span><a href="/home/about.do">회사소개</a></span>
-                                <span><a @click="fnNotice">공지사항</a></span>
-                                <span><a href="/home/terms.do">이용약관</a></span>
-                                <span><a href="/home/privacy.do">개인정보처리방침</a></span>
-                            </div>
-                            <div class="socials">
-                                <span>INSTAGRAM</span>
-                                <span>NAVER</span>
-                            </div>
-                        </div>
-                    </footer>
+                        </footer>
             </div>
         </div>
     </body>
@@ -738,6 +751,6 @@
                 self.clearSessionTimers();
             }
         });
-
+        app.config.compilerOptions.isCustomElement = tag => tag === 'model-viewer';
         app.mount('#app');
     </script>
