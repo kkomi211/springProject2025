@@ -1466,19 +1466,38 @@
                     let file = event.target.files[0];
                     if (!file) return; // 파일 선택 취소 시 중단
 
+                    // 1. 허용할 확장자 목록 정의
+                    const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+                    // 파일명에서 확장자 추출 (소문자로 변환)
+                    const fileExtension = file.name.split('.').pop().toLowerCase();
+
+                    // 2. 확장자 검증 로직 추가
+                    if (!allowedExtensions.includes(fileExtension)) {
+                        // 기존에 만들어두신 openModal 시스템을 활용해 알림 표시
+                        self.openModal({
+                            message: "이미지 파일(jpg, png, gif)만 전송할 수 있습니다.",
+                            confirmText: "확인",
+                            cancelText: "닫기"
+                        });
+
+                        // input 값 초기화 후 중단
+                        event.target.value = '';
+                        return;
+                    }
+
+                    // 3. 검증 통과 시 서버 전송 진행
                     let formData = new FormData();
-                    formData.append("file", file); // 자바에서 받을 이름
+                    formData.append("file", file);
 
                     $.ajax({
-                        url: "/chat/uploadFile.dox", // ★ 2단계에서 만들 자바 주소
+                        url: "/chat/uploadFile.dox",
                         type: "POST",
                         data: formData,
-                        contentType: false, // 필수: 파일 전송 시 false
-                        processData: false, // 필수: 파일 전송 시 false
+                        contentType: false,
+                        processData: false,
                         dataType: "json",
                         success: function (data) {
                             if (data.result === "success") {
-                                // 업로드 성공 시, 이미지 경로를 채팅 메시지로 전송
                                 self.sendImageMessage(data.path);
                             } else {
                                 alert("이미지 전송 실패");
@@ -1489,7 +1508,7 @@
                         }
                     });
 
-                    // 같은 파일을 연속으로 보낼 수 있게 input값 초기화
+                    // input값 초기화
                     event.target.value = '';
                 },
 

@@ -167,6 +167,19 @@
                 /* 3D 조작을 막고 상품 상세 이동을 우선할 경우 */
             }
 
+            /* 기본 별 (회색) */
+            .star {
+                color: #ccc;
+                font-size: 18px;
+                margin-right: 2px;
+            }
+
+            /* 점수가 반영된 별 (노란색/금색) */
+            .star.filled {
+                color: #ffcc00;
+                /* 또는 gold */
+            }
+
             /* 만약 목록에서도 직접 돌려보게 하고 싶다면 위 pointer-events를 삭제하세요 */
         </style>
     </head>
@@ -276,9 +289,10 @@
                                                 class="stars-review-area product-margin">
                                                 <span v-for="n in 5" :key="n" class="star"
                                                     :class="{ filled: n <= ratingByName[item.productName].rounded }">★</span>
-                                                <span class="avg"> {{ ratingByName[item.productName].avg.toFixed(1)
+
+                                                <span class="avg">{{ ratingByName[item.productName].avg.toFixed(1)
                                                     }}</span>
-                                                <span class="cnt"> ({{ ratingByName[item.productName].cnt }})</span>
+                                                <span class="cnt">({{ ratingByName[item.productName].cnt }})</span>
                                             </div>
                                             <div v-else class="no-review product-margin">리뷰 없음</div>
                                         </a>
@@ -372,11 +386,19 @@
                 ratingByName() {
                     const m = {};
                     for (const r of this.reviewList || []) {
-                        // 컬럼명이 대문자(AVG_RATING/REVIEW_CNT)로 올 수도 있어 둘 다 대응
+                        // 상품명을 키로 사용
                         const name = String(r.productName || r.PRODUCT_NAME);
-                        const avg = Number(r.avgRating ?? r.AVG_RATING ?? 0);
-                        const cnt = Number(r.reviewCnt ?? r.REVIEW_CNT ?? 0);
-                        m[name] = { avg, cnt, rounded: Math.round(avg) };
+
+                        // 데이터가 null이나 undefined일 경우를 대비해 0으로 기본값 설정
+                        const avg = parseFloat(r.avgRating ?? r.AVG_RATING ?? 0);
+                        const cnt = parseInt(r.reviewCnt ?? r.REVIEW_CNT ?? 0);
+
+                        m[name] = {
+                            avg: avg,
+                            cnt: cnt,
+                            // 별의 개수를 결정할 정수 값 (4.2점 -> 4개, 4.8점 -> 5개 등)
+                            rounded: Math.round(avg)
+                        };
                     }
                     return m;
                 },
@@ -632,7 +654,7 @@
                         }
                     });
                 },
-                
+
                 // 배송 알림 개수 체크 (문의내역 방식과 동일)
                 checkShippingNotificationCount: function () {
                     let self = this;
@@ -640,7 +662,7 @@
                         self.shippingNotificationCount = 0;
                         return;
                     }
-                    
+
                     // localStorage에서 확인한 배송 주문 목록 불러오기
                     const storageKey = `checkedShippingOrders_${self.sessionId}`;
                     const saved = localStorage.getItem(storageKey);
@@ -652,7 +674,7 @@
                             checkedOrders = [];
                         }
                     }
-                    
+
                     // 서버에서 주문 목록 가져오기 (모든 주문)
                     $.ajax({
                         url: "/home/mypage/orders.dox",
@@ -685,7 +707,7 @@
                         }
                     });
                 },
-                
+
                 isNewProduct(dateString) {
                     // 1. 데이터가 없으면 무조건 false (에러 방지)
                     if (!dateString || dateString.length < 10) return false;
